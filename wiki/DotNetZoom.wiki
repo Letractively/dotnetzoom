@@ -2,6 +2,9 @@
 = DotNetZoom =
 
 ==Français==
+
+La version 1.0.1 est :
+
     *  Plus rapide, optimisé pour fonctionner sur un ligne DSL avec SQL Express 2005 et ASP-Net 2.0, windows XP.
     * Grande utilisation d'antémémoire, donc limite l'accès à la base de donnée et augmente la rapidité.
     * Intégration du module de compression HTTP, donc réduction de la bande passante de 80%.
@@ -20,7 +23,7 @@
 
 ==English==
 
-This version of DotNetZoom :
+Version 1.0.1:
 
     * Is faster and was optimized to run on a DSL line with SQL Express 2005, ASP-Net 2.0 and windows XP.
     * Uses caching, thus limiting access to the database and increases the speed.
