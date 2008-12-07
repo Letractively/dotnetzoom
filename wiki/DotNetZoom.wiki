@@ -1,6 +1,4 @@
 #labels Featured
-Avantage de DotNetZoom.
-
 = DotNetZoom =
 
 ==Français==
@@ -18,7 +16,7 @@ Avantage de DotNetZoom.
     * Nouveau fureteur de fichier, gestion intégrer de l'espace disque.
     * Autres améliorations .......
 
----
+----
 
 ==English==
 
