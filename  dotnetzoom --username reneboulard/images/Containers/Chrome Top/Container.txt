@@ -1,0 +1,19 @@
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+  <tr>
+    <td width="16"><img border="0" src="[PATH]/top-left.gif" WIDTH="16" HEIGHT="16"></td>
+    <td background="[PATH]/top-tile.gif"></td>
+    <td width="16"><img border="0" src="[PATH]/top-right.gif" WIDTH="16" HEIGHT="16"></td>
+  </tr>
+  <tr>
+    <td width="16" background="[PATH]/left-tile.gif"></td>
+    <td BGCOLOR="#EEEEEE" [ALIGN]>
+       [MODULE]
+    </td>
+    <td width="16" background="[PATH]/right-tile.gif"></td>
+  </tr>
+  <tr>
+    <td width="16"><img border="0" src="[PATH]/bottom-left.gif" WIDTH="16" HEIGHT="32"></td>
+    <td background="[PATH]/bottom-tile.gif"></td>
+    <td width="16"><img border="0" src="[PATH]/bottom-right.gif" WIDTH="16" HEIGHT="32"></td>
+  </tr>
+</table>

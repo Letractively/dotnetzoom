@@ -1,0 +1,54 @@
+DotNetNuke - http://www.dotnetnuke.com 
+Copyright (c) 2002-2004 
+Shaun Walker ( sales@perpetualmotion.ca ) de Perpetual Motion Interactive Systems Inc. 
+( http://www.perpetualmotion.ca ) Tous droits réservés.
+
+Copyright (c) 2004-2008
+par René Boulard ( http://www.reneboulard.qc.ca)'
+
+
+La redistribution et l'utilisation sous forme binaire ou de code source, avec ou sans modification, 
+est autorisée à condition que les conditions suivantes soient respectées: Les redistributions du code 
+source doivent conserver l'indication de copyright ci-dessus, cette liste de conditions et la 
+renonciation suivante. Les redistributions sous forme binaire doivent reproduire l'indication de 
+copyright ci-dessus, cette liste de conditions et la renonciation suivante dans la documentation 
+et/ou les autres accessoires fournis avec la distribution.
+
+CE LOGICIEL EST FOURNI PAR LES TITULAIRES DU COPYRIGHT ET LES PARTICIPANTS "TEL QUEL" ET TOUTES 
+LES GARANTIES EXPLICITES OU IMPLICITES, Y COMPRIS, MAIS NON LIMITÉES A CELLES-CI, LES GARANTIES 
+IMPLICITES DE COMMERCIALISATION ET D'ADÉQUATION À UN USAGE PARTICULIER SONT DÉNIÉES. EN AUCUN CAS 
+LES TITULAIRES DU COPYRIGHT OU LES PARTICIPANTS NE PEUVENT ÊTRE TENUS POUR RESPONSABLE DES 
+DOMMAGES DIRECTS, INDIRECTS, FORTUITS, PARTICULIERS, EXEMPLAIRES OU CONSÉCUTIFS À UNE ACTION 
+(Y COMPRIS, MAIS NON LIMITÉS À CEUX-CI, L'ACQUISITION DE MARCHANDISES OU DE SERVICES DE REMPLACEMENT; 
+LES PERTES D'UTILISATIONS, DE DONNÉES OU FINANCIÈRES; OU L'INTERRUPTION D'ACTIVITÉS) DE QUELQUE 
+MANIÈRE QUE CES DOMMAGES SOIENT CAUSÉS ET CECI POUR TOUTES LES THÉORIES DE RESPONSABILITÉS, QUE 
+CE SOIT DANS UN CONTRAT, POUR DES RESPONSABILITÉS STRICTES OU DES PRÉJUDICES (Y COMPRIS DUS À UNE 
+NEGLIGENCE OU AUTRE CHOSE) SURVENANT DE QUELQUE MANIÈRE QUE CE SOIT EN DEHORS DE L'UTILISATION DE 
+CE LOGICIEL, MÊME EN CAS D'AVERTISSEMENT DE LA POSSIBILITÉ DE TELS DOMMAGES.
+
+
+
+
+
+DotNetNuke -  http://www.dotnetnuke.com
+Copyright (c) 2002-2003
+by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
+
+Copyright (c) 2004-2008
+by René Boulard ( http://www.reneboulard.qc.ca)'
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and 
+to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions 
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
+
+

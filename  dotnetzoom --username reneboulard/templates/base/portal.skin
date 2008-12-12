@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="shortcut icon" href="{favicon}" >
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="DESCRIPTION" content="{description}">
+<meta name="KEYWORDS" content="{keyword}">
+<meta name="COPYRIGHT" content="{copyright}">
+<meta name="GENERATOR" content="{generator}">
+<meta name="RESOURCE-TYPE" content="DOCUMENT">
+<meta name="DISTRIBUTION" content="GLOBAL">
+<meta name="AUTHOR" content="Rene Boulard">
+<meta name="ROBOTS" content="INDEX, FOLLOW">
+<meta name="REVISIT-AFTER" content="30 DAYS">
+<meta name="RATING" content="GENERAL">
+</head>
+<body>
+<script language="JavaScript" type="text/javascript">
+<!-- Begin
+if (window != top) top.location.href = location.href;
+// End -->
+</script>
+<form>
+<div align="center">
+<table width=840 cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td align="left">
+
+<table cellSpacing="0" cellPadding="0" width="100%" border="0"><tr><td colspan="3" width="100%"><table width="100%" cellSpacing="0" cellPadding="0" border="0"><tr><td width="27"><IMG height="26" alt="" src="images/containers/3DWin/top-left.gif" width="27" border="0"></td><td width="100%" style="background-image: url(/images/containers/3DWin/top-tile.gif)" ></td><td width="15"><IMG height="26" alt="" src="images/containers/3DWin/top-right.gif" width="15" border="0"></td></tr></table></td></tr><tr><td colspan="3" width="100%"><table width="100%" cellSpacing="0" cellPadding="0" border="0"><tr><td width="9" style="background-image: url(/images/containers/3DWin/left-tile.gif)"></td><td bgColor="white" >
+{banner}
+<div class="menu">
+{tabmenu}
+</div>                                         
+<table style="height: 100%" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td height="400">
+<table width="100%" border="0">
+<tr valign="top">
+<td class="LeftPane">{leftspacer}{leftpane}</td>
+{leftline}<td class="ContentPane" width="100%">{contentpane}</td>{rightline}
+<td class="RightPane">{rightspacer}{rightpane}
+</td>
+</tr>
+</table>
+<tr valign="bottom">
+<td>
+{footer}
+<div style="background-color: #c1d0e8">{altmenu}</div>
+</td>
+</tr>
+</table>
+</td><td width="9" style="background-image: url(/images/containers/3DWin/right-tile.gif)"></td></tr></table></td></tr><tr><td colspan="3" width="100%"><table width="100%" cellSpacing="0" cellPadding="0" border="0"><tr><td width="9"><IMG height="10" alt="" src="images/containers/3DWin/bottom-left.gif" width="9" border="0"></td><td style="background-image: url(/images/containers/3DWin/bottom-tile.gif)" width="100%"></td><td width="9"><IMG height="10" alt="" src="images/containers/3DWin/bottom-right.gif" width="9" border="0"></td></tr></table></td></tr></table>
+</td></tr></table></div> 
+</form>
+</body>
+</html>

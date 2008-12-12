@@ -1,0 +1,25 @@
+﻿.TTTBorder { border-bottom: Gray 1px solid; border-left: White 1px solid; border-top: White 1px solid; border-right: Gray 1px solid}
+.TTTSubBorder { border: 0px solid;}
+.TTTHeader { font-weight: bold; font-size: 10pt;}
+.TTTHeaderText { font-weight: bold; font-size: 10pt; }
+.TTTAltHeaderText { font-weight: bold; font-size: 10pt; color: #4455aa; }
+.TTTSubHeader {	font-weight: bold; font-size: 10pt; color: #4455aa; }
+.TTTTitle { font-weight: bold; font-size: 10pt; }
+.TTTRow { color: #4455aa;  font-size: 11px; font-weight: normal;}
+.TTTRowHighLight { font-size: 11px; font-weight: normal;}
+.TTTFooter { font-size: 10pt; font-weight:bold;}
+.TTTAltHeader {	font-weight: bold; font-size: 10pt; color: #4455aa; }
+.TTTFooterText { font-size: 10pt; font-weight:bold;  }
+.TTTCommand { font-weight: normal; font-size: 11px;	}
+TD.TTTRow {background: silver}
+TD.TTTHeader {height: 28px; background: #D3D3D3}
+TD.TTTAltHeader {height: 28px; background: #A9A9A9}
+TD.TTTAltFooter { height: 28px; background: #DCDCDC }
+TD.TTTSubHeader { background: #DCDCDC }
+TD.TTTRowHighlight {background: #A9A9A9 }
+TD.TTTFooter { height: 28px; background: #DCDCDC }
+.TTTNormal { font-size: 11px; font-weight: normal; }
+.TTTNormalTextBox {  font-size: 12px; font-weight: normal;}
+.TTTNormalRed {  font-size: 12px; font-weight: bold; color: #ff0000}
+.TTTNormalBold {  font-size: 11px; font-weight: bold }
+.TTTCommandButton {  font-size: 11px; font-weight: normal;}

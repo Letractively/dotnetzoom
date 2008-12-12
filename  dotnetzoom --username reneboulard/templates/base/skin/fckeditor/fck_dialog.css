@@ -1,0 +1,132 @@
+@charset "utf-8";
+/*
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: fck_dialog.css
+ * 	Styles used by the dialog boxes.
+ * 
+ * File Authors:
+ * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ */
+
+body
+{
+	margin: 0px;
+	padding: 10px;
+}
+
+body, td, input, select, textarea
+{
+	font-size: 11px;
+	font-family: 'Microsoft Sans Serif' , Arial, Helvetica, Verdana;
+}
+
+body, .BackColor
+{
+	background-color: #B0C4DE;
+}
+
+.PopupBody
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+.PopupTitle
+{
+	font-weight: bold;
+	font-size: 14pt;
+	color: #336699;
+	background-color: #c1d2ee;
+	padding: 3px 10px 3px 10px;
+}
+
+.PopupButtons
+{
+	border-top: #6699CC 1px solid;
+	background-color: #c1d2ee;
+	padding: 7px 10px 7px 10px;
+}
+
+.Button
+{
+	border-right: #336699 1px solid;
+	border-top: #336699 1px solid;
+	border-left: #336699 1px solid;
+	color: #3b3b1f;
+	border-bottom: #336699 1px solid;
+	background-color: #6699CC;
+}
+
+.DarkBackground
+{
+	background-color: #336699;
+}
+
+.LightBackground
+{
+	background-color: #339999;
+}
+
+.PopupTitleBorder
+{
+	border-bottom: #6699CC 1px solid;
+}
+
+.PopupTabArea
+{
+	color: #336699;
+	background-color: #c1d2ee;
+}
+
+.PopupTabEmptyArea
+{
+	padding-left: 10px ;
+	border-bottom: #6699CC 1px solid;
+}
+
+.PopupTab, .PopupTabSelected
+{
+	border-right: #6699CC 1px solid;
+	border-top: #6699CC 1px solid;
+	border-left: #6699CC 1px solid;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	color: #336699;
+}
+
+.PopupTab
+{
+	margin-top: 1px;
+	border-bottom: #6699CC 1px solid;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.PopupTabSelected
+{
+	font-weight:bold;
+	cursor: default;
+	padding-top: 4px;
+	border-bottom: #B0C4DE 1px solid;
+	background-color: #B0C4DE;
+}
+
+.PopupSelectionBox
+{
+	border: #FF9933 1px solid !important;
+	background-color: #6699CC !important;
+	cursor: pointer;
+	cursor: hand;
+}

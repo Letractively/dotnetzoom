@@ -1,0 +1,792 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<portal>
+ <sitesettings>
+   <settingname>logincontainerAlignment</settingname>
+   <settingvalue><![CDATA[left]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>PMSMailNotice</settingname>
+   <settingvalue><![CDATA[YES]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>ModuleContainer</settingname>
+   <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>logincontainer</settingname>
+   <settingvalue><![CDATA[[MODULE]]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>flash</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>containerBorder</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_message</settingname>
+   <settingvalue><![CDATA[Message courriel pour fournisseur]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>containerAlignment</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_loginmessage</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>adminModuleContainer</settingname>
+   <settingvalue><![CDATA[<table cellpadding="5" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>en_KeyWords</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>containerColor</settingname>
+   <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_Description</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>logincontainerColor</settingname>
+   <settingvalue><![CDATA[#ffffff]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_signupmessage</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>editTitleContainer</settingname>
+   <settingvalue><![CDATA[[MODULE]]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>TitleContainer</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>SearchUser</settingname>
+   <settingvalue><![CDATA[YES]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>ToolTipcontainerBorder</settingname>
+   <settingvalue><![CDATA[1]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_KeyWords</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>admincontainerBorder</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>UserOnline</settingname>
+   <settingvalue><![CDATA[YES]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_registrationmessage</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>en_loginmessage</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>DemoDomain</settingname>
+   <settingvalue><![CDATA[N]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>admincontainerAlignment</settingname>
+   <settingvalue><![CDATA[left]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>containerTitleCSSClass</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>registeremail</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>en_signupmessage</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>en_FooterText</settingname>
+   <settingvalue><![CDATA[copyright 2004-2008 DotNetZoom]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>PortalUserOnline</settingname>
+   <settingvalue><![CDATA[YES]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>editcontainerTitleCSSClass</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>en_registrationmessage</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>ToolTipcontainer</settingname>
+   <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>loginTitleContainer</settingname>
+   <settingvalue><![CDATA[[MODULE]]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>logincontainerTitleHeaderClass</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>en_DemoDirectives</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>admincontainer</settingname>
+   <settingvalue><![CDATA[<div align="center">
+<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="750"[COLOR][BORDER]><tr><td align="left">[MODULE]</td></tr></table>
+</div>]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>loginModuleContainer</settingname>
+   <settingvalue><![CDATA[<table cellpadding="0" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td class="login" [ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>en_Description</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>containerTitleHeaderClass</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_DemoDirectives</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>logincontainerTitleCSSClass</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>logincontainerBorder</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>admincontainerTitleCSSClass</settingname>
+   <settingvalue><![CDATA[Head]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>editcontainerTitleHeaderClass</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>editcontainer</settingname>
+   <settingvalue><![CDATA[<div align="center">
+<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="750"[COLOR][BORDER]><tr><td align="left">[MODULE]</td></tr></table>
+</div>]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>ToolTipcontainerAlignment</settingname>
+   <settingvalue><![CDATA[center]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>UserMessage</settingname>
+   <settingvalue><![CDATA[YES]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>ToolTipcontainerColor</settingname>
+   <settingvalue><![CDATA[#66ccff]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>admincontainerColor</settingname>
+   <settingvalue><![CDATA[]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>DemoSignup</settingname>
+   <settingvalue><![CDATA[Y]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>adminTitleContainer</settingname>
+   <settingvalue><![CDATA[[MODULE]]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>container</settingname>
+   <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>admincontainerTitleHeaderClass</settingname>
+   <settingvalue><![CDATA[headertitle]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>uploadroles</settingname>
+   <settingvalue><![CDATA[0;]]></settingvalue>
+ </sitesettings>
+ <sitesettings>
+   <settingname>fr_FooterText</settingname>
+   <settingvalue><![CDATA[copyright 2004-2008 DotNetZoom]]></settingvalue>
+ </sitesettings>
+ <tabs language=''>
+  <tab>
+  <name>Accueil</name>
+  <parent></parent>
+  <level>0</level>
+  <taborder>1</taborder>
+  <visible>True</visible>
+   <panes>
+  </panes>
+ </tab>
+ </tabs>
+ <tabs language='en'>
+
+  <tab>
+  <name>Home</name>
+  <parent></parent>
+  <level>0</level>
+  <taborder>1</taborder>
+  <visible>True</visible>
+   <panes>
+   <pane>
+   <name>LeftPane</name>
+    <modules>
+      <module>
+     <title>Quick links</title>
+     <definition>Hyperliens</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>linkview</settingname>
+       <settingvalue><![CDATA[V]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>displayinfo</settingname>
+       <settingvalue><![CDATA[Y]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>linkcontrol</settingname>
+       <settingvalue><![CDATA[L]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="0" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>linkClass</settingname>
+       <settingvalue><![CDATA[link]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1>DotNetZoom</data1><data2><![CDATA[http://www.dotnetzoom.com]]></data2><data3></data3><data4><![CDATA[The official site for DotNetZoom]]></data4><data5>True</data5><data6></data6>
+          </data>
+         <data>
+           <data1>Modeliste.net</data1><data2><![CDATA[http://www.modeliste.net]]></data2><data3></data3><data4><![CDATA[Demo site for dotnetzoom]]></data4><data5>True</data5><data6></data6>
+          </data>
+         <data>
+           <data1>René Boulard</data1><data2><![CDATA[http://www.reneboulard.qc.ca]]></data2><data3></data3><data4><![CDATA[The web site of René Boulard]]></data4><data5>True</data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+      <module>
+     <title>Support</title>
+     <definition>HTML/Texte</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>desktopview</settingname>
+       <settingvalue><![CDATA[R]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1><![CDATA[<p style="text-align: center;"><a href="http://www.softcomplex.com/" title="The maker of tigra menu"><img width="150" height="25" border="0" src="[GUID]SoftComplex.gif" alt="softcomplex" /></a></p>
+<div style="text-align: center;"> </div>
+<p style="text-align: center;"> <a href="http://www.greathobbies.com/" title="For the serious hobby person"><img width="150" height="15" border="0" src="[GUID]logo_gh_250x25.gif" alt="greathobby" /></a></p>
+<div style="text-align: center;"> </div>
+<p style="text-align: center;"><a href="http://www.carpoolworld.com/" title="Teh ecologic choice to make"><img width="151" height="34" border="0" src="[GUID]carpoolworld.gif" alt="carpoolworld" /></a></p>]]></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+      <module>
+     <title>Web server info</title>
+     <definition>Info Système</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+      <module>
+     <title>Who is On line</title>
+     <definition>En ligne petit</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+    </modules>
+   </pane>
+   <pane>
+   <name>ContentPane</name>
+    <modules>
+      <module>
+     <title>DotNetZoom</title>
+     <definition>HTML/Texte</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>desktopview</settingname>
+       <settingvalue><![CDATA[R]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1><![CDATA[<p>{FullName}</p>
+<p>You portal was created.&nbsp; you will receive in a few minutes an E-Mail with your LOGIN information.&nbsp; You have to use the link provided in the E-Mail in order to unlock your administrator account.</p>
+<p>Your Web Portal URL : {PortalURL}</p>
+<span id="edit_lblTerms" class="Normal"> A</span><span id="edit_lblTerms" class="Normal"> THE INFORMATION, SOFTWARE, PRODUCTS, AND SERVICES INCLUDED IN OR AVAILABLE THROUGH THE DotNetZoom WEB SITE  MAY INCLUDE INACCURACIES OR TYPOGRAPHICAL ERRORS. CHANGES ARE PERIODICALLY  ADDED TO THE INFORMATION HEREIN. DotNetZoom AND/OR ITS SUPPLIERS MAY  MAKE IMPROVEMENTS AND/OR CHANGES IN THE DotNetZoom WEB SITE AT ANY  TIME. ADVICE RECEIVED VIA THE DotNetZoom WEB SITE SHOULD NOT BE RELIED  UPON FOR PERSONAL, MEDICAL, LEGAL OR FINANCIAL DECISIONS AND YOU SHOULD CONSULT  AN APPROPRIATE PROFESSIONAL FOR SPECIFIC ADVICE TAILORED TO YOUR SITUATION.<br />
+<br />
+DotNetZoom AND/OR ITS SUPPLIERS MAKE NO REPRESENTATIONS ABOUT THE  SUITABILITY, RELIABILITY, AVAILABILITY, TIMELINESS, AND ACCURACY OF THE  INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND RELATED GRAPHICS CONTAINED ON THE  DotNetZoom WEB SITE FOR ANY PURPOSE. TO THE MAXIMUM EXTENT PERMITTED BY  APPLICABLE LAW, ALL SUCH INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND RELATED  GRAPHICS ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OR CONDITION OF ANY KIND.  DotNetZoom AND/OR ITS SUPPLIERS HEREBY DISCLAIM ALL WARRANTIES AND  CONDITIONS WITH REGARD TO THIS INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND  RELATED GRAPHICS, INCLUDING ALL IMPLIED WARRANTIES OR CONDITIONS OF  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT.<br />
+<br />
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL  DotNetZoom AND/OR ITS SUPPLIERS BE LIABLE FOR ANY DIRECT, INDIRECT,  PUNITIVE, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER  INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF USE, DATA OR PROFITS,  ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE USE OR PERFORMANCE OF THE  DotNetZoom WEB SITE, WITH THE DELAY OR INABILITY TO USE THE  DotNetZoom WEB SITE OR RELATED SERVICES, THE PROVISION OF OR FAILURE TO  PROVIDE SERVICES, OR FOR ANY INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND  RELATED GRAPHICS OBTAINED THROUGH THE DotNetZoom WEB SITE, OR OTHERWISE  ARISING OUT OF THE USE OF THE DotNetZoom WEB SITE, WHETHER BASED ON  CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY OR OTHERWISE, EVEN IF  DotNetZoom OR ANY OF ITS SUPPLIERS HAS BEEN ADVISED OF THE POSSIBILITY  OF DAMAGES. BECAUSE SOME STATES/JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR  LIMITATION OF LIABILITY FOR CONSEQUENTIAL OR INCIDENTAL DAMAGES, THE ABOVE  LIMITATION MAY NOT APPLY TO YOU. IF YOU ARE DISSATISFIED WITH ANY PORTION OF  THE DotNetZoom WEB SITE, OR WITH ANY OF THESE TERMS OF USE, YOUR SOLE  AND EXCLUSIVE REMEDY IS TO DISCONTINUE USING THE DotNetZoom WEB SITE.</span><span id="edit_lblTerms" class="Normal"> <br />
+<br />
+DotNetZoom reserves the right, in its sole discretion, to terminate your  access to the DotNetZoom Web Site and the related services or  any portion thereof at any time, without notice. GENERAL To the maximum extent  permitted by law, this agreement is governed by the laws of the province of Qubec, Canada and you hereby consent to the exclusive jurisdiction and  venue of courts in the province of Qu�bec, Canada. in all disputes arising out  of or relating to the use of the DotNetZoom Web Site. Use of the  DotNetZoom Web Site is unauthorized in any jurisdiction that does not  give effect to all provisions of these terms and conditions, including without  limitation this paragraph. You agree that no joint venture, partnership,  employment, or agency relationship exists between you and DotNetZoom as  a result of this agreement or use of the DotNetZoom Web Site.  DotNetZoom's performance of this agreement is subject to existing laws  and legal process, and nothing contained in this agreement is in derogation of  DotNetZoom's right to comply with governmental, court and law  enforcement requests or requirements relating to your use of the  DotNetZoom Web Site or information provided to or gathered by  DotNetZoom with respect to such use. If any part of this agreement is  determined to be invalid or unenforceable pursuant to applicable law including,  but not limited to, the warranty disclaimers and liability limitations set  forth above, then the invalid or unenforceable provision will be deemed  superseded by a valid, enforceable provision that most closely matches the  intent of the original provision and the remainder of the agreement shall  continue in effect. Unless otherwise specified herein, this agreement  constitutes the entire agreement between the user and DotNetZoom with  respect to the DotNetZoom Web Site and it supersedes all prior or  contemporaneous communications and proposals, whether electronic, oral or  written, between the user and DotNetZoom with respect to the  DotNetZoom Web Site. A printed version of this agreement and of any  notice given in electronic form shall be admissible in judicial or  administrative proceedings based upon or relating to this agreement to the same  extent an d subject to the same conditions as other business documents and  records originally generated and maintained in printed form. It is the express  wish to the parties that this agreement and all related documents be drawn up  in English.</span>
+<p> <a href="mailto:{HostEmail}?subject={PortalName} Cr�éation nouveau site web">{HostEmail}</a></p>]]></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+    </modules>
+   </pane>
+  </panes>
+ </tab>
+ </tabs>
+ <tabs language='fr'>
+
+  <tab>
+  <name>Accueil</name>
+  <parent></parent>
+  <level>0</level>
+  <taborder>1</taborder>
+  <visible>True</visible>
+   <panes>
+   <pane>
+   <name>LeftPane</name>
+    <modules>
+      <module>
+     <title>Hyperliens</title>
+     <definition>Hyperliens</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>linkview</settingname>
+       <settingvalue><![CDATA[V]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>displayinfo</settingname>
+       <settingvalue><![CDATA[Y]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>linkcontrol</settingname>
+       <settingvalue><![CDATA[L]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="0" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>linkClass</settingname>
+       <settingvalue><![CDATA[link]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1>Modeliste.net</data1><data2><![CDATA[http://www.modeliste.net]]></data2><data3></data3><data4><![CDATA[Site démo pour le logiciel de DotNetZoom]]></data4><data5>True</data5><data6></data6>
+          </data>
+         <data>
+           <data1>René Boulard</data1><data2><![CDATA[http://www.reneboulard.qc.ca]]></data2><data3></data3><data4><![CDATA[Le concepteur de DotNetZoom]]></data4><data5>True</data5><data6></data6>
+          </data>
+         <data>
+           <data1>Site web DotNetZoom</data1><data2><![CDATA[http://www.dotnetzoom.com]]></data2><data3></data3><data4><![CDATA[Le site web Officiel de DotNetZoom]]></data4><data5>True</data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+      <module>
+     <title>Commanditaires</title>
+     <definition>HTML/Texte</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>desktopview</settingname>
+       <settingvalue><![CDATA[R]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1><![CDATA[<p style="text-align: center;"><a title="Les conceteur du menu Tigra" href="http://www.softcomplex.com/"><img width="150" height="25" border="0" src="[GUID]SoftComplex.gif" alt="softcomplex" /></a></p>
+<div style="text-align: center;"> </div>
+<p style="text-align: center;"> <a title="Pour un modéliste avertie" href="http://www.greathobbies.com/"><img width="150" height="15" border="0" src="[GUID]logo_gh_250x25.gif" alt="greathobby" /></a></p>
+<div style="text-align: center;"> </div>
+<p style="text-align: center;"><a title="Le choix écologique a faire" href="http://www.carpoolworld.com/"><img width="151" height="34" border="0" src="[GUID]carpoolworld.gif" alt="carpoolworld" /></a></p>]]></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+      <module>
+     <title>Info Système</title>
+     <definition>Info Système</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+      <module>
+     <title>Qui est en ligne</title>
+     <definition>En ligne petit</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleCSSClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerTitleHeaderClass</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+    </modules>
+   </pane>
+   <pane>
+   <name>ContentPane</name>
+    <modules>
+      <module>
+     <title>Bienvenue sur DotNetZoom français ...</title>
+     <definition>HTML/Texte</definition>
+      <modulesettings>
+      <modulesetting>
+       <settingname>ModuleContainer</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"[COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>TitleContainer</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>container</settingname>
+       <settingvalue><![CDATA[<table cellpadding="2" cellspacing="0" summary="Module Design Table" width="100%"><tr><td>[MODULE]</td></tr></table>]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>desktopview</settingname>
+       <settingvalue><![CDATA[R]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerBorder</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerAlignment</settingname>
+       <settingvalue><![CDATA[]]></settingvalue>
+       </modulesetting>
+      <modulesetting>
+       <settingname>containerColor</settingname>
+       <settingvalue><![CDATA[#c1d0e8]]></settingvalue>
+       </modulesetting>
+      </modulesettings>
+        <datas>
+         <data>
+           <data1><![CDATA[<p>{FullName}</p>
+<p>Votre portail web a été créé. Vous allez recevoir dans les prochaine minutes un courriel avec de l'information pour entrer sur votre site web la premère fois</p>
+<p>Par l'utilisation du nouveau site web ainsi créé, vous vous engagez à respecter tous les termes, conditions d'utilisation et mentions d'avertissement.</p>
+<p>Adresse web portail: {PortalURL}</p>
+<p>Pour une question de sécurité pour ouvrir une session la première fois avec votre code administrateur vous devrez utiliser l'hyperlien inclus de le courriel.</p> 
+<p>Vous êtes entièrement responsable du maintien de la confidentialité de votre mot de passe et de votre nom d'utilisateur. Vous êtes en outre entièrement responsable de toute activité ayant lieu sous votre compte. Vous vous engagez à avertir immédiatement  {PortalName}  de toute utilisation non autorisée de votre compte, ou de toute autre atteinte à la sécurité. {PortalName} ne pourra en aucun cas être tenue pour responsable d'un quelconque dommage que vous subiriez du fait de l'utilisation par autrui de votre mot de passe ou de votre compte, que vous ayez eu connaissance ou non de cette utilisation. Néanmoins, votre responsabilité pourrait être engagée si {PortalName} ou un tiers subissait des dommages dus à l'utilisation par autrui de votre compte ou de votre mot de passe. Il ne vous est jamais permis d'utiliser le compte d'autrui sans l'autorisation du titulaire du compte.</p>
+<p>{PortalName} se réserve le droit de modifier les termes, conditions et mentions d'avertissement applicables au site et Services qui vous sont proposés. Il vous incombe de consulter régulièrement ces termes et conditions d'utilisation. Votre utilisation renouvelée du site web {PortalName} constitue l'acceptation de votre part de tous ces termes, conditions d'utilisation et mentions d'avertissement.
+<br><br>Sauf indication contraire, le site web {PortalName} est destiné à être utilisés à des fins personnelles et non commerciales. Vous n'êtes pas autorisé à modifier, copier, distribuer, transmettre, diffuser, représenter, reproduire, publier, concéder sous licence, créer des oeuvres dérivées, transférer ou vendre tout information, logiciel, produit ou service obtenu à partir de ce site web. Vous ne pouvez pas utiliser le site web {PortalName} à des fins commerciales, sans l'autorisation expresse, écrite et préalable, de {PortalName}.
+</p><p><b><font color="#ff0000">Vous ne pouvez utiliser le site web {PortalName} qu'à condition de garantir que vous ne l'utiliserez pas à des fins illicites ou interdite</font></b></p>
+<p>
+<a href="mailto:{HostEmail}?subject={PortalName} Création nouveau site web">{HostEmail}</a></p>]]></data1><data2></data2><data3></data3><data4></data4><data5></data5><data6></data6>
+          </data>
+        </datas>
+      </module>
+    </modules>
+   </pane>
+  </panes>
+ </tab>
+ </tabs>
+</portal>

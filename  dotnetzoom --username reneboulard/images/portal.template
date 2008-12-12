@@ -1,0 +1,45 @@
+<portal>
+  <tabs>
+    <tab>
+      <name>Home</name>
+      <visible>True</visible>
+      <panes>
+        <pane>
+          <name>LeftPane</name>
+          <modules>
+            <module>
+              <title>Quick Launch</title>
+              <definition>Links</definition>
+            </module>
+          </modules>
+        </pane>
+        <pane>
+          <name>ContentPane</name>
+          <modules>
+            <module>
+              <title>Welcome To...</title>
+              <definition>HTML</definition>
+            </module>
+            <module>
+              <title>News and Features</title>
+              <definition>Announcements</definition>
+            </module>
+            <module>
+              <title>Upcoming Events</title>
+              <definition>Events</definition>
+            </module>
+          </modules>
+        </pane>
+        <pane>
+          <name>RightPane</name>
+          <modules>
+            <module>
+              <title>Image</title>
+              <definition>Image</definition>
+            </module>
+          </modules>
+        </pane>
+      </panes>
+    </tab>
+  </tabs>
+</portal>

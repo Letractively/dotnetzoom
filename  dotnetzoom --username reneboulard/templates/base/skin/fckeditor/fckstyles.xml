@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: fckstyles.xml
+ * 	This is the sample style definitions file. It makes the styles combo
+ * 	completely customizable.
+ * 	See FCKConfig.StylesXmlPath in the configuration file.
+ * 
+ * File Authors:
+ * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+-->
+<Styles>
+  <Style name="Image à Gauche" element="img">
+    <Attribute name="style" value="padding: 5px; margin-right: 5px" />
+    <Attribute name="border" value="2" />
+    <Attribute name="align" value="left" />
+  </Style>
+  <Style name="Image à Droite" element="img">
+    <Attribute name="style" value="padding: 5px; margin-left: 5px" />
+    <Attribute name="border" value="2" />
+    <Attribute name="align" value="right" />
+  </Style>
+  <Style name="Gras" element="span">
+    <Attribute name="style" value="font-weight: bold;" />
+  </Style>
+  <Style name="Italic" element="em" />
+  <Style name="headertitle" element="span">
+    <Attribute name="class" value="headertitle" />
+  </Style>
+  <Style name="ItemTitle" element="span">
+    <Attribute name="class" value="ItemTitle" />
+  </Style>
+  <Style name="SubHead" element="span">
+    <Attribute name="class" value="SubHead" />
+  </Style>
+  <Style name="Ligne" element="hr">
+    <Attribute name="size" value="1" />
+    <Attribute name="color" value="#ff0000" />
+  </Style>
+  <Style name="Head" element="span">
+    <Attribute name="class" value="Head" />
+  </Style>
+</Styles>

@@ -1,0 +1,16 @@
+<table border="0" cellpadding="0" CELLSPACING="0" WIDTH="100%" [COLOR]>
+	<tr>
+		<td align="left" valign="top"><img WIDTH=8 HEIGHT=8 alt="" border="0" SRC="[PATH]/upper-left.jpg"></td>
+		<td HEIGHT=8 WIDTH="100%" align="left" valign="top" background="[PATH]/upper.jpg"><img src="[PATH]/spacer.gif"></td>
+		<td align="left" valign="top"><img WIDTH=9 HEIGHT=8 alt="" border="0" SRC="[PATH]/upper-right.jpg"></td>
+	</tr>
+	<tr>
+		<td WIDTH=8 background="[PATH]/left.jpg"><img src="[PATH]/spacer.gif"></td>
+		<td [ALIGN] background="[PATH]/content.jpg">[MODULE]</td>
+		<td WIDTH=9 background="[PATH]/right.jpg"><img src="[PATH]/spacer.gif"></td></tr>
+	<tr>
+		<td><img WIDTH=8 HEIGHT=9 alt="" SRC="[PATH]/lower-left.jpg"></td>
+		<td HEIGHT=9 background="[PATH]/lower.jpg"><img src="[PATH]/spacer.gif"></td>
+		<td><img WIDTH=9 HEIGHT=9 alt="" SRC="[PATH]/lower-right.jpg"></td>
+	</tr>
+</table>

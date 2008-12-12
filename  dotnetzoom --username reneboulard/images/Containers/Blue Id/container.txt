@@ -1,0 +1,18 @@
+<table border="0" cellspacing="0" cellpadding="0" width="100%" ID="Table6">
+												<tr>
+													<td width="28"><FONT face="Verdana" size="2"><img border="0" src="[PATH]/images/top-left.gif" WIDTH="28" HEIGHT="29"></FONT></td>
+													<td background="[PATH]/images/top-tile.gif"></td>
+													<td width="16"><FONT face="Verdana" size="2"><img border="0" src="[PATH]/images/top-right.gif" WIDTH="28" HEIGHT="29"></FONT></td>
+												</tr>
+												<tr>
+													<td width="16" background="[PATH]/images/left-tile.gif"></td>
+													<td bgcolor="white"><FONT face="Verdana" size="2"> [MODULE]
+													</td>
+													<td width="16" background="[PATH]/images/right-tile.gif"></td>
+												</tr>
+												<tr>
+													<td width="16"><FONT face="Verdana" size="2"><img border="0" src="[PATH]/images/bottom-left.gif" WIDTH="28" HEIGHT="42"></FONT></td>
+													<td background="[PATH]/images/bottom-tile.gif"></td>
+													<td width="16"><FONT face="Verdana" size="2"><img border="0" src="[PATH]/images/bottom-right.gif" WIDTH="28" HEIGHT="42"></FONT></td>
+												</tr>
+											</table>

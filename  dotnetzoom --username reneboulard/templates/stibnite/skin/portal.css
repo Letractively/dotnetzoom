@@ -1,0 +1,448 @@
+body {
+font-family:arial, helv, sans-serif;
+font-size:12px;
+font-weight:400;
+background:#DCDCDC;
+color:#000;
+margin:0;
+padding:0;
+}
+
+td.line {
+width:3px;
+background:#C0C0C0;
+color:#000;
+}
+
+.LogoImage {
+}
+
+#banner {
+text-align:center;
+background:#C0C0C0;
+color:#000;
+}
+
+#logo {
+	
+}
+
+#footer {
+width:100%;
+text-align:center;
+}
+
+#breadcrumb {
+width:100%;
+text-align:left;
+}
+
+#signin {
+position:absolute;
+background:silver;
+color:#000;
+top:75px;
+width:250px;
+right:75px;
+border-bottom:Gray 1px solid;
+border-left:White 1px solid;
+border-top:White 1px solid;
+border-right:Gray 1px solid;
+}
+
+.admin {
+max-width:370px;
+top:0;
+background:silver;
+color:#000;
+border:thin dotted;
+padding:4px;
+position:absolute;
+}
+
+.a2 {
+background-image:url(button.png);
+background:silver;
+color:#000;
+border-bottom:Gray 1px solid;
+border-left:White 1px solid;
+border-top:White 1px solid;
+border-right:Gray 1px solid;
+}
+
+.ExplorerHeader {background:silver;
+background-image:url(button.png);
+color:#000;}
+
+.SelectedTab,.OtherTabs {
+font-weight:700;
+font-size:7.5pt;
+color:#000;
+}
+
+A:link,A:active {
+color:#006;
+text-decoration:none;
+font-weight:700;
+}
+
+A:visited {
+color:#000;
+text-decoration:none;
+font-weight:700;
+}
+
+A:hover {
+color:red;
+text-decoration:none;
+}
+
+.Head {
+font-weight:700;
+font-size:16px;
+color:#000;
+}
+
+.headertitle {
+	border-bottom: Gray 1px solid;
+	border-left: White 1px solid;
+	border-top: White 1px solid;
+	border-right: Gray 1px solid;
+	background: silver;
+	color: #000;
+	padding-left: 8px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	background-image: url(title.png);
+}
+
+.NormalTextBox,.Normal {
+font-size:12px;
+font-weight:400;
+}
+
+.NormalRed {
+color:red;
+}
+
+.NormalBold,.NormalRed,H5,DT,.SubHead {
+font-size:12px;
+font-weight:700;
+}
+
+.ItemTitle {
+font-size:14px;
+font-weight:700;
+color:#003;
+}
+
+H1 {
+font-size:24px;
+}
+
+H2 {
+font-size:20px;
+}
+
+H3 {
+font-size:16px;
+}
+
+BIG,H4 {
+font-size:14px;
+}
+
+H5,H6,DT,.SubHead {
+color:#696969;
+}
+
+H6 {
+font-size:10px;
+font-weight:700;
+}
+
+SMALL {
+font-size:8px;
+}
+
+HR {
+color:#696969;
+height:1pt;
+text-align:left;
+}
+
+.TabDefault {
+font-size:12px;
+font-weight:700;
+padding-left:20px;
+margin-left:10px;
+margin-right:10px;
+border-bottom:solid 1px #000;
+background:#e7e7e7;
+color:#000;
+}
+
+.TabSelected {
+font-size:12px;
+font-weight:700;
+border:1px solid #000;
+border-bottom:none;
+padding-left:20px;
+background:#fff;
+color:#000;
+}
+
+.TabSeparator {
+border-bottom:1px solid #000;
+width:5px;
+background:#fff;
+color:#000;
+}
+
+.TabPage {
+border:solid 1px #000;
+border-top:none;
+}
+
+.PMSOtherCellTop {
+border-bottom:1px #D2D2D2 solid;
+padding:6px;
+background:#CCC;
+color:#000;
+}
+
+.PMSOtherCellBottom {
+border-top:1px #D2D2D2 solid;
+padding:6px;
+background:#CCC;
+color:#000;
+}
+
+.PMSHeaderCell {
+font-size:11px;
+color:#000;
+font-weight:700;
+padding:5px;
+background:#ffc;
+}
+
+.PMSCell {
+font-size:11px;
+color:#000;
+padding:5px;
+}
+
+.PMSCellAlternate {
+font-size:11px;
+color:#000;
+padding:5px;
+background:#ddd;
+}
+
+
+div.nav ul,div.nav li {
+display:block;
+margin:0;
+padding:0;
+border:0;
+}
+
+div.nav ul {
+width:20px;
+background:transparent;
+list-style:none;
+}
+
+div.nav li {
+position:relative;
+padding:1px;
+padding-left:8px;
+}
+
+div.nav li.folder ul {
+position:absolute;
+left:5px;
+top:5px;
+}
+
+div.nav li.folder>ul {
+left:20px;
+}
+
+div.nav ul ul,div.nav li:hover ul ul {
+display:none;
+}
+
+div.nav li:hover ul,div.nav li:hover li:hover ul {
+display:block;
+}
+
+div.nav li.items a {
+text-decoration:none;
+color:#000;
+font-weight:700;
+}
+
+div.nav li.items a:hover {
+color:red;
+}
+
+div.nav li.items {
+width:120px;
+height:20px;
+background:silver;
+background-image:url(button1.png);
+padding:2px;
+border-bottom:Gray 1px solid;
+border-left:White 1px solid;
+border-top:White 1px solid;
+border-right:Gray 1px solid;
+text-decoration:none;
+color:#000;
+font-weight:700;
+vertical-align:middle;
+}
+
+div.nav li.items:hover {
+border-bottom:#696969 1px solid;
+border-left:#DCDCDC 1px solid;
+border-top:#F5F5F5 1px solid;
+border-right:gray 1px solid;
+background:gray;
+background-image:url(button.png);
+color:red;
+}
+
+td.menu {
+text-align:left;
+font-family:arial, helv, sans-serif;
+font-size:13px;
+font-weight:700;
+}
+
+td.menu ul,td.menu li {
+display:block;
+z-index: 2;
+margin:0;
+padding:0;
+border:0;
+}
+
+td.menu ul {
+list-style:none;
+}
+
+td.menu li {
+position:relative;
+display:block;
+height:20px;
+background:silver;
+background-image:url(button1.png);
+padding:0;
+border-bottom:1px solid gray;
+border-left:1px solid #FFF;
+border-top:1px solid #FFF;
+border-right:1px solid gray;
+text-decoration:none;
+color:#000;
+font-weight:700;
+}
+
+td.menu li ul {
+position:absolute;
+left:0;
+top:20px;
+}
+
+td.menu li ul ul {
+position:absolute;
+left:185px;
+top:0;
+}
+
+td.menu ul ul,td.menu li:hover ul ul {
+display:none;
+}
+
+td.menu li:hover ul,td.menu li:hover li:hover ul {
+display:block;
+}
+
+td.menu a {
+padding:5px;
+text-decoration:none;
+color:#000;
+}
+
+td.menu a:hover {
+color:red;
+}
+
+td.menu li li {
+width:210px;
+}
+
+td.menu li li.menu-2-1 {
+width:130px;
+}
+
+td.menu li li.menu-3-1 {
+width:140px;
+}
+
+td.menu li li.menu-5-1 {
+width:150px;
+}
+
+td.menu li li.menu-6-1 {
+width:110px;
+}
+
+td.menu li:hover 
+{
+border-right:1px solid gray;
+background:gray;
+background-image:url(button.png);
+color:red;
+}
+
+td.menu a.top_parent,td.menu a.top_parent:hover {
+background-image:url(/images/navdown_blue.gif);
+background-position:right;
+background-repeat:no-repeat;
+padding:3px 15px 3px 3px;
+}
+
+td.menu a.parent,td.menu a.parent:hover /* attaches side-arrow to all parents */ {
+padding:3px 15px 3px 3px;
+display:block;
+background-image:url(/images/nav_blue.gif);
+background-position:right;
+background-repeat:no-repeat;
+}
+.button, .CommandButton, .userlink, .link{
+background:#c1d0e8;
+background-image:url(button1.png);
+font-family:Tahoma, Arial, Helvetica;
+font-size:9pt;
+padding:4px 7px 4px 7px;
+font-weight:700;
+font-style:normal;
+border-bottom:1px solid gray;
+border-left:1px solid #FFF;
+border-top:1px solid #FFF;
+border-right:1px solid gray;
+text-decoration:none;
+color:#000;
+}
+.button:hover, .CommandButton:hover, span.CommandButton a:hover, .userlink:hover , .link:hover{
+background:#c1d0e8;
+color:red;
+background-image:url(button.png);
+}
+
+.userlink, .link {
+padding:4px 3px 4px 3px;
+}
+
+.link {width :200px}
