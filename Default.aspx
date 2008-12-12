@@ -1,1 +1,0 @@
-<%@ Page language="vb" CodeBehind="default.aspx.vb" AutoEventWireup="false" Explicit="True" Inherits="DotNetZoom.index" %>
