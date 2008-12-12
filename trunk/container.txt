@@ -1,0 +1,1 @@
+<table cellpadding="2" cellspacing="0" width="100%" [COLOR][BORDER]><tr><td[ALIGN]>[MODULE]</td></tr></table>
