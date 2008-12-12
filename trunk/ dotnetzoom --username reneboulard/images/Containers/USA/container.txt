@@ -1,0 +1,14 @@
+<table border="0" cellpadding="0" CELLSPACING="0" WIDTH="100%" [COLOR]>
+	<tr>
+		<td align="left" valign="top"><img WIDTH=84 HEIGHT=59 alt="" border="0" SRC="[PATH]/images/upper-left.gif"></td>
+		<td HEIGHT=59 WIDTH="100%" align="left" valign="top" background="[PATH]/images/upper.gif"><img src="[PATH]/images/spacer.gif"></td>
+		<td align="left" valign="top"><img WIDTH=49 HEIGHT=59 alt="" border="0" SRC="[PATH]/images/upper-right.gif"></td>
+	</tr>
+</table>
+<table border="0" cellpadding="0" CELLSPACING="0" WIDTH="100%" [COLOR]>
+	<tr>
+		<td WIDTH="11"><img src="[PATH]/images/spacer.gif"></td>
+		<td [ALIGN]>[MODULE]</td>
+		<td WIDTH="11"><img src="[PATH]/images/spacer.gif"></td>
+	</tr>
+</table>

@@ -1,0 +1,17 @@
+<table border="0" cellspacing="0" cellpadding="0" width="100%" ID="Table1">
+	<tr>
+		<td width="32"><img border="0" WIDTH="32" HEIGHT="28" src="[PATH]/images/top-left.gif"></td>
+		<td background="[PATH]/images/top.gif"><img src="[PATH]/images/spacer.gif"></td>
+		<td width="35"><img border="0" WIDTH="35" HEIGHT="28" src="[PATH]/images/top-right.gif"></td>
+	</tr>
+	<tr>
+		<td width="32" background="[PATH]/images/left.gif"><img src="[PATH]/images/spacer.gif"></td>
+		<td[ALIGN][COLOR]>[MODULE]</td>
+		<td width="35" background="[PATH]/images/right.gif"><img src="[PATH]/images/spacer.gif"></td>
+	</tr>
+	<tr>
+		<td width="32"><img border="0" WIDTH="32" HEIGHT="29" src="[PATH]/images/bottom-left.gif"></td>
+		<td background="[PATH]/images/bottom.gif" height=29><img src="[PATH]/images/spacer.gif"></td>
+		<td width="35"><img border="0"  WIDTH="35" HEIGHT="29" src="[PATH]/images/bottom-right.gif"></td>
+	</tr>
+</table>

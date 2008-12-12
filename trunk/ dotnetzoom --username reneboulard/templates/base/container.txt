@@ -1,0 +1,34 @@
+1. Login to the Portal as the Administrator
+2. Select Admin / File Manager
+3. Select Upload New File(s)
+4. Browse to the container.zip file
+5. Select Add
+6. Make sure the Decompress ZIP files option is checked
+7. Select Upload
+8. Got to the Home tab
+9. select the Edit Module icon ( to the left of the module title for any module )
+10. Scroll down to Module Container and select Edit Container
+11. Copy and paste the following HTML code into the textbox
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%" Summary="Module Design Table">
+  <tr>
+    <td width="23"><img border="0" src="top-left.gif" WIDTH="23" HEIGHT="31" Alt="Module Border"></td>
+    <td background="top-tile.gif"></td>
+    <td width="23"><img border="0" src="top-right.gif" WIDTH="23" HEIGHT="31"Alt="Module Border"></td>
+  </tr>
+  <tr>
+    <td width="23" background="left-tile.gif"></td>
+    <td[ALIGN]>
+       [MODULE]
+    </td>
+    <td width="23" background="right-tile.gif"></td>
+  </tr>
+  <tr>
+    <td width="23"><img border="0" src="bottom-left.gif" WIDTH="23" HEIGHT="31"Alt="Module Border"></td>
+    <td background="bottom-tile.gif"></td>
+    <td width="23"><img border="0" src="bottom-right.gif" WIDTH="23" HEIGHT="31"Alt="Module Border"></td>
+  </tr>
+</table>
+
+12. Use Set Global to apply the container to all modules
+13. Select Update

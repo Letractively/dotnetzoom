@@ -1,0 +1,30 @@
+<!-- Container by www.bydesignwebsights.com -->
+<table WIDTH=100% border=0 cellpadding=0 CELLSPACING=0>
+	<tr>
+		<td width="1%"><img WIDTH=30 HEIGHT=30 alt="" SRC="[PATH]/images/bluesteel_01.gif"></td>
+		<td width="32%"><img HEIGHT=30 width=100% alt="" src="[PATH]/images/bluesteel_02.gif"></td>
+		<td width="32%"><img HEIGHT=30  width=100% alt="" src="[PATH]/images/bluesteel_03.gif"></td>
+		<td width="32%"><img HEIGHT=30  width=100% alt="" src="[PATH]/images/bluesteel_04.gif"></td>
+		<td width="1%"><img WIDTH=30 HEIGHT=30 alt="" SRC="[PATH]/images/bluesteel_05.gif"></td>
+	</tr>
+	<tr>
+		<td height=32%><img WIDTH=30 height="100%" border="0" SRC="[PATH]/images/bluesteel_06.gif"></td>
+		<td colspan=3 rowspan=3 valign=top [COLOR] [ALIGN]>[MODULE]</td>
+		<td height=32%><img WIDTH=30 height=100% alt="" SRC="[PATH]/images/bluesteel_08.gif"></td>
+	</tr>
+	<tr>
+		<td height=32%><img WIDTH=30 height=100% border="0" SRC="[PATH]/images/bluesteel_09.gif"></td>
+		<td height=32%><img WIDTH=30 height=100% alt="" SRC="[PATH]/images/bluesteel_10.gif"></td>
+	</tr>
+	<tr>
+		<td height=32%><img WIDTH=30 height=100% alt="" SRC="[PATH]/images/bluesteel_11.gif"></td>
+		<td height=32%><img WIDTH=30 height=100% alt="" SRC="[PATH]/images/bluesteel_12.gif" ></td>
+	</tr>
+	<tr>
+		<td width=1%><img WIDTH=30 HEIGHT=30 alt="" SRC="[PATH]/images/bluesteel_13.gif"></td>
+		<td width=32%><img WIDTH=100% HEIGHT=30 alt="" SRC="[PATH]/images/bluesteel_14.gif"></td>
+		<td width=32%><img WIDTH=100% HEIGHT=30 alt="" SRC="[PATH]/images/bluesteel_15.gif"></td>
+		<td width=32%><img WIDTH=100% HEIGHT=30 alt="" SRC="[PATH]/images/bluesteel_16.gif"></td>
+		<td width=1%><img WIDTH=30 HEIGHT=30 alt="" SRC="[PATH]/images/bluesteel_17.gif"></td>
+	</tr>
+</table>

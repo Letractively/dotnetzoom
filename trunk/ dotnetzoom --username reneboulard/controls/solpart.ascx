@@ -1,0 +1,4 @@
+<%@ Register TagPrefix="cc1" Namespace="SolpartWebControls" Assembly="SolpartWebControls" %>
+<%@ Control CodeBehind="solpart.ascx.vb" language="vb" EnableViewState="false" AutoEventWireup="false" Explicit="True" Inherits="DotNetZoom.solpartmenu" %>
+<%@ Import Namespace="DotNetZoom"%>
+<cc1:solpartmenu id="ctlMenu" MenuEffects-MouseOutHideDelay="500" runat="server"  MouseOutHideDelay="1"  ForceDownlevel="False" Moveable="False" IconWidth="0" MenuEffects-MouseOverExpand="True" MenuEffects-MouseOverDisplay="Highlight" MenuEffects-MenuTransitionStyle=" " SystemImagesPath="/" SeparateCSS="True" MenuCSSPlaceHolderControl="SPMenuStyle" MenuCSS-SubMenu="DNZ_SubMenu" MenuCSS-RootMenuArrow="DNZ_RootMenuArrow" MenuCSS-MenuItemSel="DNZ_MenuItemSel" MenuCSS-MenuItem="DNZ_MenuItem" MenuCSS-MenuIcon="DNZ_MenuIcon" MenuCSS-MenuContainer="DNZ_MenuContainer" MenuCSS-MenuBreak="DNZ_MenuBreak" MenuCSS-MenuBar="DNZ_MenuBar" MenuCSS-MenuArrow="DNZ_MenuArrow"></cc1:solpartmenu>

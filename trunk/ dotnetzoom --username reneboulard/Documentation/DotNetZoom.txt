@@ -1,0 +1,48 @@
+dotnetzoom version 1.0.0
+
+
+- Optimisation des codes sources pour une installation sur un serveur web maison, avec un ligne DSL
+- Réduction de la bande passante en utilisant HTTP Compression (80% réduction) (paramètre dans le fichier Web.Config)
+- Réduction de la bande passante en enlevant les espaces blanc (15% réduction) (menu Paramètres d'hébergement )
+- Réduction de la bande passante en sauvegardant le ViewState en mémoire ou sur la base de donnée SQL (5% réduction) (menu Paramètres d'hébergement )
+- Utilisation Tigra Menu, Menu CSS ou Solpart Menu
+- Utilisation ToolTip
+- Utilisation d’un éditeur HTML en ligne compatible avec FireFox et Internet Exploreur
+- Interface multilangue
+
+
+
+
+
+
+FICHIER WEB.CONFIG
+
+
+1.  Si vous utiliser la version 1.1 de .net modifier la ligne suivante dans le web.config
+
+    <pages enableViewStateMac="true" validateRequest="false" />
+
+                          Ou pour la version 1.0 de .net
+
+    <pages enableViewStateMac="true" />
+    
+    DotNetZoom est compatible avec la version 2.0 de .net ainsi que SQL-2005
+
+2. Les codes ont été modifié pour gérer les dates en mode ANSI YYYY-MM-DD ainsi que pour le standard pour SQL.
+
+
+3. Si vous éprouvez des difficultés a établir une connection avec votre serveur SQL vous pouvez utiliser soit ce paramètre.
+
+
+ <add key="connectionString" value="Server=(local);Database=dotnetzoom;uid=XYZ;pwd=ABC;" />
+
+                              Ou
+
+ <add key="connectionString" value="Server=(local);Trusted_Connection=true;Database=dotnetzoom;" />
+
+			      Ou
+
+<add key="connectionString" value="SERVER=dell\sqlexpress;Database=dotnetzoom;User ID=sa;Password=ABC;Trusted_Connection=False;" />
+
+Modifier les paramètres Server, Database, uid et pwd pour répondre a votre configuration.
+

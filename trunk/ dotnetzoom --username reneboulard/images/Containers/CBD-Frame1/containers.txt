@@ -1,0 +1,23 @@
+<!-- Container Created by www.bydesignwebsights.com with permission from www.creationsbydawn.net -->
+<table WIDTH=100% border=0 cellpadding=0 CELLSPACING=0>
+	<tr>
+		<td><img SRC="[PATH]/images/TopLeft.gif" WIDTH=65 HEIGHT=66 alt=""></td>
+		<td colspan=2 background="[PATH]/images/Top.gif"><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=66 alt=""></td>
+		<td><img SRC="[PATH]/images/TopRight.gif" WIDTH=65 HEIGHT=66 alt=""></td>
+	</tr>
+	<tr>
+		<td background="[PATH]/images/Left.gif" width="65"><img SRC="[PATH]/images/spacer.gif" WIDTH=65 HEIGHT=1 alt=""></td>
+		<td colspan=2 rowspan="2" valign=top style="background-attachment: fixed; background-image: url([PATH]/images/BottomRightCorner.gif);background-repeat: no-repeat; background-position: right bottom;" [COLOR] [ALIGN]>[MODULE]</td>
+		<td background="[PATH]/images/Right.gif" width="65"><img SRC="[PATH]/images/spacer.gif" WIDTH=65 HEIGHT=1 alt=""></td>
+	</tr>
+	<tr>
+		<td background="[PATH]/images/Left.gif" width="65"><img SRC="[PATH]/images/spacer.gif" WIDTH=65 HEIGHT=1 alt=""></td>
+		<td background="[PATH]/images/Right.gif" valign=bottom><img SRC="[PATH]/images/RightBottomFixed.gif" WIDTH=65 HEIGHT=99 alt=""></td>
+	</tr>
+	<tr>
+		<td valign=top><img SRC="[PATH]/images/Bottomleft.gif" WIDTH=65 HEIGHT=67 alt=""></td>
+		<td background="[PATH]/images/Bottom.gif"><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=67 alt=""></td>
+		<td background="[PATH]/images/Bottom.gif" align=right valign=top ><img src="[PATH]/images/BottomRightFixed.gif" width=31 height=67 alt=""></td>
+		<td><img src="[PATH]/images/BottomRight.gif" width=65 height=67 alt=""> </td>
+	</tr>
+</table>

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="shortcut icon" href="{favicon}" >
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="DESCRIPTION" content="{description}">
+<meta name="KEYWORDS" content="{keyword}">
+<meta name="COPYRIGHT" content="{copyright}">
+<meta name="GENERATOR" content="{generator}">
+<meta name="RESOURCE-TYPE" content="DOCUMENT">
+<meta name="DISTRIBUTION" content="GLOBAL">
+<meta name="AUTHOR" content="Rene Boulard">
+<meta name="ROBOTS" content="INDEX, FOLLOW">
+<meta name="REVISIT-AFTER" content="30 DAYS">
+<meta name="RATING" content="GENERAL">
+</head>
+<body>
+<script language="JavaScript" type="text/javascript">
+<!-- Begin
+if (window != top) top.location.href = location.href;
+// End -->
+</script>
+<form>
+<div align="center">
+<table style="height: 100%" width="800" cellpadding="0" cellspacing="0" border="1">
+<tr>
+<td>
+{banner}
+<div style="background: silver;">
+{tabmenu}                                    
+</div>
+<div id="MainTable">
+<table width="100%" border="0">
+<tr valign="top">
+<td class="LeftPane">{leftspacer}{leftpane}</td>
+{leftline}<td class="ContentPane" width="100%">{contentpane}</td>{rightline}
+<td class="RightPane">{rightspacer}{rightpane}
+</td>
+</tr>
+</table>
+</div>
+<tr valign="bottom">
+<td>
+{footer}
+{altmenu}
+</td>
+</tr>
+</table>
+</div>
+</form>
+</body>
+</html>

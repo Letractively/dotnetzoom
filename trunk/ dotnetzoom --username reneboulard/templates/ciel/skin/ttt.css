@@ -1,0 +1,134 @@
+.TTTBorder {
+border-collapse:separate;
+border:1px solid #9CF;
+}
+
+.TTTHeader {
+font-weight:700;
+font-size:8pt;
+color:#06f;
+background-image:url(Header_BG.jpg);
+}
+
+.TTTHeaderText {
+font-weight:700;
+font-size:8pt;
+color:#03C;
+}
+
+.TTTAltHeader {
+font-weight:700;
+font-size:8pt;
+color:#45a;
+background-image:url(AltHeader_BG.jpg);
+}
+
+.TTTAltHeaderText,.TTTSubHeader {
+font-weight:700;
+font-size:8pt;
+color:#45a;
+}
+
+.TTTTitle {
+font-weight:700;
+font-size:8pt;
+color:#D4D9EC;
+text-decoration:none;
+}
+
+.TTTRow,.TTTRowHighLight {
+color:#45a;
+font-size:11px;
+font-weight:400;
+}
+
+.TTTFooter {
+color:#FFF;
+font-size:8pt;
+font-weight:700;
+background-image:url(/images/ttt/TTT_AltFooter_BG.gif);
+}
+
+A.TTTTitle:link {
+text-decoration:none;
+color:#45a;
+}
+
+A.TTTTitle:visited {
+text-decoration:none;
+color:#D4D9EC;
+}
+
+A.TTTTitle:active {
+text-decoration:none;
+color:#45a;
+}
+
+A.TTTTitle:hover {
+text-decoration:none;
+color:#D4D9EC;
+}
+
+.TTTCommand {
+font-weight:400;
+font-size:11px;
+color:#FFF;
+}
+
+A.TTTCommand:link {
+color:#FFF;
+text-decoration:underline;
+}
+
+A.TTTCommand:visited {
+color:#FFF;
+text-decoration:underline;
+}
+
+A.TTTCommand:active {
+text-decoration:underline;
+color:#FFF;
+}
+
+A.TTTCommand:hover {
+color:#f93;
+text-decoration:underline;
+}
+
+TD.TTTRow {
+background-color:#eef3fb;
+}
+
+TD.TTTHeader {
+background-image:url(Header_BG.jpg);
+height:28px;
+}
+
+TD.TTTAltHeader {
+height:28px;
+background-image:url(AltHeader_BG.jpg);
+}
+
+TD.TTTRowHighlight,TD.TTTSubHeader {
+background-color:#D4D9EC;
+}
+
+TD.TTTFooter {
+height:28px;
+background-image:url(footer_bg.jpg);
+}
+
+.TTTNormal {
+font-size:11px;
+font-weight:400;
+}
+
+.TTTNormalTextBox {
+font-size:12px;
+font-weight:400;
+}
+
+.TTTNormalBold {
+font-size:11px;
+font-weight:700;
+}

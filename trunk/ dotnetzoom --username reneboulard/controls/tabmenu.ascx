@@ -1,0 +1,2 @@
+<%@ Control CodeBehind="tabmenu.ascx.vb" language="vb" EnableViewState="false" AutoEventWireup="false" Explicit="True" Inherits="DotNetZoom.tabmenu" %>
+<asp:literal id="tabMenuString" visible="true" runat="server" Enableviewstate="false"></asp:literal>

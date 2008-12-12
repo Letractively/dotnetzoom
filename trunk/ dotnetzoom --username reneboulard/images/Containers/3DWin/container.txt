@@ -1,0 +1,36 @@
+
+					<table id="Table5" cellSpacing="0" cellPadding="0" width="100%" border="0">
+						<tr>
+							<td colspan="3" width="100%">
+								<table width="100%" cellSpacing="0" cellPadding="0" width="100%" border="0" ID="Table8">
+									<tr>
+										<td width="27"><img height="26" src="[PATH]/top-left.gif" width="27" border="0"></td>
+										<td background="[PATH]/top-tile.gif" width="100%"></td>
+										<td width="15"><img height="26" src="[PATH]/top-right.gif" width="15" border="0"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" width="100%">
+								<table width="100%" cellSpacing="0" cellPadding="0" width="100%" border="0" ID="Table9">
+									<tr>
+										<td width="9" background="[PATH]/left-tile.gif"></td>
+										<td bgColor="white" [ALIGN]>[MODULE]</td>
+										<td width="9" background="[PATH]/right-tile.gif"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" width="100%">
+								<table width="100%" cellSpacing="0" cellPadding="0" width="100%" border="0" ID="Table10">
+									<tr>
+										<td width="9"><img height="10" src="[PATH]/bottom-left.gif" width="9" border="0"></td>
+										<td background="[PATH]/bottom-tile.gif" width="100%"></td>
+										<td width="9"><img height="10" src="[PATH]/bottom-right.gif" width="9" border="0"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>

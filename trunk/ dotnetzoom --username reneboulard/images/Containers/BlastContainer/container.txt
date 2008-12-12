@@ -1,0 +1,18 @@
+<!-- Container from http://bydesignwebsights.com -->
+<table width=100% border="0" cellpadding=0 cellspacing=0>
+  <tr>
+	<td width="35" height="35"><img src="[PATH]/images/Top_left.gif" width="35" height="35"></td>
+	<td height="35" background="[PATH]/images/Top_Center.gif" align=left><img src="[PATH]/images/Top_Fixed.gif"></td>
+	<td height="35" width="18"><img src="[PATH]/images/Right_Top.gif" height="35"></td>
+  </tr>
+  <tr>
+	<td valign="top" width="35" background="[PATH]/images/Left_Center.gif" ><img src="[PATH]/images/Left_Fixed.gif" width="35" height="153"></td>
+	<td valign=top [ALIGN]>[MODULE]</td>
+	<td width="18" background="[PATH]/images/Right_Center.gif"><img width="18" src="[PATH]/images/spacer.gif"></td>
+  </tr>
+  <tr>
+    	<td height=18 width=35><img width="35" height="18" src="[PATH]/images/Bottom_Left.gif"></td>
+    	<td height="18" background="[PATH]/images/Bottom.gif"><img width="18" height="18" src="[PATH]/images/spacer.gif"></td>
+    	<td height=18 width=18><img width="18" height="18" src="[PATH]/images/Bottom_Right.gif"></td>
+  </tr>
+</table>

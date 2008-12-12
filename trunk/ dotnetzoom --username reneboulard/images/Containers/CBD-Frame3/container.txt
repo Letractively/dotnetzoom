@@ -1,0 +1,31 @@
+<!-- Container Created by www.bydesignwebsights.com with permission from www.creationsbydawn.net -->
+<table WIDTH=100% border=0 cellpadding=0 CELLSPACING=0>
+	<tr>
+		<td><img SRC="[PATH]/images/TopLeft.gif" WIDTH=60 HEIGHT=58 alt=""></td>
+		<td background="[PATH]/images/Top.gif" align=left ><img SRC="[PATH]/images/TopRightFixed.gif" WIDTH=14 HEIGHT=58 alt=""></td>
+		<td colspan=2 background="[PATH]/images/Top.gif"><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=58 alt=""></td>
+		<td><img SRC="[PATH]/images/TopRight.gif" WIDTH=60 HEIGHT=58 alt=""></td>
+		<td><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=58 alt=""></td>
+	</tr>
+	<tr>
+		<td background="[PATH]/images/Left.gif" valign=top><img SRC="[PATH]/images/LeftTopFixed.gif" WIDTH=60 HEIGHT=14 alt=""></td>
+		<td colspan=3 rowspan=3 valign=top>[MODULE]</td>
+		<td rowspan=2 background="[PATH]/images/Right.gif" width="60"><img SRC="[PATH]/images/spacer.gif" WIDTH=60 HEIGHT=1 alt=""></td>
+		<td><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=14 alt=""></td>
+	</tr>
+	<tr>
+		<td rowspan=2 background="[PATH]/images/Left.gif" width="60"><img SRC="[PATH]/images/spacer.gif" WIDTH=60 HEIGHT=1 alt=""></td>
+		<td><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=1 alt=""></td>
+	</tr>
+	<tr>
+		<td background="[PATH]/images/Left.gif" valign=bottom><img SRC="[PATH]/images/RightBottomFixed.gif" WIDTH=60 HEIGHT=72 alt=""></td>
+		<td><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=1 alt=""></td>
+	</tr>
+	<tr>
+		<td><img SRC="[PATH]/images/BottomLeft.gif" WIDTH=60 HEIGHT=61 alt=""></td>
+		<td colspan=2 background="[PATH]/images/bottom.gif"><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=61 alt=""></td>
+		<td align=right background="[PATH]/images/bottom.gif"><img SRC="[PATH]/images/BottomRightFixed.gif" WIDTH=64 HEIGHT=61 alt=""></td>
+		<td><img SRC="[PATH]/images/BottomRight.gif" WIDTH=60 HEIGHT=61 alt=""></td>
+		<td><img SRC="[PATH]/images/spacer.gif" WIDTH=1 HEIGHT=61 alt=""></td>
+	</tr>
+</table>

@@ -1,0 +1,20 @@
+<table border="0" cellspacing="0" cellpadding="0" width="100%" ID="Table1">
+	<tr>
+		<td width="20"><img border="0" src="[PATH]/top_left.gif" WIDTH="20" HEIGHT="11"></td>
+		<td height="11" background="[PATH]/top.gif"><img src="[PATH]/spacer.gif"></td>
+		<td width="20"><img border="0" src="[PATH]/top_right.gif" WIDTH="20" HEIGHT="11"></td>
+	</tr>
+	<tr>
+		<td width="20" background="[PATH]/left.gif"><img src="[PATH]/spacer.gif"></td>
+		<td align=center>
+			<table cellpadding=0 cellspacing=0 [BORDER] [COLOR] width=100%>
+			<tr><td>[MODULE]</td></tr></table>
+		</td>
+		<td width="20" background="[PATH]/right.gif"><img src="[PATH]/spacer.gif"></td>
+	</tr>
+	<tr>
+		<td width="20"><img border="0" src="[PATH]/bottom_left.gif" WIDTH="20" HEIGHT="11"></td>
+		<td background="[PATH]/bottom.gif"><img src="[PATH]/spacer.gif"></td>
+		<td width="20"><img border="0" src="[PATH]/bottom_right.gif" WIDTH="20" HEIGHT="11"></td>
+	</tr>
+</table>

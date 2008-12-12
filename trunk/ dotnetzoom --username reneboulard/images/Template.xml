@@ -1,0 +1,10 @@
+<module>
+  <folder></folder>
+  <friendlyname>Template</friendlyname>
+  <desktopsrc>DesktopModules/Directory/Module.ascx</desktopsrc>
+  <helpsrc></helpsrc>
+  <editsrc>DesktopModules/Directory/EditModule.ascx</editsrc>
+  <description>** The Template Module Is Used For Installing Legacy Modules **</description>
+  <editmoduleicon></editmoduleicon>  
+  <uninstall></uninstall>  
+</module>
