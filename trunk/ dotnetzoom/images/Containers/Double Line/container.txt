@@ -1,5 +1,0 @@
-<table border="0" cellpadding="0" CELLSPACING="0" WIDTH="100%" [COLOR]>
-<tr><td align="left" valign="top"><img src="[PATH]/upper-left.gif" WIDTH=13 HEIGHT=13 alt="" border="0"></td><td background="[PATH]/upper.gif" HEIGHT=13 WIDTH="100%" align="left" valign="top"></td><td align="left" valign="top"><img src="[PATH]/upper-right.gif" WIDTH=18 HEIGHT=13 alt="" border="0"></td></tr>
-<tr><td background="[PATH]/left.gif" WIDTH=13></td><td [ALIGN]>[MODULE]</td><td background="[PATH]/right.gif" WIDTH=18></td></tr>
-<tr><td><img src="[PATH]/lower-left.gif" WIDTH=13 HEIGHT=15 alt=""></td><td background="[PATH]/lower.gif" HEIGHT=15></td><td><img src="[PATH]/lower-right.gif" WIDTH=18 HEIGHT=15 alt=""></td></tr>
-</table>
