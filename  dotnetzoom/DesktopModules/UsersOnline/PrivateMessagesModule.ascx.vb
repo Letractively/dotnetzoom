@@ -54,7 +54,8 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-		
+            rfvReceipient.ErrorMessage = GetLanguage("UO_No_User")
+            rfvSubject.ErrorMessage = GetLanguage("UO_Need_Object")
 		btnFindUser.Text = GetLanguage("UO_FindUser")
 		btnSelect.Text = GetLanguage("UO_Select")
 		btnSend.Text = GetLanguage("UO_Send")
@@ -539,7 +540,7 @@ Namespace DotNetZoom
 	
             If Len(txtSubject.Text) = 0 _
             OrElse Len(Me.FCKeditor1.value) = 0 Then
-                lblErrMsg.Text = GetLanguage("UO_Need_Object")
+                lblErrMsg.Text = GetLanguage("UO_Need_Object") + "<br>"
                 lblErrMsg.Visible = True
 				SetFckEditor()
                 Return
@@ -548,7 +549,7 @@ Namespace DotNetZoom
 
             
             If UserId = -1 Then
-                lblErrMsg.Text = GetLanguage("UO_No_User")
+                lblErrMsg.Text = GetLanguage("UO_No_User") + "<br>"
                 lblErrMsg.Visible = True
 				SetFckEditor()
                 Return

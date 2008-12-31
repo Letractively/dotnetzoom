@@ -45,6 +45,7 @@ Namespace DotNetZoom
         Protected WithEvents chkDemoSignup As System.Web.UI.WebControls.CheckBox
         Protected WithEvents chkPageTitleVersion As System.Web.UI.WebControls.CheckBox
         Protected WithEvents chkEnableErrorReport As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents chkEnableSSL As System.Web.UI.WebControls.CheckBox
         Protected WithEvents txtEncryptionKey As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtProxyServer As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtProxyPort As System.Web.UI.WebControls.TextBox
@@ -210,6 +211,18 @@ Namespace DotNetZoom
                 chkEnableErrorReport.Checked = False
             End If
 
+
+            If PortalSettings.GetHostSettings.ContainsKey("chkEnableSSL") Then
+                If PortalSettings.GetHostSettings("chkEnableSSL").ToString = "Y" Then
+                    chkEnableSSL.Checked = True
+                Else
+                    chkEnableSSL.Checked = False
+                End If
+            Else
+                chkEnableSSL.Checked = False
+            End If
+
+
             txtEncryptionKey.Text = portalSettings.GetHostSettings("EncryptionKey").ToString
             txtProxyServer.Text = portalSettings.GetHostSettings("ProxyServer").ToString
             txtProxyPort.Text = portalSettings.GetHostSettings("ProxyPort").ToString
@@ -258,6 +271,7 @@ Namespace DotNetZoom
             objAdmin.UpdateHostSetting("DemoSignup", IIf(chkDemoSignup.Checked, "Y", "N"))
             objAdmin.UpdateHostSetting("DisablePageTitleVersion", IIf(chkPageTitleVersion.Checked, "Y", "N"))
             objAdmin.UpdateHostSetting("EnableErrorReporting", IIf(chkEnableErrorReport.Checked, "Y", "N"))
+            objAdmin.UpdateHostSetting("chkEnableSSL", IIf(chkEnableSSL.Checked, "Y", "N"))
             objAdmin.UpdateHostSetting("ProxyServer", txtProxyServer.Text)
             objAdmin.UpdateHostSetting("ProxyPort", txtProxyPort.Text)
             objAdmin.UpdateHostSetting("SMTPServer", txtSMTPServer.Text)

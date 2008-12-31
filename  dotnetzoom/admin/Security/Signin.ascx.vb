@@ -245,8 +245,9 @@ Namespace DotNetZoom
 					If (txtUsername.Text.tolower() = txtPassword.Text.tolower()) and (TxtUserName.Text.ToLower() = "admin" or TxtUserName.Text.ToLower() = "webmestre" ) then
 					' http://my-dnz.com/fr.accueil.aspx?edit=control&tabid=1&def=Register
 					Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Register", True)
-					else
-                    Response.Redirect(Request.RawUrl, True)
+                                Else
+
+                                    Response.Redirect(Replace(Request.Url.ToString(), "showlogin=", "login="), True)
 					end if
 				 else
 				lblMessage.Text = ProcessLanguage(admin.getsinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), page)

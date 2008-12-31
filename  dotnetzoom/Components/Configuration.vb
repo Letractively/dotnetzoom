@@ -54,6 +54,7 @@ Namespace DotNetZoom
         Public ParentId As Integer
         Public Level As Integer
         Public IconFile As String
+        Public ssl As Boolean
         Public HasChildren As Boolean
 
     End Class
@@ -75,7 +76,8 @@ Namespace DotNetZoom
         Public TabOrder As Integer
         Public FriendlyTabName As String
 		Public Css As String
-		Public Skin As String
+        Public Skin As String
+        Public ssl As Boolean
         Public AuthorizedRoles As String
         Public AdministratorRoles As String
         Public ShowFriendly As Boolean
@@ -172,6 +174,7 @@ Namespace DotNetZoom
         Public BreadCrumbs As New ArrayList()
         Public ActiveTab As New TabSettings()
         Public Language As String
+        Public SSL As Boolean
 		
         '*********************************************************************
         '
@@ -210,17 +213,24 @@ Namespace DotNetZoom
 			Dim objAdmin As New AdminDB()
             If result.Read() Then
                 ' portal settings
+
+                If GetHostSettings("chkEnableSSL").ToString = "Y" Then
+                    Me.SSL = Boolean.Parse(result("ssl").ToString)
+                Else
+                    Me.SSL = False
+                End If
+
                 Me.PortalId = Int32.Parse(result("PortalID").ToString)
                 Me.GUID = result("GUID").ToString
                 Me.PortalAlias = result("PortalAlias").ToString
-				If InStr(1, Me.PortalAlias, "/") <> 0 then
-				Me.PortalChild = True
-				Else
-				Me.PortalChild = False
-				end if
+                If InStr(1, Me.PortalAlias, "/") <> 0 Then
+                    Me.PortalChild = True
+                Else
+                    Me.PortalChild = False
+                End If
                 Me.PortalName = result("PortalName").ToString
                 Me.LogoFile = result("LogoFile").ToString
-				Me.FooterText = result("FooterText").ToString
+                Me.FooterText = result("FooterText").ToString
                 Me.ExpiryDate = result("ExpiryDate").ToString
                 Me.UserRegistration = result("UserRegistration").ToString
                 Me.BannerAdvertising = result("BannerAdvertising").ToString
@@ -235,19 +245,24 @@ Namespace DotNetZoom
                 Me.KeyWords = result("KeyWords").ToString
                 Me.BackgroundFile = result("BackgroundFile").ToString
                 Me.SiteLogHistory = IIf(IsDBNull(result("SiteLogHistory")), -1, result("SiteLogHistory"))
-				Me.TimeZone = IIf(IsDBNull(result("TimeZone")), -99, result("TimeZone"))
+                Me.TimeZone = IIf(IsDBNull(result("TimeZone")), -99, result("TimeZone"))
                 Me.SuperUserId = result("SuperUserId").ToString
-                				
-								
+
+
                 '  tab settings
                 Me.ActiveTab.TabId = Int32.Parse(result("TabId").ToString)
                 Me.ActiveTab.TabOrder = IIf(IsDBNull(result("TabOrder")), -1, result("TabOrder"))
                 Me.ActiveTab.FriendlyTabName = IIf(IsDBNull(result("FriendlyTabName")), "", result("FriendlyTabName"))
-				Me.ActiveTab.css  = IIf(IsDBNull(result("css")), "", result("css"))
-				Me.ActiveTab.skin = IIf(IsDBNull(result("skin")), "", result("skin"))
+                Me.ActiveTab.css = IIf(IsDBNull(result("css")), "", result("css"))
+                Me.ActiveTab.skin = IIf(IsDBNull(result("skin")), "", result("skin"))
+                If Me.SSL Then
+                    Me.ActiveTab.ssl = Boolean.Parse(result("tabssl").ToString)
+                Else
+                    Me.ActiveTab.ssl = False
+                End If
                 Me.ActiveTab.AuthorizedRoles = result("AuthorizedRoles").ToString
                 Me.ActiveTab.AdministratorRoles = result("AdministratorRoles").ToString
-				Me.ActiveTab.TabName = result("TabName").ToString
+                Me.ActiveTab.TabName = result("TabName").ToString
                 Me.ActiveTab.ShowFriendly = Boolean.Parse(result("ShowFriendly").ToString)
                 Me.ActiveTab.LeftPaneWidth = result("LeftPaneWidth").ToString
                 Me.ActiveTab.RightPaneWidth = result("RightPaneWidth").ToString
@@ -259,9 +274,9 @@ Namespace DotNetZoom
                 Me.ActiveTab.HasChildren = Boolean.Parse(result("HasChildren").ToString)
             End If
 
-		
-			
-			Dim DesktopTabs As ArrayList = Getportaltabs(me.PortalId, Me.Language)
+
+
+            Dim DesktopTabs As ArrayList = Getportaltabs(Me.PortalId, Me.Language)
             If Me.ActiveTab.TabId = 0 And DesktopTabs.Count > 0 Then
                 Me.ActiveTab.TabId = CType(DesktopTabs(0), TabStripDetails).TabId
             End If
@@ -279,7 +294,7 @@ Namespace DotNetZoom
                 m.TabId = Int32.Parse(result("TabID").ToString)
                 m.PaneName = result("PaneName").ToString
                 m.ModuleTitle = result("ModuleTitle").ToString
-				m.IsAdminModule = False
+                m.IsAdminModule = False
                 m.AuthorizedEditRoles = result("AuthorizedEditRoles").ToString
                 m.CacheTime = Int32.Parse(result("CacheTime").ToString)
                 m.ModuleOrder = Int32.Parse(result("ModuleOrder").ToString)
@@ -294,7 +309,7 @@ Namespace DotNetZoom
                 m.AllTabs = result("AllTabs")
                 m.ShowTitle = result("ShowTitle")
                 m.Personalize = result("Personalize")
-				m.Language = result("Language").ToString
+                m.Language = result("Language").ToString
                 m.FriendlyName = result("FriendlyName")
 
                 Me.ActiveTab.Modules.Add(m)
@@ -418,21 +433,22 @@ Namespace DotNetZoom
             myConnection.Open()
             Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
             While result.Read()
-                Dim tabDetails As New TabStripDetails()
-                tabDetails.TabId = Int32.Parse(result("TabId").ToString)
-				tabDetails.TabName = result("TabName").ToString
-				tabDetails.FriendlyTabName = IIf(IsDBNull(result("FriendlyTabName")), "", result("FriendlyTabName"))
-				tabDetails.ShowFriendly = Boolean.Parse(result("ShowFriendly").ToString)
-                tabDetails.TabOrder = IIf(IsDBNull(result("TabOrder")), -1, result("TabOrder"))
-                tabDetails.AuthorizedRoles = result("AuthorizedRoles").ToString
-                tabDetails.AdministratorRoles = result("AdministratorRoles").ToString
-                tabDetails.IsVisible = Boolean.Parse(result("IsVisible").ToString)
-                tabDetails.DisableLink = Boolean.Parse(result("DisableLink").ToString)
-                tabDetails.ParentId = result("ParentId")
-                tabDetails.Level = result("Level")
-                tabDetails.IconFile = result("IconFile").ToString
-                tabDetails.HasChildren = Boolean.Parse(result("HasChildren").ToString)
-                DesktopTabs.Add(tabDetails)
+                    Dim tabDetails As New TabStripDetails()
+                    tabDetails.TabId = Int32.Parse(result("TabId").ToString)
+                    tabDetails.TabName = result("TabName").ToString
+                    tabDetails.FriendlyTabName = IIf(IsDBNull(result("FriendlyTabName")), "", result("FriendlyTabName"))
+                    tabDetails.ShowFriendly = Boolean.Parse(result("ShowFriendly").ToString)
+                    tabDetails.TabOrder = IIf(IsDBNull(result("TabOrder")), -1, result("TabOrder"))
+                    tabDetails.AuthorizedRoles = result("AuthorizedRoles").ToString
+                    tabDetails.AdministratorRoles = result("AdministratorRoles").ToString
+                    tabDetails.IsVisible = Boolean.Parse(result("IsVisible").ToString)
+                    tabDetails.DisableLink = Boolean.Parse(result("DisableLink").ToString)
+                    tabDetails.ParentId = result("ParentId")
+                    tabDetails.Level = result("Level")
+                    tabDetails.ssl = Boolean.Parse(result("ssl").ToString)
+                    tabDetails.IconFile = result("IconFile").ToString
+                    tabDetails.HasChildren = Boolean.Parse(result("HasChildren").ToString)
+                    DesktopTabs.Add(tabDetails)
             End While
             result.Close()
             Context.Cache.Insert(TempKey, DesktopTabs, CDp(PortalID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)

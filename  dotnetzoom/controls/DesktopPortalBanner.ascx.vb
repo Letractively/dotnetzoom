@@ -171,13 +171,21 @@ Namespace DotNetZoom
             hypHelp.Visible = False
             lblSeparator.Visible = False
             If _portalSettings.UserRegistration <> 0 Then
-                hypHelp.Text = "<a class=""OtherTabs"" href=""" & GetFullDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Register""" & ">" & GetLanguage("banner_register") & "</a>&nbsp;|&nbsp;"
+
+
+                If _portalSettings.SSL Then
+                    hypHelp.Text = "<a class=""OtherTabs"" href=""" & AddHTTPS(GetDomainName(Request)) & GetFullDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Register""" & ">" & GetLanguage("banner_register") & "</a>&nbsp;|&nbsp;"
+                Else
+                    hypHelp.Text = "<a class=""OtherTabs"" href=""" & GetFullDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Register""" & ">" & GetLanguage("banner_register") & "</a>&nbsp;|&nbsp;"
+                End If
                 hypHelp.Visible = True
                 lblSeparator.Visible = True
             End If
             hypLogin.Text = GetLanguage("login")
             hypLogin.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1")
-
+            If _portalSettings.SSL Then
+                hypLogin.NavigateUrl = AddHTTPS(GetDomainName(Request)) + hypLogin.NavigateUrl
+            End If
             lblDate.Text = ProcessLanguage("{date}")
             Dim objUser As New UsersDB()
             Dim dr As SqlDataReader
@@ -280,6 +288,11 @@ Namespace DotNetZoom
                 hypLogin.Text = "<img height=""14"" width=""14"" border=""0"" src=""images/1x1.gif""  title="""" onmouseover=""" & ReturnToolTip(GetLanguage("exit")) & """ border=""0"" Alt=""ca"" style="" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -333px;"">"
                 hypLogin.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "logoff=ok")
             End If
+
+            If _portalSettings.SSL Then
+                hypUser.NavigateUrl = Replace(hypUser.NavigateUrl, "~", AddHTTPS(GetDomainName(Request)))
+            End If
+
 
             ' To Show Admin Menu			
             If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) Then

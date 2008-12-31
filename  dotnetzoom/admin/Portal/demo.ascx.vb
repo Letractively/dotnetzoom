@@ -50,7 +50,8 @@ Namespace DotNetZoom
 			If  portalSettings.GetSiteSettings(_portalSettings.PortalID)("DemoAuthRole") <> nothing then
 			strAuthorizedRoles = CType( portalSettings.GetSiteSettings(_portalSettings.PortalID)("DemoAuthRole"), String) 
 			end if
-			' ensure portal signup is allowed
+            ' ensure portal signup is allowed
+
             If  (portalSettings.GetHostSettings("DemoSignup") <> "Y") or (AllowDemo = "N") or ( not PortalSecurity.IsInRoles(strAuthorizedRoles))Then
                 Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
             End If

@@ -167,6 +167,30 @@ Namespace DotNetZoom
             GetAbsoluteServerPath = strServerPath
         End Function
 
+
+        Public Sub CheckSecureSSL(ByVal Request As HttpRequest, ByVal ToSecure As Boolean)
+            If ToSecure Then
+                If Request.Params("def") = "Signup" _
+                Or Request.Params("def") = "Register" _
+                Or Request.Params("def") = "Gestion usagers" _
+                Or Request.Params("adminpage") = "14" _
+                Or Request.Params("adminpage") = "15" _
+                Or Request.Params("adminpage") = "19" _
+                Or Request.Params("adminpage") = "63" _
+                Or Request.Params("adminpage") = "72" _
+                Or Request.Params("showlogin") <> "" Then
+                Else
+                    ToSecure = False
+                End If
+                If Not Request.IsSecureConnection And ToSecure Then
+                    HttpContext.Current.Response.Redirect(Replace(Request.Url.ToString(), "http://", "https://"), True)
+                ElseIf Request.IsSecureConnection And Not ToSecure Then
+                    HttpContext.Current.Response.Redirect(Replace(Request.Url.ToString(), "https://", "http://"), True)
+                End If
+            End If
+        End Sub
+
+
         ' returns the domain name of the current request ( ie. www.domain.com or 207.132.12.123 or www.domain.com/directory if subhost )
         Public Function GetDomainName(ByVal Request As HttpRequest) As String
             Dim DomainName As String = ""
@@ -294,6 +318,17 @@ Namespace DotNetZoom
             End If
             Return strURL
         End Function
+
+        ' adds HTTPS to URL if no other protocol specified
+        Public Function AddHTTPS(ByVal strURL As String) As String
+            If strURL <> "" Then
+                If InStr(1, strURL, "://") = 0 And InStr(1, strURL, "~") = 0 And InStr(1, strURL, "\\") = 0 Then
+                    strURL = "https://" & strURL
+                End If
+            End If
+            Return strURL
+        End Function
+
 
         ' convert datareader to dataset
         Public Function ConvertDataReaderToDataSet(ByVal reader As SqlClient.SqlDataReader) As DataSet
