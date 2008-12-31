@@ -24,9 +24,13 @@ Namespace DotNetZoom
             ' CODEGEN: This call is required by the ASP.NET Web Form Designer.
             '
 			
-	        InitializeComponent()
+            InitializeComponent()
+
+
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			
+
+            CheckSecureSSL(HttpContext.Current.Request, _portalSettings.SSL)
+
 			If Not Page.IsPostBack and PortalSecurity.IsSuperUser then
 			Session("LanguageTable") = Nothing
 			end if
