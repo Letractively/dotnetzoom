@@ -207,13 +207,15 @@ function SelectAllCheckboxes(intType)
 </asp:placeholder>
 <asp:placeholder id="pnlCompose" runat="server" visible="False">
 	<table class="TabPage" id="Table2" cellspacing="0" cellpadding="1" width="100%">
+		<tr><td></td><td><asp:label id="lblErrMsg" runat="server" visible="False" forecolor="red"></asp:label></td></tr>
+		
 		<tr>
-			<td class="Cell" valign="top" width="20%"></td>
+			<td class="Cell" valign="top" width="20%"><%= DotNetZoom.GetLanguage("UO_to") %></td>
 			<td class="Cell" width="80%">
-				<asp:label id="lblErrMsg" runat="server" visible="False" forecolor="red"></asp:label>
+				
 				<asp:textbox id="txtReceipient" runat="server" width="200"></asp:textbox>
 				<asp:button cssclass="button" id="btnFindUser" runat="server" causesvalidation="false"></asp:button>
-				<asp:requiredfieldvalidator id="rfvReceipient" runat="server" controltovalidate="txtReceipient" errormessage="*" forecolor="red" font-bold="True" display="Dynamic"></asp:requiredfieldvalidator>
+				<asp:requiredfieldvalidator id="rfvReceipient" runat="server" controltovalidate="txtReceipient" errormessage="*" forecolor="red"  Font-Size="Small" display="Dynamic"></asp:requiredfieldvalidator>
 				<br>
 				<%= DotNetZoom.GetLanguage("UOSearchHelp") %>
 				<asp:placeholder id="pnlFindUser" runat="server" visible="False">
@@ -227,7 +229,7 @@ function SelectAllCheckboxes(intType)
 			<td class="CellAlternate"><%= DotNetZoom.GetLanguage("UO_Object") %></td>
 			<td class="CellAlternate" width="100%">
 				<asp:textbox id="txtSubject" runat="server" width="400" maxlength="255"></asp:textbox>
-				<asp:requiredfieldvalidator id="rfvSubject" runat="server" controltovalidate="txtSubject" errormessage="*" font-size="12" forecolor="red" font-bold="True"></asp:requiredfieldvalidator></td>
+				<asp:requiredfieldvalidator id="rfvSubject" runat="server" controltovalidate="txtSubject" errormessage="*" Font-Size="Small" forecolor="red" ></asp:requiredfieldvalidator></td>
 		</tr>
 		<tr>
 			<td class="Cell" valign="top"><%= DotNetZoom.GetLanguage("UO_Message") %></td>

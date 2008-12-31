@@ -130,7 +130,6 @@
 				&nbsp;&nbsp;<font size="1">(/default.aspx?edit=control&def=demo)</font>
 			</td>
         </tr>
-        <%-- <JPW type=add bug#=000053 comment=added checkbox to enable/disable DNZ version in page title> --%> 
         <tr>
             <td width="300" class="SubHead">
                 <label for="<%=chkPageTitleVersion.ClientID%>"><%=DotNetZoom.GetLanguage("HS_DNZVersion") %></label></td>
@@ -138,7 +137,6 @@
                 <asp:checkbox id="chkPageTitleVersion" runat="server" CssClass="NormalTextBox"></asp:checkbox>
             </td>
         </tr>
-        <%-- </JPW> --%><%-- <JPW type=add bug#=000056 comment=added checkbox to enable/disable Automatic Error Reporting> --%> 
         <tr>
             <td width="300" class="SubHead">
                 <label for="<%=chkEnableErrorReport.ClientID%>"><%=DotNetZoom.GetLanguage("HS_ErrorReporting") %></label></td>
@@ -146,7 +144,14 @@
                 <asp:checkbox id="chkEnableErrorReport" runat="server" CssClass="NormalTextBox"></asp:checkbox>
 				&nbsp;&nbsp;<font size="1"><%=DotNetZoom.GetLanguage("HS_ErrorReportingInfo") %></font></td>
         </tr>
-        <%-- </JPW> --%> 
+        <tr>
+            <td width="300" class="SubHead">
+                <label for="<%=chkEnableSSL.ClientID%>"><%=DotNetZoom.GetLanguage("HS_EnableSSL") %></label></td>
+            <td>
+                <asp:checkbox id="chkEnableSSL" runat="server" CssClass="NormalTextBox"></asp:checkbox>
+				&nbsp;&nbsp;<font size="1"><%=DotNetZoom.GetLanguage("HS_EnableSSLInfo") %></font></td>
+        </tr>
+
         <tr>
             <td width="300" class="SubHead">
                 <label for="<%=txtEncryptionKey.ClientID%>"><%=DotNetZoom.GetLanguage("HS_PassordCrypto") %>:</label></td>
