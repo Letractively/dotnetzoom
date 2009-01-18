@@ -19,22 +19,22 @@
                                     <tbody>
                                         <tr>
                                             <td valign="top">
-                                                <asp:imagebutton id="cmdUp" runat="server" CommandName="up" ImageUrl="~/images/up.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                                <asp:imagebutton id="cmdUp" runat="server" CommandName="up" ImageURL="~/images/up.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td valign="top">
-                                                <asp:imagebutton id="cmdDown" runat="server" CommandName="down" ImageUrl="~/images/dn.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                                <asp:imagebutton id="cmdDown" runat="server" CommandName="down" ImageURL="~/images/dn.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td valign="top">
-                                                <asp:imagebutton id="cmdLeft" runat="server" CommandName="left" ImageUrl="~/images/lt.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                                <asp:imagebutton id="cmdLeft" runat="server" CommandName="left" ImageURL="~/images/lt.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td valign="top">
-                                                <asp:imagebutton id="cmdRight" runat="server" CommandName="right" ImageUrl="~/images/rt.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                                <asp:imagebutton id="cmdRight" runat="server" CommandName="right" ImageURL="~/images/rt.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                                             </td>
                                         </tr>
                                         <tr>
@@ -43,12 +43,12 @@
                                         </tr>
                                         <tr>
                                             <td valign="bottom">
-                                                <asp:imagebutton id="cmdEdit" runat="server" ImageUrl="~/images/edit.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                                <asp:imagebutton id="cmdEdit" runat="server" ImageURL="~/images/edit.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td valign="bottom">
-                                                <asp:imagebutton id="cmdView" runat="server" ImageUrl="~/images/view.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                                <asp:imagebutton id="cmdView" runat="server" ImageURL="~/images/view.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                                             </td>
                                         </tr>
                                     </tbody>

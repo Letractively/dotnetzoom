@@ -6,17 +6,17 @@
     <Columns>
         <asp:TemplateColumn>
             <ItemTemplate>
-                <asp:imagebutton id="cmdEditUserDefinedField" runat="server" causesvalidation="false" commandname="Edit" ImageUrl="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ToolTip='<%# DotNetZoom.GetLanguage("modifier") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
-                <asp:imagebutton id="cmdDeleteUserDefinedField" runat="server" causesvalidation="false" commandname="Delete" ImageUrl="~/images/delete.gif" AlternateText='<%# DotNetZoom.GetLanguage("erase") %>' ToolTip='<%# DotNetZoom.GetLanguage("erase") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                <asp:imagebutton id="cmdEditUserDefinedField" runat="server" causesvalidation="false" commandname="Edit" ImageURL="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ToolTip='<%# DotNetZoom.GetLanguage("modifier") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                <asp:imagebutton id="cmdDeleteUserDefinedField" runat="server" causesvalidation="false" commandname="Delete" ImageURL="~/images/delete.gif" AlternateText='<%# DotNetZoom.GetLanguage("erase") %>' ToolTip='<%# DotNetZoom.GetLanguage("erase") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
             </ItemTemplate>
             <EditItemTemplate>
-                <asp:imagebutton id="cmdSaveUserDefinedField" runat="server" causesvalidation="false" commandname="Update" ImageUrl="~/images/save.gif" AlternateText='<%# DotNetZoom.GetLanguage("enregistrer") %>' ToolTip='<%# DotNetZoom.GetLanguage("enregistrer") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
-                <asp:imagebutton id="cmdCancelUserDefinedField" runat="server" causesvalidation="false" commandname="Cancel" ImageUrl="~/images/cancel.gif" AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ToolTip='<%# DotNetZoom.GetLanguage("annuler") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                <asp:imagebutton id="cmdSaveUserDefinedField" runat="server" causesvalidation="false" commandname="Update" ImageURL="~/images/save.gif" AlternateText='<%# DotNetZoom.GetLanguage("enregistrer") %>' ToolTip='<%# DotNetZoom.GetLanguage("enregistrer") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                <asp:imagebutton id="cmdCancelUserDefinedField" runat="server" causesvalidation="false" commandname="Cancel" ImageURL="~/images/cancel.gif" AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ToolTip='<%# DotNetZoom.GetLanguage("annuler") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
             </EditItemTemplate>
         </asp:TemplateColumn>
         <asp:TemplateColumn ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
             <ItemTemplate>
-                <asp:Image runat="server" ImageUrl='<%# IIf(DataBinder.Eval(Container.DataItem, "Visible") = True, "~/images/checked.gif", "~/images/unchecked.gif") %>' ID="Image2" />
+                <asp:Image runat="server" ImageUrl='<%# IIf(DataBinder.Eval(Container.DataItem, "Visible") = True, "/images/checked.gif", "/images/unchecked.gif") %>' ID="Image2" />
             </ItemTemplate>
             <EditItemTemplate>
                 <asp:Label id="lblCheckBox2" runat="server" />
@@ -49,12 +49,12 @@
         </asp:TemplateColumn>
         <asp:TemplateColumn>
             <ItemTemplate>
-                <asp:imagebutton id="cmdMoveUserDefinedFieldUp" runat="server" causesvalidation="false" commandname="Item" CommandArgument="Up" ImageUrl="~/images/up.gif" AlternateText='<%# DotNetZoom.GetLanguage("Move_Field_Up") %>' ToolTip='<%# DotNetZoom.GetLanguage("Move_Field_Up") %>'></asp:imagebutton>
+                <asp:imagebutton id="cmdMoveUserDefinedFieldUp" runat="server" causesvalidation="false" commandname="Item" CommandArgument="Up" ImageURL="~/images/up.gif" AlternateText='<%# DotNetZoom.GetLanguage("Move_Field_Up") %>' ToolTip='<%# DotNetZoom.GetLanguage("Move_Field_Up") %>'></asp:imagebutton>
             </ItemTemplate>
         </asp:TemplateColumn>
         <asp:TemplateColumn>
             <ItemTemplate>
-                <asp:imagebutton id="cmdMoveUserDefinedFieldDown" runat="server" causesvalidation="false" commandname="Item" CommandArgument="Down" ImageUrl="~/images/dn.gif" AlternateText='<%# DotNetZoom.GetLanguage("Move_Field_Down") %>' ToolTip='<%# DotNetZoom.GetLanguage("Move_Field_Down") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                <asp:imagebutton id="cmdMoveUserDefinedFieldDown" runat="server" causesvalidation="false" commandname="Item" CommandArgument="Down" ImageURL="~/images/dn.gif" AlternateText='<%# DotNetZoom.GetLanguage("Move_Field_Down") %>' ToolTip='<%# DotNetZoom.GetLanguage("Move_Field_Down") %>' BorderWidth="0" BorderStyle="none"></asp:imagebutton>
             </ItemTemplate>
         </asp:TemplateColumn>
     </Columns>

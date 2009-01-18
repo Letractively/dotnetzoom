@@ -81,7 +81,7 @@ If Not CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadrol
 End If
 
 If Request.IsAuthenticated = false Then
-   Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+   Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
 End If
 			
 CanIUpload.Visible = PortalSecurity.IsInRoles(tmpUploadRoles)

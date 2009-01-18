@@ -679,20 +679,20 @@ Namespace DotNetZoom
                 Else
 				SpaceUsed -= Filelen(Child.Path)
                 IO.File.Delete(Child.Path)
-				If (Child.Thumbnail <> "~/images/TTT/TTT_folder.gif") and (Child.ThumbNail <> "~/images/TTT/TTT_MediaPlayer.gif") and (Child.ThumbNail <> "~/images/TTT/TTT_Flash.gif") then
-				SpaceUsed -= Filelen(HTTPContext.Current.server.MapPath(Child.Thumbnail))
-				IO.File.Delete(HTTPContext.Current.server.MapPath(Child.Thumbnail))
-				end if
+                    If (Child.Thumbnail <> glbPath & "images/TTT/TTT_folder.gif") And (Child.ThumbNail <> "/images/TTT/TTT_MediaPlayer.gif") And (Child.ThumbNail <> "/images/TTT/TTT_Flash.gif") Then
+                        SpaceUsed -= FileLen(HttpContext.Current.Server.MapPath(Child.Thumbnail))
+                        IO.File.Delete(HttpContext.Current.Server.MapPath(Child.Thumbnail))
+                    End If
                 End If
 
                 ' Dim metaData As New GalleryXML(_path)
                 GalleryXML.DeleteMetaData(_path, Child.Name)
 
             Catch exc As System.Exception
-                
+
             End Try
 
-	
+
             Return SpaceUsed
 
         End Function
@@ -710,19 +710,19 @@ Namespace DotNetZoom
             Dim albumOwner As GalleryUser
             Dim fileOwnerID As Integer
             Dim fileOwner As GalleryUser
-			Dim lWidth As Integer
+            Dim lWidth As Integer
             Dim lHeight As Integer
-     
+
 
             ' Get thumbnail specs
-			
+
             Dim MaxWidth As Integer = ZgalleryConfig.MaximumThumbHeight
             Dim MaxHeight As Integer = ZgalleryConfig.MaximumThumbHeight
 
             ' (in case someone decides to call this again without clearing the data first)
             _list.Clear()
 
-			
+
 
             ' Check for metadata folder
             Dim metaData As New GalleryXML(Me.Path)
@@ -735,27 +735,27 @@ Namespace DotNetZoom
 
                 ' Assign owner
                 albumOwnerID = ConvertInteger(metaData.OwnerID(name))
-				If AlbumOwnerID = 0 then
-				
-				AlbumOwnerID = Me.OwnerID
-				End if
+                If AlbumOwnerID = 0 Then
+
+                    AlbumOwnerID = Me.OwnerID
+                End If
                 albumOwner = GalleryUser.GetGalleryUser(albumOwnerID)
 
                 If Not (Left(IO.Path.GetFileName(item), 1) = "_" OrElse IO.Path.GetFileName(item) = _thumbFolder) Then
-				' ajout par rene boulard 2004-04-23 pour image folder
-		           thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "\", False, False)
- 
-                If File.Exists(thumbNail) Then
-    			   thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "/", False, False)
-                   Else
-				   thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "\", False, False)
-                      If File.Exists(thumbNail) Then
-    			      thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "/", False, False)
-                      Else
-				      thumbNail = "~/images/TTT/TTT_folder.gif"
-					  End If
-                   End If
-                    icon = "~/images/TTT/TTT_s_folder.gif"
+                    ' ajout par rene boulard 2004-04-23 pour image folder
+                    thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "\", False, False)
+
+                    If File.Exists(thumbNail) Then
+                        thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "/", False, False)
+                    Else
+                        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "\", False, False)
+                        If File.Exists(thumbNail) Then
+                            thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "/", False, False)
+                        Else
+                            thumbNail = glbPath & "images/TTT/TTT_folder.gif"
+                        End If
+                    End If
+                    icon = glbPath & "images/TTT/TTT_s_folder.gif"
                     Dim newFolder As GalleryFolder = New GalleryFolder(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), BuildPath(New String(1) {_galleryHierarchy, name}, "/"), _thumbFolder, thumbNail, icon, Me, Counter, ZgalleryConfig, metaData.Title(name), metaData.Description(name), metaData.Categories(name), albumOwnerID, albumOwner)
                     _list.Add(name, newFolder)
                     Counter += 1
@@ -764,7 +764,7 @@ Namespace DotNetZoom
 
             ' Add files here
             items = System.IO.Directory.GetFiles(_path)
-			
+
             For Each item In items
                 name = IO.Path.GetFileName(item)
                 fileOwnerID = ConvertInteger(metaData.OwnerID(name))
@@ -774,72 +774,72 @@ Namespace DotNetZoom
                 fileOwner = GalleryUser.GetGalleryUser(fileOwnerID)
 
                 ' Remember that we should add image first
-                If ZgalleryConfig.IsValidImageType(LCase(New FileInfo(item).Extension)) Then 
+                If ZgalleryConfig.IsValidImageType(LCase(New FileInfo(item).Extension)) Then
                     ' This file is a valid image type Add the new image to the browsable items list
-                  
-				    _browsableItems.Add(Counter) ' store reference to index
-                   
+
+                    _browsableItems.Add(Counter) ' store reference to index
+
                     thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "\", False, False)
-                    icon = "~/images/TTT/TTT_s_jpg.gif"
+                    icon = glbPath & "images/TTT/TTT_s_jpg.gif"
                     thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "/", False, False)
-					lwidth = ConvertInteger(metaData.Width(name))
-					lHeight = ConvertInteger(metaData.height(name))
-                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), lWidth.ToString() , lHeight.ToString() ,thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Image, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
+                    lwidth = ConvertInteger(metaData.Width(name))
+                    lHeight = ConvertInteger(metaData.height(name))
+                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), lWidth.ToString(), lHeight.ToString(), thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Image, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
                     Counter += 1
                 End If
-    
-	            ' add movie types.
+
+                ' add movie types.
                 If ZgalleryConfig.IsValidMovieType(LCase(New FileInfo(item).Extension)) Then ' This file is a valid movie type
-                
-				
-				
-				' ajout par rene boulard 2004-04-23 pour image folder
-	             thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
- 
-                   If File.Exists(thumbNail) Then
-    			   thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
-                   Else
-				   	  thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
-                      If File.Exists(thumbNail) Then
-    			      thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
-                      Else
-				      thumbNail = "~/images/TTT/TTT_MediaPlayer.gif"
-					  End If
-	               End If
-                    icon = "~/images/TTT/TTT_s_MediaPlayer.gif"
+
+
+
+                    ' ajout par rene boulard 2004-04-23 pour image folder
+                    thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
+
+                    If File.Exists(thumbNail) Then
+                        thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
+                    Else
+                        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
+                        If File.Exists(thumbNail) Then
+                            thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
+                        Else
+                            thumbNail = glbPath & "images/TTT/TTT_MediaPlayer.gif"
+                        End If
+                    End If
+                    icon = glbPath & "images/TTT/TTT_s_MediaPlayer.gif"
                     ' Add the file and increment the counter
-                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0" , "0" , thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Movie, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
+                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Movie, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
                     Counter += 1
-                 end if   
+                End If
 
-                    ' add flash types.
+                ' add flash types.
                 If ZgalleryConfig.IsValidFlashType(LCase(New FileInfo(item).Extension)) Then
-				
-				
-				' ajout par rene boulard 2004-04-23 pour image folder
-		        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
- 
-                   If File.Exists(thumbNail) Then
-    			   thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
-                   Else
-				   	  thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
-                      If File.Exists(thumbNail) Then
-    			      thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
-                      Else
-				      thumbNail = "~/images/TTT/TTT_Flash.gif"
-					  End If
-                   End If
-             
-                   icon = "~/images/TTT/TTT_s_flash.gif"
+
+
+                    ' ajout par rene boulard 2004-04-23 pour image folder
+                    thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
+
+                    If File.Exists(thumbNail) Then
+                        thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
+                    Else
+                        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
+                        If File.Exists(thumbNail) Then
+                            thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
+                        Else
+                            thumbNail = glbPath & "images/TTT/TTT_Flash.gif"
+                        End If
+                    End If
+
+                    icon = glbPath & "images/TTT/TTT_s_flash.gif"
 
                     ' Add the file and increment the counter
-                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0" , "0" ,thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Flash, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
+                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Flash, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
 
                     Counter += 1
-                 
+
                 End If
             Next
 
@@ -873,22 +873,22 @@ Namespace DotNetZoom
             Dim albumOwner As GalleryUser
             Dim fileOwnerID As Integer
             Dim fileOwner As GalleryUser
-			Dim lWidth As Integer
+            Dim lWidth As Integer
             Dim lHeight As Integer
             Dim mImage As System.Drawing.Image
-			Dim SaveIt As Boolean
-     
+            Dim SaveIt As Boolean
+
 
             ' Get thumbnail specs
-			
+
             Dim MaxWidth As Integer = ZgalleryConfig.MaximumThumbHeight
             Dim MaxHeight As Integer = ZgalleryConfig.MaximumThumbHeight
 
             ' (in case someone decides to call this again without clearing the data first)
             _list.Clear()
 
-			
-			' Check existence of res folder
+
+            ' Check existence of res folder
             Try
                 If Not System.IO.Directory.Exists(ResFolderPath) Then
                     ' and create it if required
@@ -898,8 +898,8 @@ Namespace DotNetZoom
                 Throw ex
             End Try
 
-			
-			
+
+
             ' Check existence of thumbs folder
             Try
                 If Not System.IO.Directory.Exists(ThumbFolderPath) Then
@@ -915,33 +915,33 @@ Namespace DotNetZoom
 
             ' Find out if metadata file exists; if it does, check to make sure it is coordinated with file system
             If File.Exists(BuildPath(New String(1) {Me.Path, "_metadata.xml"}, "\", False, True)) Then
-			Dim doc As New XmlDocument()
-            doc.Load(BuildPath(New String(1) {Me.Path, "_metadata.xml"}, "\", False, True))
+                Dim doc As New XmlDocument()
+                doc.Load(BuildPath(New String(1) {Me.Path, "_metadata.xml"}, "\", False, True))
 
-     		Dim root as XmlElement = doc.DocumentElement
-     		Dim elemList as XmlNodeList = root.GetElementsByTagName("file")
-			
-			' Dim elemList As XmlNodeList = doc.GetElementsByTagName("files")
-	        Dim i As Integer
-            Dim objStream As StreamWriter
-            objStream = File.AppendText(BuildPath(New String(1) {Me.Path, "_metadata.log"}, "\", False, True))
-    	    For i = 0 To elemList.Count - 1
-			 Dim TempDoc as New XmlDocument()
-			 TempDoc.LoadXml(elemList.Item(i).OuterXML)
-			 Dim InnerList As XmlElement = Tempdoc.DocumentElement
-			if (InnerList.HasAttribute("name"))
-            ' search in file system
-            If not IO.File.Exists(io.Path.Combine(Me.Path , InnerList.GetAttribute("name"))) and not  System.IO.Directory.Exists(io.Path.Combine(Me.Path , InnerList.GetAttribute("name"))) Then
-		    GalleryXML.deletemetadata( Me.Path  , InnerList.GetAttribute("name"))
-            objStream.WriteLine(DateTime.Now.ToString() & " effacer : " & io.Path.Combine(Me.Path , InnerList.GetAttribute("name")) & VbCrLf)
+                Dim root As XmlElement = doc.DocumentElement
+                Dim elemList As XmlNodeList = root.GetElementsByTagName("file")
+
+                ' Dim elemList As XmlNodeList = doc.GetElementsByTagName("files")
+                Dim i As Integer
+                Dim objStream As StreamWriter
+                objStream = File.AppendText(BuildPath(New String(1) {Me.Path, "_metadata.log"}, "\", False, True))
+                For i = 0 To elemList.Count - 1
+                    Dim TempDoc As New XmlDocument()
+                    TempDoc.LoadXml(elemList.Item(i).OuterXML)
+                    Dim InnerList As XmlElement = Tempdoc.DocumentElement
+                    If (InnerList.HasAttribute("name")) Then
+                        ' search in file system
+                        If Not IO.File.Exists(io.Path.Combine(Me.Path, InnerList.GetAttribute("name"))) And Not System.IO.Directory.Exists(io.Path.Combine(Me.Path, InnerList.GetAttribute("name"))) Then
+                            GalleryXML.deletemetadata(Me.Path, InnerList.GetAttribute("name"))
+                            objStream.WriteLine(DateTime.Now.ToString() & " effacer : " & io.Path.Combine(Me.Path, InnerList.GetAttribute("name")) & VbCrLf)
+                        End If
+                    End If
+                Next i
+                objStream.Close()
             End If
-     		end if
-        	Next i
-			objStream.Close()
-            End If
-            
-			
-	
+
+
+
             ' Add folders here.
             items = Directory.GetDirectories(_path)
 
@@ -950,27 +950,27 @@ Namespace DotNetZoom
 
                 ' Assign owner
                 albumOwnerID = ConvertInteger(metaData.OwnerID(name))
-				If AlbumOwnerID = 0 then
-				AlbumOwnerID = Me.OwnerID
-	            GalleryXML.SaveMetaData(_path, name, metaData.Title(name), metaData.Description(name), metaData.Categories(name), albumOwnerID, metaData.Width(name), metaData.height(name))
-				End if
+                If AlbumOwnerID = 0 Then
+                    AlbumOwnerID = Me.OwnerID
+                    GalleryXML.SaveMetaData(_path, name, metaData.Title(name), metaData.Description(name), metaData.Categories(name), albumOwnerID, metaData.Width(name), metaData.height(name))
+                End If
                 albumOwner = GalleryUser.GetGalleryUser(albumOwnerID)
 
                 If Not (Left(IO.Path.GetFileName(item), 1) = "_" OrElse IO.Path.GetFileName(item) = _thumbFolder) Then
-				' ajout par rene boulard 2004-04-23 pour image folder
-		           thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "\", False, False)
- 
-                If File.Exists(thumbNail) Then
-    			   thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "/", False, False)
-                   Else
-				   thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "\", False, False)
-                      If File.Exists(thumbNail) Then
-    			      thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "/", False, False)
-                      Else
-				      thumbNail = "~/images/TTT/TTT_folder.gif"
-					  End If
-                   End If
-                    icon = "~/images/TTT/TTT_s_folder.gif"
+                    ' ajout par rene boulard 2004-04-23 pour image folder
+                    thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "\", False, False)
+
+                    If File.Exists(thumbNail) Then
+                        thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".jpg"}, "/", False, False)
+                    Else
+                        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "\", False, False)
+                        If File.Exists(thumbNail) Then
+                            thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "/", False, False)
+                        Else
+                            thumbNail = glbPath & "images/TTT/TTT_folder.gif"
+                        End If
+                    End If
+                    icon = glbPath & "images/TTT/TTT_s_folder.gif"
                     Dim newFolder As GalleryFolder = New GalleryFolder(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), BuildPath(New String(1) {_galleryHierarchy, name}, "/"), _thumbFolder, thumbNail, icon, Me, Counter, ZgalleryConfig, metaData.Title(name), metaData.Description(name), metaData.Categories(name), albumOwnerID, albumOwner)
                     _list.Add(name, newFolder)
                     Counter += 1
@@ -979,111 +979,111 @@ Namespace DotNetZoom
 
             ' Add files here
             items = System.IO.Directory.GetFiles(_path)
-			
+
             For Each item In items
                 name = IO.Path.GetFileName(item)
-				SaveIt = False
+                SaveIt = False
                 fileOwnerID = ConvertInteger(metaData.OwnerID(name))
                 If fileOwnerID = 0 Then 'Assign parent owner to be file Owner
                     fileOwnerID = Me.OwnerID
-					SaveIt = True
+                    SaveIt = True
                 End If
                 fileOwner = GalleryUser.GetGalleryUser(fileOwnerID)
 
                 ' Remember that we should add image first
-                If ZgalleryConfig.IsValidImageType(LCase(New FileInfo(item).Extension)) Then 
+                If ZgalleryConfig.IsValidImageType(LCase(New FileInfo(item).Extension)) Then
                     ' This file is a valid image type Add the new image to the browsable items list
-                  
-				    _browsableItems.Add(Counter) ' store reference to index
-                   
+
+                    _browsableItems.Add(Counter) ' store reference to index
+
                     thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "\", False, False)
-                    icon = "~/images/TTT/TTT_s_jpg.gif"
+                    icon = glbPath & "images/TTT/TTT_s_jpg.gif"
 
                     If File.Exists(thumbNail) Then
                         thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "/", False, False)
                     Else
                         Try ' Build the thumbs on the fly
-                         ResizeImage(item, BuildPath(New String(2) {Me.Path, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "\", False, False), MaxWidth, MaxHeight, IO.Path.GetExtension(item), ZgalleryConfig.quality)
-                         thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "/", False, False)
-                         Catch ex As Exception
-                         Throw ex
+                            ResizeImage(item, BuildPath(New String(2) {Me.Path, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "\", False, False), MaxWidth, MaxHeight, IO.Path.GetExtension(item), ZgalleryConfig.quality)
+                            thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "/", False, False)
+                        Catch ex As Exception
+                            Throw ex
                         End Try
                     End If
 
-					
-					
-                    ' Add the file and increment the counter
-					If metaData.Width(name) = "0" or metaData.height(name) = "0" or SaveIt then
-					mImage = System.Drawing.Image.FromFile(item)
-           			lWidth = mImage.Width
-           			lHeight = mImage.Height
-		            GalleryXML.SaveMetaData(_path, name, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, LWidth.ToString(), Lheight.ToString())
-					else
-					lwidth = ConvertInteger(metaData.Width(name))
-					lHeight = ConvertInteger(metaData.height(name))
-					end if
 
-                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), lWidth.ToString() , lHeight.ToString() ,thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Image, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
+
+                    ' Add the file and increment the counter
+                    If metaData.Width(name) = "0" Or metaData.height(name) = "0" Or SaveIt Then
+                        mImage = System.Drawing.Image.FromFile(item)
+                        lWidth = mImage.Width
+                        lHeight = mImage.Height
+                        GalleryXML.SaveMetaData(_path, name, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, LWidth.ToString(), Lheight.ToString())
+                    Else
+                        lwidth = ConvertInteger(metaData.Width(name))
+                        lHeight = ConvertInteger(metaData.height(name))
+                    End If
+
+                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), lWidth.ToString(), lHeight.ToString(), thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Image, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
 
                     Counter += 1
 
                 End If
-    
-	            ' add movie types.
+
+                ' add movie types.
                 If ZgalleryConfig.IsValidMovieType(LCase(New FileInfo(item).Extension)) Then ' This file is a valid movie type
-                
-				
-				
-				' ajout par rene boulard 2004-04-23 pour image folder
-	             thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
- 
-                   If File.Exists(thumbNail) Then
-    			   thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
-                   Else
-				   	  thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
-                      If File.Exists(thumbNail) Then
-    			      thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
-                      Else
-				      thumbNail = "~/images/TTT/TTT_MediaPlayer.gif"
-					  End If
-	               End If
 
-                    icon = "~/images/TTT/TTT_s_MediaPlayer.gif"
+
+
+                    ' ajout par rene boulard 2004-04-23 pour image folder
+                    thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
+
+                    If File.Exists(thumbNail) Then
+                        thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
+                    Else
+                        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
+                        If File.Exists(thumbNail) Then
+                            thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
+                        Else
+                            thumbNail = glbPath & "images/TTT/TTT_MediaPlayer.gif"
+                        End If
+                    End If
+
+                    icon = glbPath & "images/TTT/TTT_s_MediaPlayer.gif"
                     ' Add the file and increment the counter
-                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0" , "0" , thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Movie, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
+                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Movie, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
 
                     Counter += 1
 
-                 end if   
+                End If
 
-                    ' add flash types.
+                ' add flash types.
                 If ZgalleryConfig.IsValidFlashType(LCase(New FileInfo(item).Extension)) Then
-				
-				
-				' ajout par rene boulard 2004-04-23 pour image folder
-		        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
- 
-                   If File.Exists(thumbNail) Then
-    			   thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
-                   Else
-				   	  thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
-                      If File.Exists(thumbNail) Then
-    			      thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
-                      Else
-				      thumbNail = "~/images/TTT/TTT_Flash.gif"
-					  End If
-                   End If
-             
-                   icon = "~/images/TTT/TTT_s_flash.gif"
+
+
+                    ' ajout par rene boulard 2004-04-23 pour image folder
+                    thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "\", False, False)
+
+                    If File.Exists(thumbNail) Then
+                        thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".jpg"}, "/", False, False)
+                    Else
+                        thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "\", False, False)
+                        If File.Exists(thumbNail) Then
+                            thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
+                        Else
+                            thumbNail = glbPath & "images/TTT/TTT_Flash.gif"
+                        End If
+                    End If
+
+                    icon = glbPath & "images/TTT/TTT_s_flash.gif"
 
                     ' Add the file and increment the counter
-                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0" , "0" ,thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Flash, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
+                    Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Flash, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
 
                     Counter += 1
-                 
+
                 End If
             Next
 
@@ -1103,7 +1103,7 @@ Namespace DotNetZoom
 
             ' Set the flag so we don't call again
             _isPopulated = True
-			 
+
         End Sub
 		
 		

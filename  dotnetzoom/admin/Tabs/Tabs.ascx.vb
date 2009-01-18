@@ -63,7 +63,7 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add1.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add1.gif"" alt=""*"" style=""border-width:0px;"">"
 
             arrPortalTabs = GetPortalTabs(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), , True)
 
@@ -117,7 +117,7 @@ Namespace DotNetZoom
 
                 ' Redirect to this site to refresh
 				ClearPortalCache(_portalSettings.PortalId)
-                Response.Redirect("~" & GetDocument() & "?tabid=" & TabId & "&" & GetAdminPage(), True)
+                Response.Redirect(GetFullDocument() & "?tabid=" & TabId & "&" & GetAdminPage(), True)
 
             End If
 
@@ -142,14 +142,14 @@ Namespace DotNetZoom
 
                 Select Case CType(sender, ImageButton).CommandName
                     Case "left"
-                        objAdmin.UpdatePortalTabOrder(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), objTab.TabId, objTab.ParentId, -1)
+                        objAdmin.UpdatePortalTabOrder(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), objTab.TabId, objTab.ParentId, -1)
                     Case "right"
-                        objAdmin.UpdatePortalTabOrder(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), objTab.TabId, objTab.ParentId, 1)
+                        objAdmin.UpdatePortalTabOrder(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), objTab.TabId, objTab.ParentId, 1)
                 End Select
 
                 ' Redirect to this site to refresh
-				ClearPortalCache(_portalSettings.PortalId)
-                Response.Redirect("~" & GetDocument() & "?tabid=" & TabId & "&" & GetAdminPage(), True)
+                ClearPortalCache(_portalSettings.PortalId)
+                Response.Redirect(GetFullDocument() & "?tabid=" & TabId & "&" & GetAdminPage(), True)
 
             End If
 
@@ -185,7 +185,7 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 	
 			ClearPortalCache(_portalSettings.PortalId)
-			Response.Redirect(FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ShowFriendly, t.TabId.ToString, "edit=control&def=Onglets&action=edit"), True)
+                Response.Redirect(FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ssl, Objtab.ShowFriendly, t.TabId.ToString, "edit=control&def=Onglets&action=edit"), True)
 
             End If
 
@@ -213,7 +213,7 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 			ClearPortalCache(_portalSettings.PortalId)	
-			Response.Redirect(FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ShowFriendly, t.TabId.ToString, ""), True)
+                Response.Redirect(FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ssl, Objtab.ShowFriendly, t.TabId.ToString, ""), True)
  
             End If
 

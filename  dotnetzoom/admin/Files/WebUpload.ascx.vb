@@ -117,71 +117,71 @@ Namespace DotNetZoom
 
 			          
             If Request.IsAuthenticated = false Then
-                     Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
             End If
-			
+
             If PortalSecurity.IsInRoles(tmpUploadRoles) = False Then
-			CanUpload.Visible = False
-			lblMessage.Text = ProcessLanguage(objAdmin.getsinglelonglanguageSettings(GetLanguage("N"), "Security_CannotUpload"), Page)
+                CanUpload.Visible = False
+                lblMessage.Text = ProcessLanguage(objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_CannotUpload"), Page)
             End If
-			
-            
+
+
 
             If Page.IsPostBack = False Then
-			lstFiles.Visible = False
-			If request.params("options") <> "" then
-			
-			  If Not PortalSecurity.IsInRole(_portalSettings.AdministratorRoleId.ToString) or Not IsAdminTab() Then
-			  'Autorisation
-			  Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-			  end if
-			  options.Visible = True
-			  Upload.Visible = False
-              chkUploadRoles.Items.Clear()
-              Dim settings As Hashtable = portalSettings.GetModuleSettings(ModuleId)
-              Dim UploadRoles As String = ""
-              If Not CType(settings("uploadroles"), String) Is Nothing Then
-                UploadRoles = CType(settings("uploadroles"), String)
-              End If
+                lstFiles.Visible = False
+                If Request.Params("options") <> "" Then
 
-              Dim objUser As New UsersDB()
+                    If Not PortalSecurity.IsInRole(_portalSettings.AdministratorRoleId.ToString) Or Not IsAdminTab() Then
+                        'Autorisation
+                        Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+                    End If
+                    options.Visible = True
+                    Upload.Visible = False
+                    chkUploadRoles.Items.Clear()
+                    Dim settings As Hashtable = PortalSettings.GetModuleSettings(ModuleId)
+                    Dim UploadRoles As String = ""
+                    If Not CType(settings("uploadroles"), String) Is Nothing Then
+                        UploadRoles = CType(settings("uploadroles"), String)
+                    End If
 
-              Dim dr As SqlDataReader = objUser.GetPortalRoles(_portalSettings.PortalId, GetLanguage("N"))
-              While dr.Read()
-                Dim item As New ListItem()
-				item.Text = CType(dr("RoleName"), String)
-                item.Value = dr("RoleID").ToString()
-                If InStr(1, UploadRoles, item.Value & ";") Or item.Value = _portalSettings.AdministratorRoleId.ToString Then
-                    item.Selected = True
+                    Dim objUser As New UsersDB()
+
+                    Dim dr As SqlDataReader = objUser.GetPortalRoles(_portalSettings.PortalId, GetLanguage("N"))
+                    While dr.Read()
+                        Dim item As New ListItem()
+                        item.Text = CType(dr("RoleName"), String)
+                        item.Value = dr("RoleID").ToString()
+                        If InStr(1, UploadRoles, item.Value & ";") Or item.Value = _portalSettings.AdministratorRoleId.ToString Then
+                            item.Selected = True
+                        End If
+
+                        chkUploadRoles.Items.Add(item)
+
+                    End While
+
+                    dr.Close()
+                Else
+                    Upload.Visible = True
+                    options.Visible = False
                 End If
 
-                chkUploadRoles.Items.Add(item)
-
-              End While
-
-            dr.Close()			 
-			else
-		  Upload.Visible = True
-		  options.Visible = False
-		  end if
-			
                 ' initialize file list
                 arrFiles.Clear()
                 chkUnzip.Checked = True
                 chkUnzip.Text = "<label for=""" & chkUnzip.ClientID & """>" & GetLanguage("UnZipFile") & "</label>"
-				cmdAdd.Text = GetLanguage("upload")
-				cmdRemove.Text = GetLanguage("cmdRemove")
-				cmdRemove.Visible = False
-				chkUnzip.Text = GetLanguage("F_UnzipFile")
-				cmdCancel.Text = GetLanguage("return")
-				If Session("RootDir") <> "" then
-				lblRootDir.Text = Session("RootDir") & Session("RelativeDir")
-				lblRootDir.Text = replace(lblRootDir.Text , Request.MapPath("~/"), "")
-				lblRootDir.Text = "/" + replace(lblRootDir.Text , "\", "/")
-				end if
+                cmdAdd.Text = GetLanguage("upload")
+                cmdRemove.Text = GetLanguage("cmdRemove")
+                cmdRemove.Visible = False
+                chkUnzip.Text = GetLanguage("F_UnzipFile")
+                cmdCancel.Text = GetLanguage("return")
+                If Session("RootDir") <> "" Then
+                    lblRootDir.Text = Session("RootDir") & Session("RelativeDir")
+                    lblRootDir.Text = Replace(lblRootDir.Text, GetAbsoluteServerPath(Request), "")
+                    lblRootDir.Text = "/" + Replace(lblRootDir.Text, "\", "/")
+                End If
 
-				
-				
+
+
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()

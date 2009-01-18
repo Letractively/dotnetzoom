@@ -1,7 +1,7 @@
 <%@ Control Inherits="DotNetZoom.SiteSettings" codebehind="SiteSettings.ascx.vb" Language="vb" autoeventwireup="false" Explicit="True" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <%@ Register TagPrefix="Portal" TagName="ModuleEdit" Src="~/admin/tabs/ModuleEdit.ascx" %>
-<script language="javascript" type="text/javascript"  src="controls/PopupCalendar.js"></script>
+<script language="javascript" type="text/javascript"  src="<%=dotnetzoom.glbpath + "controls/PopupCalendar.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <asp:datalist width="100%" id="dlTabs"  ItemStyle-Height="30"  OnItemCommand="dlTabs_ItemCommand" runat="Server" cssclass="TabHolder" separatorstyle-cssclass="TabSeparator" selecteditemstyle-cssclass="TabSelected" itemstyle-cssclass="TabDefault" itemstyle-wrap="False" cellpadding="0" repeatcolumns="5">
@@ -9,7 +9,7 @@
 	<asp:LinkButton Runat="server"  Text='<%# Container.DataItem.Value %>' commandname='<%# Container.DataItem.Key %>' CausesValidation="False" ID="Linkbutton"></asp:LinkButton>
 	</itemtemplate>
 	<separatortemplate>
-	<img src="images/1x1.gif" alt="*" border="0">
+	<img src="/images/1x1.gif" alt="*" border="0">
 	</separatortemplate>
 </asp:datalist>
 <asp:placeHolder id="Setting1" runat="server">
@@ -88,8 +88,8 @@
 		</tr>
     </tbody>
 </table>
-</asp:placeHolder>
 <!-- Fin PlaceHolder Setting1 -->	
+</asp:placeHolder>
 <asp:placeHolder id="Setting2" runat="server">
 <!-- Debut PlaceHolder Setting2 -->	
 <table class="TabPage" cellspacing="0" cellpadding="10" width="100%">
@@ -110,7 +110,7 @@
 	</tr>
 	<tr>
 	    <td class="SubHead" width="187">
-		<%= DotNetZoom.GetLanguage("SS_Label_TimeZone") %>:&nbsp;<asp:Label class="SubHead"  id="LblTimeZone" runat="server" CssClass="NormalTextBox" ></asp:Label>
+		<%= DotNetZoom.GetLanguage("SS_Label_TimeZone") %>:&nbsp;<asp:Label id="LblTimeZone" runat="server" CssClass="NormalTextBox" ></asp:Label>
 		</td>
         <td width="188">
 		<asp:DropDownList id="ddlTimeZone" Width="180px" DataValueField="Zone" DataTextField="Description" runat="server" CssClass="NormalTextBox" ></asp:DropDownList>
@@ -127,6 +127,19 @@
         </asp:radiobuttonlist>
         </td>
    </tr>
+  	<tr>
+	    <td class="SubHead" width="187">
+		<%= DotNetZoom.GetLanguage("SS_Use_SSL") %>:&nbsp;<asp:Label id="Label4" runat="server" CssClass="NormalTextBox" ></asp:Label>
+		</td>
+        <td width="188">
+            <asp:CheckBox ID="SSLCheckBox" runat="server" />
+        </td>
+        <td class="SubHead" width="187">
+        </td>
+        <td width="188">
+        </td>
+   </tr> 
+   
    <tr>
    		<td class="SubHead" width="187">
    		<%= DotNetZoom.GetLanguage("SS_Label_Vendors") %>:
@@ -160,23 +173,20 @@
         </td>
    </tr>
    <tr>
-       <td align="center" colspan="4">
-           <asp:linkbutton id="cmdProcessor" runat="server" cssclass="CommandButton"></asp:linkbutton>
-       </td>
-   </tr>
-   <tr>
        <td class="SubHead" width="187">
-	   <%= DotNetZoom.GetLanguage("SS_Label_Processor_Password") %>
-       <label for="<%=txtPassword.ClientID%>">:
+	   <%= DotNetZoom.GetLanguage("SS_Label_Processor_Password") %>:
 	   </td>
        <td width="188">
        <asp:textbox id="txtPassword" runat="server" CssClass="NormalTextBox" MaxLength="50" width="180" TextMode="Password"></asp:textbox>
        </td>
+       <td align="center" width="375" colspan="2">
+           <asp:linkbutton id="cmdProcessor" runat="server" cssclass="CommandButton"></asp:linkbutton>
+       </td>
    </tr>
- </tbody>
+  </tbody>
 </table>
-</asp:placeHolder>
 <!-- Fin PlaceHolder Setting2 -->	
+</asp:placeHolder>
 <asp:placeHolder id="Setting3" runat="server">
 <!-- Debut PlaceHolder Setting3 -->	
 <table class="TabPage" cellspacing="0" cellpadding="10" width="100%">
@@ -264,20 +274,21 @@
             <asp:textbox id="txtSignup" runat="server" CssClass="NormalTextBox" MaxLength="1000" width="375px" TextMode="MultiLine" Rows="7"></asp:textbox>
             </td>
 		    <td id="DemoCell" runat="server" visible="false" align="left">
-			<span class="SubHead"><%= DotNetZoom.GetLanguage("SS_DemoDirectives") %>&nbsp;<%= ddlLanguage.SelectedItem.Text %>:</span>
+		    <span class="SubHead"><%= DotNetZoom.GetLanguage("SS_DemoDirectives") %>&nbsp;<%= ddlLanguage.SelectedItem.Text %>:</span>
 		    <br>
             <asp:textbox id="txtInstructionDemo" runat="server" CssClass="NormalTextBox" MaxLength="2000" width="375" TextMode="MultiLine" Rows="7"></asp:textbox>
             </td>
         </tr>
     </tbody>
 </table>
+<!-- Fin PlaceHolder Setting3 -->	
 </asp:placeHolder>
 <asp:placeHolder id="Setting4" runat="server">
 <!-- Debut PlaceHolder Setting4 -->	
 <table class="TabPage" cellspacing="0" cellpadding="10" width="100%">
     <tbody>
        <tr id="SiteRow7" runat="server" visible="false">
-                            <td colspan="2" align="left">
+                                <td colspan="2" align="left">
                                 <span class="Head"><%= DotNetZoom.GetLanguage("SS_Head_Demo") %></span><font size="1">&nbsp;(/<%= DotNetZoom.GetLanguage("N") %>.default.aspx?edit=control&def=demo)</font> 
                             </td>
                         </tr>
@@ -313,9 +324,10 @@
 						</asp:PlaceHolder>		
     </tbody>
 </table>
+<!-- Fin PlaceHolder Setting4 -->	
 </asp:placeHolder>
 <asp:placeHolder id="Setting5" runat="server">
-<!-- Debut PlaceHolder Settins7 -->	
+<!-- Debut PlaceHolder Setting5 -->	
 <table class="TabPage" cellspacing="0" cellpadding="10" width="100%">
     <tbody>
 		<tr>
@@ -340,16 +352,16 @@
                     <Columns>
                         <asp:TemplateColumn ItemStyle-Wrap="False">
                             <ItemTemplate>
-                                <asp:imagebutton id="cmdEditModuleDefs" runat="server" causesvalidation="false" commandname="Edit" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ImageUrl="~/images/edit.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                <asp:imagebutton id="cmdEditModuleDefs" runat="server" causesvalidation="false" commandname="Edit" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ImageURL="~/images/edit.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:imagebutton id="cmdSaveModuleDefs" runat="server" causesvalidation="false" commandname="Update" AlternateText='<%# DotNetZoom.GetLanguage("enregistrer") %>' ImageUrl="~/images/save.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
-                                <asp:imagebutton id="cmdCancelModuleDefs" runat="server" causesvalidation="false" commandname="Cancel" AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ImageUrl="~/images/cancel.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                <asp:imagebutton id="cmdSaveModuleDefs" runat="server" causesvalidation="false" commandname="Update" AlternateText='<%# DotNetZoom.GetLanguage("enregistrer") %>' ImageURL="~/images/save.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                <asp:imagebutton id="cmdCancelModuleDefs" runat="server" causesvalidation="false" commandname="Cancel" AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ImageURL="~/images/cancel.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                             </EditItemTemplate>
                         </asp:TemplateColumn>
                         <asp:TemplateColumn ItemStyle-CssClass="Normal" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:Image runat="server" ImageUrl='<%# IIf(DataBinder.Eval(Container.DataItem, "Subscribed") = 1, "~/images/checked.gif", "~/images/unchecked.gif") %>' AlternateText='<%# IIf(DataBinder.Eval(Container.DataItem, "Subscribed") = 1, "Checked", "UnChecked") %>' ID="Image2" />
+                                <asp:Image runat="server" ImageUrl='<%# IIf(DataBinder.Eval(Container.DataItem, "Subscribed") = 1, "/images/checked.gif", "/images/unchecked.gif") %>' AlternateText='<%# IIf(DataBinder.Eval(Container.DataItem, "Subscribed") = 1, "Checked", "UnChecked") %>' ID="Image2" />
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:Label id="lblCheckBox2" runat="server" /> 
@@ -447,14 +459,46 @@
     </tbody>
 </table>
 <table id="SiteTable1" runat="server" visible="false" cellspacing="0" cellpadding="0" width="100%">
-    <tbody>		
-        <tr>
-            <td class="SubHead" colspan="3" align="left">
-            <%= DotNetZoom.GetLanguage("SS_PortalAlias") %>:
-			<br>
-            <asp:textbox id="txtPortalAlias" runat="server" CssClass="NormalTextBox" MaxLength="200" width="700" TextMode="MultiLine" Rows="3"></asp:textbox>
-            </td>
+    <tbody>	
+       <tr>
+         <td colspan="3">
+         <hr noshade="noshade" size="1" />
+         </td>
        </tr>
+	
+        <tr>
+            <td class="SubHead" width="300" valign="top">
+            <%= DotNetZoom.GetLanguage("SS_PortalAlias") %>:
+           </td>
+           <td colspan="2">
+            <table cellspacing="0" cellpadding="0" width="100%">
+            <tr><td class="NormalBold" align="left">&nbsp;ssl&nbsp;</td><td class="NormalBold"><%= DotNetZoom.GetLanguage("P_Alias") %></td></tr>
+                <tr>
+                    <td class="SubHead" align="left" colspan="2">
+                    &nbsp;<asp:CheckBox ID="sslCheckBox1" runat="server"  Checked="False" />
+                    &nbsp;&nbsp;<asp:textbox id="txtPortalAlias" runat="server" CssClass="NormalTextBox" MaxLength="50" Width="300px"></asp:textbox>
+                    &nbsp;&nbsp;<asp:ImageButton id="AddSetting" ImageURL="~/images/add.gif" Width="16px" Height="16px" runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="SubHead" align="left" colspan="2">
+			        <asp:datagrid id="grdPortalsAlias" runat="server" gridlines="none" BorderStyle="None" CellPadding="4" CellSpacing="0" AutoGenerateColumns="false" EnableViewState="true" Width="100%">
+                        <Columns>
+                        <asp:TemplateColumn  ItemStyle-Width="300">
+                            <ItemTemplate>
+                            <asp:CheckBox ID="sslCheckBox" runat="server"  Checked='<%# DataBinder.Eval(Container, "DataItem.ssl") %>' />
+                            &nbsp;&nbsp;<asp:TextBox id="txtRename" runat="server" MaxLength="50" Width="300px" Text='<%# DataBinder.Eval(Container, "DataItem.PortalAlias") %>'></asp:TextBox>
+                            &nbsp;&nbsp;<asp:ImageButton tooltip='<%# DotNetZoom.GetLanguage("enregistrer") %>' id="imgEditOK" ImageURL="~/images/save.gif" CommandName="EditOK" Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.PortalAlias") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
+                            &nbsp;&nbsp;<asp:ImageButton id="DelAlias" tooltip='<%# DotNetZoom.GetLanguage("delete") %>' visible="true" ImageURL="~/images/delete.gif" CommandName="DeleteOK" Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.PortalAlias") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="True"></asp:ImageButton>
+                            </ItemTemplate>
+                        </asp:TemplateColumn>
+                        </Columns>
+                    </asp:datagrid>
+                    </td>
+                </tr>
+            </table>
+           </td>
+        </tr>
     </tbody>
 </table>
 </td>
@@ -466,11 +510,11 @@
     <tbody>
 		<tr>
          <td align="left">
-               <asp:linkbutton class="CommandButton" id="cmdUpdate" runat="server"></asp:linkbutton>
+               <asp:linkbutton cssclass="CommandButton" id="cmdUpdate" runat="server"></asp:linkbutton>
                 &nbsp;&nbsp; 
-                <asp:linkbutton class="CommandButton" id="cmdCancel" runat="server"></asp:linkbutton>
+                <asp:linkbutton cssclass="CommandButton" id="cmdCancel" runat="server"></asp:linkbutton>
                 &nbsp;&nbsp; 
-                <asp:linkbutton class="CommandButton" id="cmdDelete" runat="server" Visible="False"></asp:linkbutton>
+                <asp:linkbutton cssclass="CommandButton" id="cmdDelete" runat="server" Visible="False"></asp:linkbutton>
             </td>
         </tr>
     </tbody>

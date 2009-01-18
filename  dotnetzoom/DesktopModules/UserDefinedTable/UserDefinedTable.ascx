@@ -7,7 +7,7 @@
         <Columns>
             <asp:TemplateColumn>
                 <ItemTemplate>
-                    <asp:HyperLink ImageUrl="~/images/edit.gif" NavigateUrl='<%# EditURL("UserDefinedRowId",DataBinder.Eval(Container.DataItem,"UserDefinedRowId")) %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1" />
+                    <asp:HyperLink ImageURL="~/images/edit.gif" NavigateUrl='<%# EditURL("UserDefinedRowId",DataBinder.Eval(Container.DataItem,"UserDefinedRowId")) %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1" />
                 </ItemTemplate>
             </asp:TemplateColumn>
         </Columns>

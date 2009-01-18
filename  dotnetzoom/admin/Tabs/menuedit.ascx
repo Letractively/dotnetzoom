@@ -700,7 +700,7 @@ Public Sub CreateMenu()
 			   
         TempString.Append(" ];" & ControlChars.Cr)
         TempString.Append("function Ti (text) { return '<img src=""" & _portalSettings.UploadDirectory & "' + text + '"" border=""0"" alt=""""> ';}" & ControlChars.Cr)
-        TempString.Append("function Ta (text) { return '<img src=""" & "images/" & "' + text + '"" border=""0"" alt=""""> ';}" & ControlChars.Cr)
+        TempString.Append("function Ta (text) { return '<img src=""" & "/images/" & "' + text + '"" border=""0"" alt=""""> ';}" & ControlChars.Cr)
         XtigraMenuString = TempString.ToString()
     End Sub
 

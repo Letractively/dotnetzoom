@@ -93,7 +93,7 @@ Namespace DotNetZoom
             If Page.IsPostBack = False Then
 
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
                 Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId, glbImageFileTypes)
                 cboInternal.DataSource = FileList
                 cboInternal.DataBind()
@@ -106,43 +106,43 @@ Namespace DotNetZoom
                     settings = PortalSettings.GetModuleSettings(ModuleId)
 
                     If InStr(1, CType(settings("src"), String), "://") = 0 Then
-						fileName = Server.MapPath(_portalSettings.UploadDirectory & CType(Settings("src"), String))
+                        fileName = Server.MapPath(_portalSettings.UploadDirectory & CType(Settings("src"), String))
                         optInternal.Checked = True
                         optExternal.Checked = False
                         EnableControls()
                         If cboInternal.Items.Contains(New ListItem(CType(settings("src"), String))) Then
                             cboInternal.Items.FindByText(CType(settings("src"), String)).Selected = True
                         End If
-						If File.Exists(FileName) then
-						Dim Exif As New ExifWorks(FileName)
-        				txtArtist.Text = Exif.Artist
-						If TxtArtist.Text = "" then
-						
-						Dim objUser As New UsersDB()
-                		Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
-	
-                		' Read first row from database
-                		If dr.Read() Then
-                    	TxtArtist.Text = dr("FirstName").ToString
-                        TxtArtist.Text +=  " " & dr("LastName").ToString
-               			 End If
-                		dr.Close()
-						end if 
-        				txtCopyright.Text = Exif.Copyright
-						If TxtCopyright.Text = "" then
-						TxtCopyright.Text = GetDomainName(Request)
-						end if
-       					txtDescription.Text = Exif.Description
-        				txtTitle.Text = Exif.Title
-				        Exif.Dispose()
-						end if
+                        If File.Exists(FileName) Then
+                            Dim Exif As New ExifWorks(FileName)
+                            txtArtist.Text = Exif.Artist
+                            If TxtArtist.Text = "" Then
+
+                                Dim objUser As New UsersDB()
+                                Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
+
+                                ' Read first row from database
+                                If dr.Read() Then
+                                    TxtArtist.Text = dr("FirstName").ToString
+                                    TxtArtist.Text += " " & dr("LastName").ToString
+                                End If
+                                dr.Close()
+                            End If
+                            txtCopyright.Text = Exif.Copyright
+                            If TxtCopyright.Text = "" Then
+                                TxtCopyright.Text = GetDomainName(Request)
+                            End If
+                            txtDescription.Text = Exif.Description
+                            txtTitle.Text = Exif.Title
+                            Exif.Dispose()
+                        End If
                     Else
                         optInternal.Checked = False
                         optExternal.Checked = True
                         EnableControls()
                         txtExternal.Text = CType(settings("src"), String)
                     End If
-                    
+
                     txtAlt.Text = CType(settings("alt"), String)
                     txtWidth.Text = CType(settings("width"), String)
                     txtHeight.Text = CType(settings("height"), String)
@@ -150,7 +150,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
             End If
 

@@ -269,7 +269,7 @@ Namespace DotNetZoom
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             If HttpContext.Current.Request.Browser.JavaScript = True Then
-                RegisterClientScriptBlock("dnzscript", "<script type=""text/javascript"" src=""/javascript/dnzscript.js""></script>")
+                RegisterClientScriptBlock("dnzscript", "<script type=""text/javascript"" src=""" & glbPath & "javascript/dnzscript.js""></script>")
                 If Not Request.Form("scrollLeft") Is Nothing Then
                     RegisterHiddenField("scrollLeft", Request.Form("scrollLeft"))
                     RegisterHiddenField("scrollTop", Request.Form("scrollTop"))
@@ -319,8 +319,11 @@ Namespace DotNetZoom
                 html = html.Replace(""" />", """>")
                 html = html.Replace("<br />", "<br>")
             End If
-
-
+            If glbPath <> "/" Then
+                html = html.Replace("url('/images/", "url('" + glbPath + "images/")
+                html = html.Replace("src=""/images/", "src=""" + glbPath + "images/")
+                html = html.Replace("src=""../images/", "src=""" + glbPath + "images/")
+            End If
 
 
             If DefRemWS <> "" Then

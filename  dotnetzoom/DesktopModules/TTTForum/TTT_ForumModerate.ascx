@@ -34,8 +34,8 @@
                         <table width="100%" cellpadding="0" cellspacing="1" border="0" runat="server">
                             <tr>
                                 <td class="TTTRow" style="white-space: nowrap;" width="30" height="25" align="center">
-                                    <asp:ImageButton ToolTip='<%# DotNetZoom.getlanguage("F_Close") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Close") %>' id="btnCollapse" ImageUrl="~/images/minus2.gif" runat="server" CommandName="collapse" Visible="False" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "PostID"), String) %>' BorderWidth="0" BorderStyle="none"/>
-                                    <asp:ImageButton ToolTip='<%# DotNetZoom.getlanguage("F_Expand") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Expand") %>'  id="btnExpand" ImageUrl="~/images/plus2.gif" runat="server" CommandName="expand" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "PostID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                    <asp:ImageButton ToolTip='<%# DotNetZoom.getlanguage("F_Close") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Close") %>' id="btnCollapse" ImageURL="~/images/minus2.gif" runat="server" CommandName="collapse" Visible="False" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "PostID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                    <asp:ImageButton ToolTip='<%# DotNetZoom.getlanguage("F_Expand") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Expand") %>'  id="btnExpand" ImageURL="~/images/plus2.gif" runat="server" CommandName="expand" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "PostID"), String) %>' BorderWidth="0" BorderStyle="none"/>
                                 </td>
                                 <td class="TTTRow" style="white-space: nowrap;" width="400" height="25" align="Left">
                                     <asp:Label cssclass="TTTNormal" text='<%# DataBinder.Eval(Container.DataItem, "Subject") %>' runat="server" id="Label1" /> 
@@ -50,7 +50,7 @@
                                     <asp:CheckBox Runat="server" EnableViewState="False" ID="chkApprove"></asp:CheckBox>
                                 </td>
                                 <td class="TTTRowHighlight" style="white-space: nowrap;" width="30" height="25" align="center">
-                                    <asp:ImageButton id="btnEdit" ToolTip='<%# DotNetZoom.getlanguage("F_Audit") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Audit") %>' height="16" width="16" ImageUrl="~/images/1x1.gif" runat="server" CommandName="Edit" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "PostID"), String) %>' style='<%# GetEditStyle() %>'  />
+                                    <asp:ImageButton id="btnEdit" ToolTip='<%# DotNetZoom.getlanguage("F_Audit") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Audit") %>' height="16" width="16" ImageURL="~/images/1x1.gif" runat="server" CommandName="Edit" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "PostID"), String) %>' style='<%# GetEditStyle() %>'  />
                                 </td>
                             </tr>
                         </table>

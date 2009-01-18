@@ -62,7 +62,7 @@ Namespace DotNetZoom
 			
 
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 			cmdEdit.tooltip = getLanguage("modifier")
 			cmdEdit.alternateText = getLanguage("modifier")
 			cmdGo.Text = getLanguage("go")
@@ -118,7 +118,8 @@ Namespace DotNetZoom
 
             If InStr(1, Link, "://") = 0 Then
                 If IsNumeric(Link) Then ' internal tab link
-                    Link = IIf(Request.ApplicationPath = "/", Request.ApplicationPath, Request.ApplicationPath & "/") & GetLanguage("N") & ".default.aspx?tabid=" & Link
+                    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                    Link = _portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?tabid=" & Link
                 End If
             End If
 

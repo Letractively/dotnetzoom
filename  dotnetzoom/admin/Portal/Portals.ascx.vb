@@ -19,6 +19,7 @@
 ' CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
 ' DEALINGS IN THE SOFTWARE.
 '
+Imports System.Data.SqlClient
 
 Namespace DotNetZoom
 
@@ -45,14 +46,14 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
             Title1.DisplayHelp = "DisplayHelp_Portals"
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             ' Verify that the current user has access to access this page
             If Not PortalSecurity.IsSuperUser Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
             End If
 			grdPortals.Columns(1).HeaderText = GetLanguage("P_PortalName")
 			grdPortals.Columns(2).HeaderText = GetLanguage("P_Alias")
@@ -76,6 +77,13 @@ Namespace DotNetZoom
         Public Function FormatPortal(ByVal PortalName As Object, ByVal PortalAlias As Object) As String
             FormatPortal = "<a href=""" & GetPortalDomainName(PortalAlias.ToString) & """>" & PortalName.ToString & "</a>"
         End Function
+
+        Public Function FormatPortalAlias(ByVal PortalID As Object) As SqlDataReader
+            Dim objAdmin As New AdminDB()
+            Return objAdmin.GetPortalAlias(PortalID)
+        End Function
+
+
 
     End Class
 

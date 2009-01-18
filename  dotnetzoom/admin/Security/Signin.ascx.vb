@@ -67,7 +67,7 @@ Namespace DotNetZoom
 			
 			Help.ToolTip = getlanguage("title_enter")
 			Help.Visible = True
-            Help.NavigateUrl = "javascript:var m = window.open('admin/tabs/help.aspx?help=DisplayHelp_Signin&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & Getlanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
+            help.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/help.aspx?help=DisplayHelp_Signin&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
 
      		Dim _Setting As HashTable = PortalSettings.GetSiteSettings(_portalSettings.PortalID)
 			If _Setting("loginModuleContainer") <> "" then
@@ -244,36 +244,36 @@ Namespace DotNetZoom
 					' If admin admin or webmestre webmestre then redirect to account
 					If (txtUsername.Text.tolower() = txtPassword.Text.tolower()) and (TxtUserName.Text.ToLower() = "admin" or TxtUserName.Text.ToLower() = "webmestre" ) then
 					' http://my-dnz.com/fr.accueil.aspx?edit=control&tabid=1&def=Register
-					Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Register", True)
+                                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Register", True)
                                 Else
 
                                     Response.Redirect(Replace(Request.Url.ToString(), "showlogin=", "login="), True)
-					end if
-				 else
-				lblMessage.Text = ProcessLanguage(admin.getsinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), page)
-				lblMessage.Text = replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
-				end if
-                End If
-                dr.Close()
+                                End If
+                            Else
+                                lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
+                                lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
+                            End If
+                        End If
+                        dr.Close()
 
-				
-                Else
-				    RegisterBADip(Request.UserHostAddress)
-					Dim drUser As SqlDataReader = objUser.GetSingleUserByUsername(_portalSettings.PortalId, txtUsername.Text)
-	            	If drUser.Read() Then
-					Attempt = Attempt + 1
-				    objUser.UpdateCheckUserSecurity(drUser("UserId"), "", DateTime.now.ADDMinutes(10), Attempt)
-					end if
-					drUser.Close()
-					If Attenpt > 2 then
-					lblMessage.Text = ProcessLanguage(admin.getsinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalWait1"), page)
-					else
-                    lblMessage.Text = getlanguage("RegisterMessage3") 
-              		End if
-				End If
+
+                    Else
+                        RegisterBADip(Request.UserHostAddress)
+                        Dim drUser As SqlDataReader = objUser.GetSingleUserByUsername(_portalSettings.PortalId, txtUsername.Text)
+                        If drUser.Read() Then
+                            Attempt = Attempt + 1
+                            objUser.UpdateCheckUserSecurity(drUser("UserId"), "", DateTime.Now.AddMinutes(10), Attempt)
+                        End If
+                        drUser.Close()
+                        If Attenpt > 2 Then
+                            lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalWait1"), Page)
+                        Else
+                            lblMessage.Text = GetLanguage("RegisterMessage3")
+                        End If
+                    End If
+                End If
             End If
-	  end if
-			
+
         End Sub
 
         Private Sub cmdSendPassword_Click(ByVal sender As System.Object, ByVal e As EventArgs) Handles cmdSendPassword.Click
@@ -287,63 +287,63 @@ Namespace DotNetZoom
                 Dim dr As SqlDataReader = objUser.GetSingleUserByUsername(_portalSettings.PortalId, txtUsername.Text)
 
                 If dr.Read() Then
-				Dim Admin as New AdminDB()
-	            Dim strBody As String
+                    Dim Admin As New AdminDB()
+                    Dim strBody As String
 
-	  			strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_password_recall", PortalID)
-				if strBody = "" then
-				strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_password_recall")
-				end if
-			
-					strBody = Regex.Replace(strBody, "{FullName}" , dr("FullName"), RegexOptions.IgnoreCase)
-					strBody = Regex.Replace(strBody, "{PortalName}" , _portalSettings.PortalName, RegexOptions.IgnoreCase)
- 					strBody = Regex.Replace(strBody, "{PortalURL}" , GetPortalDomainName(PortalAlias, Request), RegexOptions.IgnoreCase)
-					strBody = Regex.Replace(strBody, "{Username}" , dr("Username").ToString, RegexOptions.IgnoreCase)
-					strBody = Regex.Replace(strBody, "{Password}" , objSecurity.Decrypt(portalSettings.GetHostSettings("EncryptionKey"), dr("Password").ToString), RegexOptions.IgnoreCase)
-      
-                     If _portalSettings.UserRegistration = 3 And dr("LastLoginDate").ToString = "" And dr("IsSuperUser") = False Then
-                        strBody = Regex.Replace(strBody, "{validationcode}" , _portalSettings.PortalId.ToString & "-" & dr("UserId").ToString, RegexOptions.IgnoreCase)
-						strBody = Regex.Replace(strBody, "{needcode}" , "", RegexOptions.IgnoreCase)
-						strBody = Regex.Replace(strBody, "{/needcode}" , "", RegexOptions.IgnoreCase)
-					else
-						strBody = Regex.Replace(strBody, "{needcode}[^¸]+{/needcode}" , "", RegexOptions.IgnoreCase)
+                    strBody = Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_password_recall", PortalId)
+                    If strBody = "" Then
+                        strBody = Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_password_recall")
+                    End If
+
+                    strBody = Regex.Replace(strBody, "{FullName}", dr("FullName"), RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{PortalName}", _portalSettings.PortalName, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{PortalURL}", GetPortalDomainName(PortalAlias, Request), RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{Username}", dr("Username").ToString, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{Password}", objSecurity.Decrypt(PortalSettings.GetHostSettings("EncryptionKey"), dr("Password").ToString), RegexOptions.IgnoreCase)
+
+                    If _portalSettings.UserRegistration = 3 And dr("LastLoginDate").ToString = "" And dr("IsSuperUser") = False Then
+                        strBody = Regex.Replace(strBody, "{validationcode}", _portalSettings.PortalId.ToString & "-" & dr("UserId").ToString, RegexOptions.IgnoreCase)
+                        strBody = Regex.Replace(strBody, "{needcode}", "", RegexOptions.IgnoreCase)
+                        strBody = Regex.Replace(strBody, "{/needcode}", "", RegexOptions.IgnoreCase)
+                    Else
+                        strBody = Regex.Replace(strBody, "{needcode}[^¸]+{/needcode}", "", RegexOptions.IgnoreCase)
                     End If
 
                     If Not IsDBNull(dr("Authorized")) Then
                         If dr("Authorized") Then
-                        strBody = Regex.Replace(strBody, "{notauthorized}[^{}]+{/notauthorized}" , "", RegexOptions.IgnoreCase)
+                            strBody = Regex.Replace(strBody, "{notauthorized}[^{}]+{/notauthorized}", "", RegexOptions.IgnoreCase)
                         End If
-					else
-					strBody = Regex.Replace(strBody, "{notauthorized}[^{}]+{/notauthorized}" , "", RegexOptions.IgnoreCase)
+                    Else
+                        strBody = Regex.Replace(strBody, "{notauthorized}[^{}]+{/notauthorized}", "", RegexOptions.IgnoreCase)
                     End If
 
-					if (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = true) then
-        		    lblMessage.Text = SendNotification(_portalSettings.Email, dr("Email").ToString, "", GetLanguage("Password_Notice") & " " & _portalSettings.PortalName , strBody, "", "html")
-		            else
-		            lblMessage.Text = SendNotification(_portalSettings.Email, dr("Email").ToString, "", GetLanguage("Password_Notice") & " " & _portalSettings.PortalName , strBody)
-					end if
-					If lblMessage.Text = "" then
-                    lblMessage.Text = getlanguage("RegisterMessage2")
-					else 
-					lblMessage.Text = getlanguage("RegisterMessage6")
-					end if 
+                    If (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = True) Then
+                        lblMessage.Text = SendNotification(_portalSettings.Email, dr("Email").ToString, "", GetLanguage("Password_Notice") & " " & _portalSettings.PortalName, strBody, "", "html")
+                    Else
+                        lblMessage.Text = SendNotification(_portalSettings.Email, dr("Email").ToString, "", GetLanguage("Password_Notice") & " " & _portalSettings.PortalName, strBody)
+                    End If
+                    If lblMessage.Text = "" Then
+                        lblMessage.Text = GetLanguage("RegisterMessage2")
+                    Else
+                        lblMessage.Text = GetLanguage("RegisterMessage6")
+                    End If
                 Else
-				    RegisterBADip(Request.UserHostAddress)
-                    lblMessage.Text = getlanguage("RegisterMessage1") 
+                    RegisterBADip(Request.UserHostAddress)
+                    lblMessage.Text = GetLanguage("RegisterMessage1")
                 End If
 
                 dr.Close()
 
             Else
-			    RegisterBADip(Request.UserHostAddress)
-                lblMessage.Text = getlanguage("RegisterMessage") 
+                RegisterBADip(Request.UserHostAddress)
+                lblMessage.Text = GetLanguage("RegisterMessage")
             End If
 
         End Sub
 
         Private Sub cmdRegister_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdRegister.Click
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Register", True)
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Register", True)
         End Sub
 
     End Class

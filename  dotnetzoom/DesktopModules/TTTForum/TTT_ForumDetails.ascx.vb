@@ -237,7 +237,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Function ModerateLink() As String
-            Dim lnkModerate As String = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditForum.ForumEditType.ForumModerateAdmin & "&mid=" & ZmoduleID & "&tabid=" & _portalSettings.ActiveTab.TabId & "&forumid=" & ZforumID
+            Dim lnkModerate As String = GetFullDocument() & "?edit=control&editpage=" & TTT_EditForum.ForumEditType.ForumModerateAdmin & "&mid=" & ZmoduleID & "&tabid=" & _portalSettings.ActiveTab.TabId & "&forumid=" & ZforumID
             Return lnkModerate
         End Function
 

@@ -3,7 +3,7 @@
 <script language="JavaScript" type="text/javascript">
 		function OpenColorWindow(tabid)
 			{
-				var m = window.open('admin/tabs/colorselector.aspx?L=<%= DotNetZoom.GetLanguage("N") %>' , 'color', 'width=400,height=330,left=100,top=100');
+				var m = window.open('<%=DotNetZoom.glbPath %>admin/tabs/colorselector.aspx?L=<%= DotNetZoom.GetLanguage("N") %>' , 'color', 'width=400,height=330,left=100,top=100');
 				m.focus();
 			}
 
@@ -14,7 +14,7 @@
 			}
 		function OpenNewContainerWindow(tabid)
 			{
-				var m = window.open('admin/tabs/container.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100,scrollbars=yes');
+				var m = window.open('<%=DotNetZoom.glbPath %>admin/tabs/container.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100,scrollbars=yes');
 				m.focus();
 			}
 		function SetContainer(idParentValue)

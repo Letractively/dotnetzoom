@@ -169,24 +169,10 @@ Namespace DotNetZoom
 
 
         Public Sub CheckSecureSSL(ByVal Request As HttpRequest, ByVal ToSecure As Boolean)
-            If ToSecure Then
-                If Request.Params("def") = "Signup" _
-                Or Request.Params("def") = "Register" _
-                Or Request.Params("def") = "Gestion usagers" _
-                Or Request.Params("adminpage") = "14" _
-                Or Request.Params("adminpage") = "15" _
-                Or Request.Params("adminpage") = "19" _
-                Or Request.Params("adminpage") = "63" _
-                Or Request.Params("adminpage") = "72" _
-                Or Request.Params("showlogin") <> "" Then
-                Else
-                    ToSecure = False
-                End If
-                If Not Request.IsSecureConnection And ToSecure Then
-                    HttpContext.Current.Response.Redirect(Replace(Request.Url.ToString(), "http://", "https://"), True)
-                ElseIf Request.IsSecureConnection And Not ToSecure Then
-                    HttpContext.Current.Response.Redirect(Replace(Request.Url.ToString(), "https://", "http://"), True)
-                End If
+            If Not Request.IsSecureConnection And ToSecure Then
+                HttpContext.Current.Response.Redirect(Replace(HttpContext.Current.Items("RequestURL"), "http://", "https://"), True)
+            ElseIf Request.IsSecureConnection And Not ToSecure Then
+                HttpContext.Current.Response.Redirect(Replace(HttpContext.Current.Items("RequestURL"), "https://", "http://"), True)
             End If
         End Sub
 
@@ -1014,9 +1000,8 @@ Namespace DotNetZoom
             ' create RSS file
             Dim strRSS As String = ""
 
-            Dim strRelativePath As String = DomainName & Replace(Mid(FileName, InStr(1, FileName, "\Portals")), "\", "/")
-            strRelativePath = Left(strRelativePath, InStrRev(strRelativePath, "/"))
-
+            Dim strRelativePath As String = ""
+            strRelativePath = "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory
             While dr.Read()
                 If dr(SyndicateField) Then
                     strRSS += "      <item>" & ControlChars.CrLf
@@ -1262,7 +1247,13 @@ Namespace DotNetZoom
 
         Function GetFullDocument() As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Dim TempURL As String = HttpContext.Current.Request.ApplicationPath
+            Dim TempURL As String
+            If _portalSettings.SSL And _portalSettings.ActiveTab.ssl Then
+                TempURL = _portalSettings.HTTPS
+            Else
+                TempURL = _portalSettings.HTTP
+            End If
+
             If Not TempURL.EndsWith("/") Then
                 TempURL += "/"
             End If
@@ -1271,17 +1262,22 @@ Namespace DotNetZoom
             Else
                 TempURL += GetLanguage("N") & ".default.aspx"
             End If
-
             Return TempURL
         End Function
 		
-        Function FormatFriendlyURL(ByVal TabName As String, ByVal UseTabName As Boolean, ByVal TabId As String, Optional ByVal Options As String = "", Optional ByVal strLangCode As String = "", Optional ByVal amp As String = "&") As String
+        Function FormatFriendlyURL(ByVal TabName As String, ByVal SSL As Boolean, ByVal UseTabName As Boolean, ByVal TabId As String, Optional ByVal Options As String = "", Optional ByVal strLangCode As String = "", Optional ByVal amp As String = "&") As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim ServerPath As String
             If strLangCode = "" Then
                 strLangCode = GetLanguage("N")
             End If
-            ServerPath = IIf(HttpContext.Current.Request.ApplicationPath = "/", "", HttpContext.Current.Request.ApplicationPath)
+
+            If _portalSettings.SSL And SSL Then
+                ServerPath = _portalSettings.HTTPS
+            Else
+                ServerPath = _portalSettings.HTTP
+            End If
+
             If Not ServerPath.EndsWith("/") Then
                 ServerPath += "/"
             End If
@@ -1344,28 +1340,35 @@ Namespace DotNetZoom
             End If
         End Function
 
+        Public Sub CheckGeoIPData()
+            Dim context As HttpContext = HttpContext.Current
+
+            If context.Cache.Get("GeoIPData") Is Nothing Then
+                context.Cache.Insert("GeoIPData", DotNetNuke.CountryLookup.FileToMemory(context.Server.MapPath(glbPath + "bin/GeoIP.dat")), New CacheDependency(context.Server.MapPath(glbPath + "bin/GeoIP.dat")))
+            End If
+
+        End Sub
+
 		Public Function DisplayCountrycode(ByVal hostIPAddress As String) As String
-				Dim _CountryLookup As DotNetNuke.CountryLookup
-				Dim context As HttpContext = HttpContext.Current
-				'Check to see if we are using the Cached
-				'version of the GeoIPData file
-				If Context.Cache.Get("GeoIPData") Is Nothing Then
-   					Context.Cache.Insert("GeoIPData", DotNetNuke.CountryLookup.FileToMemory(Context.Server.MapPath("bin/GeoIP.dat")), New CacheDependency(Context.Server.MapPath("bin/GeoIP.dat")))
-				End If
-				_CountryLookup = New DotNetNuke.CountryLookup(CType(Context.Cache.Get("GeoIPData"), System.IO.MemoryStream))
- 
-				Dim _UserCountryCode As String = _CountryLookup.LookupCountryCode(hostIPAddress)
-				Return _UserCountryCode 
-		End Function
+            Dim _CountryLookup As DotNetNuke.CountryLookup
+            Dim context As HttpContext = HttpContext.Current
+
+            'Check to see if we are using the Cached
+            'version of the GeoIPData file
+            CheckGeoIPData()
+
+            _CountryLookup = New DotNetNuke.CountryLookup(CType(context.Cache.Get("GeoIPData"), System.IO.MemoryStream))
+
+            Dim _UserCountryCode As String = _CountryLookup.LookupCountryCode(hostIPAddress)
+            Return _UserCountryCode
+        End Function
 
 		Public Function DisplayCountryName(ByVal hostIPAddress As String) As String
 				Dim _CountryLookup As DotNetNuke.CountryLookup
 				Dim context As HttpContext = HttpContext.Current
 				'Check to see if we are using the Cached
 				'version of the GeoIPData file
-				If Context.Cache.Get("GeoIPData") Is Nothing Then
-   					Context.Cache.Insert("GeoIPData", DotNetNuke.CountryLookup.FileToMemory(Context.Server.MapPath("bin/GeoIP.dat")), New CacheDependency(Context.Server.MapPath("bin/GeoIP.dat")))
-				End If
+            CheckGeoIPData()
 				_CountryLookup = New DotNetNuke.CountryLookup(CType(Context.Cache.Get("GeoIPData"), System.IO.MemoryStream))
  
 				Dim _UserCountryName As String = _CountryLookup.LookupCountryName(hostIPAddress)
@@ -1473,8 +1476,8 @@ Namespace DotNetZoom
 	Dim myDTFI As System.Globalization.DateTimeFormatInfo = New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.Name, False).DateTimeFormat
 	item = Regex.Replace(item, "{Date}" , Format(Now().AddMinutes(GetTimeDiff(_portalSettings.TimeZone)),  myDTFI.LongDatePattern), RegexOptions.IgnoreCase)
     End if
-	item = Regex.Replace(item, "{httplogin}" , GetPortalDomainName(PortalAlias, Request) & GetDocument() & "?tabid=" & TabId & "&showlogin=1", RegexOptions.IgnoreCase)
-	item = Regex.Replace(item, "{httpregister}" , GetPortalDomainName(PortalAlias) & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Register", RegexOptions.IgnoreCase)
+                Item = Regex.Replace(Item, "{httplogin}", GetFullDocument() & "?tabid=" & TabId & "&showlogin=1", RegexOptions.IgnoreCase)
+                Item = Regex.Replace(Item, "{httpregister}", GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Register", RegexOptions.IgnoreCase)
 	end if
 	Return item
 	end function
@@ -1780,7 +1783,7 @@ Namespace DotNetZoom
                     If objTab.DisableLink Then
                         TempString.Append("<li><a href="""">")
                     Else
-                        TempString.Append("<li><a href=""" & FormatFriendlyURL(objTab.FriendlyTabName, objTab.ShowFriendly, objTab.TabId.ToString) & """>")
+                        TempString.Append("<li><a href=""" & FormatFriendlyURL(objTab.FriendlyTabName, objTab.ssl, objTab.ShowFriendly, objTab.TabId.ToString) & """>")
                     End If
 
 
@@ -1844,11 +1847,11 @@ Namespace DotNetZoom
                 TempString.Append("<a href=""" & AddHTTP(PortalSettings.GetHostSettings("HostURL")) & """>" & Replace(GetLanguage("hypHost"), "{hostname}", PortalSettings.GetHostSettings("HostTitle")) & "</a>")
                 TempString.Append("</td>" & vbCrLf & "<td align=""center"">" & vbCrLf)
 
-                TempString.Append("<a href=""" & GetDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Terms"">")
+                TempString.Append("<a href=""" & GetFullDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Terms"">")
                 TempString.Append(GetLanguage("hypTerms") & "</a>")
                 TempString.Append("</td>" & vbCrLf & "<td align=""center"">" & vbCrLf)
 
-                TempString.Append("<a href=""" & GetDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Privacy"">")
+                TempString.Append("<a href=""" & GetFullDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Privacy"">")
                 TempString.Append(GetLanguage("hypPrivacy") & "</a>")
                 TempString.Append("</td></tr>" & vbCrLf & "</table>" & vbCrLf)
 

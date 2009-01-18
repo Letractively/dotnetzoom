@@ -520,13 +520,13 @@ Namespace DotNetZoom
 		' link to user Mail
 		If Zuser.EnablePrivateMessages then
                 If (loggedOnUserID <> Zuser.UserID) And (loggedOnUserID > 0) Then
-                    wr.AddAttribute(HtmlTextWriterAttribute.Href, FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "forumpage=4&pmstabid=3&userid=" & Zuser.UserID))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Href, FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "forumpage=4&pmstabid=3&userid=" & Zuser.UserID))
                     wr.RenderBeginTag(HtmlTextWriterTag.A)
 
                     wr.AddAttribute(HtmlTextWriterAttribute.Width, "16")
                     wr.AddAttribute(HtmlTextWriterAttribute.Height, "16")
                     wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & imageURL & "forum.gif') no-repeat; background-position: 0px -224px;")
-                    wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
+                    wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
                     wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_SendPMSTo") & " " & User.Alias)
                     wr.AddAttribute(HtmlTextWriterAttribute.Alt, "*")
                     wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
@@ -535,28 +535,28 @@ Namespace DotNetZoom
                     wr.RenderEndTag() ' A
                     wr.Write("&nbsp;")
                 End If
-		end if
+            End If
 
-			
-			
+
+
             'link to user profile
             wr.RenderBeginTag(HtmlTextWriterTag.B)
             wr.AddAttribute(HtmlTextWriterAttribute.Href, TTTUtils.GetURL(document, page, String.Format("forumpage={0}&userid={1}&tabid={2}", _profilePage.ToString, Zuser.UserID.ToString, _portalSettings.ActiveTab.TabId), "scope=&threadid=&searchpage=&threadpage=&threadspage="))
             wr.AddAttribute(HtmlTextWriterAttribute.title, GetLanguage("F_SeeProfileof") & " " & User.Alias)
             wr.RenderBeginTag(HtmlTextWriterTag.A)
-            
 
-				If Not HttpContext.Current.Request.Params("useralias") is Nothing then
-				' Put color on if search userAlias
-				' useralias=
-				' searchobject=
-				wr.Write(ProcessSearch(HttpContext.Current.Request.Params("useralias"), "<tag>" & User.Alias & "<tag>"))
-				else
-				wr.Write(User.Alias)
-				end if
 
-			
-			
+            If Not HttpContext.Current.Request.Params("useralias") Is Nothing Then
+                ' Put color on if search userAlias
+                ' useralias=
+                ' searchobject=
+                wr.Write(ProcessSearch(HttpContext.Current.Request.Params("useralias"), "<tag>" & User.Alias & "<tag>"))
+            Else
+                wr.Write(User.Alias)
+            End If
+
+
+
             wr.RenderEndTag() ' A
             wr.RenderEndTag() ' B
             wr.Write("<br>")
@@ -570,65 +570,65 @@ Namespace DotNetZoom
                 wr.Write("<br>")
             End If
 
-			
-			
-			
+
+
+
             ' Avatar adn user post count is always displayed in flat view mode,
             ' but only displayed in tree view mode for the selected post
 
             If flatView OrElse (Not flatView And selected) Then
                 ' put ladder here
 
-                wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
+                wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
                 wr.AddAttribute(HtmlTextWriterAttribute.Height, "12")
                 wr.AddAttribute(HtmlTextWriterAttribute.Width, "64")
 
 
 
-				Select Case User.PostCount
-				Case 0 To 10
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px 0px;")
-				Case 11 to 15
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -12px;")
-				Case 16 to 20
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -24px;")
-				Case 21 to 25
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -36px;")
-				Case 26 to 30
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -48px;")
-				Case 31 to 35
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -60px;")
-				Case 36 to 40
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -72px;")
-				Case 41 to 45
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -84px;")
-				Case else
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('/images/ttt/stars.gif') no-repeat; background-position: 0px -96px;")
-				End Select
-				Dim TempString As String
-				TempString = replace(GetLanguage("F_Contributed"), "{username}", user.Alias) 
-				TempString = replace(TempString, "{numpost}", user.PostCount.ToString) 
-				
+                Select Case User.PostCount
+                    Case 0 To 10
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px 0px;")
+                    Case 11 To 15
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -12px;")
+                    Case 16 To 20
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -24px;")
+                    Case 21 To 25
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -36px;")
+                    Case 26 To 30
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -48px;")
+                    Case 31 To 35
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -60px;")
+                    Case 36 To 40
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -72px;")
+                    Case 41 To 45
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -84px;")
+                    Case Else
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -96px;")
+                End Select
+                Dim TempString As String
+                TempString = replace(GetLanguage("F_Contributed"), "{username}", user.Alias)
+                TempString = replace(TempString, "{numpost}", user.PostCount.ToString)
+
                 Dim LoggonedUserID As Integer
-                If Page.Request.IsAuthenticated Then
-                    LoggonedUserID = ConvertInteger(Page.User.Identity.Name)
-					Dim Currentuser As ForumUser = ForumUser.GetForumUser(LoggonedUserID)
-					Dim TpDateTime as DateTime
-					TpDateTime = user.LastActivity.AddMinutes(GetTimeDiff(Currentuser.TimeZone))
-					TempString = replace(TempString, "{datelast}", TpDateTime.ToString()) 
+                If page.Request.IsAuthenticated Then
+                    LoggonedUserID = ConvertInteger(page.User.Identity.Name)
+                    Dim Currentuser As ForumUser = ForumUser.GetForumUser(LoggonedUserID)
+                    Dim TpDateTime As DateTime
+                    TpDateTime = user.LastActivity.AddMinutes(GetTimeDiff(Currentuser.TimeZone))
+                    TempString = replace(TempString, "{datelast}", TpDateTime.ToString())
                 Else
                     LoggonedUserID = -1
-					TempString = replace(TempString, "{datelast}", user.LastActivity.ToLongDateString) 
-	            End If
+                    TempString = replace(TempString, "{datelast}", user.LastActivity.ToLongDateString)
+                End If
 
-				
-				wr.AddAttribute(HtmlTextWriterAttribute.Title, TempString )
-				wr.AddAttribute(HtmlTextWriterAttribute.Alt, User.PostCount.ToString)
+
+                wr.AddAttribute(HtmlTextWriterAttribute.Title, TempString)
+                wr.AddAttribute(HtmlTextWriterAttribute.Alt, User.PostCount.ToString)
                 wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
                 wr.RenderBeginTag(HtmlTextWriterTag.Img)
                 wr.RenderEndTag() ' img
                 wr.Write("<br>")
-				
+
             End If
 
             wr.RenderEndTag() ' Td
@@ -658,7 +658,7 @@ Namespace DotNetZoom
             ' Start row which will display subject, body and actions (reply, edit, etc)
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "TTTRow")
             wr.AddAttribute(HtmlTextWriterAttribute.Valign, "top")
-            
+
             If Not flatView And Not selected Then
                 wr.AddAttribute(HtmlTextWriterAttribute.Height, "100%")
             End If
@@ -709,47 +709,47 @@ Namespace DotNetZoom
             ' Display new image if this post is new since last time user visited
             If loggedOnUserID > 0 AndAlso (lastVisited < PostDate) Then
                 wr.AddAttribute(HtmlTextWriterAttribute.Src, imageURL + GetLanguage("N") + "_new.gif")
-				wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewPost"))
-				wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewPostA"))
+                wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewPost"))
+                wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewPostA"))
                 wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
                 wr.RenderBeginTag(HtmlTextWriterTag.Img)
                 wr.RenderEndTag() ' img
             End If
 
             wr.Write("<br>")
-			
-			
-			' ViewerId DateTime to see the date time in local time for registered user
-			
 
-			Dim TempDateTime as DateTime
+
+            ' ViewerId DateTime to see the date time in local time for registered user
+
+
+            Dim TempDateTime As DateTime
             If loggedOnUserID > 0 Then
-				Dim Currentuser As ForumUser = ForumUser.GetForumUser(loggedOnUserID)
-				TempDateTime = PostDate.AddMinutes(GetTimeDiff(Currentuser.TimeZone))
-                Else
-				TempDateTime = PostDate.AddMinutes(GetTimeDiff(-99))
-                End If
+                Dim Currentuser As ForumUser = ForumUser.GetForumUser(loggedOnUserID)
+                TempDateTime = PostDate.AddMinutes(GetTimeDiff(Currentuser.TimeZone))
+            Else
+                TempDateTime = PostDate.AddMinutes(GetTimeDiff(-99))
+            End If
 
             wr.Write(String.Format(GetLanguage("F_Posted") & " {0} {1}", TempDateTime.ToString("dd MMM yy"), TempDateTime.ToString("t")))
-			
+
             ' Display edited tag if post has been modified
             If Len(_lastModifiedAuthor) > 0 Then
                 wr.Write("<br>")
-                wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
+                wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
                 wr.AddAttribute(HtmlTextWriterAttribute.Width, "16")
                 wr.AddAttribute(HtmlTextWriterAttribute.Height, "16")
                 wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & imageURL & "forum.gif') no-repeat; background-position: 0px -128px;")
                 wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_PModified"))
-				wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_PModifiedA"))
+                wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_PModifiedA"))
                 wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
                 wr.RenderBeginTag(HtmlTextWriterTag.Img)
                 wr.RenderEndTag() 'Img
                 wr.RenderBeginTag(HtmlTextWriterTag.B)
                 wr.Write("&nbsp;")
-			' ViewerId DateTime to see the date time in local time for registered user
-			
+                ' ViewerId DateTime to see the date time in local time for registered user
 
-			
+
+
                 If loggedOnUserID > 0 Then
                     Dim Currentuser As ForumUser = ForumUser.GetForumUser(loggedOnUserID)
                     TempDateTime = _lastModifiedDate.AddMinutes(GetTimeDiff(Currentuser.TimeZone))
@@ -757,7 +757,7 @@ Namespace DotNetZoom
                     TempDateTime = _lastModifiedDate.AddMinutes(GetTimeDiff(-99))
                 End If
                 Dim TempString1 As String = Replace(GetLanguage("F_LastModified"), "{author}", _lastModifiedAuthor)
-			    TempString1 = Replace(TempString1, "{datetime}", TempDateTime.ToString)
+                TempString1 = Replace(TempString1, "{datetime}", TempDateTime.ToString)
                 wr.Write(TempString1)
                 wr.RenderEndTag() ' B
             End If

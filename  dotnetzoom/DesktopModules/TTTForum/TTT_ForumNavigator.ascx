@@ -22,13 +22,13 @@
                                 </td>
                                 <td class="TTTRowHighlight" width="20%" align="right" height="24" style="white-space: nowrap;">
                                     <asp:placeholder ID="pnlGroupEdit" Runat="server" Visible='<%# GroupCanEdit %>' >
-                                        <asp:ImageButton  ToolTip='<%# DotNetZoom.GetLanguage("erase") %>' AlternateText='<%# DotNetZoom.GetLanguage("erase") %>' id="btnGroupDelete2" ImageUrl="~/images/1x1.gif" Visible='<%# DataBinder.Eval(Container.DataItem,"ForumCount") = "0" %>'  runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' Width="16" Height="16" style='<%# GetimgStyle("delete") %>'/>
-                                        <asp:ImageButton  ToolTip='<%# DotNetZoom.GetLanguage("F_Up1") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Up") %>' id="btnGroupUp2" ImageUrl="~/images/up.gif" runat="server" CommandName="up" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none"/>
-                                        <asp:ImageButton  ToolTip='<%# DotNetZoom.GetLanguage("F_Down1") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Down") %>' id="btnGroupDown2" ImageUrl="~/images/dn.gif" runat="server" CommandName="down" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none"/>&nbsp;
+                                        <asp:ImageButton  ToolTip='<%# DotNetZoom.GetLanguage("erase") %>' AlternateText='<%# DotNetZoom.GetLanguage("erase") %>' id="btnGroupDelete2" ImageURL="~/images/1x1.gif" Visible='<%# DataBinder.Eval(Container.DataItem,"ForumCount") = "0" %>'  runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' Width="16" Height="16" style='<%# GetimgStyle("delete") %>'/>
+                                        <asp:ImageButton  ToolTip='<%# DotNetZoom.GetLanguage("F_Up1") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Up") %>' id="btnGroupUp2" ImageURL="~/images/up.gif" runat="server" CommandName="up" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                        <asp:ImageButton  ToolTip='<%# DotNetZoom.GetLanguage("F_Down1") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Down") %>' id="btnGroupDown2" ImageURL="~/images/dn.gif" runat="server" CommandName="down" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none"/>&nbsp;
 								</asp:placeholder>
                                 </td>
                                 <td class="TTTRowHighlight" align="center" height="24" style="white-space: nowrap;">
-                                    <asp:ImageButton id="btnExpand" ToolTip='<%# DotNetZoom.GetLanguage("F_Expand") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Expand") %>' ImageUrl="~/images/plus2.gif" runat="server" CommandName='<%# GetEditCommand %>' CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none" />
+                                    <asp:ImageButton id="btnExpand" ToolTip='<%# DotNetZoom.GetLanguage("F_Expand") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Expand") %>' ImageURL="~/images/plus2.gif" runat="server" CommandName='<%# GetEditCommand %>' CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none" />
                                     &nbsp; 
                                 </td>
                             </tr>
@@ -41,7 +41,7 @@
                                     &nbsp; <asp:Label cssclass="TTTHeaderText" text='<%# DataBinder.Eval(Container.DataItem, "Name") %>' runat="server" EnableViewState="true" id="Label3" /> 
                                 </td>
                                 <td class="TTTRowHighlight" align="center" width="25" height="24" style="white-space: nowrap;">
-                                    <asp:ImageButton id="btnColapse" ToolTip='<%# DotNetZoom.GetLanguage("F_Close") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Close") %>' ImageUrl="~/images/minus2.gif" runat="server" CommandName='collapse' CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                    <asp:ImageButton id="btnColapse" ToolTip='<%# DotNetZoom.GetLanguage("F_Close") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Close") %>' ImageURL="~/images/minus2.gif" runat="server" CommandName='collapse' CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none"/>
                                     &nbsp; 
                                 </td>
                             </tr>
@@ -52,7 +52,7 @@
                                             <table width="100%" cellpadding="0" cellspacing="0" runat="server">
                                                 <tr>
                                                     <td class="TTTRowHighlight" align="center" width="24" height="24" style="white-space: nowrap;">
-                                                        <asp:ImageButton  id="btnSelect" AlternateText='<%# GetEditText(DataBinder.Eval(Container.DataItem, "IsModerated"))  %>' Tooltip='<%# GetEditText(DataBinder.Eval(Container.DataItem, "IsModerated")) %>' OnClick="ForumSelect_Click" height="16" width="16" style='<%# GetEditStyle(DataBinder.Eval(Container.DataItem, "IsModerated")) %>' runat="server" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>'  imageurl="~/images/1x1.gif" />
+                                                        <asp:ImageButton  id="btnSelect" AlternateText='<%# GetEditText(DataBinder.Eval(Container.DataItem, "IsModerated"))  %>' Tooltip='<%# GetEditText(DataBinder.Eval(Container.DataItem, "IsModerated")) %>' OnClick="ForumSelect_Click" height="16" width="16" style='<%# GetEditStyle(DataBinder.Eval(Container.DataItem, "IsModerated")) %>' runat="server" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>'  ImageURL="~/images/1x1.gif" />
                                                     </td>
                                                     <td class="TTTRow" height="24" width="60%">
                                                         <asp:Label cssclass="TTTSubHeader" text='<%# DataBinder.Eval(Container.DataItem, "Name") %>' runat="server" EnableViewState="true" id="Label2" />&nbsp; <span class="TTTNormal">(<%# DataBinder.Eval(Container.DataItem,"TotalPosts") %> <%# DotNetZoom.GetLanguage("F_Post") %>)</span> 
@@ -78,7 +78,7 @@
                                                 &nbsp; <asp:Label id="lbGroupName" cssclass="TTTHeaderText" text='<%# DataBinder.Eval(Container.DataItem, "Name") %>' width="90%" runat="server" EnableViewState="true" ></asp:Label> 
                                             </td>
                                             <td class="TTTSubHeader" style="white-space: nowrap;" width="25" height="24" align="center">
-                                                <asp:ImageButton id="btnCloseGroup" Tooltip='<%# DotNetZoom.GetLanguage("F_Close") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Close") %>' ImageUrl="~/images/minus2.gif" runat="server" CommandName="cancel" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none" />
+                                                <asp:ImageButton id="btnCloseGroup" Tooltip='<%# DotNetZoom.GetLanguage("F_Close") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Close") %>' ImageURL="~/images/minus2.gif" runat="server" CommandName="cancel" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' BorderWidth="0" BorderStyle="none" />
                                                 &nbsp; 
                                             </td>
                                         </tr>
@@ -142,10 +142,10 @@
                                                                     <span class="TTTNormal"><%# DotNetZoom.GetLanguage("F_CreatedBy") %>:&nbsp;<%# FormatUser(DataBinder.Eval(Container.DataItem,"CreatedByUser")) %>&nbsp;<%# DotNetZoom.GetLanguage("F_CreatedOn") %>&nbsp;<%# DataBinder.Eval(Container.DataItem,"CreatedDate", "{0:g}") %> </span> 
                                                                 </td>
                                                                 <td class="TTTRowHighlight" align="right" height="24" style="white-space: nowrap;">
-                                                                    <asp:ImageButton  id="btnForumEdit" ToolTip='<%# DotNetZoom.GetLanguage("F_Edit") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Edit") %>' height="16" width="16" ImageUrl="~/images/1x1.gif" runat="server" CommandName="edit" OnClick="EditForum_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' style='<%# GetimgStyle("edit") %>'/>
-                                                                    <asp:ImageButton  id="btnForumDelete" ToolTip='<%# DotNetZoom.GetLanguage("erase") %>' AlternateText=<%# DotNetZoom.GetLanguage("erase") %> height="16" width="16" ImageUrl="~/images/1x1.gif" runat="server" CommandName="delete" OnClick="deleteForum_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' style='<%# GetimgStyle("delete") %>'/>
-                                                                    <asp:ImageButton  id="btnForumUp" ToolTip='<%# DotNetZoom.GetLanguage("F_Up") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Up") %>' ImageUrl="~/images/up.gif" runat="server" CommandName="up" OnClick="ForumUp_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' BorderWidth="0" BorderStyle="none"/>
-                                                                    <asp:ImageButton  id="btnForumDown" ToolTip='<%# DotNetZoom.GetLanguage("F_Down") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Down") %>' ImageUrl="~/images/dn.gif" runat="server" CommandName="down" OnClick="ForumDown_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                                                    <asp:ImageButton  id="btnForumEdit" ToolTip='<%# DotNetZoom.GetLanguage("F_Edit") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Edit") %>' height="16" width="16" ImageURL="~/images/1x1.gif" runat="server" CommandName="edit" OnClick="EditForum_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' style='<%# GetimgStyle("edit") %>'/>
+                                                                    <asp:ImageButton  id="btnForumDelete" ToolTip='<%# DotNetZoom.GetLanguage("erase") %>' AlternateText=<%# DotNetZoom.GetLanguage("erase") %> height="16" width="16" ImageURL="~/images/1x1.gif" runat="server" CommandName="delete" OnClick="deleteForum_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' style='<%# GetimgStyle("delete") %>'/>
+                                                                    <asp:ImageButton  id="btnForumUp" ToolTip='<%# DotNetZoom.GetLanguage("F_Up") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Up") %>' ImageURL="~/images/up.gif" runat="server" CommandName="up" OnClick="ForumUp_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                                                    <asp:ImageButton  id="btnForumDown" ToolTip='<%# DotNetZoom.GetLanguage("F_Down") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Down") %>' ImageURL="~/images/dn.gif" runat="server" CommandName="down" OnClick="ForumDown_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumID"), String) %>' BorderWidth="0" BorderStyle="none"/>
                                                                     &nbsp; 
                                                                 </td>
                                                             </tr>
@@ -162,7 +162,7 @@
                                                                                 <asp:textbox id="txtNewForum" runat="server" width="81%" cssclass="NormalTextBox"></asp:textbox>
                                                                             </td>
                                                                             <td class="TTTAltHeader" align="right" valign="top">
-                                                                                <asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("F_AddNewForum") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Add") %>' id="btnAddForum" height="16" width="16" ImageUrl="~/images/1x1.gif" runat="server" CommandName="add" OnClick="AddForum_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' style='<%# GetimgStyle("add") %>'/>
+                                                                                <asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("F_AddNewForum") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Add") %>' id="btnAddForum" height="16" width="16" ImageURL="~/images/1x1.gif" runat="server" CommandName="add" OnClick="AddForum_Click" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "ForumGroupID"), String) %>' style='<%# GetimgStyle("add") %>'/>
                                                                                 &nbsp; 
                                                                             </td>
                                                                         </tr>
@@ -187,7 +187,7 @@
                                 <td class="TTTAltHeader" align="left">
                                     <asp:textbox id="txtNewGroupName" runat="server" width="80%" cssclass="NormalTextBox"></asp:textbox>
                                     &nbsp; 
-                                    <asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("F_AddNewGroup") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Add") %>' id="btnAddGroup" height="16" width="16" ImageUrl="~/images/1x1.gif" runat="server" CommandName="add" CommandArgument='-1' style='<%# GetimgStyle("add") %>'/>
+                                    <asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("F_AddNewGroup") %>' AlternateText='<%# DotNetZoom.GetLanguage("F_Add") %>' id="btnAddGroup" height="16" width="16" ImageURL="~/images/1x1.gif" runat="server" CommandName="add" CommandArgument='-1' style='<%# GetimgStyle("add") %>'/>
                                     &nbsp; 
                                 </td>
                             </tr>

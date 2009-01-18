@@ -7,7 +7,7 @@
         <asp:TemplateColumn ItemStyle-Width="20">
             <ItemTemplate>
                 <asp:HyperLink NavigateUrl='<%# EditURL("defid",DataBinder.Eval(Container.DataItem,"ModuleDefID")) %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1">
-                    <asp:Image ImageUrl="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ToolTip='<%# DotNetZoom.GetLanguage("modifier") %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image" />
+                    <asp:Image ImageURL="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ToolTip='<%# DotNetZoom.GetLanguage("modifier") %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image" />
                 </asp:HyperLink>
             </ItemTemplate>
         </asp:TemplateColumn>

@@ -32,7 +32,7 @@ Namespace DotNetZoom
 
 #End Region
 
-        Dim _DefaultPage As String = "~/DeskTopModules/TTTGallery/TTT_Gallery.ascx"
+        Dim _DefaultPage As String = glbPath & "DeskTopModules/TTTGallery/TTT_Gallery.ascx"
 
         Public Enum GalleryDesktopType
             GalleryMain
@@ -44,29 +44,33 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             'Put user code to initialize the page here
-
-            If IsNumeric(Request.Params("GalleryPage")) Then
-                Dim GalleryPage As Integer = CInt(Request.Params("GalleryPage"))
-                Select Case GalleryPage
-                    Case GalleryDesktopType.GalleryMain
-                        _DefaultPage = "~/DeskTopModules/TTTGallery/TTT_Gallery.ascx"
-                    Case GalleryDesktopType.GalleryBrowser
-                        _DefaultPage = "~/DeskTopModules/TTTGallery/TTT_Viewer.ascx"
-                    Case GalleryDesktopType.GallerySlideshow
-                        _DefaultPage = "~/DeskTopModules/TTTGallery/TTT_Slideshow.ascx"
-                    Case GalleryDesktopType.GalleryMediaPlayer
-                        _DefaultPage = "~/DeskTopModules/TTTGallery/TTT_MediaPlayer.ascx"
-                    Case GalleryDesktopType.GalleryFlashPlayer
-                        _DefaultPage = "~/DeskTopModules/TTTGallery/TTT_FlashPlayer.ascx"
-                End Select
+            If IsNumeric(Request.Params("mid")) Then
+                If Request.Params("mid") = ModuleId.ToString Then
+                    If IsNumeric(Request.Params("GalleryPage")) Then
+                        Dim GalleryPage As Integer = CInt(Request.Params("GalleryPage"))
+                        Select Case GalleryPage
+                            Case GalleryDesktopType.GalleryMain
+                                _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_Gallery.ascx"
+                            Case GalleryDesktopType.GalleryBrowser
+                                _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_Viewer.ascx"
+                            Case GalleryDesktopType.GallerySlideshow
+                                _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_Slideshow.ascx"
+                            Case GalleryDesktopType.GalleryMediaPlayer
+                                _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_MediaPlayer.ascx"
+                            Case GalleryDesktopType.GalleryFlashPlayer
+                                _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_FlashPlayer.ascx"
+                        End Select
+                    End If
+                End If
             End If
+
             Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule(_DefaultPage), PortalModuleControl)
             If Not objModule Is Nothing Then
                 objModule.ModuleConfiguration = Me.ModuleConfiguration
                 Controls.Add(objModule)
             End If
-			
-			
+
+
         End Sub
 
     End Class

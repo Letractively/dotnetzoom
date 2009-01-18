@@ -62,9 +62,9 @@ Namespace DotNetZoom
             ' Redirect browser back to portal home page
 			
              If Request.Params("tabid") Is Nothing Then
-                Response.Redirect("~" & GetDocument(), True)
-			 Else
-                Response.Redirect("~" & GetDocument() & "?tabid=" & Request.Params("tabid"), True)
+                Response.Redirect(GetFullDocument(), True)
+            Else
+                Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid"), True)
 			 End if
 			 
         End Sub

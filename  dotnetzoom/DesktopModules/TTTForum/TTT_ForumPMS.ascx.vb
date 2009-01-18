@@ -71,7 +71,7 @@ Namespace DotNetZoom
 			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
  
 	        If Request.IsAuthenticated = false Then
-                     Response.Redirect(FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1"))
+                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1"))
             End If
 	
 			btnBack.Text = GetLanguage("return")
@@ -99,18 +99,18 @@ Namespace DotNetZoom
 					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
 					Select Case UserCSS.Skin
 					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					case "Stibnite"
-                            objLink.Text = "<link href=""" & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					case "Algues bleues"
-                            objLink.Text = "<link href=""" & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case "Stibnite"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case "Algues bleues"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case Else
+                            objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                    End Select
+                Else
+                    objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                End If
+                objCSS.Controls.Add(objLink)
             End If
 
             ZuserID = Int16.Parse(COntext.User.Identity.Name)
@@ -127,67 +127,70 @@ Namespace DotNetZoom
                 End If
 
                 If Request.Params("pmsTabId") = "3" Then
-                _author = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-				SetFckEditor()
-                BindCompose()
+                    _author = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
+                    SetFckEditor()
+                    BindCompose()
                 End If
 
                 CreateLink()
-				ViewState("UrlReferrer") = FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString )
+                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
             End If
 
 
-            cmdInbox.Text = "<img height=""32"" width=""32"" src=""images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ImageFolder & "forum.gif') no-repeat; background-position: -16px -224px;"">"
+            cmdInbox.Text = "<img height=""32"" width=""32"" src=""" & glbPath & "images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ImageFolder & "forum.gif') no-repeat; background-position: -16px -224px;"">"
             cmdInbox.ToolTip = GetLanguage("UO_InBox")
-            cmdOutbox.Text = "<img height=""32"" width=""32"" src=""images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ImageFolder & "forum.gif') no-repeat; background-position: -16px -288px;"">"
-		cmdOutbox.ToolTip = GetLanguage("UO_OutBox")
-            cmdCompose.Text = "<img height=""32"" width=""32"" src=""images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ImageFolder & "forum.gif') no-repeat; background-position: -16px -256px;"">"
-		cmdCompose.ToolTip = GetLanguage("UO_write")
+            cmdOutbox.Text = "<img height=""32"" width=""32"" src=""" & glbPath & "images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ImageFolder & "forum.gif') no-repeat; background-position: -16px -288px;"">"
+            cmdOutbox.ToolTip = GetLanguage("UO_OutBox")
+            cmdCompose.Text = "<img height=""32"" width=""32"" src=""" & glbPath & "images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ImageFolder & "forum.gif') no-repeat; background-position: -16px -256px;"">"
+            cmdCompose.ToolTip = GetLanguage("UO_write")
         End Sub
 
-		Private Sub SetFckEditor()
-				Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+        Private Sub SetFckEditor()
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim ZuserURL As String = _portalSettings.UploadDirectory
-		   		ZuserUrl = ZuserURL & "userimage/" & ZuserID.ToString
-            	Session("FCKeditor:UserFilesPath") = ZuserURL & "/"
-	            If Request.IsAuthenticated = false Then
-        	    FCKeditor1.LinkBrowser = False
-				else
-	            Dim objAdmin As New AdminDB()
-	            Dim tmpUploadRoles As String = ""
-    	        If Not CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String) Is Nothing Then
-                tmpUploadRoles = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String)
-        	    End If
-	            FCKeditor1.LinkBrowser = PortalSecurity.IsInRoles(tmpUploadRoles)
-				End If
-				FCKeditor1.width = unit.pixel(610)
-				FCKeditor1.Height = unit.pixel(500)
-				if GetLanguage("fckeditor_language") <> "auto"
-				FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-				FCKeditor1.AutoDetectLanguage = False
-				end if
-	            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-    	        FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+            ZuserUrl = ZuserURL & "userimage/" & ZuserID.ToString
+            Session("FCKeditor:UserFilesPath") = ZuserURL & "/"
+            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
 
-				' set the css for the editor if it exist
-				If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) then
-				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
-				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-				FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
-				End If
+            If Request.IsAuthenticated = False Then
+                FCKeditor1.LinkBrowserURL = ""
+            Else
+                Dim objAdmin As New AdminDB()
+                Dim tmpUploadRoles As String = ""
+                If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+                    tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
+                End If
+                If Not PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                    FCKeditor1.LinkBrowserURL = ""
+                End If
+            End If
+            FCKeditor1.Width = Unit.Pixel(610)
+            FCKeditor1.Height = unit.pixel(500)
+            If GetLanguage("fckeditor_language") <> "auto" Then
+                FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
+                FCKeditor1.AutoDetectLanguage = False
+            End If
+            FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
 
-            	
-	   			Dim ZuserphysicalPath As String = Server.MapPath(ZuserURL)		
-	       		If Not Directory.Exists(ZuserphysicalPath) Then
-               		Try
-                		IO.Directory.CreateDirectory(ZuserphysicalPath)
-                		Catch exc As System.Exception
-				    End Try
-           		End If
-		
-		end sub
-		
+            ' set the css for the editor if it exist
+            If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) Then
+                FCKeditor1.SkinPath = _portalSettings.UploadDirectory & "skin/fckeditor/"
+                FCKeditor1.EditorAreaCSS = _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
+                FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
+                ' FCKeditor1.TemplatesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml"
+            End If
+
+
+            Dim ZuserphysicalPath As String = Server.MapPath(ZuserURL)
+            If Not Directory.Exists(ZuserphysicalPath) Then
+                Try
+                    IO.Directory.CreateDirectory(ZuserphysicalPath)
+                Catch exc As System.Exception
+                End Try
+            End If
+
+        End Sub
+
         Private Sub BindInbox()
 
             Dim dbUserOnline As New ForumUserOnlineDB()
@@ -203,9 +206,9 @@ Namespace DotNetZoom
             Try
 
                 dgInbox.DataSource = dbUserOnline.TTTForum_PrivateMessage_GetInbox(ZuserID, InboxSortField, InboxSortdirection)
-				dgInbox.Columns(3).HeaderText = GetLanguage("UO_From")
-				dgInbox.Columns(4).HeaderText = GetLanguage("UO_Object")
-				dgInbox.Columns(5).HeaderText = GetLanguage("UO_Date_received")
+                dgInbox.Columns(3).HeaderText = GetLanguage("UO_From")
+                dgInbox.Columns(4).HeaderText = GetLanguage("UO_Object")
+                dgInbox.Columns(5).HeaderText = GetLanguage("UO_Date_received")
                 dgInbox.DataBind()
 
                 If dgInbox.Items.Count = 0 Then
@@ -219,7 +222,7 @@ Namespace DotNetZoom
             Catch Exc As System.Exception
                 pnlNav.Visible = False
                 pnlInbox.Visible = False
-                lblErrMsg.Text = Exc.Message 
+                lblErrMsg.Text = Exc.Message
                 lblErrMsg.Visible = True
             End Try
 
@@ -234,14 +237,14 @@ Namespace DotNetZoom
 
             If Not btnReply Is Nothing Then
                 CType(btnReply, ImageButton).alternatetext = GetLanguage("UO_reply")
-				CType(btnReply, ImageButton).Tooltip = GetLanguage("UO_reply")
+                CType(btnReply, ImageButton).Tooltip = GetLanguage("UO_reply")
             End If
 
             Dim lnkReplyMessage As Control = e.Item.FindControl("lnkReplyMessage")
 
             If Not lnkReplyMessage Is Nothing Then
                 CType(lnkReplyMessage, linkbutton).text = " " & GetLanguage("UO_reply")
-				CType(lnkReplyMessage, linkbutton).Tooltip = GetLanguage("UO_reply")
+                CType(lnkReplyMessage, linkbutton).Tooltip = GetLanguage("UO_reply")
             End If
 
 
@@ -249,65 +252,65 @@ Namespace DotNetZoom
 
             If Not btnKeepAsNew Is Nothing Then
                 CType(btnKeepAsNew, ImageButton).alternatetext = GetLanguage("UO_KeepNew")
-				CType(btnKeepAsNew, ImageButton).Tooltip = GetLanguage("UO_KeepNew")
+                CType(btnKeepAsNew, ImageButton).Tooltip = GetLanguage("UO_KeepNew")
             End If
 
             Dim lnkKeepAsNew As Control = e.Item.FindControl("lnkKeepAsNew")
 
             If Not lnkKeepAsNew Is Nothing Then
                 CType(lnkKeepAsNew, linkbutton).text = " " & GetLanguage("UO_KeepNew")
-				CType(lnkKeepAsNew, linkbutton).Tooltip = GetLanguage("UO_KeepNew")
+                CType(lnkKeepAsNew, linkbutton).Tooltip = GetLanguage("UO_KeepNew")
             End If
 
             Dim btnDelete As Control = e.Item.FindControl("btnDelete")
 
             If Not btnDelete Is Nothing Then
                 CType(btnDelete, ImageButton).alternatetext = GetLanguage("delete")
-				CType(btnDelete, ImageButton).Tooltip = GetLanguage("delete")
+                CType(btnDelete, ImageButton).Tooltip = GetLanguage("delete")
             End If
 
             Dim lnkMessageViewDelete As Control = e.Item.FindControl("lnkMessageViewDelete")
 
             If Not lnkMessageViewDelete Is Nothing Then
                 CType(lnkMessageViewDelete, linkbutton).text = " " & GetLanguage("delete")
-				CType(lnkMessageViewDelete, linkbutton).Tooltip = GetLanguage("delete")
+                CType(lnkMessageViewDelete, linkbutton).Tooltip = GetLanguage("delete")
             End If
 
             Dim Linkbutton1 As Control = e.Item.FindControl("Linkbutton1")
 
             If Not Linkbutton1 Is Nothing Then
-				CType(Linkbutton1, linkbutton).Tooltip = GetLanguage("UO_see_message") 
+                CType(Linkbutton1, linkbutton).Tooltip = GetLanguage("UO_see_message")
             End If
-			
-			
+
+
         End Sub
-		
+
         Private Sub dgOutbox_ItemCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DataGridItemEventArgs) Handles dgOutbox.ItemCreated
 
             Dim btnOutboxDelete As Control = e.Item.FindControl("btnOutboxDelete")
 
             If Not btnOutboxDelete Is Nothing Then
                 CType(btnOutboxDelete, ImageButton).alternatetext = GetLanguage("delete")
-				CType(btnOutboxDelete, ImageButton).Tooltip = GetLanguage("delete")
+                CType(btnOutboxDelete, ImageButton).Tooltip = GetLanguage("delete")
             End If
 
             Dim lnkOutboxDelete As Control = e.Item.FindControl("lnkOutboxDelete")
 
             If Not lnkOutboxDelete Is Nothing Then
                 CType(lnkOutboxDelete, linkbutton).text = " " & GetLanguage("delete")
-				CType(lnkOutboxDelete, linkbutton).Tooltip = GetLanguage("delete")
+                CType(lnkOutboxDelete, linkbutton).Tooltip = GetLanguage("delete")
             End If
 
             Dim Linkbutton2 As Control = e.Item.FindControl("Linkbutton2")
 
             If Not Linkbutton2 Is Nothing Then
-				CType(Linkbutton2, linkbutton).Tooltip = GetLanguage("UO_see_message") 
+                CType(Linkbutton2, linkbutton).Tooltip = GetLanguage("UO_see_message")
             End If
-			
-			
+
+
         End Sub
-		
-		
+
+
         Private Sub BindOutbox()
 
             Dim dbUserOnline As New ForumUserOnlineDB()
@@ -321,10 +324,10 @@ Namespace DotNetZoom
             End If
 
             dgOutbox.DataSource = dbUserOnline.TTTForum_PrivateMessage_GetOutbox(ZuserID, OutboxSortField, OutboxSortDirection)
-			dgOutbox.Columns(3).HeaderText = GetLanguage("UO_to")
-			dgOutbox.Columns(4).HeaderText = GetLanguage("UO_Object")
-			dgOutbox.Columns(5).HeaderText = GetLanguage("UO_Date_Send")
-			dgOutbox.DataBind()
+            dgOutbox.Columns(3).HeaderText = GetLanguage("UO_to")
+            dgOutbox.Columns(4).HeaderText = GetLanguage("UO_Object")
+            dgOutbox.Columns(5).HeaderText = GetLanguage("UO_Date_Send")
+            dgOutbox.DataBind()
 
             If dgOutbox.Items.Count = 0 Then
                 pnlOutbox.Visible = False
@@ -371,13 +374,13 @@ Namespace DotNetZoom
 
         End Sub
 
-        Protected Sub CreateLink() 
+        Protected Sub CreateLink()
 
-           
+
             Me.cmdInbox.NavigateUrl = TTTUtils.GetURL(GetFullDocument(), Page, String.Format("pmsTabId={0}", 1), "")
-            
+
             Me.cmdOutbox.NavigateUrl = TTTUtils.GetURL(GetFullDocument(), Page, String.Format("pmsTabId={0}", 2), "")
-           
+
             Me.cmdCompose.NavigateUrl = TTTUtils.GetURL(GetFullDocument(), Page, String.Format("pmsTabId={0}", 3), "")
 
         End Sub
@@ -496,32 +499,32 @@ Namespace DotNetZoom
 
         End Sub
 
-		Private Sub SendMailNotification(ByVal SenderId As Integer, ByVal ReceiverId As Integer, ByVal Subject As String) 
-        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		If portalSettings.GetSiteSettings(_portalSettings.PortalID)("PMSMailNotice") <> "NO" then
-		
-		Dim StrBody As String
-        Dim objUser As New UsersDB()
-		Dim Sendername As String = ""
-    	Dim Zuser As ForumUser = ForumUser.GetForumUser(SenderId)
-		Sendername = Zuser.Alias
-		
-        Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, ReceiverId)
-		    If dr.Read() Then
-			 strBody = GetLanguage("UO_Message_Notice")
-			 strBody = Replace(StrBody, "{FullName}", dr("FullName").ToString)
-			 strBody = Replace(StrBody, "{SenderName}", SenderName)
-			 strBody = Replace(StrBody, "{MessageURL}", GetPortalDomainName(PortalAlias, Request) &  GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId.ToString & "&pmsTabId=1&def=UsersPMS&forumpage=4")
-             strBody = vbCrLf & strBody & vbCrLf
-			 Dim StringObject as string = ProcessLanguage(GetLanguage("UO_Notice_Object"))
-             SendNotification(_portalSettings.Email, dr("Email").ToString, "", StringObject , strBody)
+        Private Sub SendMailNotification(ByVal SenderId As Integer, ByVal ReceiverId As Integer, ByVal Subject As String)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If portalSettings.GetSiteSettings(_portalSettings.PortalID)("PMSMailNotice") <> "NO" Then
+
+                Dim StrBody As String
+                Dim objUser As New UsersDB()
+                Dim Sendername As String = ""
+                Dim Zuser As ForumUser = ForumUser.GetForumUser(SenderId)
+                Sendername = Zuser.Alias
+
+                Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, ReceiverId)
+                If dr.Read() Then
+                    strBody = GetLanguage("UO_Message_Notice")
+                    strBody = Replace(StrBody, "{FullName}", dr("FullName").ToString)
+                    strBody = Replace(StrBody, "{SenderName}", SenderName)
+                    StrBody = Replace(StrBody, "{MessageURL}", GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId.ToString & "&pmsTabId=1&def=UsersPMS&forumpage=4")
+                    strBody = vbCrLf & strBody & vbCrLf
+                    Dim StringObject As String = ProcessLanguage(GetLanguage("UO_Notice_Object"))
+                    SendNotification(_portalSettings.Email, dr("Email").ToString, "", StringObject, strBody)
+                End If
+                dr.Close()
             End If
-		dr.Close()
-		End If
-		End Sub
-		
-		
-		
+        End Sub
+
+
+
         Protected Sub btnDeleteInboxItems_Click(ByVal sender As Object, ByVal e As System.EventArgs)
 
             Dim ItemCollection As DataGridItemCollection
@@ -572,13 +575,13 @@ Namespace DotNetZoom
             lblErrMsg.Visible = False
 
 
-			
+
             If Len(txtRecipient.Text) = 0 _
             OrElse Len(txtSubject.Text) = 0 _
             OrElse Len(Me.FCKeditor1.value) = 0 Then
                 lblErrMsg.Text = GetLanguage("UO_Need_Object")
                 lblErrMsg.Visible = True
-				SetFckEditor()
+                SetFckEditor()
                 Return
             End If
 
@@ -597,28 +600,28 @@ Namespace DotNetZoom
             Dim dbUserOnline As New ForumUserOnlineDB()
 
             If RecipientID = -1 OrElse RecipientID = 0 Then
-                lblErrMsg.Text = GetLanguage("F_NoUserFound") 
+                lblErrMsg.Text = GetLanguage("F_NoUserFound")
                 lblErrMsg.Visible = True
-				SetFckEditor()
+                SetFckEditor()
                 Return
             Else
-				FCKeditor1.value = FormatDHtml(FCKeditor1.value)
+                FCKeditor1.value = FormatDHtml(FCKeditor1.value)
                 dbUserOnline.TTTForum_PrivateMessage_Add(ZuserID, RecipientID, txtSubject.Text, FCKeditor1.value)
- 				SendMailNotification(ZuserID, RecipientID, txtSubject.Text)
+                SendMailNotification(ZuserID, RecipientID, txtSubject.Text)
             End If
 
-             If Request.Url.ToString().ToLower().IndexOf(GetDocument()) = -1 Then
+            If Request.Url.ToString().ToLower().IndexOf(GetFullDocument()) = -1 Then
                 Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
-             Else
-                 Response.Redirect(TTTUtils.ForumPMSLink(TabId), True)
-			 End If
+            Else
+                Response.Redirect(TTTUtils.ForumPMSLink(TabId), True)
+            End If
 
         End Sub
 
         Private Sub btnFindUser_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFindUser.Click
             pnlFindUser.Visible = True
-			pnlUser.Visible = False
-            
+            pnlUser.Visible = False
+
             Dim dbForumUser As New ForumUserDB()
 
             ' dont need "%", as we handle it in sproc
@@ -634,22 +637,22 @@ Namespace DotNetZoom
             If drpResults.Items.Count = 0 Then
                 drpResults.Items.Add(New ListItem(GetLanguage("F_NoUser"), ""))
             End If
-			SetFckEditor()
+            SetFckEditor()
         End Sub
 
         Private Sub btnSelect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSelect.Click
             txtRecipient.Text = drpResults.SelectedItem.Text
             txtRecipientID.Text = drpResults.SelectedItem.Value
             pnlFindUser.Visible = False
-			pnlUser.Visible = True
-			SetFckEditor()
+            pnlUser.Visible = True
+            SetFckEditor()
         End Sub
 
         Public Function GetImageStyle(ByVal MessageRead As Boolean) As String
             If MessageRead Then
-                Return "style=""background: url('/images/uostrip.gif') no-repeat; background-position: 0px -227px;"""
+                Return "style=""background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -227px;"""
             Else
-                Return "style=""background: url('/images/uostrip.gif') no-repeat; background-position: 0px -243px;"""
+                Return "style=""background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -243px;"""
             End If
         End Function
 

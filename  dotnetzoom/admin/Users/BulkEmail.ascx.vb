@@ -62,49 +62,52 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			Title1.DisplayHelp = "DisplayHelp_BulkEmail"
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+            End If
+            Title1.DisplayHelp = "DisplayHelp_BulkEmail"
 
             If Not Page.IsPostBack Then
-			  ' Store URL Referrer to return to portal
+                ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
                     btnReturn.Visible = False
                 End If
 
-			    TableMessage.Visible = True
-				TableSendTo.Visible = False
-				optView.Items.FindByValue("B").Text = GetLanguage("text")
-			    optView.Items.FindByValue("R").Text = GetLanguage("html")
-				cmdUpload.text = GetLanguage("upload")
-				btnSend.Text = GetLanguage("Mail_Send")
-				btnSendAnother.Text = GetLanguage("Mail_Send_Again")
-				btnReturn.Text = GetLanguage("return")
-	            ' Obtain PortalSettings from Current Context
-	            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			
+                TableMessage.Visible = True
+                TableSendTo.Visible = False
+                optView.Items.FindByValue("B").Text = GetLanguage("text")
+                optView.Items.FindByValue("R").Text = GetLanguage("html")
+                cmdUpload.Text = GetLanguage("upload")
+                btnSend.Text = GetLanguage("Mail_Send")
+                btnSendAnother.Text = GetLanguage("Mail_Send_Again")
+                btnReturn.Text = GetLanguage("return")
+
                 Dim objUser As New UsersDB()
                 Dim dr As SqlDataReader = objUser.GetPortalRoles(_portalSettings.PortalId, GetLanguage("N"))
                 cboRoles.DataSource = dr
                 cboRoles.DataBind()
                 dr.Close()
-                cboRoles.Items.Insert(0, New ListItem(getlanguage("list_none"), "-1"))
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
-                
+                cboRoles.Items.Insert(0, New ListItem(GetLanguage("list_none"), "-1"))
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+
                 Dim FileList As ArrayList
                 FileList = GetFileList(_portalSettings.PortalId)
                 cboAttachment.DataSource = FileList
                 cboAttachment.DataBind()
-				SetFckEditor()
-				
-				
-				
-				
-				
-			Else
+                SetFckEditor()
+
+
+
+
+
+            Else
                 If optView.SelectedItem.Value = "B" Then
                     optView.SelectedItem.Value = "B"
-					pnlBasicTextBox.Visible = True
+                    pnlBasicTextBox.Visible = True
                     pnlRichTextBox.Visible = False
                 Else
                     pnlBasicTextBox.Visible = False
@@ -130,7 +133,7 @@ Namespace DotNetZoom
 				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
 				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
 				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-				FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
+                ' FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
 				End If
 
         End Sub

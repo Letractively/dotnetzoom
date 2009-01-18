@@ -136,7 +136,7 @@ Namespace DotNetZoom
 					trans.Load(xslsrc)
                     End If
                 Else ' default
-                    xslsrc = "~/DesktopModules/News/RSS91.xsl"
+                    xslsrc = glbPath & "DesktopModules/News/RSS91.xsl"
 					trans.Load(Server.MapPath(xslsrc))
                 End If
 				 xmlRSS.Transform = trans

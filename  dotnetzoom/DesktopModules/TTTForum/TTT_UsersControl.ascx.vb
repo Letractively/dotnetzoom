@@ -238,7 +238,7 @@ Namespace DotNetZoom
         End Function
 
         Protected Function FormatURL(ByVal strKeyName As String, ByVal strKeyValue As String) As String
-            FormatURL = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&mid=" & ZmoduleID.ToString & "&" & strKeyName & "=" & strKeyValue
+            FormatURL = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&mid=" & ZmoduleID.ToString & "&" & strKeyName & "=" & strKeyValue
         End Function
 
         Protected Function FormatUserURL(ByVal strKeyValue As String) As String

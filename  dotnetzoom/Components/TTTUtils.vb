@@ -299,7 +299,7 @@ Namespace DotNetZoom
 
         Public Shared Function ForumHomeLink(ByVal TabId As Integer) As String
  			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, "forumpage=" & TTT_ForumDispatch.ForumDesktopType.ForumMain)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabId.ToString, "forumpage=" & TTT_ForumDispatch.ForumDesktopType.ForumMain)
         End Function
 
         Public Shared Function ForumSearchLink(ByVal TabId As Integer, ByVal ModuleID As Integer) As String
@@ -311,7 +311,7 @@ Namespace DotNetZoom
             sb.Append("&mid=")
             sb.Append(ModuleID)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabId.ToString, sb.ToString)
 
         End Function
 
@@ -322,7 +322,7 @@ Namespace DotNetZoom
              sb.Append("&forumpage=")
              sb.Append(TTT_ForumDispatch.ForumDesktopType.ForumMain)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabId.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumUserProfileLink(ByVal TabId As Integer, ByVal UserID As Integer) As String
@@ -333,7 +333,7 @@ Namespace DotNetZoom
             sb.Append("&userid=")
             sb.Append(UserID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabId.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumSubscribeLink(ByVal TabId As Integer, ByVal ModuleID As Integer, ByVal UserID As Integer) As String
@@ -346,7 +346,7 @@ Namespace DotNetZoom
             sb.Append("&userid=")
             sb.Append(UserID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabId.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumNewThreadLink(ByVal TabID As Integer, ByVal ModuleID As Integer, ByVal ForumID As Integer) As String
@@ -358,7 +358,7 @@ Namespace DotNetZoom
             sb.Append(ForumID.ToString)
             sb.Append("&scope=thread&action=new")
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumSettingLink(ByVal TabID As Integer, ByVal ModuleID As Integer) As String
@@ -369,7 +369,7 @@ Namespace DotNetZoom
             sb.Append("&mid=")
             sb.Append(ModuleID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         ' without forumid
@@ -381,7 +381,7 @@ Namespace DotNetZoom
             sb.Append("&mid=")
             sb.Append(moduleID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         ' with forumid
@@ -394,7 +394,7 @@ Namespace DotNetZoom
            sb.Append("&forumid=")
             sb.Append(ForumID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumUserAdminLink(ByVal TabID As Integer, ByVal ModuleID As Integer) As String
@@ -405,7 +405,7 @@ Namespace DotNetZoom
             sb.Append("&mid=")
             sb.Append(ModuleID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumUserAdminLink(ByVal TabID As Integer, ByVal ModuleID As Integer, ByVal UserID As Integer) As String
@@ -418,7 +418,7 @@ Namespace DotNetZoom
             sb.Append("&userid=")
             sb.Append(UserID)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumModerateAdminLink(ByVal TabID As Integer, ByVal ModuleID As Integer) As String
@@ -429,7 +429,7 @@ Namespace DotNetZoom
             sb.Append("&mid=")
             sb.Append(ModuleID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumModerateAdminLink(ByVal TabID As Integer, ByVal ModuleID As Integer, ByVal ForumID As Integer) As String
@@ -442,7 +442,7 @@ Namespace DotNetZoom
             sb.Append("&forumid=")
             sb.Append(ForumID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumPMSLink(ByVal TabID As Integer) As String
@@ -452,7 +452,7 @@ Namespace DotNetZoom
             sb.Append(TTT_ForumDispatch.ForumDesktopType.ForumPrivateMessage)
             sb.Append("&def=UsersPMS")
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function ForumPMSComposeLink(ByVal TabID As Integer, ByVal UserID As Integer) As String
@@ -463,7 +463,7 @@ Namespace DotNetZoom
             sb.Append("&userid=")
             sb.Append(UserID.ToString)
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return FormatFriendlyURL(_PortalSetting.activetab.FriendlyTabName, _PortalSetting.activetab.ShowFriendly, TabId.ToString, sb.ToString)
+            Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function
 
         Public Shared Function MSNLink(ByVal value As String) As String
@@ -486,7 +486,7 @@ Namespace DotNetZoom
         End Function
 
         Public Shared Function GalleryAdminLink(ByVal TabID As Integer, ByVal ModuleID As Integer) As String
-            Return "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryAdmin & "&mid=" & ModuleID.ToString & "&tabid=" & TabID.ToString
+            Return GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryAdmin & "&mid=" & ModuleID.ToString & "&tabid=" & TabID.ToString
         End Function
 
 #End Region

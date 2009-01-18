@@ -136,7 +136,7 @@ Namespace DotNetZoom
 				
 				
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
                 Dim FileList As ArrayList
                 If Not (Request.Params("hostpage") Is Nothing) Then
                     FileList = GetFileList(, glbImageFileTypes, False)
@@ -176,7 +176,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId &  "&" & GetAdminPage()& "&VendorId=" & VendorId & "&def=Fournisseurs", True)
+                        Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorId & "&def=Fournisseurs", True)
                     End If
 
                     chkLog.Checked = False
@@ -190,7 +190,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId &  "&" & GetAdminPage()& "&VendorId=" & VendorId & "&def=Fournisseurs"
+                ViewState("UrlReferrer") = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorId & "&def=Fournisseurs"
 
             End If
 

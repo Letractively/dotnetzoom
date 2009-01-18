@@ -60,7 +60,7 @@ Namespace DotNetZoom
         '*******************************************************'
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 			Title1.DisplayHelp = "DisplayHelp_Vendors"
             If Not Page.IsPostBack Then
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
@@ -69,14 +69,14 @@ Namespace DotNetZoom
 			
 			
             ' Edit Options
-			 cmdEditOptions.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & tabId &  "&" & GetAdminPage()& "&options=1"
-			 cmdEditOptions.Text = GetLanguage("paramêtres")
-             cmdEditOptions.ToolTip = GetLanguage("Vendors_OptionsEdit")
+            cmdEditOptions.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & tabId & "&" & GetAdminPage() & "&options=1"
+            cmdEditOptions.Text = GetLanguage("paramêtres")
+            cmdEditOptions.ToolTip = GetLanguage("Vendors_OptionsEdit")
 
-			
-			
-			' Edit vendors
-			  cmdEditModule.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & tabId & "&" & GetAdminPage()
+
+
+            ' Edit vendors
+            cmdEditModule.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & tabId & "&" & GetAdminPage()
               cmdEditModule.ToolTip = GetLanguage("Vendors_Add")
 			  cmdEditModule.Text = GetLanguage("add")
 

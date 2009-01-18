@@ -42,8 +42,8 @@
                 </ItemTemplate>
                 <EditItemTemplate>
                     <asp:TextBox id="txtRename" runat="server" width="180px" Text='<%# DataBinder.Eval(Container, "DataItem.Name") %>'></asp:TextBox>
-                    <tag:RolloverImageButton id="imgEditOK" runat="server" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.Name") %>' CommandName="EditOK" width="16px" height="16px" DisabledImageURL="Images/OK_Disabled.gif" EnabledImageURL="Images/OK.gif" RolloverImageURL="Images/OK_Rollover.gif" StatusText='<%# DotNetZoom.GetLanguage("F_Rename") %>' ToolTip='<%# DotNetZoom.GetLanguage("F_Rename") %>'></tag:RolloverImageButton>
-                    <tag:RolloverImageButton id="imgEditCancel" runat="server" CommandName="EditCancel" width="16px" height="16px" DisabledImageURL="Images/Delete_Disabled.gif" EnabledImageURL="Images/Delete.gif" RolloverImageURL="Images/Delete_Rollover.gif" StatusText='<%# DotNetZoom.GetLanguage("annuler") %>' ToolTip='<%# DotNetZoom.GetLanguage("annuler") %>'></tag:RolloverImageButton>
+                    <tag:RolloverImageButton id="imgEditOK" runat="server" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.Name") %>' CommandName="EditOK" width="16px" height="16px" DisabledImageURL="~/images/OK_Disabled.gif" EnabledImageURL="~/images/OK.gif" RolloverImageURL="~/images/OK_Rollover.gif" StatusText='<%# DotNetZoom.GetLanguage("F_Rename") %>' ToolTip='<%# DotNetZoom.GetLanguage("F_Rename") %>'></tag:RolloverImageButton>
+                    <tag:RolloverImageButton id="imgEditCancel" runat="server" CommandName="EditCancel" width="16px" height="16px" DisabledImageURL="~/images/Delete_Disabled.gif" EnabledImageURL="~/images/Delete.gif" RolloverImageURL="~/images/Delete_Rollover.gif" StatusText='<%# DotNetZoom.GetLanguage("annuler") %>' ToolTip='<%# DotNetZoom.GetLanguage("annuler") %>'></tag:RolloverImageButton>
                 </EditItemTemplate>
             </asp:TemplateColumn>
             <asp:TemplateColumn SortExpression="Type" HeaderText="Type">

@@ -65,7 +65,7 @@ Namespace DotNetZoom
                 itemIndex = Int32.Parse(Request.Params("ItemIndex"))
             End If
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 
             If Page.IsPostBack = False Then
                 BindList()
@@ -84,21 +84,21 @@ Namespace DotNetZoom
             ' Obtain a list of discussion messages for the module
             ' and bind to datalist
 
-			' Check to see if available in Cache
-			Dim TempKey as String = GetDBname & "ModuleID_" & CStr(ModuleId)
-			Dim context As HttpContext = HttpContext.Current
-			Dim content as system.data.DataTable = Context.Cache(TempKey)
+            ' Check to see if available in Cache
+            Dim TempKey As String = GetDBname & "ModuleID_" & CStr(ModuleId)
+            Dim context As HttpContext = HttpContext.Current
+            Dim content As System.data.DataTable = context.Cache(TempKey)
             If content Is Nothing Then
-			'	Item not in cache, get it manually    
-            Dim discuss As New DiscussionDB()
-			Dim objAdmin As New AdminDB()
-			content = AdminDB.ConvertDataReaderToDataTable(discuss.GetTopLevelMessages(ModuleId))
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Context.Cache.Insert(TempKey, content, CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.Tabid, ModuleID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-  			End If
-			lstDiscussions.DataSource = content
-	        lstDiscussions.DataBind()
-			
+                '	Item not in cache, get it manually    
+                Dim discuss As New DiscussionDB()
+                Dim objAdmin As New AdminDB()
+                content = AdminDB.ConvertDataReaderToDataTable(discuss.GetTopLevelMessages(ModuleId))
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                context.Cache.Insert(TempKey, content, CDp(_portalSettings.PortalID, _portalSettings.ActiveTab.Tabid, ModuleID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, Nothing)
+            End If
+            lstDiscussions.DataSource = content
+            lstDiscussions.DataBind()
+
         End Sub
 
         Function GetThreadMessages() As SqlDataReader
@@ -134,9 +134,9 @@ Namespace DotNetZoom
         Function NodeStyle(ByVal count As Integer) As String
 
             If count > 0 Then
-                Return "border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;"
+                Return "border-width:0px; background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -407px;"
             Else
-                Return "border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -393px;"
+                Return "border-width:0px; background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -393px;"
             End If
 
         End Function
@@ -144,9 +144,9 @@ Namespace DotNetZoom
         Function NodeStyleFermer(ByVal count As Integer) As String
 
             If count > 0 Then
-                Return "border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -377px;"
+                Return "border-width:0px; background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -377px;"
             Else
-                Return "border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -393px;"
+                Return "border-width:0px; background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -393px;"
             End If
 
         End Function
@@ -191,7 +191,7 @@ Namespace DotNetZoom
 		Private Sub cmdAdd_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdAdd.Click
            ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&mid=" & ModuleId.ToString)
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&mid=" & ModuleId.ToString)
         End Sub
 
 		

@@ -78,10 +78,10 @@ Namespace DotNetZoom
 			' PostBack see if a value passed back
 			Dim PassBack As String = request.form("PassBack")
 			If PassBack <> "" then
-                    If File.Exists(Server.MapPath("~/images/containers/" & PassBack & "/Container.txt")) Then
+                    If File.Exists(Server.MapPath("/images/containers/" & PassBack & "/Container.txt")) Then
                         Dim objStreamReader As System.IO.StreamReader
                         Dim ContainerText As String
-                        objStreamReader = System.IO.File.OpenText(Server.MapPath("~/images/containers/" & PassBack & "/Container.txt"))
+                        objStreamReader = System.IO.File.OpenText(Server.MapPath("/images/containers/" & PassBack & "/Container.txt"))
                         ContainerText = objStreamReader.ReadToEnd
                         Select Case optContainer.SelectedItem.Value
                             Case "A"

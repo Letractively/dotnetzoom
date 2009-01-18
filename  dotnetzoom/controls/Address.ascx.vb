@@ -288,25 +288,39 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-            ' Obtain PortalSettings from Current Context
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			valCountry.ErrorMessage = "<br>" + GetLanguage("need_country_code")
-			valRegion1.ErrorMessage = "<br>" + GetLanguage("need_region_code")
-			valRegion2.ErrorMessage = "<br>" + GetLanguage("need_region_name")
-			valCity.ErrorMessage = "<br>" + GetLanguage("need_city_name")
-			valStreet.ErrorMessage = "<br>" + GetLanguage("need_street_name")
-			valPostal.ErrorMessage = "<br>" + GetLanguage("need_postal_code")
-			valTelephone.ErrorMessage = "<br>" + GetLanguage("need_telephone")
-            lblCountry.Text = getlanguage("address_country") 
-            lblRegion.Text = getlanguage("address_region")
-            lblCity.Text = getlanguage("address_city")
-            lblStreet.Text = getlanguage("address_street") 
-            lblUnit.Text = getlanguage("address_app")
-            lblPostal.Text = getlanguage("address_postal_code")
-            lblTelephone.Text = getlanguage("address_telephone") 
+
+            Dim _CountryLookup As DotNetNuke.CountryLookup
+            Dim context As HttpContext = HttpContext.Current
+
+            'Check to see if we are using the Cached
+            'version of the GeoIPData file
+            CheckGeoIPData()
+
  
 
-				
+
+
+
+
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            valCountry.ErrorMessage = "<br>" + GetLanguage("need_country_code")
+            valRegion1.ErrorMessage = "<br>" + GetLanguage("need_region_code")
+            valRegion2.ErrorMessage = "<br>" + GetLanguage("need_region_name")
+            valCity.ErrorMessage = "<br>" + GetLanguage("need_city_name")
+            valStreet.ErrorMessage = "<br>" + GetLanguage("need_street_name")
+            valPostal.ErrorMessage = "<br>" + GetLanguage("need_postal_code")
+            valTelephone.ErrorMessage = "<br>" + GetLanguage("need_telephone")
+            lblCountry.Text = GetLanguage("address_country")
+            lblRegion.Text = GetLanguage("address_region")
+            lblCity.Text = GetLanguage("address_city")
+            lblStreet.Text = GetLanguage("address_street")
+            lblUnit.Text = GetLanguage("address_app")
+            lblPostal.Text = GetLanguage("address_postal_code")
+            lblTelephone.Text = GetLanguage("address_telephone")
+
+
+
             If Not Page.IsPostBack Then
 
                 If _LabelColumnWidth <> "" Then

@@ -41,7 +41,7 @@ function SelectAllCheckboxes(intType)
 				</b></a>
 			</itemtemplate>
 		<separatortemplate>
-			<img src="images/1x1.gif" alt="*" border="0">
+			<img src="/images/1x1.gif" alt="*" border="0">
 		</separatortemplate>
 	</asp:datalist>
 </asp:placeholder>
@@ -96,17 +96,17 @@ function SelectAllCheckboxes(intType)
 									<p></p>
 									<%# DataBinder.Eval(Container.DataItem, "Message") %>
 									<p></p>
-									<asp:imagebutton id="btnReply" oncommand="btnReplyMessage_Click" commandname="Reply" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" imageurl="~/images/1x1.gif"  height="16" width="17" causesvalidation="False" BorderWidth="0" BorderStyle="none" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -279px;">
+									<asp:imagebutton id="btnReply" oncommand="btnReplyMessage_Click" commandname="Reply" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" ImageURL="~/images/1x1.gif"  height="16" width="17" causesvalidation="False" BorderWidth="0" BorderStyle="none" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -279px;">
 									</asp:imagebutton>&nbsp;
 									<asp:linkbutton id="lnkReplyMessage" oncommand="btnReplyMessage_Click" commandname="Reply" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" causesvalidation="False">
 									</asp:linkbutton>
 									&nbsp;|&nbsp;
-									<asp:imagebutton id="btnDelete" oncommand="btnDeleteMessage_Click" commandname="InboxDelete" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" imageurl="~/images/1x1.gif"  Width="17" height="16" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -75px;" causesvalidation="false" BorderWidth="0" BorderStyle="none">
+									<asp:imagebutton id="btnDelete" oncommand="btnDeleteMessage_Click" commandname="InboxDelete" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" ImageURL="~/images/1x1.gif"  Width="17" height="16" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -75px;" causesvalidation="false" BorderWidth="0" BorderStyle="none">
 									</asp:imagebutton>&nbsp;
 									<asp:linkbutton id="lnkMessageViewDelete" cssclass="forumTopicLink" oncommand="btnDeleteMessage_Click" commandname="InboxDelete" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" causesvalidation="False">
 									</asp:linkbutton>
 									&nbsp;|&nbsp;
-									<asp:imagebutton id="btnKeepAsNew" oncommand="btnKeepAsNew_Click" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" imageurl="~/images/1x1.gif" height="16" width="17" causesvalidation="false" BorderWidth="0" BorderStyle="none" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -243px;">
+									<asp:imagebutton id="btnKeepAsNew" oncommand="btnKeepAsNew_Click" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" ImageURL="~/images/1x1.gif" height="16" width="17" causesvalidation="false" BorderWidth="0" BorderStyle="none" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -243px;">
 									</asp:imagebutton>&nbsp;
 									<asp:linkbutton id="lnkKeepAsNew" cssclass="forumTopicLink" oncommand="btnKeepAsNew_Click" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" causesvalidation="False">
 									</asp:linkbutton>
@@ -185,7 +185,7 @@ function SelectAllCheckboxes(intType)
 									<p></p>
 									<%# DataBinder.Eval(Container.DataItem, "Message") %>
 									<p></p>
-									<asp:imagebutton id="btnOutboxDelete" oncommand="btnDeleteMessage_Click" commandname="OutboxDelete" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" imageurl="~/images/1x1.gif"  Width="17" height="16" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -75px;"   causesvalidation="false" BorderWidth="0" BorderStyle="none"/>
+									<asp:imagebutton id="btnOutboxDelete" oncommand="btnDeleteMessage_Click" commandname="OutboxDelete" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" ImageURL="~/images/1x1.gif"  Width="17" height="16" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -75px;"   causesvalidation="false" BorderWidth="0" BorderStyle="none"/>
 									<asp:linkbutton id="lnkOutboxDelete" oncommand="btnDeleteMessage_Click" commandname="OutboxDelete" commandargument='<%# DataBinder.Eval(Container.DataItem, "MessageID") %>' runat="server" causesvalidation="False" />
 								</asp:placeholder>
 							</itemtemplate>

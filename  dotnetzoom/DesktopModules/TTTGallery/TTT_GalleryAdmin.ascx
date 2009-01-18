@@ -118,8 +118,8 @@
           <td class=TTTRow valign=top align="left" width=180>
 <asp:dropdownlist id=ddlForum CssClass="NormalTextBox" runat="server" Width="100%" DataValueField="ForumID" DataTextField="Name"></asp:dropdownlist></td>
           <td valign="middle" align="center" rowSpan=2>
-<asp:ImageButton id=btnAdd runat="server" ImageUrl="~/images/rt.gif" CommandName="add" BorderWidth="0" BorderStyle="none"></asp:ImageButton><br><br>
-<asp:ImageButton id=btnRemove runat="server" ImageUrl="~/images/lt.gif" CommandName="remove" BorderWidth="0" BorderStyle="none"></asp:ImageButton></td>
+<asp:ImageButton id=btnAdd runat="server" ImageURL="~/images/rt.gif" CommandName="add" BorderWidth="0" BorderStyle="none"></asp:ImageButton><br><br>
+<asp:ImageButton id=btnRemove runat="server" ImageURL="~/images/lt.gif" CommandName="remove" BorderWidth="0" BorderStyle="none"></asp:ImageButton></td>
           <td class=TTTRow valign=top align="left" width=180 rowSpan=2>&nbsp; 
 <asp:ListBox id=lstIntegrate CssClass="NormalTextBox" runat="server" Width="100%" DataValueField="ForumID" DataTextField="Integration" Rows="3"></asp:ListBox></td></tr>
         <tr>

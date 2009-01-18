@@ -69,7 +69,7 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-            If IsNumeric(Request.Params("VendotId")) Then
+            If IsNumeric(Request.Params("VendorId")) Then
                 VendorId = Int32.Parse(Request.Params("VendorId"))
             End If
 			Title1.DisplayTitle = getlanguage("title_vendor_feedback")

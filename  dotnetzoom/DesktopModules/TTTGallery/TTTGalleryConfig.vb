@@ -600,7 +600,11 @@ Namespace DotNetZoom
             Dim settings As Hashtable = PortalSettings.GetModuleSettings(ModuleID)
 
             ' Now iterate through all the values and init local variables
-            mRootURL = GetValue(settings("RootURL"), mRootURL)
+            mRootURL = GetValue(settings("RootURL"), "")
+            If mRootURL = "" Then
+                mRootURL = DefaultRootURL + ModuleID.ToString
+            End If
+
             mGalleryTitle = GetValue(settings("GalleryTitle"), mGalleryTitle)
 
             Try

@@ -28,12 +28,11 @@ Namespace DotNetZoom
 
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim CheckSSL As Boolean = False
 
-            CheckSecureSSL(HttpContext.Current.Request, _portalSettings.SSL)
-
-			If Not Page.IsPostBack and PortalSecurity.IsSuperUser then
-			Session("LanguageTable") = Nothing
-			end if
+            If Not Page.IsPostBack And PortalSecurity.IsSuperUser Then
+                Session("LanguageTable") = Nothing
+            End If
 			' Add a event Handler for 'Init'.
             ' redirect to a specific tab based on name
             If Request.Params("tabname") <> "" Then
@@ -42,7 +41,7 @@ Namespace DotNetZoom
                 Dim admin As New AdminDB()
                 Dim result As SqlDataReader = admin.GetTabByName(Request.Params("TabName"), CType(HttpContext.Current.Items("PortalSettings"), PortalSettings).PortalId)
                 If result.Read() Then
-                    strURL = "~" & GetDocument() & "?tabid=" & result("TabId")
+                    strURL = GetFullDocument() & "?tabid=" & result("TabId")
                 End If
                 result.Close()
 
@@ -242,7 +241,7 @@ Namespace DotNetZoom
                         If _portalSettings.ActiveTab.LeftPaneWidth <> "" Then
                             objLink = New System.Web.UI.LiteralControl("leftspacerliteral")
                             objLink.EnableViewState = False
-                            objLink.Text = "<img  src=""images/1x1.gif"" alt=""-"" style=""border-width:0px;height:1px;width:"
+                            objLink.Text = "<img  src=""" & glbPath & "images/1x1.gif"" alt=""-"" style=""border-width:0px;height:1px;width:"
                             objLink.Text = objLink.Text & _portalSettings.ActiveTab.LeftPaneWidth & "px;"" >"
                             leftPaneSpacer.Controls.Add(objLink)
                         End If
@@ -269,7 +268,7 @@ Namespace DotNetZoom
                         If _portalSettings.ActiveTab.RightPaneWidth <> "" Then
                             objLink = New System.Web.UI.LiteralControl("rightspacerliteral")
                             objLink.EnableViewState = False
-                            objLink.Text = "<img  src=""images/1x1.gif"" alt=""-"" style=""border-width:0px;height:1px;width:"
+                            objLink.Text = "<img  src=""" & glbPath & "images/1x1.gif"" alt=""-"" style=""border-width:0px;height:1px;width:"
                             objLink.Text = objLink.Text & _portalSettings.ActiveTab.RightPaneWidth & "px;"" >"
                             rightPaneSpacer.Controls.Add(objLink)
                         End If
@@ -368,304 +367,311 @@ Namespace DotNetZoom
             		Dim DefFriendlyName As String = Request.Params("def")
             		DefFriendlyName = LCase(DefFriendlyName)
                 	Dim dr As SqlDataReader = objAdmin.GetSingleModuleDefinitionByName(GetLanguage("N"), DefFriendlyName)
-                	If dr.Read Then
-                    	_moduleSettings.ModuleId = moduleId
-                    	_moduleSettings.ModuleDefId = Int32.Parse(dr("ModuleDefID").ToString)
-                    	_moduleSettings.TabId = _portalSettings.ActiveTab.TabId
-                    	_moduleSettings.PaneName = "Edit"
-                    	_moduleSettings.ModuleTitle = dr("ModuleTitle").ToString
-						_moduleSettings.IsAdminModule = IsAdminTab()
-                    	_moduleSettings.AuthorizedEditRoles = ""
-                    	_moduleSettings.EditSrc = dr("EditSrc").ToString
-                    	_moduleSettings.Secure = dr("Secure")
-                    	_moduleSettings.EditModuleIcon = dr("EditModuleIcon").ToString
-                    	_moduleSettings.ShowTitle = True
-                    	_moduleSettings.Personalize = 2
-                    	_moduleSettings.FriendlyName = dr("FriendlyName").ToString
-                	End If
-                	dr.Close()
+                    If dr.Read Then
+                        If Boolean.Parse(dr("defedit").ToString) Then
+                            CheckSSL = Boolean.Parse(dr("ssl").ToString) And _portalSettings.SSL
+                            _moduleSettings.ModuleId = moduleId
+                            _moduleSettings.ModuleDefId = Int32.Parse(dr("ModuleDefID").ToString)
+                            _moduleSettings.TabId = _portalSettings.ActiveTab.TabId
+                            _moduleSettings.PaneName = "Edit"
+                            _moduleSettings.ModuleTitle = dr("ModuleTitle").ToString
+                            _moduleSettings.IsAdminModule = IsAdminTab()
+                            _moduleSettings.AuthorizedEditRoles = ""
+                            _moduleSettings.EditSrc = dr("EditSrc").ToString
+                            _moduleSettings.Secure = dr("Secure")
+                            _moduleSettings.EditModuleIcon = dr("EditModuleIcon").ToString
+                            _moduleSettings.ShowTitle = True
+                            _moduleSettings.Personalize = 2
+                            _moduleSettings.FriendlyName = dr("FriendlyName").ToString
+                        End If
+                    End If
+                        dr.Close()
 
-					else
-					
-    			' load module definition id
-					
-            	If IsAdminTab() Then
-                   If IsNumeric(Request.Params("adminpage")) Then
-                    Dim Intdefid As Integer = Int32.Parse(Request.QueryString("adminpage"))
-            		Dim dr As SqlDataReader = objAdmin.GetAdminModuleDefinition(GetLanguage("N"), Intdefid )
-                	If dr.Read Then
-                    	_moduleSettings.ModuleId = 0
-						_moduleSettings.Secure = True
-						_moduleSettings.PaneName = "Edit"
-						_moduleSettings.TabId = _portalSettings.ActiveTab.TabId
-						_moduleSettings.DesktopSrc = dr("DesktopSrc")
-               			_moduleSettings.ModuleTitle = dr("ModuleTitle")
-						_moduleSettings.IsAdminModule = True
-                		_moduleSettings.AuthorizedEditRoles = ""
-                		_moduleSettings.EditSrc = IIf(IsDBNull(dr("EditSrc")), "", dr("EditSrc"))
-                		_moduleSettings.EditModuleIcon = dr("EditModuleIcon")
-                		_moduleSettings.ShowTitle = True
-                		_moduleSettings.Personalize = 2
-                		_moduleSettings.FriendlyName = dr("FriendLyName")
-                	End If
-                	dr.Close()
-	             End If
-				End if
-				End if ' def or defid
-					
-            	' Verify that the current user has access to edit this module
-            	If _moduleSettings.Secure Then
-               	 	If PortalSecurity.IsInRole(_portalSettings.AdministratorRoleId.ToString) = False And PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = False Then
-                   	 	If (moduleId = -1 Or PortalSecurity.HasEditPermissions(moduleId) = False) Then
-                       	 Response.Redirect("~" & GetDocument() & "?edit="  & _portalSettings.ActiveTab.TabId &    "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-                    	End If
-                	End If
-            	End If
 
-	            ' load user control
-    	        If _moduleSettings.EditSrc <> "" Then
-        	        Try
-            	        Dim objModule As PortalModuleControl = CType(Me.LoadModule(_moduleSettings.EditSrc), PortalModuleControl)
-                	    objModule.ModuleConfiguration = _moduleSettings
-					
-				         ' show login module if the client is not yet authenticated
-            			If Request.IsAuthenticated = False and Request.Params("def") = "PrivateMessages" Then
-		           		 	Dim SignInobjModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/SignIn.ascx"), PortalModuleControl)
-        	      		 	SignInobjModule.id = "SignIn"
-							' No Module
-							AddModule(contentpane, SignInobjModule, loginContainer, _portalSettings.UploadDirectory, IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerAlignment") <> "", _
-										portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerAlignment"), ""), _
- 										IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerColor") <> "", _
-										portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerColor"), ""), _
-										IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerBorder") <> "", _
- 										portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerBorder"), ""))
-			  			End If
-	               objModule.ID = "edit"
-				   if IsAdminTab() then
-				   	  AddModule(contentpane, objModule, adminContainer, _portalSettings.UploadDirectory, IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerAlignment") <> "", _
-						    	portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerAlignment"), ""), _
- 								IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerColor") <> "", _
-								portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerColor"), ""), _
-								IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerBorder") <> "", _
- 								portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerBorder"), ""))
-				   else
-				   AddModule(contentpane, objModule, EditContainer, _portalSettings.UploadDirectory, IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("editcontainerAlignment") <> "", _
-							portalSettings.GetSiteSettings(_portalSettings.PortalID)("editcontainerAlignment"), ""), _
- 							IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("editcontainerColor") <> "", _
-							portalSettings.GetSiteSettings(_portalSettings.PortalID)("editcontainerColor"), ""), _
-							IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("editcontainerBorder") <> "", _
- 							portalSettings.GetSiteSettings(_portalSettings.PortalID)("editcontainerBorder"), ""))
-					end if
-    	            Catch objException As Exception
-                    ' error loading user control - the file may have been deleted or moved
-                    If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
-                        Throw objException
+
                     Else
-					if portalSettings.GetHostSettings("EnableErrorReporting") <> "N" then
-					SendNotification(portalSettings.GetHostSettings("HostEmail"), portalSettings.GetHostSettings("HostEmail"), "", "ERROR LOADING MODULE", objException.ToString() , "")
-					end if
-					contentpane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>"))
-                    End If
-        	        End Try
-            	End If
-			' End Edit page
-			else
-			
-			' See if AdminPage
-			If IsAdminTab() then
-				    If IsNumeric(Request.Params("adminpage")) Then
-                    Dim IntAdminPage As Integer = Int32.Parse(Request.QueryString("adminpage"))
-            		Dim dr As SqlDataReader = objAdmin.GetAdminModuleDefinition(GetLanguage("N"), IntAdminPage)
-                	If dr.Read Then
-                    	_moduleSettings.ModuleId = 0
-						_moduleSettings.Secure = True
-						_moduleSettings.PaneName = "Edit"
-						_moduleSettings.TabId = _portalSettings.ActiveTab.TabId
-						_moduleSettings.DesktopSrc = dr("DesktopSrc")
-               			_moduleSettings.ModuleTitle = dr("ModuleTitle")
-						_moduleSettings.IsAdminModule = True
-                		_moduleSettings.AuthorizedEditRoles = ""
-                		_moduleSettings.EditSrc = IIf(IsDBNull(dr("EditSrc")), "", dr("EditSrc"))
-                		_moduleSettings.EditModuleIcon = dr("EditModuleIcon")
-                		_moduleSettings.ShowTitle = True
-                		_moduleSettings.Personalize = 2
-                		_moduleSettings.FriendlyName = dr("FriendLyName")
-                		Dim AdminobjModule As PortalModuleControl = CType(Me.LoadModule(_moduleSettings.DesktopSrc), PortalModuleControl)
-						AdminobjModule.ModuleConfiguration = _moduleSettings
-						AdminobjModule.id = "admin"
-						AddModule(ContentPane, AdminobjModule, adminContainer, _portalSettings.UploadDirectory, IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerAlignment") <> "", _
-								portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerAlignment"), ""), _
- 								IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerColor") <> "", _
-								portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerColor"), ""), _
-								IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerBorder") <> "", _
- 								portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainerBorder"), ""))
-                	End If
-                	dr.Close()
-	             End If
-			else
-			
-			' Normal page
-            Dim blnShowLogin As Boolean = False
-			
-            ' ensure that the user has access to the current page
-            If PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AuthorizedRoles) = False Then
-			If Request.IsAuthenticated = False then
-               blnShowLogin = True
-			 Else
-                Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/AccessDenied.ascx"), PortalModuleControl)
-			    objModule.id = "denied"
-				AddModule(ContentPane, objModule, strContainer, _portalSettings.UploadDirectory)
-            end If
-			End If
-
-            ' show login module if the client is not yet authenticated and they requested to login
-            If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
-                blnShowLogin = True
-            End If
-
-            ' show login module
-            If blnShowLogin Then
-                Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/SignIn.ascx"), PortalModuleControl)
-                objModule.id = "SignIn"
-				AddModule(ContentPane, objModule, loginContainer, _portalSettings.UploadDirectory, IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerAlignment") <> "", _
-						portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerAlignment"), ""), _
- 						IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerColor") <> "", _
-						portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerColor"), ""), _
-						IIf(portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerBorder") <> "", _
- 						portalSettings.GetSiteSettings(_portalSettings.PortalID)("logincontainerBorder"), ""))
-            End If
-
-            ' check portal expiry date
-            Dim blnExpired As Boolean = False
-            If _portalSettings.ExpiryDate <> "" Then
-                If CDate(_portalSettings.ExpiryDate) < Now() Then
-                    blnExpired = True
-                End If
-            End If
-
-            ' Dynamically inject an expiry message into the Content pane if the portal license has expired
-            If blnExpired = True Then
-        	    Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/Expired.ascx"), PortalModuleControl)
-                objModule.id = "expired"
-				addModule(ContentPane, objModule, strContainer, _portalSettings.UploadDirectory, "center")
-            End If
-
-               
-                ' Dynamically Populate the Left, Center and Right pane sections of the portal page
-                If _portalSettings.ActiveTab.Modules.Count > 0 Then
-
-                    ' Loop through each entry in the configuration system for this tab
-                        Dim ModuleOrderLeft As Integer = 0
-                        Dim ModuleOrderCenter As Integer = 0
-                        Dim ModuleOrderRight As Integer = 0
-                        Dim ModuleOrderTop As Integer = 0
-                        Dim ModuleOrderBottom As Integer = 0
-					Dim Setting As Hashtable
-                    For Each _moduleSettings In _portalSettings.ActiveTab.Modules
-                            Setting = PortalSettings.GetModuleSettings(_moduleSettings.ModuleId)
-                            Select Case _moduleSettings.PaneName
-                                Case "ContentPane"
-                                    ModuleOrderCenter = _moduleSettings.ModuleId
-                                Case "LeftPane"
-                                    ModuleOrderLeft = _moduleSettings.ModuleId
-                                Case "RightPane"
-                                    ModuleOrderRight = _moduleSettings.ModuleId
-                                Case "TopPane"
-                                    ModuleOrderTop = _moduleSettings.ModuleId
-                                Case "BottomPane"
-                                    ModuleOrderBottom = _moduleSettings.ModuleId
-                            End Select
-						
-						
-						' Check language here
-						
-						 
-                        If  (_moduleSettings.Language = GetLanguage("N") or _moduleSettings.Language = "") and PortalSecurity.IsInRoles(IIf(_moduleSettings.AuthorizedViewRoles <> "", _moduleSettings.AuthorizedViewRoles, _portalSettings.ActiveTab.AuthorizedRoles)) Then
-                                Dim parent As Control = Page.FindControl(_moduleSettings.PaneName)
-								If Not Parent Is Nothing Then
-                                	' If no caching is specified, create the user control instance and dynamically
-                                	' inject it into the page.  Otherwise, create a cached module instance that
-                                	' may or may not optionally inject the module into the tree
-                                	Try
-									' need to do a check here for the panel admin
-									If ((_ModuleSettings.CacheTime > 0) and (not PortalSecurity.IsInRoles(_moduleSettings.AuthorizedEditRoles))) then
-  									' Cash module
-									Dim objModule As New CachedPortalModuleControl()
-									objModule.ModuleConfiguration = _moduleSettings
-									objModule.ID = "m" & _moduleSettings.ModuleId
-                                	AddModule(parent, objModule, IIf(Setting("container") <> "", Setting("container"), strContainer), _portalSettings.UploadDirectory, IIf(Setting("containerAlignment") <> "", Setting("containerAlignment"), ""), IIf(Setting("containerColor") <> "", Setting("containerColor"), ""), IIf(Setting("containerBorder") <> "", Setting("containerBorder"), ""))
-  									else
-                                	Dim objModule As PortalModuleControl = CType(Me.LoadModule(_moduleSettings.DesktopSrc), PortalModuleControl)
-                                	objModule.ModuleConfiguration = _moduleSettings
-									objModule.ID = "m" & _moduleSettings.ModuleId
-									AddModule(parent, objModule, IIf(Setting("container") <> "", Setting("container"), strContainer), _portalSettings.UploadDirectory,  IIf(Setting("containerAlignment") <> "", Setting("containerAlignment"), ""), IIf(Setting("containerColor") <> "", Setting("containerColor"), ""), IIf(Setting("containerBorder") <> "", Setting("containerBorder"), ""))
-                               	   	End If
-			                    
-									Catch objException As Exception
-									
-                                    ' error loading user control - the file may have been deleted or moved
-                                    	If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
-                                       	 Throw objException
-                                    		Else
-											if portalSettings.GetHostSettings("EnableErrorReporting") <> "N" then
-											SendNotification(portalSettings.GetHostSettings("HostEmail"), portalSettings.GetHostSettings("HostEmail"), "", "ERROR LOADING MODULE", objException.ToString() , "")
-											end if
-											If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
-                                            parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>"))
-                                       	 	End If
-                                   		 End If
-                               	 	End Try
-								End If
+                        ' load module definition id
+                        If IsAdminTab() Then
+                            If IsNumeric(Request.Params("adminpage")) Then
+                                Dim Intdefid As Integer = Int32.Parse(Request.QueryString("adminpage"))
+                                Dim dr As SqlDataReader = objAdmin.GetAdminModuleDefinition(GetLanguage("N"), Intdefid)
+                            If dr.Read Then
+                                CheckSSL = Boolean.Parse(dr("ssl").ToString) And _portalSettings.SSL
+                                _moduleSettings.ModuleId = 0
+                                _moduleSettings.Secure = True
+                                _moduleSettings.PaneName = "Edit"
+                                _moduleSettings.TabId = _portalSettings.ActiveTab.TabId
+                                _moduleSettings.DesktopSrc = dr("DesktopSrc")
+                                _moduleSettings.ModuleTitle = dr("ModuleTitle")
+                                _moduleSettings.IsAdminModule = True
+                                _moduleSettings.AuthorizedEditRoles = ""
+                                _moduleSettings.EditSrc = IIf(IsDBNull(dr("EditSrc")), "", dr("EditSrc"))
+                                _moduleSettings.EditModuleIcon = dr("EditModuleIcon")
+                                _moduleSettings.ShowTitle = True
+                                _moduleSettings.Personalize = 2
+                                _moduleSettings.FriendlyName = dr("FriendLyName")
+                            End If
+                                dr.Close()
+                            End If
                         End If
+                    End If ' def or defid
 
-                        Next _moduleSettings
-                        context.Items.Add("ModuleOrderLeft", ModuleOrderLeft)
-                        context.Items.Add("ModuleOrderCenter", ModuleOrderCenter)
-                        context.Items.Add("ModuleOrderRight", ModuleOrderRight)
-                        If TopPane.Visible Then
-                            context.Items.Add("ModuleOrderTop", ModuleOrderTop)
-                        Else
-                            context.Items.Add("ModuleOrderTop", -1)
-                        End If
-                        If BottomPane.Visible Then
-                            context.Items.Add("ModuleOrderBottom", ModuleOrderBottom)
-                        Else
-                            context.Items.Add("ModuleOrderBottom", -1)
+                    ' Verify that the current user has access to edit this module
+                    If _moduleSettings.Secure Then
+                        If PortalSecurity.IsInRole(_portalSettings.AdministratorRoleId.ToString) = False And PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = False Then
+                            If (moduleId = -1 Or PortalSecurity.HasEditPermissions(moduleId) = False) Then
+                            Response.Redirect(GetFullDocument() & "?edit=" & _portalSettings.ActiveTab.TabId & "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+                            End If
                         End If
                     End If
+
+                    ' load user control
+                    If _moduleSettings.EditSrc <> "" Then
+                        Try
+                            Dim objModule As PortalModuleControl = CType(Me.LoadModule(_moduleSettings.EditSrc), PortalModuleControl)
+                            objModule.ModuleConfiguration = _moduleSettings
+
+                            ' show login module if the client is not yet authenticated
+                            If Request.IsAuthenticated = False And Request.Params("def") = "PrivateMessages" Then
+                                Dim SignInobjModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/SignIn.ascx"), PortalModuleControl)
+                                SignInobjModule.ID = "SignIn"
+                                ' No Module
+                                AddModule(ContentPane, SignInobjModule, LoginContainer, _portalSettings.UploadDirectory, IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment") <> "", _
+                                   PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment"), ""), _
+                                    IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor") <> "", _
+                                   PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor"), ""), _
+                                   IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder") <> "", _
+                                    PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder"), ""))
+                            End If
+                            objModule.ID = "edit"
+                            If IsAdminTab() Then
+                                AddModule(ContentPane, objModule, AdminContainer, _portalSettings.UploadDirectory, IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerAlignment") <> "", _
+                                 PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerAlignment"), ""), _
+                               IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerColor") <> "", _
+                              PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerColor"), ""), _
+                              IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerBorder") <> "", _
+                               PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerBorder"), ""))
+                            Else
+                                AddModule(ContentPane, objModule, EditContainer, _portalSettings.UploadDirectory, IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("editcontainerAlignment") <> "", _
+                                PortalSettings.GetSiteSettings(_portalSettings.PortalId)("editcontainerAlignment"), ""), _
+                                 IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("editcontainerColor") <> "", _
+                                PortalSettings.GetSiteSettings(_portalSettings.PortalId)("editcontainerColor"), ""), _
+                                IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("editcontainerBorder") <> "", _
+                                 PortalSettings.GetSiteSettings(_portalSettings.PortalId)("editcontainerBorder"), ""))
+                            End If
+                        Catch objException As Exception
+                            ' error loading user control - the file may have been deleted or moved
+                            If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
+                                Throw objException
+                            Else
+                                If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "ERROR LOADING MODULE", objException.ToString(), "")
+                                End If
+                                ContentPane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>"))
+                            End If
+                        End Try
+                    End If
+                    ' End Edit page
+                Else
+
+                    ' See if AdminPage
+                    If IsAdminTab() Then
+                        If IsNumeric(Request.Params("adminpage")) Then
+                            Dim IntAdminPage As Integer = Int32.Parse(Request.QueryString("adminpage"))
+                            Dim dr As SqlDataReader = objAdmin.GetAdminModuleDefinition(GetLanguage("N"), IntAdminPage)
+                        If dr.Read Then
+                            CheckSSL = Boolean.Parse(dr("ssl").ToString) And _portalSettings.SSL
+                            _moduleSettings.ModuleId = 0
+                            _moduleSettings.Secure = True
+                            _moduleSettings.PaneName = "Edit"
+                            _moduleSettings.TabId = _portalSettings.ActiveTab.TabId
+                            _moduleSettings.DesktopSrc = dr("DesktopSrc")
+                            _moduleSettings.ModuleTitle = dr("ModuleTitle")
+                            _moduleSettings.IsAdminModule = True
+                            _moduleSettings.AuthorizedEditRoles = ""
+                            _moduleSettings.EditSrc = IIf(IsDBNull(dr("EditSrc")), "", dr("EditSrc"))
+                            _moduleSettings.EditModuleIcon = dr("EditModuleIcon")
+                            _moduleSettings.ShowTitle = True
+                            _moduleSettings.Personalize = 2
+                            _moduleSettings.FriendlyName = dr("FriendLyName")
+                            Dim AdminobjModule As PortalModuleControl = CType(Me.LoadModule(_moduleSettings.DesktopSrc), PortalModuleControl)
+                            AdminobjModule.ModuleConfiguration = _moduleSettings
+                            AdminobjModule.ID = "admin"
+                            AddModule(ContentPane, AdminobjModule, AdminContainer, _portalSettings.UploadDirectory, IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerAlignment") <> "", _
+                              PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerAlignment"), ""), _
+                               IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerColor") <> "", _
+                              PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerColor"), ""), _
+                              IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerBorder") <> "", _
+                               PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainerBorder"), ""))
+                        End If
+                            dr.Close()
+                        End If
+                    Else
+
+                        ' Normal page
+                        Dim blnShowLogin As Boolean = False
+                    CheckSSL = _portalSettings.ActiveTab.ssl And _portalSettings.SSL
+                        ' ensure that the user has access to the current page
+                        If PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AuthorizedRoles) = False Then
+                            If Request.IsAuthenticated = False Then
+                                blnShowLogin = True
+                            Else
+                                Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/AccessDenied.ascx"), PortalModuleControl)
+                                objModule.ID = "denied"
+                                AddModule(ContentPane, objModule, strContainer, _portalSettings.UploadDirectory)
+                            End If
+                        End If
+
+                        ' show login module if the client is not yet authenticated and they requested to login
+                        If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
+                            blnShowLogin = True
+                        End If
+
+                        ' show login module
+                    If blnShowLogin Then
+                        CheckSSL = _portalSettings.SSL
+                        Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/SignIn.ascx"), PortalModuleControl)
+                        objModule.ID = "SignIn"
+                        AddModule(ContentPane, objModule, LoginContainer, _portalSettings.UploadDirectory, IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment") <> "", _
+                          PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment"), ""), _
+                           IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor") <> "", _
+                          PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor"), ""), _
+                          IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder") <> "", _
+                           PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder"), ""))
+                    End If
+
+                        ' check portal expiry date
+                        Dim blnExpired As Boolean = False
+                        If _portalSettings.ExpiryDate <> "" Then
+                            If CDate(_portalSettings.ExpiryDate) < Now() Then
+                                blnExpired = True
+                            End If
+                        End If
+
+                        ' Dynamically inject an expiry message into the Content pane if the portal license has expired
+                        If blnExpired = True Then
+                            Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/Expired.ascx"), PortalModuleControl)
+                            objModule.ID = "expired"
+                            AddModule(ContentPane, objModule, strContainer, _portalSettings.UploadDirectory, "center")
+                        End If
+
+
+                        ' Dynamically Populate the Left, Center and Right pane sections of the portal page
+                        If _portalSettings.ActiveTab.Modules.Count > 0 Then
+
+                            ' Loop through each entry in the configuration system for this tab
+                            Dim ModuleOrderLeft As Integer = 0
+                            Dim ModuleOrderCenter As Integer = 0
+                            Dim ModuleOrderRight As Integer = 0
+                            Dim ModuleOrderTop As Integer = 0
+                            Dim ModuleOrderBottom As Integer = 0
+                            Dim Setting As Hashtable
+                            For Each _moduleSettings In _portalSettings.ActiveTab.Modules
+                                Setting = PortalSettings.GetModuleSettings(_moduleSettings.ModuleId)
+                                Select Case _moduleSettings.PaneName
+                                    Case "ContentPane"
+                                        ModuleOrderCenter = _moduleSettings.ModuleId
+                                    Case "LeftPane"
+                                        ModuleOrderLeft = _moduleSettings.ModuleId
+                                    Case "RightPane"
+                                        ModuleOrderRight = _moduleSettings.ModuleId
+                                    Case "TopPane"
+                                        ModuleOrderTop = _moduleSettings.ModuleId
+                                    Case "BottomPane"
+                                        ModuleOrderBottom = _moduleSettings.ModuleId
+                                End Select
+
+
+                                ' Check language here
+
+
+                                If (_moduleSettings.Language = GetLanguage("N") Or _moduleSettings.Language = "") And PortalSecurity.IsInRoles(IIf(_moduleSettings.AuthorizedViewRoles <> "", _moduleSettings.AuthorizedViewRoles, _portalSettings.ActiveTab.AuthorizedRoles)) Then
+                                    Dim parent As Control = Page.FindControl(_moduleSettings.PaneName)
+                                    If Not parent Is Nothing Then
+                                        ' If no caching is specified, create the user control instance and dynamically
+                                        ' inject it into the page.  Otherwise, create a cached module instance that
+                                        ' may or may not optionally inject the module into the tree
+                                        Try
+                                            ' need to do a check here for the panel admin
+                                            If ((_moduleSettings.CacheTime > 0) And (Not PortalSecurity.IsInRoles(_moduleSettings.AuthorizedEditRoles))) Then
+                                                ' Cash module
+                                                Dim objModule As New CachedPortalModuleControl()
+                                                objModule.ModuleConfiguration = _moduleSettings
+                                                objModule.ID = "m" & _moduleSettings.ModuleId
+                                                AddModule(parent, objModule, IIf(Setting("container") <> "", Setting("container"), strContainer), _portalSettings.UploadDirectory, IIf(Setting("containerAlignment") <> "", Setting("containerAlignment"), ""), IIf(Setting("containerColor") <> "", Setting("containerColor"), ""), IIf(Setting("containerBorder") <> "", Setting("containerBorder"), ""))
+                                            Else
+                                                Dim objModule As PortalModuleControl = CType(Me.LoadModule(_moduleSettings.DesktopSrc), PortalModuleControl)
+                                                objModule.ModuleConfiguration = _moduleSettings
+                                                objModule.ID = "m" & _moduleSettings.ModuleId
+                                                AddModule(parent, objModule, IIf(Setting("container") <> "", Setting("container"), strContainer), _portalSettings.UploadDirectory, IIf(Setting("containerAlignment") <> "", Setting("containerAlignment"), ""), IIf(Setting("containerColor") <> "", Setting("containerColor"), ""), IIf(Setting("containerBorder") <> "", Setting("containerBorder"), ""))
+                                            End If
+
+                                        Catch objException As Exception
+
+                                            ' error loading user control - the file may have been deleted or moved
+                                            If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
+                                                Throw objException
+                                            Else
+                                                If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "ERROR LOADING MODULE", objException.ToString(), "")
+                                                End If
+                                                If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
+                                                    parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>"))
+                                                End If
+                                            End If
+                                        End Try
+                                    End If
+                                End If
+
+                            Next _moduleSettings
+                            context.Items.Add("ModuleOrderLeft", ModuleOrderLeft)
+                            context.Items.Add("ModuleOrderCenter", ModuleOrderCenter)
+                            context.Items.Add("ModuleOrderRight", ModuleOrderRight)
+                            If TopPane.Visible Then
+                                context.Items.Add("ModuleOrderTop", ModuleOrderTop)
+                            Else
+                                context.Items.Add("ModuleOrderTop", -1)
+                            End If
+                            If BottomPane.Visible Then
+                                context.Items.Add("ModuleOrderBottom", ModuleOrderBottom)
+                            Else
+                                context.Items.Add("ModuleOrderBottom", -1)
+                            End If
+                        End If
                         ' End Dynamically Populate the Left, Center and Right pane sections of the portal page
                     End If
                     ' End normal page	
-						
-			
-			end if	
-	
-	
-			rightpaneSpacer.visible = rightpane.visible
-			leftpaneSpacer.visible = leftpane.visible
-   			leftline.visible = leftpane.visible
-			rightline.visible = rightpane.visible
 
-            Dim UserId As Integer = -1
-            If Request.IsAuthenticated Then
-                UserId = CType(Context.User.Identity.Name, Integer)
-            End If
-             
-			
-            ' log visit to site and not a postBack
-            If _portalSettings.SiteLogHistory <> 0 And Not Page.IsPostBack And Not Request.UserHostAddress = "192.168.1.1" Then
-                Dim URLReferrer As String = ""
-                If Not Request.UrlReferrer Is Nothing Then
-                    URLReferrer = Request.UrlReferrer.ToString()
+
                 End If
-                Dim AffiliateId As Integer = -1
-                If Not Request.Params("AffiliateId") Is Nothing Then
-                    If IsNumeric(Request.Params("AffiliateId")) Then
-                        AffiliateId = Int32.Parse(Request.QueryString("AffiliateId"))
+
+
+                rightPaneSpacer.Visible = rightPane.Visible
+                leftPaneSpacer.Visible = leftPane.Visible
+                leftline.Visible = leftPane.Visible
+                rightline.Visible = rightPane.Visible
+
+                Dim UserId As Integer = -1
+                If Request.IsAuthenticated Then
+                    UserId = CType(context.User.Identity.Name, Integer)
+                End If
+
+            ' Redirect to SSL if required
+            CheckSecureSSL(HttpContext.Current.Request, CheckSSL)
+                ' log visit to site and not a postBack
+                If _portalSettings.SiteLogHistory <> 0 And Not Page.IsPostBack And Not Request.UserHostAddress = "192.168.1.1" Then
+                    Dim URLReferrer As String = ""
+                    If Not Request.UrlReferrer Is Nothing Then
+                        URLReferrer = Request.UrlReferrer.ToString()
                     End If
+                    Dim AffiliateId As Integer = -1
+                    If Not Request.Params("AffiliateId") Is Nothing Then
+                        If IsNumeric(Request.Params("AffiliateId")) Then
+                            AffiliateId = Int32.Parse(Request.QueryString("AffiliateId"))
+                        End If
+                    End If
+                    objAdmin.AddSiteLog(_portalSettings.PortalId, UserId, URLReferrer, Request.Url.ToString(), Request.UserAgent, Request.UserHostAddress, Request.UserHostName, _portalSettings.ActiveTab.TabId, AffiliateId)
                 End If
-                objAdmin.AddSiteLog(_portalSettings.PortalId, UserId, URLReferrer, Request.Url.ToString(), Request.UserAgent, Request.UserHostAddress, Request.UserHostName, _portalSettings.ActiveTab.TabId, AffiliateId)
-            End If
 
         End Sub
 		
@@ -796,15 +802,7 @@ Namespace DotNetZoom
             If Page.IsPostBack = False Then
                 Session.Contents.Remove("FCKeditor:UserFilesPath")
             End If
-            Dim StringFileName As String = GetDocument()
-            If StringFileName <> "/default.aspx" Then
-                Dim TempQuerystring As String = Context.Request.QueryString.ToString()
-                '    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                '    TempQuerystring = Replace(TempQuerystring, "&tabid=" & _portalSettings.ActiveTab.TabId.ToString, "")
-                '    TempQuerystring = Replace(TempQuerystring, "tabid=" & _portalSettings.ActiveTab.TabId.ToString & "&", "")
-                '    TempQuerystring = Replace(TempQuerystring, "tabid=" & _portalSettings.ActiveTab.TabId.ToString, "")
-                Context.RewritePath("~" & StringFileName, String.Empty, TempQuerystring)
-            End If
+            HttpContext.Current.RewritePath(HttpContext.Current.Items("RequestDocument"), String.Empty, HttpContext.Current.Request.QueryString.ToString())
 
         End Sub
 

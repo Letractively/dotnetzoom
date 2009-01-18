@@ -88,15 +88,15 @@ Namespace DotNetZoom
 			
             ' Verify that the current user has access to edit this module
             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False And PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = False Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
             End If
 
             If Page.IsPostBack = False Then
-			    
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
+
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
 
-                cboTab.DataSource = GetPortalTabs(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), , True)
+                cboTab.DataSource = GetPortalTabs(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), , True)
                 cboTab.DataBind()
 
                 ' tab administrators can only manage their own tab
@@ -104,14 +104,14 @@ Namespace DotNetZoom
                     cboTab.Enabled = False
                 End If
 
-                
-					Dim objAdmin As New AdminDB()
-					Dim TempAuthLanguage As String = ""
-					If portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey("languageauth") then
-					TempAuthLanguage = portalSettings.GetSiteSettings(_portalSettings.PortalID)("languageauth")
-					else
-					TempAuthLanguage = GetLanguage("N") & ";"
-					end if
+
+                Dim objAdmin As New AdminDB()
+                Dim TempAuthLanguage As String = ""
+                If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey("languageauth") Then
+                    TempAuthLanguage = PortalSettings.GetSiteSettings(_portalSettings.PortalId)("languageauth")
+                Else
+                    TempAuthLanguage = GetLanguage("N") & ";"
+                End If
                 ' Language to Use
 
                 Dim HashL As Hashtable = objAdmin.GetAvailablelanguage
@@ -126,28 +126,29 @@ Namespace DotNetZoom
 
                 ddlLanguage.Items.Add("<" & GetLanguage("all") & ">")
                 ddlLanguage.Items.FindByText("<" & GetLanguage("all") & ">").Value = ""
-				
-				
+
+
                 If ModuleId <> -1 Then
                     BindData()
-					ContainerEdit.ModuleID = ModuleId
-					ContainerEdit.ModuleTitle = txtTitle.Text
-					ContainerEdit.TabID = TabID
+                    ContainerEdit.ModuleId = ModuleId
+                    ContainerEdit.ModuleTitle = txtTitle.Text
+                    ContainerEdit.TabID = TabId
                 Else
                     chkShowTitle.Checked = True
                     cboPersonalize.SelectedIndex = 2 ' none
                     chkAllTabs.Checked = False
                     cmdDelete.Visible = False
- 		       		If Not ddlLanguage.Items.FindByText(GetLanguage("language")) Is Nothing then
-					ddlLanguage.Items.FindByText(GetLanguage("language")).Selected = True
-					else 
-       				ddlLanguage.SelectedIndex = 0     
-			    	End If
+                    cmdUpdate.Visible = False
+                    If Not ddlLanguage.Items.FindByText(GetLanguage("language")) Is Nothing Then
+                        ddlLanguage.Items.FindByText(GetLanguage("language")).Selected = True
+                    Else
+                        ddlLanguage.SelectedIndex = 0
+                    End If
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
-			End If
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
+            End If
 
 			If TxtIcone.Text <> ""
 			Dim ImageURL As STring
@@ -262,22 +263,44 @@ Namespace DotNetZoom
             Dim allEditItems As New ListItem()
             allEditItems.Text = GetLanguage("ms_all_users")
             allEditItems.Value = glbRoleAllUsers
+            cmdDelete.Visible = False
+            cmdUpdate.Visible = False
 
             Dim result As SqlDataReader = objAdmin.GetModule(ModuleId)
             If result.Read() Then
+                If result("TabId").ToString() = _portalSettings.ActiveTab.TabId.ToString() Then
+                    cmdDelete.Visible = True
+                    cmdUpdate.Visible = True
+                End If
 
-				If Not ddlLanguage.Items.FindByValue(result("Language").ToString) Is Nothing then
-				ddlLanguage.Items.FindByValue(result("Language").ToString).Selected = True
-				else 
-    			ddlLanguage.Items.FindByText("<"& GetLanguage("all") & ">").Selected = True   
-				End If
-			
+                If Not ddlLanguage.Items.FindByValue(result("Language").ToString) Is Nothing Then
+                    ddlLanguage.Items.FindByValue(result("Language").ToString).Selected = True
+                Else
+                    ddlLanguage.Items.FindByText("<" & GetLanguage("all") & ">").Selected = True
+                End If
 
-			
+
+
                 txtTitle.Text = result("ModuleTitle").ToString
-				TxtIcone.Text = result("IconFile").ToString
+                txticone.Text = result("IconFile").ToString
                 chkShowTitle.Checked = result("ShowTitle")
                 chkAllTabs.Checked = result("AllTabs")
+
+                ' Only allow Admin to put a module on all tab
+                If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                    chkAllTabs.Enabled = True
+                Else
+                    chkAllTabs.Enabled = False
+                    If chkAllTabs.Checked Then
+                        'only allow admin to modify module on all tab
+                        cmdDelete.Visible = False
+                        cmdUpdate.Visible = False
+
+                    End If
+                End If
+
+
+
                 txtCacheTime.Text = result("CacheTime")
                 cboPersonalize.SelectedIndex = result("Personalize")
                 cboTab.Items.FindByValue(result("TabId").ToString).Selected = True
@@ -295,7 +318,7 @@ Namespace DotNetZoom
                 While ViewRoles.Read()
 
                     Dim item As New ListItem()
-					item.Text = CType(ViewRoles("RoleName"), String)
+                    item.Text = CType(ViewRoles("RoleName"), String)
                     item.Value = ViewRoles("RoleID").ToString()
 
                     If InStr(1, IIf(IsDBNull(result("AuthorizedViewRoles")), "", result("AuthorizedViewRoles")), item.Value & ";") Then
@@ -313,11 +336,11 @@ Namespace DotNetZoom
                 End If
 
                 chkAuthEditRoles.Items.Add(allEditItems)
-				
+
                 While EditRoles.Read()
 
                     Dim item As New ListItem()
-					item.Text = CType(EditRoles("RoleName"), String)
+                    item.Text = CType(EditRoles("RoleName"), String)
                     item.Value = EditRoles("RoleID").ToString()
 
                     If InStr(1, IIf(IsDBNull(result("AuthorizedEditRoles")), "", result("AuthorizedEditRoles")), item.Value & ";") Then

@@ -4,7 +4,7 @@
 <script language="JavaScript" type="text/javascript">
 		function OpeniconeWindow(tabid , idParent)
 			{
-				var m = window.open('DesktopModules/TTTForum/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid + '&parentID=' + idParent, 'icone', 'width=800,height=600,left=100,top=100');
+				var m = window.open('<%= DotnetZoom.glbPath %>DesktopModules/TTTForum/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid + '&parentID=' + idParent, 'icone', 'width=800,height=600,left=100,top=100');
 				m.focus();
 			}
 		function SetUrl(idParentValue, idParent)
@@ -22,7 +22,7 @@
 		var popUp;
 		function OpenNewWindow(idParent, postBack)
 			{
-				popUp = window.open('DesktopModules/TTTForum/TTT_ForumSmiley.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&idParent=' + idParent + '&formname=' + document.forms[0].name  , 'popupcal', 'width=400,height=180,left=100,top=100');
+				popUp = window.open('<%= DotnetZoom.glbPath %>DesktopModules/TTTForum/TTT_ForumSmiley.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&idParent=' + idParent + '&formname=' + document.forms[0].name  , 'popupcal', 'width=400,height=180,left=100,top=100');
 				popUp.focus();
 			}
 		function SetParentValue(formName, idParent, idParentValue)
@@ -138,7 +138,7 @@
                                                 <tr>
                                                    <td class="TTTSubHeader" valign="top" width="137">
 									                <asp:placeholder id="pnlGetSmiley" Runat="server">
-                                                    <asp:literal id="lblScript" runat="server" EnableViewState="false" /><img class="TTTSubHeader" src="images/Avatars/smiley_tongue.gif" border="0" />
+                                                    <asp:literal id="lblScript" runat="server" EnableViewState="false" /><img class="TTTSubHeader" src="/images/Avatars/smiley_tongue.gif" border="0" />
 													<%= DotNetZoom.getlanguage("F_AddImo") %></a>
 													</asp:placeholder>	
                                                     </td>
@@ -251,6 +251,6 @@
 </table>
 <div id="show" class="show" align="center" style="background: silver; border: thin dotted; padding: 4px; visibility:hidden;  top: -33px; position: relative"><%= DotNetZoom.getlanguage("F_Saving") %>
 <br><br>
-<img src="images/rotation.gif" alt="*" width="32" height="32">
+<img src="/images/rotation.gif" alt="*" width="32" height="32">
 <br><br>
 </div>

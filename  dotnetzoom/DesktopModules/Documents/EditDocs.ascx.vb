@@ -109,21 +109,17 @@ Namespace DotNetZoom
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
 
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
                 Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
                 cboInternal.DataSource = FileList
                 cboInternal.DataBind()
 
-                lblSyndicate.Text = GetPortalDomainName(_portalSettings.PortalAlias, Request)
-                If Request.ApplicationPath <> "/" Then
-                    lblSyndicate.Text = Left(lblSyndicate.Text, InStrRev(lblSyndicate.Text, "/") - 1)
-                End If
                 Dim ObjAdmin As New AdminDB()
-                lblSyndicate.Text += _portalSettings.UploadDirectory & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
-				lblSyndicate.Visible = File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
+                lblSyndicate.Text = "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory & ObjAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
+                lblSyndicate.Visible = File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & ObjAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
 
-				
-				
+
+
                 If itemId <> -1 Then
 
                     ' Obtain a single row of document information
@@ -157,7 +153,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?tabid=" & TabId, True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
 
                 Else
@@ -166,7 +162,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
             End If
 

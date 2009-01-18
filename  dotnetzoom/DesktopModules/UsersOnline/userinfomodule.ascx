@@ -3,14 +3,14 @@
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:PlaceHolder id="pnlModuleContent" Runat="server">
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
-<img height=1 src="images/1x1.gif"  alt="*" width=750><br>
+<img height=1 src="/images/1x1.gif"  alt="*" width=750><br>
 <table cellspacing=0 cellpadding=4 width="100%">
   <tr class=Normal>
     <td>
       <table cellspacing=0 cellpadding=0 width="100%">
         <tr>
           <td valign=top align=center width=150><img 
-            src="Images/uoProfile.jpg"> <asp:placeholder id=pnlProfileOptions Runat="server">
+            src="/images/uoProfile.jpg"> <asp:placeholder id=pnlProfileOptions Runat="server">
             <table cellspacing=0 cellpadding=2 width="100%">
               <tr id=rowEditProfile runat="server">
                 <td class=Normal colspan=2>[ <a 
@@ -44,7 +44,7 @@
 
             <table cellspacing=0 cellpadding=2 width="100%">
               <tr>
-                <td align=center width=150><img src="Images/uoBuddies.jpg"></td>
+                <td align=center width=150><img src="/images/uoBuddies.jpg"></td>
                 <td valign=top><span class=NormalBold><asp:Label id=lblBuddyList Runat="server"></asp:Label></span><asp:DataList id=lstBuddies Runat="server" cssclass="normal" Height="100%" RepeatColumns="2" ItemStyle-Width="125">
 												<itemtemplate>
 													[

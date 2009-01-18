@@ -61,7 +61,7 @@ Namespace DotNetZoom
              Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 
 			' Check to see if available in Cache
 			Dim TempKey as String = GetDBname & "ModuleID_" & CStr(ModuleId)

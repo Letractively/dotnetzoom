@@ -6,7 +6,7 @@
 <script language="JavaScript" type="text/javascript">
 		function OpenNewWindow(tabid)
 			{
-				var m = window.open('admin/tabs/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100');
+				var m = window.open('<%=dotnetzoom.glbpath%>admin/tabs/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100');
 				m.focus();
 			}
 			
@@ -60,7 +60,7 @@
              &nbsp; 
             </td>
             <td align="left">
-		    <asp:LinkButton class="CommandButton" id="cmdLatLong" runat="server" ></asp:LinkButton>
+		    <asp:LinkButton cssclass="CommandButton" id="cmdLatLong" runat="server" ></asp:LinkButton>
             </td>
 		</tr>
         <tr valign="bottom">
@@ -141,7 +141,7 @@
 		</tr>
 		<tr valign="bottom">
             <td align="left" colspan="2">
-		    <asp:LinkButton class="CommandButton" id="cmdGenerateScript" runat="server" ></asp:LinkButton>
+		    <asp:LinkButton cssclass="CommandButton" id="cmdGenerateScript" runat="server" ></asp:LinkButton>
             </td>
 		</tr>
     </tbody>
@@ -151,8 +151,8 @@
 </tbody>
 </table>
 <p align="left">
-    <asp:LinkButton class="CommandButton" id="cmdUpdate" runat="server" ></asp:LinkButton>
+    <asp:LinkButton cssclass="CommandButton" id="cmdUpdate" runat="server" ></asp:LinkButton>
     &nbsp; 
-    <asp:LinkButton class="CommandButton" id="cmdCancel" runat="server"  CausesValidation="False"></asp:LinkButton>
+    <asp:LinkButton cssclass="CommandButton" id="cmdCancel" runat="server"  CausesValidation="False"></asp:LinkButton>
 </p>
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>

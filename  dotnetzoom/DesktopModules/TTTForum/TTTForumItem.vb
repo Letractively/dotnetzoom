@@ -223,7 +223,7 @@ Namespace DotNetZoom
 
             wr.RenderBeginTag(HtmlTextWriterTag.Td) '<td
             wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
-            wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
+            wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
             wr.AddAttribute(HtmlTextWriterAttribute.Width, "32")
             wr.AddAttribute(HtmlTextWriterAttribute.Height, "32")
 
@@ -231,25 +231,25 @@ Namespace DotNetZoom
                 If (loggedOnUserID > 0) AndAlso (_MostRecentPostDate > lastVisited) Then
 
                     wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & imageURL & "forum.gif') no-repeat; background-position: -16px -160px;")
-					wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewMessages"))
-	 				wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewMessages0"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewMessages"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewMessages0"))
                 Else
 
                     wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & imageURL & "forum.gif') no-repeat; background-position: -16px -128px;")
-					wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NoNewMessage"))
-					wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NoNewMessage0"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NoNewMessage"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NoNewMessage0"))
                 End If
             Else
                 If (loggedOnUserID > 0) AndAlso (_MostRecentPostDate > lastVisited) Then
 
                     wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & imageURL & "forum.gif') no-repeat; background-position: -16px -96px;")
-					wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewMessages"))
-	 				wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewMessages0"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewMessages"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewMessages0"))
                 Else
 
                     wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & imageURL & "forum.gif') no-repeat; background-position: -16px -64px;")
-					wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NoNewMessage"))
-					wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NoNewMessage0"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NoNewMessage"))
+                    wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NoNewMessage0"))
                 End If
             End If
 
@@ -270,8 +270,8 @@ Namespace DotNetZoom
             ' Display new image if this post is new since last time user visited
             If loggedOnUserID > 0 AndAlso (lastVisited < _CreatedDate) Then
                 wr.AddAttribute(HtmlTextWriterAttribute.Src, imageURL + GetLanguage("N") + "_new.gif")
-				wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewPost"))
-				wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewPostA"))
+                wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("F_NewPost"))
+                wr.AddAttribute(HtmlTextWriterAttribute.Alt, GetLanguage("F_NewPostA"))
                 wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
                 wr.RenderBeginTag(HtmlTextWriterTag.Img)
                 wr.RenderEndTag()
@@ -286,25 +286,25 @@ Namespace DotNetZoom
                 wr.Write(_Description)
                 wr.RenderEndTag() ' Span
             End If
-			
-			' if rss put it on
+
+            ' if rss put it on
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-	
-            if File.Exists(HttpContext.Current.Request.MapPath(_portalSettings.UploadDirectory) & "forum" & ZforumID.ToString & ".xml")
-			    wr.Write("&nbsp;")
-				wr.AddAttribute(HtmlTextWriterAttribute.Href, "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory & "forum" & ZforumID.ToString & ".xml") 
+
+            If File.Exists(HttpContext.Current.Request.MapPath(_portalSettings.UploadDirectory) & "forum" & ZforumID.ToString & ".xml") Then
+                wr.Write("&nbsp;")
+                wr.AddAttribute(HtmlTextWriterAttribute.Href, "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory & "forum" & ZforumID.ToString & ".xml")
                 wr.RenderBeginTag(HtmlTextWriterTag.A)
-                wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
-				wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("channel_syndicate"))
+                wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
+                wr.AddAttribute(HtmlTextWriterAttribute.Title, GetLanguage("channel_syndicate"))
                 wr.AddAttribute(HtmlTextWriterAttribute.Alt, "rss")
-                wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -445px;")
+                wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -445px;")
                 wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
                 wr.AddAttribute(HtmlTextWriterAttribute.Width, "36")
                 wr.AddAttribute(HtmlTextWriterAttribute.Height, "14")
                 wr.RenderBeginTag(HtmlTextWriterTag.Img)
                 wr.RenderEndTag() ' img
                 wr.RenderEndTag() ' A
-			end if
+            End If
 			
 			
 			

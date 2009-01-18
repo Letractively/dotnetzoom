@@ -21,7 +21,7 @@
 						<tr class="TTTAltHeader">
 						<td colspan="2" height="28">
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "1" %>','img<%= me.ClientID & "_" & "1" %>');">
-						<img alt="+" id="img<%= me.ClientID & "_" & "1" %>" src="images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
+						<img alt="+" id="img<%= me.ClientID & "_" & "1" %>" src="/images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
 						</a>
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "1" %>','img<%= me.ClientID & "_" & "1" %>');">
 						<span class="TTTHeaderText">&nbsp;<%= DotNetZoom.getlanguage("F_ImgSettings") %></span>
@@ -57,7 +57,7 @@
 
                
                                     <asp:placeholder id="pnlAvatarConfig" Runat="server">
-                                        <asp:imagebutton id="btnAvatarConfig" runat="server" CommandName="Add" AlternateText="Config" ImageUrl="~/Images/Avatars/smiley_smile.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                        <asp:imagebutton id="btnAvatarConfig" runat="server" CommandName="Add" AlternateText="Config" ImageURL="~/images/Avatars/smiley_smile.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                                         <asp:Label id="lblAvatarInfo" runat="server" forecolor="Red"></asp:Label>
                                     </asp:placeholder>
                                 </td>
@@ -76,7 +76,7 @@
 						<tr class="TTTAltHeader">
 						<td colspan="2" height="28">
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "2" %>','img<%= me.ClientID & "_" & "2" %>');">
-						<img alt="+" id="img<%= me.ClientID & "_" & "2" %>" src="images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
+						<img alt="+" id="img<%= me.ClientID & "_" & "2" %>" src="/images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
 						</a>
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "2" %>','img<%= me.ClientID & "_" & "2" %>');">
 						<span class="TTTHeaderText">&nbsp;<%= DotNetZoom.getlanguage("F_EMailYes") %></span> <span class="TTTNormal">&nbsp;
@@ -134,7 +134,7 @@
 						<tr class="TTTAltHeader">
 						<td colspan="2" height="28">
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "3" %>','img<%= me.ClientID & "_" & "3" %>');">
-						<img alt="+" id="img<%= me.ClientID & "_" & "3" %>" src="images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
+						<img alt="+" id="img<%= me.ClientID & "_" & "3" %>" src="/images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
 						</a>
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "3" %>','img<%= me.ClientID & "_" & "3" %>');">
 						<span class="TTTHeaderText">&nbsp;<%= DotNetZoom.getlanguage("F_ForumFormat") %></span>
@@ -186,7 +186,7 @@
 						<tr class="TTTAltHeader">
 						<td colspan="2" height="28">
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "4" %>','img<%= me.ClientID & "_" & "4" %>');">
-						<img alt="+" id="img<%= me.ClientID & "_" & "4" %>" src="images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
+						<img alt="+" id="img<%= me.ClientID & "_" & "4" %>" src="/images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
 						</a>
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "4" %>','img<%= me.ClientID & "_" & "4" %>');">
 						<span class="TTTHeaderText">&nbsp;<%= DotNetZoom.getlanguage("F_UOInt") %></span>
@@ -212,7 +212,7 @@
 						<tr class="TTTAltHeader">
 						<td colspan="2" height="28">
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "5" %>','img<%= me.ClientID & "_" & "5" %>');">
-						<img alt="+" id="img<%= me.ClientID & "_" & "5" %>" src="images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
+						<img alt="+" id="img<%= me.ClientID & "_" & "5" %>" src="/images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
 						</a>
 						<a href="javascript:onclick=ShowHide('<%= me.ClientID & "_" & "5" %>','img<%= me.ClientID & "_" & "5" %>');">
 						<span class="TTTHeaderText">&nbsp;<%= DotNetZoom.getlanguage("F_GalInt") %></span>

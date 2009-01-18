@@ -56,7 +56,7 @@ Namespace DotNetZoom
 			
 
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 
 			Dim objAdmin As New AdminDB()
 			' Check to see if available in Cache
@@ -81,11 +81,7 @@ Namespace DotNetZoom
             D.DataBind()
 	
             if File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
-            rssLink.NavigateUrl = GetPortalDomainName(_portalSettings.PortalAlias, Request)
-            If Request.ApplicationPath <> "/" Then
-               rssLink.NavigateUrl = Left(rssLink.NavigateUrl, InStrRev(rssLink.NavigateUrl, "/") - 1)
-            End If
-            rssLink.NavigateUrl += _portalSettings.UploadDirectory & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
+                rssLink.NavigateUrl = _portalSettings.UploadDirectory & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
 			rssLink.visible = True
 			rssLink.ToolTip = GetLanguage("channel_syndicate") & " " & File.getlastwritetime(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml").ToString()
 			end if

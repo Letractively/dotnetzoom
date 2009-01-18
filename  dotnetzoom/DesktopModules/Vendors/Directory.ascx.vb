@@ -171,7 +171,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdSignup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdSignup.Click
-            Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Fournisseurs", True)
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Fournisseurs", True)
         End Sub
 
     End Class

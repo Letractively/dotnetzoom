@@ -42,9 +42,9 @@ Namespace DotNetZoom
 			TempId = CType(_portalSettings.BreadCrumbs(_portalSettings.BreadCrumbs.Count - 1), TabStripDetails).TabId
 				If _portalSettings.ActiveTab.TabId = AccueilTab.TabId then
 				' HighLight menu if active tab
-                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(AccueilTab.FriendlyTabName, AccueilTab.ShowFriendly, AccueilTab.TabId.ToString) & """>" & "<span class=""activetab"">" & AccueilTab.TabName & "</span>" & "</a>"
+                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(AccueilTab.FriendlyTabName, AccueilTab.ssl, AccueilTab.ShowFriendly, AccueilTab.TabId.ToString) & """>" & "<span class=""activetab"">" & AccueilTab.TabName & "</span>" & "</a>"
 				else
-                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(AccueilTab.FriendlyTabName, AccueilTab.ShowFriendly, AccueilTab.TabId.ToString) & """>" & AccueilTab.TabName & "</a>"
+                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(AccueilTab.FriendlyTabName, AccueilTab.ssl, AccueilTab.ShowFriendly, AccueilTab.TabId.ToString) & """>" & AccueilTab.TabName & "</a>"
 				end if
 			Else
 			TempId = -1
@@ -52,9 +52,9 @@ Namespace DotNetZoom
 			For intTab = 0 To _portalSettings.BreadCrumbs.Count - 1
 			ObjTab = CType(_portalSettings.BreadCrumbs(intTab), TabStripDetails)
 			if _portalSettings.ActiveTab.TabId = ObjTab.TabId then
-                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(objTab.FriendlyTabName, objTab.ShowFriendly, objTab.Tabid.ToString) & """>" & "<span class=""activetab"">" & objTab.TabName & "</span>" & "</a>"
+                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(objTab.FriendlyTabName, objtab.ssl, objTab.ShowFriendly, objTab.Tabid.ToString) & """>" & "<span class=""activetab"">" & objTab.TabName & "</span>" & "</a>"
 			else
-                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(objtab.FriendlyTabName, objTab.ShowFriendly, objTab.Tabid.ToString) & """>" & objTab.TabName & "</a>"
+                    strBreadCrumbs += "&nbsp;&raquo;&nbsp;<a href=""" & FormatFriendlyURL(objtab.FriendlyTabName, objtab.ssl, objTab.ShowFriendly, objTab.Tabid.ToString) & """>" & objTab.TabName & "</a>"
 			end if
 			Next
 						
@@ -74,7 +74,7 @@ Namespace DotNetZoom
 					else
 					strBreadCrumbs += "|"
 					End If
-					strBreadCrumbs += "&nbsp;<a href=""" & 	FormatFriendlyURL(tab.FriendlyTabName, Tab.ShowFriendly, tab.Tabid.ToString) & """>" & Tab.TabName & "</a>&nbsp;"
+                        strBreadCrumbs += "&nbsp;<a href=""" & FormatFriendlyURL(tab.FriendlyTabName, tab.ssl, tab.ShowFriendly, tab.TabId.ToString) & """>" & tab.TabName & "</a>&nbsp;"
 					End If
                 	End If
             Next i
@@ -90,7 +90,7 @@ Namespace DotNetZoom
 				else
 				strBreadCrumbs += "|"
 				End If
-				strBreadCrumbs += "&nbsp;<a href=""" & FormatFriendlyURL(tab.FriendlyTabName, Tab.ShowFriendly, tab.Tabid.ToString) & """>" & Tab.TabName & "</a>&nbsp;"
+                            strBreadCrumbs += "&nbsp;<a href=""" & FormatFriendlyURL(tab.FriendlyTabName, tab.ssl, tab.ShowFriendly, tab.TabId.ToString) & """>" & tab.TabName & "</a>&nbsp;"
 			End If
                 	End If
             		Next i

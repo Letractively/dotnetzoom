@@ -47,7 +47,7 @@
              	<Columns>
 		        <asp:TemplateColumn ItemStyle-Width="20">
                     	<ItemTemplate>
-						<asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("delete") %>' ID="cmdDeleteUserRole" Runat="server" AlternateText='<%# DotNetZoom.GetLanguage("delete") %>' CausesValidation="False" CommandName="Delete" ImageUrl="~/images/delete.gif" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
+						<asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("delete") %>' ID="cmdDeleteUserRole" Runat="server" AlternateText='<%# DotNetZoom.GetLanguage("delete") %>' CausesValidation="False" CommandName="Delete" ImageURL="~/images/delete.gif" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
 						</ItemTemplate>
 					</asp:TemplateColumn>										
                     <asp:BoundColumn DataField="ClassificationName" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold" />
@@ -292,7 +292,7 @@
                             <asp:TemplateColumn ItemStyle-Width="20">
                                 <ItemTemplate>
                                     <asp:HyperLink NavigateUrl='<%# FormatURL("BannerId",DataBinder.Eval(Container.DataItem,"BannerId")) %>' runat="server" ID="Hyperlink1">
-                                        <asp:Image ImageUrl="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' runat="server" ID="Hyperlink1Image" />
+                                        <asp:Image ImageURL="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' runat="server" ID="Hyperlink1Image" />
                                     </asp:HyperLink>
                                 </ItemTemplate>
                             </asp:TemplateColumn>

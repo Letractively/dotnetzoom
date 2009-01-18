@@ -82,12 +82,12 @@
                     <Columns>
                         <asp:TemplateColumn ItemStyle-Wrap="False">
                             <ItemTemplate>
-                                <asp:imagebutton id="cmdEditCriteria" runat="server" causesvalidation="false" commandname="Edit" ImageUrl="~/images/edit.gif" AlternateText="Modifier" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
-                                <asp:ImageButton ID="cmdDeleteCriteria" Runat="server" CausesValidation="False" CommandName="Delete" ImageUrl="~/images/delete.gif" AlternateText="Supprimer" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
+                                <asp:imagebutton id="cmdEditCriteria" runat="server" causesvalidation="false" commandname="Edit" ImageURL="~/images/edit.gif" AlternateText="Modifier" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                <asp:ImageButton ID="cmdDeleteCriteria" Runat="server" CausesValidation="False" CommandName="Delete" ImageURL="~/images/delete.gif" AlternateText="Supprimer" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
                             </ItemTemplate>
                             <EditItemTemplate>
-                                <asp:imagebutton id="cmdSaveCriteria" runat="server" causesvalidation="false" commandname="Update" ImageUrl="~/images/save.gif" AlternateText="Enregistrer" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
-                                <asp:imagebutton id="cmdCancelCriteria" runat="server" causesvalidation="false" commandname="Cancel" ImageUrl="~/images/cancel.gif" AlternateText="Annuler" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                <asp:imagebutton id="cmdSaveCriteria" runat="server" causesvalidation="false" commandname="Update" ImageURL="~/images/save.gif" AlternateText="Enregistrer" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
+                                <asp:imagebutton id="cmdCancelCriteria" runat="server" causesvalidation="false" commandname="Cancel" ImageURL="~/images/cancel.gif" AlternateText="Annuler" BorderWidth="0" BorderStyle="none"></asp:imagebutton>
                             </EditItemTemplate>
                         </asp:TemplateColumn>
                         <asp:BoundColumn DataField="TableName" ReadOnly="True" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold" />

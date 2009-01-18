@@ -9,7 +9,7 @@
         <asp:TemplateColumn ItemStyle-Width="20">
             <ItemTemplate>
                 <asp:HyperLink NavigateUrl='<%# FormatURL("VendorID",DataBinder.Eval(Container.DataItem,"VendorID")) %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1">
-                    <asp:Image ImageUrl="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image" />
+                    <asp:Image ImageURL="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image" />
                 </asp:HyperLink>
             </ItemTemplate>
         </asp:TemplateColumn>

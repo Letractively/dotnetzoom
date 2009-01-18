@@ -141,72 +141,72 @@ Namespace DotNetZoom
             If Request.IsAuthenticated Then
                 ZuserID = Int16.Parse(Context.Current.User.Identity.Name)
             else
-			Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-			end if
-			
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+            End If
+
             If IsNumeric(Request.Params("mid")) Then
                 ZmoduleID = Int32.Parse(Request.Params("mid"))
             End If
-			
-			Dim _path as string = ""
+
+            Dim _path As String = ""
             If Not Request.Params("path") Is Nothing Then
                 _path = Request.Params("path")
             End If
 
             btnAdd.Attributes.Add("onclick", "toggleBox('" + btnAdd.ClientID + "',0);toggleBox('rotation',1)")
 
-			
+
             Zrequest = New GalleryRequest(ZmoduleID)
             Zconfig = Zrequest.GalleryConfig
             Zfolder = Zrequest.Folder
-   
-			if Zconfig.IsValidPath then
-            If Not Zrequest.Folder.IsPopulated Then
-			Zrequest.Folder.Populate()
-			End if
-			else
-			'New so go to set up
-			Response.Redirect(FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _PortalSettings.activetab.TabId.ToString, "edit=control&editpage=1&mid=" & ZmoduleID.ToString), True)
-			End If
-			
-	
 
-			
+            If Zconfig.IsValidPath Then
+                If Not Zrequest.Folder.IsPopulated Then
+                    Zrequest.Folder.Populate()
+                End If
+            Else
+                'New so go to set up
+                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&editpage=1&mid=" & ZmoduleID.ToString), True)
+            End If
+
+
+
+
             With Zfolder
-				lblAlbumTitle.Text = Replace(GetLanguage("Gal_AddF"), "{folderURL}", Zfolder.URL & "/")
-				lblfileTitle.Text  = Replace(GetLanguage("Gal_AddFF"), "{folderURL}", Zfolder.URL & "/")
-			End with
-			
+                lblAlbumTitle.Text = Replace(GetLanguage("Gal_AddF"), "{folderURL}", Zfolder.URL & "/")
+                lblfileTitle.Text = Replace(GetLanguage("Gal_AddFF"), "{folderURL}", Zfolder.URL & "/")
+            End With
+
             Authorize()
             BindCategories()
 
-			
-			
+
+
             If Not Page.IsPostBack AndAlso Zconfig.IsValidPath Then
-				
+
                 BindData()
                 BuildStringInfo()
-				' if Admin then can edit owner
-				
-				If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
-                OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
-				OrElse (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) then
+                ' if Admin then can edit owner
+
+                If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
+                            OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
+                OrElse (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                     btnEditOwner.Visible = True
                 Else
                     btnEditOwner.Visible = False
                 End If
 
-				
+
                 lblInfo.Text = strFolderInfo
                 pnlAdd1.Visible = True
-				pnlAdd.Visible = True
-				btnFileUpload.visible = false
-				
+                pnlAdd.Visible = True
+                btnFileUpload.visible = False
+
                 If Zfolder.Parent Is Nothing Then
-                    lblHeader.Text = GetLanguage("Gal_ModG") 
+                    lblHeader.Text = GetLanguage("Gal_ModG")
                     UpdateButton.Visible = False
                 Else
-				    lblHeader.Text = GetLanguage("Gal_ModA")  
+                    lblHeader.Text = GetLanguage("Gal_ModA")
                 End If
 
                 ' Store URL Referrer to return to portal
@@ -310,33 +310,33 @@ Namespace DotNetZoom
 
         Private Sub BindChildItems()
 
- 
-                grdFile.DataSource = Zrequest.FileItems
-                grdFile.PageSize = (Zrequest.FileItems.Count + 1)
-                btnAddFile.Visible = True
+
+            grdFile.DataSource = Zrequest.FileItems
+            grdFile.PageSize = (Zrequest.FileItems.Count + 1)
+            btnAddFile.Visible = True
 
 
-                grdDir.DataSource =  Zrequest.SubAlbumItems
-				
-                grdDir.PageSize = grdDir.PageSize + (Zrequest.SubAlbumItems.Count + 1)
- 
-                btnAddFolder.Visible = True
-	
-				if Zrequest.SubAlbumItems.Count >  0 then
- 				pnlContentDir.Visible = true
-				else
-				pnlContentDir.Visible = false
-				end if
-				
-				if Zrequest.FileItems.Count > 0 then
-				pnlContentFile.Visible = true
-				else
-				pnlContentFile.Visible = false
-				end if
-				
-			grdDir.DataBind()
-			grdFile.DataBind()
-		
+            grdDir.DataSource = Zrequest.SubAlbumItems
+
+            grdDir.PageSize = grdDir.PageSize + (Zrequest.SubAlbumItems.Count + 1)
+
+            btnAddFolder.Visible = True
+
+            If Zrequest.SubAlbumItems.Count > 0 Then
+                pnlContentDir.Visible = True
+            Else
+                pnlContentDir.Visible = False
+            End If
+
+            If Zrequest.FileItems.Count > 0 Then
+                pnlContentFile.Visible = True
+            Else
+                pnlContentFile.Visible = False
+            End If
+
+            grdDir.DataBind()
+            grdFile.DataBind()
+
         End Sub
 
         Private Sub BuildStringInfo()
@@ -363,32 +363,32 @@ Namespace DotNetZoom
                 Dim albumTitle As String = Me.txtAlbumTitle.Text
                 Dim albumDescription As String = txtAlbumDescription.Text
                 Dim categories As String = GetCategories(lstCategories2)
-                lblInfo.Text = strFolderInfo 
+                lblInfo.Text = strFolderInfo
                 lblInfo.Text += Zfolder.CreateChild(albumName, albumTitle, albumDescription, categories, ZuserID)
 
-				pnlAlbumDetails.Visible = True
-				
-				
+                pnlAlbumDetails.Visible = True
+
+
                 pnlAddFolder.Visible = False
-				pnlAdd1.Visible = True
-				pnlAdd.Visible = True
+                pnlAdd1.Visible = True
+                pnlAdd.Visible = True
 
                 GalleryConfig.ResetGalleryConfig(ZmoduleID)
                 Zrequest = New GalleryRequest(ZmoduleID)
                 BindData()
 
-				
-				if Zrequest.SubAlbumItems.Count >  0 then
- 				pnlContentDir.Visible = true
-				else
-				pnlContentDir.Visible = false
-				end if
-				
-				if Zrequest.FileItems.Count > 0 then
-				pnlContentFile.Visible = true
-				else
-				pnlContentFile.Visible = false
-				end if
+
+                If Zrequest.SubAlbumItems.Count > 0 Then
+                    pnlContentDir.Visible = True
+                Else
+                    pnlContentDir.Visible = False
+                End If
+
+                If Zrequest.FileItems.Count > 0 Then
+                    pnlContentFile.Visible = True
+                Else
+                    pnlContentFile.Visible = False
+                End If
                 If Not Request.Params("action") Is Nothing Then
                     Response.Redirect(CType(ViewState("UrlReferrer"), String))
                 End If
@@ -396,71 +396,71 @@ Namespace DotNetZoom
 
         End Sub
 
-		Private Function CheckQuota() As Boolean
-		lblFileInfo.Text = ""
-        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-        ' only do if Quota
-		CheckQuota = True
-		If _portalSettings.HostSpace <> 0 or ZRequest.GalleryConfig.Quota <> 0 then
-			Dim StrFolder as String
-			Dim SpaceUsed as Double			
-            
-            Dim objAdmin As New AdminDB()
-			
-			If _portalSettings.HostSpace <> 0
-            strFolder = Request.MapPath(_portalSettings.UploadDirectory)
-			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed.ToString() )
-			End If
-			' CheckPortal Quota
-				If ((SpaceUsed  / 1048576) >= _portalSettings.HostSpace) And (Not (Request.Params("hostpage") Is Nothing)) Then
-        	      lblFileInfo.Text  = GetLanguage("Gal_NoSpaceLeft")
-	        	  Return False
-            	End If
-			end if
-			
-			If ZRequest.GalleryConfig.Quota <> 0
-			strFolder = HttpContext.Current.Request.MapPath(ZRequest.GalleryConfig.RootURL)
-			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory(strFolder, SpaceUsed.ToString() )
-			End If
-			
-			
-			if ((SpaceUsed / 1048576) >= ZRequest.GalleryConfig.Quota) then
-			    SpaceUsed = SpaceUsed / 1048576
-				lblFileInfo.Text += "<br>" & GetLanguage("Gal_QuotaInfo2") & "<br>" & GetLanguage("Gal_QuotaInfo1")
-				lblFileInfo.Text = replace(lblFileInfo.Text, "{Quota}", Format(ZRequest.GalleryConfig.Quota, "#,##0.00"))
-				lblFileInfo.Text = replace(lblFileInfo.Text, "{SpaceUsed}", Format(SpaceUsed, "#,##0.00") )
-				lblFileInfo.Text = replace(lblFileInfo.Text, "{SpaceLeft}", Format(ZRequest.GalleryConfig.Quota - SpaceUsed, "#,##0.00") )
-               Return False
-			End if
-			End if
-		End If		
-		end Function
-		
-		
-		Private Sub UpdateFolderSize(Optional ByVal FileSize As Double = 0)
-        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		Dim StrFolder as String
-		Dim objAdmin As New AdminDB()
-		If FileSize = 0 then
-        strFolder = Request.MapPath(_portalSettings.UploadDirectory)
-		objAdmin.AddDirectory( strFolder, objAdmin.GetFolderSizeRecursive(strFolder).ToString() )
-		strFolder = Request.MapPath(Zconfig.RootURL)
-		objAdmin.AddDirectory(strFolder, objAdmin.GetFolderSizeRecursive(strFolder).ToString() )
-		else
-        strFolder = Request.MapPath(_portalSettings.UploadDirectory)
-		objAdmin.AddDirectory( strFolder, (objAdmin.GetDirectorySpaceUsed(strFolder) + FileSize).ToString())
-		strFolder = Request.MapPath(Zconfig.RootURL)
-		objAdmin.AddDirectory(strFolder, (objAdmin.GetDirectorySpaceUsed(strFolder) + FileSize).ToString())
-		end if
+        Private Function CheckQuota() As Boolean
+            lblFileInfo.Text = ""
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            ' only do if Quota
+            CheckQuota = True
+            If _portalSettings.HostSpace <> 0 Or ZRequest.GalleryConfig.Quota <> 0 Then
+                Dim StrFolder As String
+                Dim SpaceUsed As Double
 
-		End Sub
-		
+                Dim objAdmin As New AdminDB()
+
+                If _portalSettings.HostSpace <> 0 Then
+                    strFolder = Request.MapPath(_portalSettings.UploadDirectory)
+                    SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
+                    If SpaceUsed = 0 Then
+                        SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
+                        objAdmin.AddDirectory(strFolder, SpaceUsed.ToString())
+                    End If
+                    ' CheckPortal Quota
+                    If ((SpaceUsed / 1048576) >= _portalSettings.HostSpace) And (Not (Request.Params("hostpage") Is Nothing)) Then
+                        lblFileInfo.Text = GetLanguage("Gal_NoSpaceLeft")
+                        Return False
+                    End If
+                End If
+
+                If ZRequest.GalleryConfig.Quota <> 0 Then
+                    strFolder = HttpContext.Current.Request.MapPath(ZRequest.GalleryConfig.RootURL)
+                    SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
+                    If SpaceUsed = 0 Then
+                        SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
+                        objAdmin.AddDirectory(strFolder, SpaceUsed.ToString())
+                    End If
+
+
+                    If ((SpaceUsed / 1048576) >= ZRequest.GalleryConfig.Quota) Then
+                        SpaceUsed = SpaceUsed / 1048576
+                        lblFileInfo.Text += "<br>" & GetLanguage("Gal_QuotaInfo2") & "<br>" & GetLanguage("Gal_QuotaInfo1")
+                        lblFileInfo.Text = replace(lblFileInfo.Text, "{Quota}", Format(ZRequest.GalleryConfig.Quota, "#,##0.00"))
+                        lblFileInfo.Text = replace(lblFileInfo.Text, "{SpaceUsed}", Format(SpaceUsed, "#,##0.00"))
+                        lblFileInfo.Text = replace(lblFileInfo.Text, "{SpaceLeft}", Format(ZRequest.GalleryConfig.Quota - SpaceUsed, "#,##0.00"))
+                        Return False
+                    End If
+                End If
+            End If
+        End Function
+
+
+        Private Sub UpdateFolderSize(Optional ByVal FileSize As Double = 0)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim StrFolder As String
+            Dim objAdmin As New AdminDB()
+            If FileSize = 0 Then
+                strFolder = Request.MapPath(_portalSettings.UploadDirectory)
+                objAdmin.AddDirectory(strFolder, objAdmin.GetFolderSizeRecursive(strFolder).ToString())
+                strFolder = Request.MapPath(Zconfig.RootURL)
+                objAdmin.AddDirectory(strFolder, objAdmin.GetFolderSizeRecursive(strFolder).ToString())
+            Else
+                strFolder = Request.MapPath(_portalSettings.UploadDirectory)
+                objAdmin.AddDirectory(strFolder, (objAdmin.GetDirectorySpaceUsed(strFolder) + FileSize).ToString())
+                strFolder = Request.MapPath(Zconfig.RootURL)
+                objAdmin.AddDirectory(strFolder, (objAdmin.GetDirectorySpaceUsed(strFolder) + FileSize).ToString())
+            End If
+
+        End Sub
+
         Private Sub grdDir_ItemCommand(ByVal source As Object, ByVal e As System.Web.UI.WebControls.DataGridCommandEventArgs) Handles grdDir.ItemCommand
 
             Dim itemIndex As Integer = Int16.Parse((CType(e.CommandSource, ImageButton).CommandArgument))
@@ -476,14 +476,14 @@ Namespace DotNetZoom
                     GalleryConfig.ResetGalleryConfig(ZmoduleID)
                     Zrequest = New GalleryRequest(ZmoduleID)
                     BindData()
-					
+
                 Case "edit"
                     Dim url As String = ""
 
                     If (Not selItem Is Nothing) AndAlso (selItem.IsFolder) Then
-                        url = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(selItem, IGalleryObjectInfo).URL
+                        url = GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(selItem, IGalleryObjectInfo).URL
                     ElseIf (Not selItem Is Nothing) AndAlso (Not selItem.IsFolder) Then
-                        url = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditFile & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(Zfolder, IGalleryObjectInfo).URL & "&editindex=" & selItem.Index.ToString
+                        url = GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditFile & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(Zfolder, IGalleryObjectInfo).URL & "&editindex=" & selItem.Index.ToString
                     End If
 
                     If Len(url) > 0 Then
@@ -505,7 +505,7 @@ Namespace DotNetZoom
 
                 If (Not createdItem Is Nothing) AndAlso (createdItem.IsFolder) Then
                     confirmScript = "javascript: return confirm('" & rtesafe(GetLanguage("request_confirm_erasealbum")) & "')"
-					confirmScript = confirmScript.replace("{items}", createdItem.Size.ToString)
+                    confirmScript = confirmScript.replace("{items}", createdItem.Size.ToString)
                 ElseIf (Not createdItem Is Nothing) AndAlso (Not createdItem.IsFolder) Then
                     confirmScript = "javascript: return confirm('" & rtesafe(GetLanguage("request_confirm")) & "')"
                 End If
@@ -520,7 +520,7 @@ Namespace DotNetZoom
             Dim itemIndex As Integer = Int16.Parse((CType(e.CommandSource, ImageButton).CommandArgument))
             'Dim name As String = (CType(e.CommandSource, ImageButton).CommandArgument)
             Dim selItem As IGalleryObjectInfo = CType(Zfolder.List.Item(itemIndex), IGalleryObjectInfo)
-	
+
 
             Select Case (CType(e.CommandSource, ImageButton).CommandName)
 
@@ -531,14 +531,14 @@ Namespace DotNetZoom
                     Zrequest = New GalleryRequest(ZmoduleID)
 
                     BindData()
-			
+
                 Case "edit"
                     Dim url As String = ""
 
                     If (Not selItem Is Nothing) AndAlso (selItem.IsFolder) Then
-                        url = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(selItem, IGalleryObjectInfo).URL
+                        url = GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(selItem, IGalleryObjectInfo).URL
                     ElseIf (Not selItem Is Nothing) AndAlso (Not selItem.IsFolder) Then
-                        url = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditFile & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(Zfolder, IGalleryObjectInfo).URL & "&editindex=" & selItem.Index.ToString
+                        url = GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditFile & "&tabid=" & TabId & "&mid=" & ZmoduleID.ToString & "&path=" & CType(Zfolder, IGalleryObjectInfo).URL & "&editindex=" & selItem.Index.ToString
                     End If
 
                     If Len(url) > 0 Then
@@ -559,8 +559,8 @@ Namespace DotNetZoom
                 Dim confirmScript As String = ""
 
                 If (Not createdItem Is Nothing) AndAlso (createdItem.IsFolder) Then
-				    confirmScript = "javascript: return confirm('" & rtesafe(GetLanguage("request_confirm_erasealbum")) & "')"
-					confirmScript = confirmScript.replace("{items}", createdItem.Size.ToString)
+                    confirmScript = "javascript: return confirm('" & rtesafe(GetLanguage("request_confirm_erasealbum")) & "')"
+                    confirmScript = confirmScript.replace("{items}", createdItem.Size.ToString)
                 ElseIf (Not createdItem Is Nothing) AndAlso (Not createdItem.IsFolder) Then
                     confirmScript = "javascript: return confirm('" & rtesafe(GetLanguage("request_confirm")) & "')"
                 End If
@@ -569,11 +569,11 @@ Namespace DotNetZoom
 
             End If
         End Sub
-		
-		
-		
-		
-		
+
+
+
+
+
         Private Sub dlStrip_ItemCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DataListItemEventArgs)
             Dim cmdDelete As Control = e.Item.FindControl("delete")
             If Not cmdDelete Is Nothing Then
@@ -587,9 +587,9 @@ Namespace DotNetZoom
                 Dim admin As New AdminDB()
                 admin.UpdateModuleSetting(ZmoduleID, "GalleryTitle", txtTitle.Text)
                 admin.UpdateModuleSetting(ZmoduleID, "Description", txtDescription.Text)
-				admin.UpdateModuleSetting(ZmoduleID, "Owner", txtOwner.Text)
-				admin.UpdateModuleSetting(ZmoduleID, "OwnerID", txtOwnerID.Text)
-				admin.UpdateModuleSetting(ZmoduleID, "Description", txtDescription.Text)
+                admin.UpdateModuleSetting(ZmoduleID, "Owner", txtOwner.Text)
+                admin.UpdateModuleSetting(ZmoduleID, "OwnerID", txtOwnerID.Text)
+                admin.UpdateModuleSetting(ZmoduleID, "Description", txtDescription.Text)
             Else ' ALBUM: Save changes into metadata.xml
                 Dim directory As String = Zrequest.Folder.Parent.Path
                 Dim name As String = Zrequest.Folder.Name
@@ -626,7 +626,7 @@ Namespace DotNetZoom
 
         Private Sub btnAdd_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnAdd.Click
 
-            
+
 
             If CheckQuota() Then
                 'Retreive file upload collection
@@ -704,18 +704,18 @@ Namespace DotNetZoom
 
             Select Case (CType(e.CommandSource, ImageButton).CommandName)
                 Case "delete"
-				    uploadFile = CType(ZuploadCollection.Item(itemIndex), GalleryUploadFile) 
-					Dim uploadPath As String 
-					If uploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
-					UploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, ZRequest.GalleryConfig.TempFolder}, "\", False, False)
-					else
-					If Not ZRequest.GalleryConfig.IsFixedSize or uploadFile.Type = IGalleryObjectInfo.ItemType.Flash or uploadFile.Type = IGalleryObjectInfo.ItemType.Movie then
-					uploadPath = Zrequest.Folder.Path
-					else
-					UploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, ZRequest.GalleryConfig.SourceFolder}, "\", False, False)
-					end if
-					end if
-					Try
+                    uploadFile = CType(ZuploadCollection.Item(itemIndex), GalleryUploadFile)
+                    Dim uploadPath As String
+                    If uploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
+                        UploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, ZRequest.GalleryConfig.TempFolder}, "\", False, False)
+                    Else
+                        If Not ZRequest.GalleryConfig.IsFixedSize Or uploadFile.Type = IGalleryObjectInfo.ItemType.Flash Or uploadFile.Type = IGalleryObjectInfo.ItemType.Movie Then
+                            uploadPath = Zrequest.Folder.Path
+                        Else
+                            UploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, ZRequest.GalleryConfig.SourceFolder}, "\", False, False)
+                        End If
+                    End If
+                    Try
                         File.Delete(uploadFile.uploadFilePath)
                     Catch Exc As System.Exception
                         lblFileInfo.Text = "<br> 2 - " + Exc.Message
@@ -731,18 +731,18 @@ Namespace DotNetZoom
 
         Private Sub btnFileUpload_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnFileUpload.Click
 
-			Dim StrFolder as String
-	
+            Dim StrFolder As String
+
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim objAdmin As New AdminDB()
- 			
+
             strFolder = Request.MapPath(_portalSettings.UploadDirectory)
 
             Me.lblFileInfo.Text = ""
 
             ZuploadCollection = GalleryUploadCollection.GetList(Zfolder, ZmoduleID)
 
-			' Update Directory Size
+            ' Update Directory Size
             UpdateFolderSize(ZuploadCollection.Upload(StrFolder))
 
             If Len(ZuploadCollection.ErrMessage) > 0 Then
@@ -758,7 +758,7 @@ Namespace DotNetZoom
 
             ZuploadCollection.ResetList(Zfolder, ZmoduleID)
             grdUpload.DataBind() ' Clear old file list
-			btnFileUpload.Visible = False
+            btnFileUpload.Visible = False
             Zrequest.GalleryConfig.ResetGalleryConfig(ZmoduleID)
             Zrequest = New GalleryRequest(ZmoduleID)
 
@@ -768,17 +768,17 @@ Namespace DotNetZoom
         End Sub
 
         Private Function GetRootURL() As String
-            ' Return "~" & GetDocument() & "?" & "&tabid=" & portalSettings.GetEditModuleSettings(ZmoduleID).TabId
-				' to return to prévious album
-	            Dim sb As New StringBuilder()
+            ' Return GetFullDocument() & "?" & "&tabid=" & portalSettings.GetEditModuleSettings(ZmoduleID).TabId
+            ' to return to prévious album
+            Dim sb As New StringBuilder()
             sb.Append(GetFullDocument())
-                sb.Append("?edit=control&editpage=")
-                sb.Append(TTT_EditGallery.GalleryEditType.GalleryEditAlbum)
-                sb.Append("&mid=")
-                sb.Append(ZmoduleID.ToString)
-                sb.Append("&tabid=")
-                sb.Append(TabId.ToString)
-              Return Sb.ToString() 
+            sb.Append("?edit=control&editpage=")
+            sb.Append(TTT_EditGallery.GalleryEditType.GalleryEditAlbum)
+            sb.Append("&mid=")
+            sb.Append(ZmoduleID.ToString)
+            sb.Append("&tabid=")
+            sb.Append(TabId.ToString)
+            Return Sb.ToString()
 
         End Function
 

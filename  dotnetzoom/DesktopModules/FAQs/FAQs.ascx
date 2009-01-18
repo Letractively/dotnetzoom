@@ -5,9 +5,9 @@
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <ASP:DataList id="lstFAQs" DataKeyField="ItemID" runat="server" EnableViewState="false" CellPadding="4">
 <ItemTemplate>
-<asp:HyperLink NavigateUrl='<%# EditURL("ItemID",DataBinder.Eval(Container.DataItem,"ItemID")) %>' Visible="<%# IsEditable %>" runat="server" EnableViewState="false" ID="Hyperlink1"><asp:Image ID=Hyperlink1Image Runat=server  ImageUrl="~/images/edit.gif" AlternateText="edit" Visible="<%#IsEditable%>"/></asp:HyperLink>
+<asp:HyperLink NavigateUrl='<%# EditURL("ItemID",DataBinder.Eval(Container.DataItem,"ItemID")) %>' Visible="<%# IsEditable %>" runat="server" EnableViewState="false" ID="Hyperlink1"><asp:Image ID=Hyperlink1Image Runat=server  ImageURL="~/images/edit.gif" AlternateText="edit" Visible="<%#IsEditable%>"/></asp:HyperLink>
 <a href="javascript:onclick=ShowHide('<%# lstFAQs.ClientID & "_" & DataBinder.Eval(Container.DataItem,"ItemID") %>','img_<%# lstFAQs.ClientID & "_" & DataBinder.Eval(Container.DataItem,"ItemID") %>');">
-<img alt="+" id="img_<%# lstFAQs.ClientID & "_" & DataBinder.Eval(Container.DataItem,"ItemID") %>" src="images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
+<img alt="+" id="img_<%# lstFAQs.ClientID & "_" & DataBinder.Eval(Container.DataItem,"ItemID") %>" src="/images/1x1.gif" height="12" width="12" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -407px;">
 </a>
 <a href="javascript:onclick=ShowHide('<%# lstFAQs.ClientID & "_" & DataBinder.Eval(Container.DataItem,"ItemID") %>','img_<%# lstFAQs.ClientID & "_" & DataBinder.Eval(Container.DataItem,"ItemID") %>');">
 <%# HtmlDecode(DataBinder.Eval(Container.DataItem, "question")) %>

@@ -125,7 +125,7 @@ Namespace DotNetZoom
         Public ReadOnly Property EditURL(ByVal strKeyName As String, ByVal strKeyValue As String) As String
 
             Get
-                Return "~" & GetDocument() & "?edit=control&tabid=" & TabId.ToString & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")) & "&" & strKeyName & "=" & strKeyValue
+                Return GetFullDocument() & "?edit=control&tabid=" & TabId.ToString & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")) & "&" & strKeyName & "=" & strKeyValue
             End Get
 
         End Property
