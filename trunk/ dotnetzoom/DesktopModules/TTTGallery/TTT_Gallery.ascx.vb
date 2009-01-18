@@ -134,7 +134,7 @@ Namespace DotNetZoom
 			
 			if Zconfig.IsValidPath Then
                 If Not Zrequest.Folder.IsPopulated Then
-                    Response.Redirect("~/DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query & "&mid=" & ModuleId.ToString) '& "&tabid=" & _portalSettings.ActiveTab.TabId)
+                    Response.Redirect(glbPath & "DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query & "&mid=" & ModuleId.ToString) '& "&tabid=" & _portalSettings.ActiveTab.TabId)
                 End If
 
                 CreateLink()
@@ -277,7 +277,7 @@ Namespace DotNetZoom
         Private Sub CreateAdminLink()
 
 
-            lnkAdmin.NavigateUrl = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryAdmin & "&mid=" & ModuleId & "&tabid=" & TabId
+            lnkAdmin.NavigateUrl = GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryAdmin & "&mid=" & ModuleId & "&tabid=" & TabId
 
             lnkAdmin.Visible = True
 
@@ -286,12 +286,12 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub CreateManagerLink()
-		
 
-            lnkManager.NavigateUrl = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy
+
+            lnkManager.NavigateUrl = GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy
 
             lnkManager.Visible = True
-			
+
             lnkManager.ID = ""
 
         End Sub
@@ -321,7 +321,7 @@ Namespace DotNetZoom
                 SlideshowLink.NavigateUrl = GetSlideshowURL(Zrequest.Folder)
 
                 SlideshowLink.Visible = True
-				
+
                 SlideshowLink.ID = ""
 
             End If
@@ -382,11 +382,11 @@ Namespace DotNetZoom
                     sb.Append(" ")
                     sb.Append(Math.Ceiling(Item.Size / 1024).ToString)
                     sb.Append(" ")
-					Sb.Append(GetLanguage("Gal_KB"))
+                    Sb.Append(GetLanguage("Gal_KB"))
                 End If
 
                 Return sb.ToString
-                
+
             End If
 
         End Function
@@ -423,8 +423,8 @@ Namespace DotNetZoom
                 Return ""
             End If
         End Function
-		
-		
+
+
         Protected Function GetBrowserURL(ByVal DataItem As Object) As String
             If CType(DataItem, IGalleryObjectInfo).IsFolder Then
                 Return GetAlbumURL(DataItem)
@@ -442,7 +442,7 @@ Namespace DotNetZoom
         End Function
 
         Private Function GetRootURL() As String
-            Return "~" & GetDocument() & "?" & "&tabid=" & _portalSettings.ActiveTab.TabId
+            Return GetFullDocument() & "?" & "&tabid=" & _portalSettings.ActiveTab.TabId
 
         End Function
 
@@ -472,7 +472,7 @@ Namespace DotNetZoom
 
         Protected Function GetAdminURL() As String
             Dim sb As New StringBuilder()
-            sb.Append("~" & GetDocument() & "?edit=control&editpage=")
+            sb.Append(GetFullDocument() & "?edit=control&editpage=")
             sb.Append(TTT_EditGallery.GalleryEditType.GalleryAdmin)
             sb.Append("&mid=")
             sb.Append(ModuleId.ToString)
@@ -496,33 +496,33 @@ Namespace DotNetZoom
         End Function
 
         Protected Function GetItemURL(ByVal DataItem As Object) As String
-			' modification 2004-07-31 pour ordonner la liste des images
-              Dim viewIndex As Integer = Zrequest.Folder.BrowsableItems.indexOf(CType(DataItem, IGalleryObjectInfo).Index) 
-			
-			 Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser, Zrequest.Folder.GalleryHierarchy, False, viewIndex.ToString, "")
+            ' modification 2004-07-31 pour ordonner la liste des images
+            Dim viewIndex As Integer = Zrequest.Folder.BrowsableItems.indexOf(CType(DataItem, IGalleryObjectInfo).Index)
+
+            Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser, Zrequest.Folder.GalleryHierarchy, False, viewIndex.ToString, "")
         End Function
 
-		' ajout par rene boulard 2004-04-23 pour modifier icon dans le res repertoire
-	  
-	    Protected Function GetEditIconURL(ByVal DataItem As Object) As String
-		    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-      		Dim sb As New StringBuilder()
-			sb.Append("~/DesktopModules/TTTGallery/magicfile.aspx")
-			sb.Append("?name=")
+        ' ajout par rene boulard 2004-04-23 pour modifier icon dans le res repertoire
+
+        Protected Function GetEditIconURL(ByVal DataItem As Object) As String
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim sb As New StringBuilder()
+            sb.Append(glbPath & "DesktopModules/TTTGallery/magicfile.aspx")
+            sb.Append("?name=")
             sb.Append(IO.Path.GetFileNameWithoutExtension(CType(DataItem, IGalleryObjectInfo).Name))
-			sb.Append("&tabid=" & CStr(_portalSettings.ActiveTab.TabID))
-			sb.Append("&L=" & GetLanguage("N"))
-			Return sb.ToString
+            sb.Append("&tabid=" & CStr(_portalSettings.ActiveTab.TabID))
+            sb.Append("&L=" & GetLanguage("N"))
+            Return sb.ToString
         End Function
 
-		
-		
-		
+
+
+
         Protected Function GetEditURL(ByVal DataItem As Object) As String
-            
+
             Dim sb As New StringBuilder()
             If CType(DataItem, IGalleryObjectInfo).IsFolder Then
-                sb.Append("~" & GetDocument() & "?edit=control&editpage=")
+                sb.Append(GetFullDocument() & "?edit=control&editpage=")
                 sb.Append(TTT_EditGallery.GalleryEditType.GalleryEditAlbum)
                 sb.Append("&mid=")
                 sb.Append(ModuleId.ToString)
@@ -531,7 +531,7 @@ Namespace DotNetZoom
                 sb.Append("&path=")
                 sb.Append(CType(DataItem, IGalleryObjectInfo).URL)
             Else
-                sb.Append("~" & GetDocument() & "?edit=control&editpage=")
+                sb.Append(GetFullDocument() & "?edit=control&editpage=")
                 sb.Append(TTT_EditGallery.GalleryEditType.GalleryEditFile)
                 sb.Append("&tabid=")
                 sb.Append(TabId.ToString)
@@ -569,7 +569,7 @@ Namespace DotNetZoom
 
 
             If Zconfig.SlideshowPopup Then
-                sb.Append("javascript:DestroyWnd;CreateWnd('DesktopModules/TTTGallery/")
+                sb.Append("javascript:DestroyWnd;CreateWnd('" & glbPath & "DesktopModules/TTTGallery/")
                 Select Case GalleryPage
                     Case TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser
                         sb.Append("TTT_Viewer.aspx?L=" & GetLanguage("N") & "&path=")
@@ -600,7 +600,7 @@ Namespace DotNetZoom
                 sb.Append(", true);")
 
             Else
-                sb.Append(FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "gallerypage=" & GalleryPage))
+                sb.Append(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "gallerypage=" & GalleryPage & "&mid=" & ModuleId))
                 sb.Append("&path=")
                 If IncludeHost Then
                     sb.Append(AddHTTP(Request.ServerVariables("HTTP_HOST")))
@@ -641,23 +641,23 @@ Namespace DotNetZoom
 
 
         Public Function GetStats() As String
-		' Présentation {start} - {end} de {total} item(s) total
-		Dim TempString As String
-		TempString = Replace(GetLanguage("Gal_InfoPre"), "{start}", Zrequest.StartItem.ToString)
-		TempString = Replace(TempString, "{end}", Zrequest.EndItem.ToString)
-		TempString = Replace(TempString, "{total}", Zrequest.Folder.List.Count.ToString)
-        Return TempString
+            ' Présentation {start} - {end} de {total} item(s) total
+            Dim TempString As String
+            TempString = Replace(GetLanguage("Gal_InfoPre"), "{start}", Zrequest.StartItem.ToString)
+            TempString = Replace(TempString, "{end}", Zrequest.EndItem.ToString)
+            TempString = Replace(TempString, "{total}", Zrequest.Folder.List.Count.ToString)
+            Return TempString
 
         End Function
 
 
 
         Private Sub SubAlbum_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles SubAlbum.Click
-            Response.Redirect("~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy & "&action=addfolder")
+            Response.Redirect(GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy & "&action=addfolder")
         End Sub
 
         Private Sub UploadImage_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadImage.Click
-            Response.Redirect("~" & GetDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy & "&action=addfile")
+            Response.Redirect(GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy & "&action=addfile")
         End Sub
 
         Private Sub ClearCache_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ClearCache.Click
@@ -696,7 +696,7 @@ Namespace DotNetZoom
 
                     ' ne pas oublier d'effacer tous les fichiers  
                     ' System.IO.File.Delete(folderPath + _res + foldername + .gif ou .jpg
-                    If Item.Thumbnail <> "~/images/TTT/TTT_folder.gif" Then
+                    If Item.Thumbnail <> glbPath & "images/TTT/TTT_folder.gif" Then
                         System.IO.File.Delete(Server.MapPath(Item.Thumbnail))
                     End If
                     ' Clear integrated info of forum
@@ -715,7 +715,7 @@ Namespace DotNetZoom
                     Dim thumbURL As String = _galleryFile.ThumbNail
                     Dim thumbPath As String = Server.MapPath(thumbURL)
                     System.IO.File.Delete(filePath)
-                    If (_galleryFile.ThumbNail <> "~/images/TTT/TTT_MediaPlayer.gif") And (_galleryFile.ThumbNail <> "~/images/TTT/TTT_Flash.gif") Then
+                    If (_galleryFile.ThumbNail <> glbPath & "images/TTT/TTT_MediaPlayer.gif") And (_galleryFile.ThumbNail <> glbPath & "images/TTT/TTT_Flash.gif") Then
                         System.IO.File.Delete(thumbPath)
                     End If
                 End If

@@ -126,7 +126,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?tabid=" & TabId, True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
                 Else
                     tblOriginalMessage.Visible = False
@@ -134,7 +134,7 @@ Namespace DotNetZoom
 
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
-                strURLReferrer = Request.UrlReferrer.ToString()
+                    strURLReferrer = Request.UrlReferrer.ToString()
                     If InStr(1, strURLReferrer, "ItemIndex=") <> 0 Then
                         strURLReferrer = Left(strURLReferrer, InStr(1, strURLReferrer, "ItemIndex=") - 2)
                     End If
@@ -144,19 +144,19 @@ Namespace DotNetZoom
                     Else
                         strURLReferrer = strURLReferrer & IIf(itemIndex <> -1, "&ItemIndex=" & itemIndex, "")
                     End If
-                ViewState("UrlReferrer") = strURLReferrer
+                    ViewState("UrlReferrer") = strURLReferrer
                 Else
-                ViewState("UrlReferrer") = ""
+                    ViewState("UrlReferrer") = ""
                 End If
 
             End If
 
             If PortalSecurity.HasEditPermissions(ModuleId) = False Then
-                 If itemId = -1 Then
-                    Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Register", True)
-                 Else
+                If itemId = -1 Then
+                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Register", True)
+                Else
                     cmdReply.Visible = False
-                 End If
+                End If
             End If
         End Sub
 

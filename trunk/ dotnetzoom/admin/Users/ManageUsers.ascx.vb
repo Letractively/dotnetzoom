@@ -85,21 +85,23 @@ Namespace DotNetZoom
         '*******************************************************
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			Title1.DisplayHelp = "DisplayHelp_ManageUsers"
-            ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			valFirstName.ErrorMessage = "<br>" + GetLanguage("need_firstname")
-			valLastName.ErrorMessage = "<br>" + GetLanguage("need_lastname")
-			valUsername.ErrorMessage = "<br>" + GetLanguage("need_username")
-			valPassword.ErrorMessage = "<br>" + GetLanguage("need_password")
-			valConfirm1.ErrorMessage = "<br>" + GetLanguage("need_password_confirm")
-			valConfirm2.ErrorMessage = "<br>" + GetLanguage("need_password_match")
-			valEmail.ErrorMessage = "<br>" + GetLanguage("need_email")
-			cmdUpdate.Text = GetLanguage("enregistrer")
-			cmdUpdateCode.Text = GetLanguage("enregistrer")
-			cmdCancel.Text = GetLanguage("annuler")
-			cmdDelete.Text = GetLanguage("delete")
-			cmdManage.Text = GetLanguage("ManageUserRoles")
+            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+            End If
+            Title1.DisplayHelp = "DisplayHelp_ManageUsers"
+            valFirstName.ErrorMessage = "<br>" + GetLanguage("need_firstname")
+            valLastName.ErrorMessage = "<br>" + GetLanguage("need_lastname")
+            valUsername.ErrorMessage = "<br>" + GetLanguage("need_username")
+            valPassword.ErrorMessage = "<br>" + GetLanguage("need_password")
+            valConfirm1.ErrorMessage = "<br>" + GetLanguage("need_password_confirm")
+            valConfirm2.ErrorMessage = "<br>" + GetLanguage("need_password_match")
+            valEmail.ErrorMessage = "<br>" + GetLanguage("need_email")
+            cmdUpdate.Text = GetLanguage("enregistrer")
+            cmdUpdateCode.Text = GetLanguage("enregistrer")
+            cmdCancel.Text = GetLanguage("annuler")
+            cmdDelete.Text = GetLanguage("delete")
+            cmdManage.Text = GetLanguage("ManageUserRoles")
 
             ' get userid
             If IsNumeric(Request.Params("userid")) Then
@@ -108,16 +110,16 @@ Namespace DotNetZoom
 
             ' security check for super user
             If userId = _portalSettings.SuperUserId And userId <> Int32.Parse(Context.User.Identity.Name) Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
             End If
 
             ' If this is the first visit to the page, bind the role data to the datalist
             If Page.IsPostBack = False Then
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
                 BindData()
 
-				pnlSecurite.Visible = True
+                pnlSecurite.Visible = True
                 If userId = _portalSettings.SuperUserId Then
                     Address1.Visible = False
                     rowAuthorized.Visible = False
@@ -130,7 +132,7 @@ Namespace DotNetZoom
                         ViewState("UrlReferrer") = ""
                     End If
                 Else
-                    ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId &  "&" & GetAdminPage()& "&filter=" & Request.Params("filter")
+                    ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId & "&" & GetAdminPage() & "&filter=" & Request.Params("filter")
                 End If
             End If
 
@@ -148,32 +150,32 @@ Namespace DotNetZoom
         '*******************************************************
 
         Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-            Response.Redirect(CType(Viewstate("UrlReferrer"), String), True)
+            Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
 
-		
+
         Private Sub cmdUpdateCode_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateCode.Click
-		' Put In IP or Country restriction
-		If userId <> -1 Then
-		If IPlow.Text <> "" and IPHigh.Text <> "" then
-		if IPConvert(IPLow.Text) = 0 or IPConvert(IPHigh.Text) = 0 then
-		Message.Text = GetLanguage("Valid_IP_Security")
-		Exit Sub
-		end if
-		if IPConvert(IPLow.Text) > IPConvert(IPHigh.Text) then
-		Message.Text = GetLanguage("Valid_IP_Security1") 
-		Exit Sub
-		end if
-		end if
-        ' check the country code to make sure it is a valid one
-		   Dim objUser As New UsersDB()
-			objUser.UpdateUsercodes(userId, Country.Text, IPLow.Text, IPHigh.Text)
-			Message.Text = GetLanguage("Valid_IP_Saved")
-		else
-		Message.Text = GetLanguage("Valid_IP_Not_Saved")
-		end if
-		End Sub
-		
+            ' Put In IP or Country restriction
+            If userId <> -1 Then
+                If IPLow.Text <> "" And IPHigh.Text <> "" Then
+                    If IPConvert(IPLow.Text) = 0 Or IPConvert(IPHigh.Text) = 0 Then
+                        Message.Text = GetLanguage("Valid_IP_Security")
+                        Exit Sub
+                    End If
+                    If IPConvert(IPLow.Text) > IPConvert(IPHigh.Text) Then
+                        Message.Text = GetLanguage("Valid_IP_Security1")
+                        Exit Sub
+                    End If
+                End If
+                ' check the country code to make sure it is a valid one
+                Dim objUser As New UsersDB()
+                objUser.UpdateUsercodes(userId, Country.Text, IPLow.Text, IPHigh.Text)
+                Message.Text = GetLanguage("Valid_IP_Saved")
+            Else
+                Message.Text = GetLanguage("Valid_IP_Not_Saved")
+            End If
+        End Sub
+
         Private Sub cmdUpdate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdate.Click
 
             ' Obtain PortalSettings from Current Context
@@ -186,46 +188,46 @@ Namespace DotNetZoom
             Dim strBody As String
 
             If userId = -1 Then
-                userId = objUser.AddUser(_portalSettings.PortalId, txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, objSecurity.Encrypt(portalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), chkAuthorized.Checked.ToString, userId)
+                userId = objUser.AddUser(_portalSettings.PortalId, txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), chkAuthorized.Checked.ToString, userId)
 
                 If userId < 0 Then
-				        Message.Text = GetLanguage("UserName_Already_Used")
-                       	Message.Text = Regex.Replace(Message.Text , "{Username}" , txtUsername.Text, RegexOptions.IgnoreCase)
+                    Message.Text = GetLanguage("UserName_Already_Used")
+                    Message.Text = Regex.Replace(Message.Text, "{Username}", txtUsername.Text, RegexOptions.IgnoreCase)
                 Else
-				   ' Add user to Forum Dbase
-		            Dim dbForumUser As New ForumUserDB()
+                    ' Add user to Forum Dbase
+                    Dim dbForumUser As New ForumUserDB()
                     dbForumUser.TTTForum_UserCreateUpdateDelete(userId, txtUsername.Text, True, False, "", "", "", _portalSettings.TimeZone, "", "", "", "", "", "", "", False, True, False, True, True, True, 0)
-					strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_account")
-					strBody = Regex.Replace(strBody, "{FullName}" , txtFirstName.Text & " " & txtLastName.Text, RegexOptions.IgnoreCase)
-					strBody = Regex.Replace(strBody, "{PortalName}" , _portalSettings.PortalName, RegexOptions.IgnoreCase)
- 					strBody = Regex.Replace(strBody, "{PortalURL}" , GetPortalDomainName(PortalAlias, Request), RegexOptions.IgnoreCase)
-					strBody = Regex.Replace(strBody, "{Username}" , txtUsername.Text, RegexOptions.IgnoreCase)
-					strBody = Regex.Replace(strBody, "{Password}" , txtPassword.Text, RegexOptions.IgnoreCase)
-					strBody = Regex.Replace(strBody, "{AdministratorEmail}" , _portalSettings.Email, RegexOptions.IgnoreCase)
+                    strBody = admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_account")
+                    strBody = Regex.Replace(strBody, "{FullName}", txtFirstName.Text & " " & txtLastName.Text, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{PortalName}", _portalSettings.PortalName, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{PortalURL}", GetPortalDomainName(PortalAlias, Request), RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{Username}", txtUsername.Text, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{Password}", txtPassword.Text, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{AdministratorEmail}", _portalSettings.Email, RegexOptions.IgnoreCase)
 
 
-					If portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey(getlanguage("N") & "_signupmessage") then
-					strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
-					else 
-					strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
-					end if
-      
-                     If _portalSettings.UserRegistration = 3 Then
-                        strBody = Regex.Replace(strBody, "{validationcode}" , _portalSettings.PortalId.ToString & "-" & UserId, RegexOptions.IgnoreCase)
-						strBody = Regex.Replace(strBody, "{needcode}" , "", RegexOptions.IgnoreCase)
-						strBody = Regex.Replace(strBody, "{/needcode}" , "", RegexOptions.IgnoreCase)
-					else
-						strBody = Regex.Replace(strBody, "{needcode}[^¸]+{/needcode}" , "", RegexOptions.IgnoreCase)
+                    If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey(GetLanguage("N") & "_signupmessage") Then
+                        strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
+                    Else
+                        strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
                     End If
-					if (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = true) then
- 		                SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "html")
-       		        else
-                   		SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "")
-					end if
 
-                    Viewstate("UrlReferrer") = Replace(CType(Viewstate("UrlReferrer"), String), "&filter=", "&filter=" & Left(txtFirstName.Text, 1))
+                    If _portalSettings.UserRegistration = 3 Then
+                        strBody = Regex.Replace(strBody, "{validationcode}", _portalSettings.PortalId.ToString & "-" & userId, RegexOptions.IgnoreCase)
+                        strBody = Regex.Replace(strBody, "{needcode}", "", RegexOptions.IgnoreCase)
+                        strBody = Regex.Replace(strBody, "{/needcode}", "", RegexOptions.IgnoreCase)
+                    Else
+                        strBody = Regex.Replace(strBody, "{needcode}[^¸]+{/needcode}", "", RegexOptions.IgnoreCase)
+                    End If
+                    If (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = True) Then
+                        SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "html")
+                    Else
+                        SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "")
+                    End If
 
-                    Response.Redirect(CType(Viewstate("UrlReferrer"), String), True)
+                    ViewState("UrlReferrer") = Replace(CType(ViewState("UrlReferrer"), String), "&filter=", "&filter=" & Left(txtFirstName.Text, 1))
+
+                    Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
 
                 End If
             Else
@@ -241,33 +243,33 @@ Namespace DotNetZoom
                         Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, userId)
                         If dr.Read() Then
                             If dr("Authorized") <> chkAuthorized.Checked Then
-								strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_account")
-								strBody = Regex.Replace(strBody, "{FullName}" , txtFirstName.Text & " " & txtLastName.Text, RegexOptions.IgnoreCase)
-								strBody = Regex.Replace(strBody, "{PortalName}" , _portalSettings.PortalName, RegexOptions.IgnoreCase)
- 								strBody = Regex.Replace(strBody, "{PortalURL}" , GetPortalDomainName(PortalAlias, Request), RegexOptions.IgnoreCase)
-								strBody = Regex.Replace(strBody, "{Username}" , txtUsername.Text, RegexOptions.IgnoreCase)
-								strBody = Regex.Replace(strBody, "{Password}" , txtPassword.Text, RegexOptions.IgnoreCase)
-								strBody = Regex.Replace(strBody, "{AdministratorEmail}" , _portalSettings.Email, RegexOptions.IgnoreCase)
+                                strBody = admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_account")
+                                strBody = Regex.Replace(strBody, "{FullName}", txtFirstName.Text & " " & txtLastName.Text, RegexOptions.IgnoreCase)
+                                strBody = Regex.Replace(strBody, "{PortalName}", _portalSettings.PortalName, RegexOptions.IgnoreCase)
+                                strBody = Regex.Replace(strBody, "{PortalURL}", GetPortalDomainName(PortalAlias, Request), RegexOptions.IgnoreCase)
+                                strBody = Regex.Replace(strBody, "{Username}", txtUsername.Text, RegexOptions.IgnoreCase)
+                                strBody = Regex.Replace(strBody, "{Password}", txtPassword.Text, RegexOptions.IgnoreCase)
+                                strBody = Regex.Replace(strBody, "{AdministratorEmail}", _portalSettings.Email, RegexOptions.IgnoreCase)
 
 
-								If portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey(getlanguage("N") & "_signupmessage") then
-								strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
-								else 
-								strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
-								end if
-      	
-     			                If _portalSettings.UserRegistration = 3 Then
-                        			strBody = Regex.Replace(strBody, "{validationcode}" , _portalSettings.PortalId.ToString & "-" & dr("UserId").ToString, RegexOptions.IgnoreCase)
-									strBody = Regex.Replace(strBody, "{needcode}" , "", RegexOptions.IgnoreCase)
-									strBody = Regex.Replace(strBody, "{/needcode}" , "", RegexOptions.IgnoreCase)
-								else
-									strBody = Regex.Replace(strBody, "{needcode}[^¸]+{/needcode}" , "", RegexOptions.IgnoreCase)
-			                    End If
-								if (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = true) then
-        		                SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "html")
-                		        else
-                        		SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "")
-								end if
+                                If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey(GetLanguage("N") & "_signupmessage") Then
+                                    strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
+                                Else
+                                    strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
+                                End If
+
+                                If _portalSettings.UserRegistration = 3 Then
+                                    strBody = Regex.Replace(strBody, "{validationcode}", _portalSettings.PortalId.ToString & "-" & dr("UserId").ToString, RegexOptions.IgnoreCase)
+                                    strBody = Regex.Replace(strBody, "{needcode}", "", RegexOptions.IgnoreCase)
+                                    strBody = Regex.Replace(strBody, "{/needcode}", "", RegexOptions.IgnoreCase)
+                                Else
+                                    strBody = Regex.Replace(strBody, "{needcode}[^¸]+{/needcode}", "", RegexOptions.IgnoreCase)
+                                End If
+                                If (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = True) Then
+                                    SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "html")
+                                Else
+                                    SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "")
+                                End If
                             End If
                         End If
 
@@ -292,16 +294,16 @@ Namespace DotNetZoom
                     If dr2.Read And txtUsername.Text <> Username Then
                         'username already exists in DB so show user an error message
                         Message.Text = GetLanguage("UserName_Already_Used")
-                       	Message.Text = Regex.Replace(Message.Text , "{Username}" , txtUsername.Text, RegexOptions.IgnoreCase)
-					   Else
+                        Message.Text = Regex.Replace(Message.Text, "{Username}", txtUsername.Text, RegexOptions.IgnoreCase)
+                    Else
                         'update the user
-                        objUser.UpdateUser(_portalSettings.PortalId, userId, txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, IIf(txtPassword.Text <> "", objSecurity.Encrypt(portalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), ""), chkAuthorized.Checked.ToString)
+                        objUser.UpdateUser(_portalSettings.PortalId, userId, txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, IIf(txtPassword.Text <> "", objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), ""), chkAuthorized.Checked.ToString)
 
                         dr2.Close()
                         dr2 = Nothing
 
                         ' Redirect browser back to home page
-                        Response.Redirect(CType(Viewstate("UrlReferrer"), String), True)
+                        Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
 
                     End If
 
@@ -355,29 +357,29 @@ Namespace DotNetZoom
                     lblLastLoginDate.Text = dr("LastLoginDate").ToString
                 End If
                 dr.Close()
-                
-				dr = objUser.GetUserCountryCode(_portalSettings.PortalId, userId)
-				If dr.Read() Then
-				Country.text = IIf(IsDBNull(dr("Country_Code")), "", dr("Country_Code"))
-				IPLow.Text = IIf(IsDBNull(dr("IPfrom")), "", dr("IPfrom"))
-				IPHigh.Text = IIf(IsDBNull(dr("IPto")), "", dr("IPto"))
-				end if
-				If IPLow.Text = "" then 
-				IPLow.Text = "0.0.0.1"
-				end if
-				If IPHigh.Text = "" then
-				IPHigh.Text = "255.255.255.255"
-				End If
-				dr.Close()
+
+                dr = objUser.GetUserCountryCode(_portalSettings.PortalId, userId)
+                If dr.Read() Then
+                    Country.Text = IIf(IsDBNull(dr("Country_Code")), "", dr("Country_Code"))
+                    IPLow.Text = IIf(IsDBNull(dr("IPfrom")), "", dr("IPfrom"))
+                    IPHigh.Text = IIf(IsDBNull(dr("IPto")), "", dr("IPto"))
+                End If
+                If IPLow.Text = "" Then
+                    IPLow.Text = "0.0.0.1"
+                End If
+                If IPHigh.Text = "" Then
+                    IPHigh.Text = "255.255.255.255"
+                End If
+                dr.Close()
                 valPassword.Enabled = False
                 valConfirm1.Enabled = False
                 valConfirm2.Enabled = False
-				pnlSecurite.Visible = True
+                pnlSecurite.Visible = True
             Else
                 chkAuthorized.Checked = True
                 cmdDelete.Visible = False
                 cmdManage.Visible = False
-				pnlSecurite.Visible = False
+                pnlSecurite.Visible = False
                 valPassword.Enabled = True
                 valConfirm1.Enabled = True
                 valConfirm2.Enabled = True
@@ -399,7 +401,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdManage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdManage.Click
-            Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&UserId=" & userId & "&def=User Roles", True)
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&UserId=" & userId & "&def=User Roles", True)
         End Sub
 
     End Class

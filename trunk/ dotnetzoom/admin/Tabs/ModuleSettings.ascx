@@ -6,7 +6,7 @@
 <script language="JavaScript" type="text/javascript">
 		function OpenNewWindow(tabid)
 			{
-				var m = window.open('admin/tabs/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100');
+				var m = window.open('<%=DotNetZoom.glbPath %>admin/tabs/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100');
 				m.focus();
 			}
 			

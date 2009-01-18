@@ -93,7 +93,7 @@ Namespace DotNetZoom
         End Sub
 
         Protected Function GetUserInfoLink(ByVal userID As String) As String
-            Return "~" & GetDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
+            Return GetFullDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
         End Function
 
         Protected Function GetUserInfoTooltip(ByVal userName As String) As String

@@ -21,7 +21,7 @@ Namespace DotNetZoom
 		Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 			'Put user code to initialize the page here
 			Dim dnPath As String = Request.Params("File")
-		 	Dim rootPath As String = Server.MapPath("~/")
+            Dim rootPath As String = GetAbsoluteServerPath(Request)
 		 	dnPath = replace(dnPath, "\", "/")
 		 	rootPath = replace(rootPath, "\", "/")
 		 	rootPath = rootPath.Trim("/")

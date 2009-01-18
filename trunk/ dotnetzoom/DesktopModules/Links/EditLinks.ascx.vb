@@ -159,7 +159,7 @@ Namespace DotNetZoom
                 cboInternal.DataBind()
 
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
                 Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
                 cboFiles.DataSource = FileList
                 cboFiles.DataBind()
@@ -200,9 +200,9 @@ Namespace DotNetZoom
 
                         txtTitle.Text = CStr(dr("Title"))
                         txtDescription.Text = CStr(dr("Description"))
-						if txtDescription.Text = "" then
-						txtDescription.Text = CStr(dr("Title"))
-						end if
+                        If txtDescription.Text = "" Then
+                            txtDescription.Text = CStr(dr("Title"))
+                        End If
                         txtViewOrder.Text = dr("ViewOrder").ToString()
                         chkNewWindow.Checked = CType(dr("NewWindow"), Boolean)
                         lblClicks.Text = dr("Clicks").ToString
@@ -214,7 +214,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?tabid=" & TabId, True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
                 Else
                     cmdDelete.Visible = False
@@ -222,7 +222,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
 
             End If

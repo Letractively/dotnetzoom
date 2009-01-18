@@ -116,7 +116,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
             End If
 
 			If TxtIcone.Text <> ""
@@ -208,7 +208,7 @@ Namespace DotNetZoom
 		    
 			Dim strURL As String
 			Dim GotOne As Boolean = False
-            strURL = "http://maps.google.com/maps?f=q&amp;hl=" + GetLanguage("N") + "&amp;q="
+            strURL = "http://maps.google.com/maps?f=q&hl=" + GetLanguage("N") + "&q="
 
             If Address1.Unit <> "" then
 			strURL += System.Web.HttpUtility.UrlEncode(Address1.Unit)
@@ -239,7 +239,7 @@ Namespace DotNetZoom
 			strURL += System.Web.HttpUtility.UrlEncode(Address1.Postal)
 			GotOne = True
 			end if
-            BuildGoogleURL = strURL & "&amp;ie=UTF8&amp;z=15&amp;ll=" & txtLATLONG.Text
+            BuildGoogleURL = strURL & "&ie=UTF8&z=15&ll=" & txtLATLONG.Text
 
 		
 		
@@ -308,12 +308,12 @@ Namespace DotNetZoom
                 sr = New StreamReader(objResponse.GetResponseStream())
                 Dim strResponse As String = sr.ReadToEnd()
                 sr.Close()
-				' 200,8,37.423021,-122.083739
+  				' 200,8,37.423021,-122.083739
             Dim LatLongCont As Array
             LatLongCont = Split(strResponse, ",")
             Return LatLongCont(2) & "," & LatLongCont(3)
             Catch
-                ' error accessing MapGoogle website
+                'error accessing MapGoogle website"
             End Try
 
         End Function
@@ -353,7 +353,7 @@ Namespace DotNetZoom
 			strURL += System.Web.HttpUtility.UrlEncode(Address1.Postal)
 			GotOne = True
 			end if
-            BuildDirectionsURL = strURL & "&amp;output=csv&amp;key=" & txtgoogleAPI.Text
+            BuildDirectionsURL = strURL & "&output=csv&key=" & txtgoogleAPI.Text
 
         End Function		
 		

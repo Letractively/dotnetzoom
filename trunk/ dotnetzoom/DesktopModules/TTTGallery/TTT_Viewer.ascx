@@ -11,13 +11,13 @@
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 				<tr>
 					<td class="TTTAltHeader" align="left">&nbsp;
-						<asp:hyperlink id="MovePrevious" runat="server" ImageUrl="~/images/lt.gif"><%= DotNetZoom.getlanguage("Gal_Prev") %></asp:hyperlink>
+						<asp:hyperlink id="MovePrevious" runat="server" ImageURL="~/images/lt.gif"><%= DotNetZoom.getlanguage("Gal_Prev") %></asp:hyperlink>
 					</td>
 					<td class="TTTAltHeader" align="center">
 						<asp:label id="Title" cssclass="TTTNormalBold" runat="server"></asp:label>
 					</td>
 					<td class="TTTAltHeader" align="right">
-						<asp:hyperlink id="MoveNext" runat="server" ImageUrl="~/images/rt.gif"><%= DotNetZoom.getlanguage("Gal_Next") %></asp:hyperlink>&nbsp;
+						<asp:hyperlink id="MoveNext" runat="server" ImageURL="~/images/rt.gif"><%= DotNetZoom.getlanguage("Gal_Next") %></asp:hyperlink>&nbsp;
 					</td>
 				</tr>
 			</table>

@@ -10,7 +10,7 @@
                             <HeaderStyle horizontalalign="Center" height="28px" width="20px" cssclass="TTTAltHeader"></HeaderStyle>
                             <ItemStyle horizontalalign="Center" height="25px" width="20px" cssclass="TTTRow"></ItemStyle>
                             <ItemTemplate>
-                                <asp:ImageButton ImageUrl="~/images/TTT/TTT_Add.gif" Visible='<%# CanEdit() %>' OnClick="UserSelect_Click" AlternateText='<%# DotNetZoom.getlanguage("F_UserSelect") %>' CommandName="Select" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "UserID") %>' Runat="server" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
+                                <asp:ImageButton ImageURL="~/images/TTT/TTT_Add.gif" Visible='<%# CanEdit() %>' OnClick="UserSelect_Click" AlternateText='<%# DotNetZoom.getlanguage("F_UserSelect") %>' CommandName="Select" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "UserID") %>' Runat="server" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
                             </ItemTemplate>
                         </asp:TemplateColumn>
                         <asp:BoundColumn DataField="UserName">
@@ -49,7 +49,7 @@
                             <ItemStyle horizontalalign="Center" height="25px" cssclass="TTTRow"></ItemStyle>
                             <ItemTemplate>
                                 <asp:Image ImageUrl='<%# ForumConfig.SkinImageFolder() & "TTT_s_moderate.gif" %>' visible='<%# IsModerator(CType(DataBinder.Eval(Container.DataItem, "UserID"), String)) %>' runat="server" ID="Image1"></asp:Image>
-                                <asp:ImageButton id="btnAddModerator" OnClick="UserSelect_Click" AlternateText='<%# DotNetZoom.getlanguage("F_Add") %>'   ImageUrl="~/images/rt.gif" runat="server" CommandName="Add" visible='<%# CanAdd(CType(DataBinder.Eval(Container.DataItem, "UserID"), String)) %>' CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none" />
+                                <asp:ImageButton id="btnAddModerator" OnClick="UserSelect_Click" AlternateText='<%# DotNetZoom.getlanguage("F_Add") %>'   ImageURL="~/images/rt.gif" runat="server" CommandName="Add" visible='<%# CanAdd(CType(DataBinder.Eval(Container.DataItem, "UserID"), String)) %>' CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none" />
                             </ItemTemplate>
                         </asp:TemplateColumn>
                     </Columns>

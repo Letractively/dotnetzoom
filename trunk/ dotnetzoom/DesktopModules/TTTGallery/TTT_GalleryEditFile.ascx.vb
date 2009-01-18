@@ -72,9 +72,9 @@ Namespace DotNetZoom
 			UpdateButton.ToolTip = GetLanguage("Gal_UpdateTip")
 
             If not Request.IsAuthenticated Then
-			Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-			end if
-			
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+            End If
+
             If IsNumeric(Request.Params("mid")) Then
                 ZmoduleID = Int32.Parse(Request.Params("mid"))
             End If
@@ -94,16 +94,16 @@ Namespace DotNetZoom
 
             If Not Page.IsPostBack AndAlso Zconfig.IsValidPath Then
 
-				If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
-                OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
-				OrElse (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) then
+                If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
+                            OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
+                OrElse (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                     btnEditOwner.Visible = True
                 Else
                     btnEditOwner.Visible = False
                 End If
-			
+
                 If Not Zfolder.IsPopulated Then
-				   Response.Redirect("~/DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query & "&mid=" & ZmoduleID & "&tabid=" & TabId)
+                    Response.Redirect(glbPath & "DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query & "&mid=" & ZmoduleID & "&tabid=" & TabId)
                 End If
 
                 'BindData(Zrequest)
@@ -172,32 +172,32 @@ Namespace DotNetZoom
             Dim title As String = txtTitle.Text
             Dim description As String = txtDescription.Text
             Dim categories As String = GetCategories(lstCategories)
-   			Dim lWidth As String = ZFile.Width
-   			Dim lHeight As String = ZFile.Height
-			Dim strExtension As String = ""
-			If InStr(1, name, ".") <> 0 Then
-               strExtension = Mid(Name, InStrRev(Name, ".") + 1)
+            Dim lWidth As String = ZFile.Width
+            Dim lHeight As String = ZFile.Height
+            Dim strExtension As String = ""
+            If InStr(1, name, ".") <> 0 Then
+                strExtension = Mid(Name, InStrRev(Name, ".") + 1)
             End If
 
             Select Case strExtension.ToLower()
-                   Case "jpg", "jpeg" , "tif", "png"
-				   		Dim fileName as String
-						FileName =  Server.MapPath(ZFile.URL)
-						Dim Exif As New ExifWorks(FileName)
-        				Exif.Artist = txtOwner.Text
-   						Exif.Copyright = GetDomainName(Request)
-   						Exif.Description = txtDescription.Text
-   						Exif.Title = txtTitle.Text
-						Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
-        				BMP.Save(FileName & ".tmp")
-        				BMP.Dispose()
-        				Exif.Dispose()
-						System.IO.File.Delete(FileName)
-        				System.IO.File.Move(FileName & ".tmp", FileName)
-                   End Select
+                Case "jpg", "jpeg", "tif", "png"
+                    Dim fileName As String
+                    FileName = Server.MapPath(ZFile.URL)
+                    Dim Exif As New ExifWorks(FileName)
+                    Exif.Artist = txtOwner.Text
+                    Exif.Copyright = GetDomainName(Request)
+                    Exif.Description = txtDescription.Text
+                    Exif.Title = txtTitle.Text
+                    Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
+                    BMP.Save(FileName & ".tmp")
+                    BMP.Dispose()
+                    Exif.Dispose()
+                    System.IO.File.Delete(FileName)
+                    System.IO.File.Move(FileName & ".tmp", FileName)
+            End Select
 
-			
-			
+
+
             GalleryXML.SaveMetaData(directory, name, title, description, categories, ownerID, LWidth, Lheight)
             GalleryConfig.ResetGalleryConfig(ZmoduleID)
 
@@ -224,17 +224,17 @@ Namespace DotNetZoom
         End Function
 
         Private Function GetRootURL() As String
-            ' Return "~" & GetDocument() & "?" & "&tabid=" & portalSettings.GetEditModuleSettings(ZmoduleID).TabId
-				' to return to prévious album
-	            Dim sb As New StringBuilder()
+            ' Return GetFullDocument() & "?" & "&tabid=" & portalSettings.GetEditModuleSettings(ZmoduleID).TabId
+            ' to return to prévious album
+            Dim sb As New StringBuilder()
             sb.Append(getFulldocument())
-                sb.Append("?edit=control&editpage=")
-                sb.Append(TTT_EditGallery.GalleryEditType.GalleryEditAlbum)
-                sb.Append("&mid=")
-                sb.Append(ZmoduleID.ToString)
-                sb.Append("&tabid=")
-                sb.Append(TabId.ToString)
-              Return Sb.ToString() 
+            sb.Append("?edit=control&editpage=")
+            sb.Append(TTT_EditGallery.GalleryEditType.GalleryEditAlbum)
+            sb.Append("&mid=")
+            sb.Append(ZmoduleID.ToString)
+            sb.Append("&tabid=")
+            sb.Append(TabId.ToString)
+            Return Sb.ToString()
         End Function
 
         Public Function GetFolderURL(ByVal DataItem As Object) As String

@@ -71,7 +71,7 @@ Namespace DotNetZoom
                             drUser.Close()
                         End If
                     Case "feedback"
-                        strURL = "~" & GetDocument() & "?edit=control&tabid=" & Request.Params("tabid") & "&mid=" & Request.Params("mid") & "&VendorId=" & Request.Params("VendorId") & "&search=" & Request.Params("search") & "&def=Vendor Feedback"
+                        strURL = GetFullDocument() & "?edit=control&tabid=" & Request.Params("tabid") & "&mid=" & Request.Params("mid") & "&VendorId=" & Request.Params("VendorId") & "&search=" & Request.Params("search") & "&def=Vendor Feedback"
                 End Select
             Else
                 strURL = Request.UrlReferrer.ToString

@@ -62,13 +62,16 @@ Namespace DotNetZoom
         '*******************************************************
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			Title1.DisplayHelp = "DisplayHelp_SecurityRole"
-            ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			valExpiryDate.ErrorMessage = "<br>" + GetLanguage("not_a_date")
+            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+            End If
+            Title1.DisplayHelp = "DisplayHelp_SecurityRole"
+            ' Obtain PortalSettings from Current Context
+            valExpiryDate.ErrorMessage = "<br>" + GetLanguage("not_a_date")
             ' Verify that the current user has access to this page
             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
             End If
 
             If IsNumeric(Request.Params("RoleId")) Then

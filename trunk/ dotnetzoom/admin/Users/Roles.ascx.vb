@@ -51,8 +51,14 @@ Namespace DotNetZoom
         '*******************************************************
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+            End If
+
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
             BindData()
 
         End Sub

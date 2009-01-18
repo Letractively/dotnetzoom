@@ -4,13 +4,13 @@
 <asp:PlaceHolder id="pnlModuleContent" Runat="server" EnableViewState="false">
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <div align="left" class="Normal">
-<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;"> <b><u><%= DotNetZoom.GetLanguage("UO_online")%>:</u></b>
+<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;"> <b><u><%= DotNetZoom.GetLanguage("UO_online")%>:</u></b>
 <br>
-<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -319px;"> <%= DotNetZoom.GetLanguage("UO_Anonymous")%>: <b><asp:Literal id="lblGuestCountsmall" runat="server" EnableViewState="false" /></b>
+<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -319px;"> <%= DotNetZoom.GetLanguage("UO_Anonymous")%>: <b><asp:Literal id="lblGuestCountsmall" runat="server" EnableViewState="false" /></b>
 <br>
-<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -171px;"> <%= DotNetZoom.GetLanguage("UO_Members")%>: <b><asp:Literal id="lblMemberCountsmall" runat="server" EnableViewState="false" /></b>
+<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -171px;"> <%= DotNetZoom.GetLanguage("UO_Members")%>: <b><asp:Literal id="lblMemberCountsmall" runat="server" EnableViewState="false" /></b>
 <br>
-<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -295px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <b><asp:Literal id="lblTotalCountsmall" runat="server" EnableViewState="false" /></b>
+<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -295px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <b><asp:Literal id="lblTotalCountsmall" runat="server" EnableViewState="false" /></b>
 <br>
 </div>
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>

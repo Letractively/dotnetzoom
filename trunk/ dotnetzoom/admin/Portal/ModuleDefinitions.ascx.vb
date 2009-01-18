@@ -91,28 +91,28 @@ Namespace DotNetZoom
 
             ' Verify that the current user has access to this page
             If Not PortalSecurity.IsSuperUser Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
             End If
 
-            If IsAdminTab() and Not (HttpContext.Current.Request.Params("defid") Is Nothing) Then
-			If IsNumeric(Request.Params("defId")) Then
-                defId = Int32.Parse(Request.Params("defId"))
-			end if
+            If IsAdminTab() And Not (HttpContext.Current.Request.Params("defid") Is Nothing) Then
+                If IsNumeric(Request.Params("defId")) Then
+                    defId = Int32.Parse(Request.Params("defId"))
+                End If
             End If
-			valFriendlyName.ErrorMessage = GetLanguage("need_module_def")
+            valFriendlyName.ErrorMessage = GetLanguage("need_module_def")
             If Page.IsPostBack = False Then
 
-				cmdUpdate.Text = GetLanguage("enregistrer")
-				
-				cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
+                cmdUpdate.Text = GetLanguage("enregistrer")
 
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&hostpage=&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
+
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&hostpage=&tabid=" & TabId & "&def=Gestion fichiers"
 
                 If defId = -1 Then
 
                     tabAddModule.Visible = True
                     tabEditModule.Visible = False
-					cmdUpdate.Text = getLanguage("install")
+                    cmdUpdate.Text = GetLanguage("install")
                     cmdDelete.Visible = False
 
                     ' load the modules to install
@@ -142,36 +142,36 @@ Namespace DotNetZoom
                         txtFriendlyName.Text = dr("FriendlyName").ToString
                         txtDesktopSrc.Text = dr("DesktopSrc").ToString
                         txtEditSrc.Text = dr("EditSrc").ToString
-						txtHelpSrc.Text = dr("HelpSrc").ToString
-						TxtIcone.Text = IIf(IsDBNull(dr("EditModuleIcon")), "", dr("EditModuleIcon"))
+                        txtHelpSrc.Text = dr("HelpSrc").ToString
+                        txticone.Text = IIf(IsDBNull(dr("EditModuleIcon")), "", dr("EditModuleIcon"))
                         chkPremium.Checked = dr("IsPremium")
-						txtDescription.Text = dr("Description").ToString
-						ViewState("FriendLyName") = dr("Name").ToString
+                        txtDescription.Text = dr("Description").ToString
+                        ViewState("FriendLyName") = dr("Name").ToString
                     End If
 
                     dr.Close()
-                    
+
                 End If
 
 
-			End If
-			If TxtIcone.Text <> ""
-			Dim ImageURL As STring
+            End If
+            If txticone.Text <> "" Then
+                Dim ImageURL As String
                 ImageURL = "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & glbSiteDirectory()
-    		If Not ImageUrl.EndsWith("/") Then
-          		ImageUrl += "/"
-   			End If
-		  	myHtmlImage.ImageUrl = ImageUrl & TxtIcone.Text
-		   	myHtmlImage.AlternateText = TxtIcone.Text
-	   		myHtmlImage.ToolTip = TxtIcone.Text
-			MyHtmlImage.Visible = True
-			else
-			MyHtmlImage.Visible = False
-			end if
+                If Not ImageURL.EndsWith("/") Then
+                    ImageURL += "/"
+                End If
+                MyHtmlImage.ImageUrl = ImageURL & txticone.Text
+                MyHtmlImage.AlternateText = txticone.Text
+                MyHtmlImage.ToolTip = txticone.Text
+                MyHtmlImage.Visible = True
+            Else
+                MyHtmlImage.Visible = False
+            End If
             Dim ParentID As String = Server.HtmlEncode(txticone.ClientID)
-            lnkicone.NavigateUrl = "javascript:OpenNewWindow('" + tabID.ToString + "')"
+            lnkicone.NavigateUrl = "javascript:OpenNewWindow('" + TabId.ToString + "')"
 
- 
+
         End Sub
 
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
@@ -186,8 +186,8 @@ Namespace DotNetZoom
                 Dim dr As SqlDataReader
 
                 If defId <> -1 Then
-                    Dim strEditModuleIcon As String = TxtIcone.Text
-                    objAdmin.UpdateModuleDefinition(defId, GetLanguage("N"), txtFriendlyName.Text, txtDesktopSrc.Text, txtHelpSrc.Text, "", txtEditSrc.Text, True, txtDescription.text, strEditModuleIcon, chkPremium.Checked)
+                    Dim strEditModuleIcon As String = txticone.Text
+                    objAdmin.UpdateModuleDefinition(defId, GetLanguage("N"), txtFriendlyName.Text, txtDesktopSrc.Text, txtHelpSrc.Text, "", txtEditSrc.Text, True, txtDescription.Text, strEditModuleIcon, chkPremium.Checked)
                 Else ' installing a new module
 
                     Dim strInstaller As String = cboModule.SelectedItem.Value
@@ -237,10 +237,10 @@ Namespace DotNetZoom
                                 Select Case strExtension.ToLower()
                                     Case "dll"
                                         ' move DLL to application /bin/ folder
-                                        If File.Exists(Request.MapPath("~/bin/") & strFileName) Then
-                                            File.Delete(Request.MapPath("~/bin/") & strFileName)
+                                        If File.Exists(GetAbsoluteServerPath(Request) + "bin\" & strFileName) Then
+                                            File.Delete(GetAbsoluteServerPath(Request) + "bin\" & strFileName)
                                         End If
-                                        File.Move(Request.MapPath(glbSiteDirectory) & strFileName, Request.MapPath("~/bin/") & strFileName)
+                                        File.Move(Request.MapPath(glbSiteDirectory) & strFileName, GetAbsoluteServerPath(Request) + "bin\" & strFileName)
                                         objAdmin.DeleteFile(strFileName)
                                     Case "sql"
                                         ' read SQL installation script
@@ -290,10 +290,10 @@ Namespace DotNetZoom
                         If dr.Read Then
                             ' upgrade
                             objAdmin.UpdateModuleDefinition(dr("ModuleDefID"), GetLanguage("N"), nodeModule.Item("friendlyname").InnerText, IIf(nodeModule.Item("desktopsrc").InnerText <> "", strRelativePath & nodeModule.Item("desktopsrc").InnerText, ""), IIf(nodeModule.Item("helpsrc").InnerText <> "", strRelativePath & nodeModule.Item("helpsrc").InnerText, ""), "", IIf(nodeModule.Item("editsrc").InnerText <> "", strRelativePath & nodeModule.Item("editsrc").InnerText, ""), True, nodeModule.Item("description").InnerText, nodeModule.Item("editmoduleicon").InnerText, False)
-						  Else
+                        Else
                             ' new
                             objAdmin.AddModuleDefinition(nodeModule.Item("friendlyname").InnerText, IIf(nodeModule.Item("desktopsrc").InnerText <> "", strRelativePath & nodeModule.Item("desktopsrc").InnerText, ""), IIf(nodeModule.Item("helpsrc").InnerText <> "", strRelativePath & nodeModule.Item("helpsrc").InnerText, ""), "", IIf(nodeModule.Item("editsrc").InnerText <> "", strRelativePath & nodeModule.Item("editsrc").InnerText, ""), True, nodeModule.Item("description").InnerText, nodeModule.Item("editmoduleicon").InnerText, False)
-	                    End If
+                        End If
                         dr.Close()
 
                         ' move installation file to module folder ( for uninstall )
@@ -309,9 +309,9 @@ Namespace DotNetZoom
                 End If
 
                 If Request.Params("tabid") Is Nothing Then
-                    Response.Redirect("~" & GetDocument() & "?" & GetAdminPage(), True)
+                    Response.Redirect(GetFullDocument() & "?" & GetAdminPage(), True)
                 Else
-                    Response.Redirect("~" & GetDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
+                    Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
                 End If
 
 
@@ -366,8 +366,8 @@ Namespace DotNetZoom
                     Select Case strExtension.ToLower()
                         Case "dll"
                             ' delete DLL from application /bin/ folder
-                            If File.Exists(Request.MapPath("~/bin/") & strFileName) Then
-                                File.Delete(Request.MapPath("~/bin/") & strFileName)
+                            If File.Exists(GetAbsoluteServerPath(Request) + "bin/" & strFileName) Then
+                                File.Delete(GetAbsoluteServerPath(Request) + "bin/" & strFileName)
                             End If
                         Case Else
                             ' delete files from module folder
@@ -422,24 +422,24 @@ Namespace DotNetZoom
             End If
 
             ' delete definition
-             objAdmin.DeleteModuleDefinition(defId)
-			 
+            objAdmin.DeleteModuleDefinition(defId)
+
             If Request.Params("tabid") Is Nothing Then
-                Response.Redirect("~" & GetDocument() & "?" & GetAdminPage(), True)
+                Response.Redirect(GetFullDocument() & "?" & GetAdminPage(), True)
             Else
-                Response.Redirect("~" & GetDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
+                Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
             End If
 
-  
+
 
         End Sub
 
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
- 		 If Request.Params("tabid") Is Nothing Then
-                Response.Redirect("~" & GetDocument() & "?" & GetAdminPage(), True)
+            If Request.Params("tabid") Is Nothing Then
+                Response.Redirect(GetFullDocument() & "?" & GetAdminPage(), True)
             Else
-                Response.Redirect("~" & GetDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
+                Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
             End If
         End Sub
 

@@ -43,9 +43,9 @@ Namespace DotNetZoom
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             'Put user code to initialize the page here
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 
-        	Dim _DefaultPage As String = "~/DeskTopModules/TTTForum/TTT_Forum.ascx"
+            Dim _DefaultPage As String = glbPath & "DeskTopModules/TTTForum/TTT_Forum.ascx"
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
            If Request.IsAuthenticated and ((PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True _
@@ -62,12 +62,12 @@ Namespace DotNetZoom
                 Dim ForumPage As Integer = CInt(Request.Params("forumpage"))
                 Select Case ForumPage
                     Case ForumDesktopType.ForumMain
-                        _DefaultPage = "~/DeskTopModules/TTTForum/TTT_Forum.ascx"
+                        _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_Forum.ascx"
                     Case ForumDesktopType.ForumSearch
-                        _DefaultPage = "~/DeskTopModules/TTTForum/TTT_ForumSearch.ascx"
+                        _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumSearch.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ForumSearch"
                     Case ForumDesktopType.ForumProfile
-                        _DefaultPage = "~/DeskTopModules/TTTForum/TTT_ForumUserProfile.ascx"
+                        _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumUserProfile.ascx"
                         Title1.DisplayHelp = Nothing
                         If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True _
                             OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
@@ -84,16 +84,16 @@ Namespace DotNetZoom
                         End If
 
                     Case ForumDesktopType.ForumSubscribe
-                        _DefaultPage = "~/DeskTopModules/TTTForum/TTT_ForumSubscribe.ascx"
+                        _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumSubscribe.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ForumSubscribe"
                     Case ForumDesktopType.ForumPrivateMessage
-                        _DefaultPage = "~/DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
+                        _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
                         Title1.DisplayHelp = "DisplayHelp_PMSInbox"
                         If Request.Params("pmsTabId") = "1" Then Title1.DisplayHelp = "DisplayHelp_PMSInbox"
                         If Request.Params("pmsTabId") = "2" Then Title1.DisplayHelp = "DisplayHelp_PMSOutbox"
                         If Request.Params("pmsTabId") = "3" Then Title1.DisplayHelp = "DisplayHelp_PMSCompose"
                     Case Else
-                        _DefaultPage = "~/DeskTopModules/TTTForum/TTT_Forum.ascx"
+                        _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_Forum.ascx"
                 End Select
             End If
             Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule(_DefaultPage), PortalModuleControl)

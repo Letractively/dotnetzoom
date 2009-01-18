@@ -109,7 +109,7 @@ Namespace DotNetZoom
 			if objTab.DisableLink Then
 			   TempString.append( "<li class=""menu-" & IntMenu & "-" & objtab.Level & """><a " & TempClass & "href="""">" ) 
             Else
-               TempString.append( "<li class=""menu-" & IntMenu & "-" & objtab.Level & """><a " & TempClass & "href=""" & FormatFriendlyURL(objtab.FriendlyTabName, objTab.ShowFriendly, objtab.Tabid.ToString) & """>")
+                    TempString.Append("<li class=""menu-" & IntMenu & "-" & objTab.Level & """><a " & TempClass & "href=""" & FormatFriendlyURL(objTab.FriendlyTabName, objTab.ssl, objTab.ShowFriendly, objTab.TabId.ToString) & """>")
             End If
 			
 			

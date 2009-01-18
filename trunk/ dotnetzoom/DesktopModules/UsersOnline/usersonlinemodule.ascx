@@ -5,27 +5,27 @@
 	<asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 		<table cellSpacing="0" cellPadding="4" width="100%">
 			<tr class="Normal">
-				<td><img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -91px;"> <B><U><%= DotNetZoom.GetLanguage("UO_Registered")%>:</U></B><br>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -133px;"> <%= DotNetZoom.GetLanguage("UO_LRegistered")%>: <B>
+				<td><img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -91px;"> <B><U><%= DotNetZoom.GetLanguage("UO_Registered")%>:</U></B><br>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -133px;"> <%= DotNetZoom.GetLanguage("UO_LRegistered")%>: <B>
 						<asp:HyperLink ID="lnkLatestUserName" Runat="server" EnableViewState="false" /></B><br>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -185px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <B>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -185px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <B>
 						<asp:Literal id="lblNewToday" Runat="server" EnableViewState="false" /></B><br>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -199px;"> <%= DotNetZoom.GetLanguage("UO_YRegistered")%>: <B>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -199px;"> <%= DotNetZoom.GetLanguage("UO_YRegistered")%>: <B>
 						<asp:Literal id="lblNewYesterday" Runat="server" EnableViewState="false" /></B><br>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -213px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <B>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -213px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <B>
 						<asp:Literal id="lblUserCount" Runat="server" EnableViewState="false" /></B><br>
 					<HR>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;"> <B><U><%= DotNetZoom.GetLanguage("UO_online")%>:</U></B>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;"> <B><U><%= DotNetZoom.GetLanguage("UO_online")%>:</U></B>
 					<br>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -319px;"> <%= DotNetZoom.GetLanguage("UO_Anonymous")%>: <B>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -319px;"> <%= DotNetZoom.GetLanguage("UO_Anonymous")%>: <B>
 						<asp:Literal id="lblGuestCount" Runat="server" EnableViewState="false" /></B><br>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -171px;"> <%= DotNetZoom.GetLanguage("UO_Members")%>: <B>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -171px;"> <%= DotNetZoom.GetLanguage("UO_Members")%>: <B>
 						<asp:Literal id="lblMemberCount" Runat="server" EnableViewState="false" /></B><br>
-					<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -295px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <B>
+					<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -295px;"> <%= DotNetZoom.GetLanguage("UO_TRegistered")%>: <B>
 						<asp:Literal id="lblTotalCount" Runat="server" EnableViewState="false" /></B><br>
 					<asp:Repeater id="rptOnlineNow" Runat="server" EnableViewState="false">
 						<HeaderTemplate>
-							<HR><img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -119px;"> <B><U><%= DotNetZoom.GetLanguage("UO_OnLine_Now")%>:</U></B><br>
+							<HR><img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -119px;"> <B><U><%= DotNetZoom.GetLanguage("UO_OnLine_Now")%>:</U></B><br>
 						</HeaderTemplate>
 						<ItemTemplate>
 							<asp:Literal ID="lblUserNumber" Runat="server" EnableViewState="false" />:&nbsp;<asp:HyperLink ID="lnkUsername" Runat="server" EnableViewState="false" NavigateUrl='<%# GetUserInfoLink(DataBinder.Eval(Container.DataItem, "UserID")) %>' Tooltip='<%# GetUserInfoTooltip(DataBinder.Eval(Container.DataItem, "Username")) %>'><%# DataBinder.Eval(Container.DataItem, "UserName") %></asp:HyperLink>

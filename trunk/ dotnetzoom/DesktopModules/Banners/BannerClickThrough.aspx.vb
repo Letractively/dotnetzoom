@@ -54,13 +54,13 @@ Namespace DotNetZoom
                 If Not IsDBNull(dr("URL")) Then
                     strURL = AddHTTP(dr("URL").ToString)
                 Else
-                    strURL = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&VendorId=" & dr("VendorId").ToString & "&banner=1&def=Fournisseurs"
+                    strURL = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&VendorId=" & dr("VendorId").ToString & "&banner=1&def=Fournisseurs"
                 End If
             Else
                 If Not Request.UrlReferrer Is Nothing Then
                     strURL = Request.UrlReferrer.ToString
                 Else
-                    strURL = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId
+                    strURL = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId
                 End If
             End If
             dr.Close()

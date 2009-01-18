@@ -55,7 +55,7 @@ Namespace DotNetZoom
                     If objTab.DisableLink Then
                         objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(objTab.TabId, objTab.TabName, ""))
                     Else
-                        objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(objTab.TabId, objTab.TabName, FormatFriendlyURL(objtab.FriendlyTabName, objTab.ShowFriendly, objtab.Tabid.ToString)))
+                        objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(objTab.TabId, objTab.TabName, FormatFriendlyURL(objTab.FriendlyTabName, objTab.ssl, objTab.ShowFriendly, objTab.TabId.ToString)))
                     End If
 
                     'add image next to selected item
@@ -68,7 +68,7 @@ Namespace DotNetZoom
                         If objTab.DisableLink Then
                             objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(objTab.ParentId, objTab.TabId, "&nbsp;" & objTab.TabName, ""))
                         Else
-                            objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(objTab.ParentId, objTab.TabId, "&nbsp;" & objTab.TabName, FormatFriendlyURL(objtab.FriendlyTabName, objTab.ShowFriendly, objtab.Tabid.ToString)))
+                            objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(objTab.ParentId, objTab.TabId, "&nbsp;" & objTab.TabName, FormatFriendlyURL(objTab.FriendlyTabName, objTab.ssl, objTab.ShowFriendly, objTab.TabId.ToString)))
                         End If
                     Catch
                         ' throws exception if the parent tab has not been loaded ( may be related to user role security not allowing access to a parent tab )

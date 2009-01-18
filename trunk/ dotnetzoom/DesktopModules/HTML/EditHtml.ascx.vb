@@ -137,7 +137,7 @@ Namespace DotNetZoom
                 dr.Close()
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
             Else
 		        If (LastDesktopView <> optView.SelectedItem.Value) And (Not LastDesktopView Is Nothing) Then
                     If optView.SelectedItem.Value = "B" Then
@@ -154,32 +154,36 @@ Namespace DotNetZoom
 
 		Private Sub SetFckEditor()
 			    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            	Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
-	            If Request.IsAuthenticated = false Then
-        	    FCKeditor1.LinkBrowser = False
-				else
-	            Dim objAdmin As New AdminDB()
-	            Dim tmpUploadRoles As String = ""
-    	        If Not CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String) Is Nothing Then
-                tmpUploadRoles = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String)
-        	    End If
-	            FCKeditor1.LinkBrowser = PortalSecurity.IsInRoles(tmpUploadRoles)
-				End If
+            Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
+            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+
+            If Request.IsAuthenticated = False Then
+                FCKeditor1.LinkBrowserURL = ""
+            Else
+                Dim objAdmin As New AdminDB()
+                Dim tmpUploadRoles As String = ""
+                If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+                    tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
+                End If
+                If Not PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                    FCKeditor1.LinkBrowserURL = ""
+                End If
+            End If
 				FCKeditor1.width = unit.pixel(700)
 				FCKeditor1.Height = unit.pixel(500)
 				if GetLanguage("fckeditor_language") <> "auto"
 				FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
 				FCKeditor1.AutoDetectLanguage = False
 				end if
-            	FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-            	FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+
+            FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
 
 				' set the css for the editor if it exist
 				If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) then
 				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
 				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
 				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-				FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
+                ' FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
 				End If
 	
 

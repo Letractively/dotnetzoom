@@ -102,13 +102,13 @@ Namespace DotNetZoom
 					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
 					Select Case UserCSS.Skin
 					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					
-					case "Stibnite"
-                            objLink.Text = "<link href=""" & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					
-					case "Algues bleues"
-                            objLink.Text = "<link href=""" & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+
+                        Case "Stibnite"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+
+                        Case "Algues bleues"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
 					
 					Case Else
 					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
@@ -130,11 +130,11 @@ Namespace DotNetZoom
                 If forumInfo.IsActive Then
                     If forumInfo.IsPrivate Then
                         If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
-                            HttpContext.Current.Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
+                            HttpContext.Current.Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
                         End If
                     End If
                 Else
-                    HttpContext.Current.Response.Redirect("~" & GetDocument(), True)
+                    HttpContext.Current.Response.Redirect(GetFullDocument(), True)
                 End If
 
             Else
@@ -184,7 +184,7 @@ Namespace DotNetZoom
 
                 If Request.IsAuthenticated = True Then
                     Dim LoggedOnID As Integer = TTTUtils.ConvertInteger(Context.User.Identity.Name)
-                    
+
                     Dim dr As SqlDataReader = ForumUserDB.TTTForum_GetUserLastView(LoggedOnID)
                     If dr.Read Then
                         If Not dr("FlatView") Is DBNull.Value Then
@@ -196,52 +196,52 @@ Namespace DotNetZoom
                         End If
                     End If
                     dr.Close()
-				else
-			If not HttpContext.Current.Session("flatview") is nothing Then
-			if CBool(HttpContext.Current.Session("flatview")) = False then
-               ddlDisplay.ClearSelection()
-               ddlDisplay.Items.FindByText(GetLanguage("F_TreeView")).Selected = True
-			end if
-			end if
-	
-					
-					
+                Else
+                    If Not HttpContext.Current.Session("flatview") Is Nothing Then
+                        If CBool(HttpContext.Current.Session("flatview")) = False Then
+                            ddlDisplay.ClearSelection()
+                            ddlDisplay.Items.FindByText(GetLanguage("F_TreeView")).Selected = True
+                        End If
+                    End If
+
+
+
                 End If
             End If
 
             TTTForum.IsFlatView = ddlDisplay.Items.FindByText(GetLanguage("F_FlatView")).Selected
             BuildBreadCrumbs() '<tam:note need to be re-implemented />
 
-			
-			lnkAdmin.Text = GetLanguage("F_cmdAdmin")
+
+            lnkAdmin.Text = GetLanguage("F_cmdAdmin")
 
 
-			
-			lnkModerate.Text = GetLanguage("cmdModerate")
 
-			
-			lnkPMS.Text = GetLanguage("cmdPMS")
+            lnkModerate.Text = GetLanguage("cmdModerate")
 
 
-			
-			lnkProfile.Text = GetLanguage("cmdProfile")
+            lnkPMS.Text = GetLanguage("cmdPMS")
 
 
-			
-			lnkSubscribe.Text = GetLanguage("cmdSubscribe")
+
+            lnkProfile.Text = GetLanguage("cmdProfile")
 
 
-			
-			lnkSearch.Text = GetLanguage("cmdSearch")
+
+            lnkSubscribe.Text = GetLanguage("cmdSubscribe")
 
 
-			
-			lnkHome.Text = GetLanguage("cmdHome")
 
-			cmdNewTopic1.Text = GetLanguage("cmdNewTopic")
-			cmdNewTopic2.Text = GetLanguage("cmdNewTopic")
-			CmdNewTopic1.ToolTip = GetLanguage("F_AddNewThread")
-			CmdNewTopic2.ToolTip = GetLanguage("F_AddNewThread")
+            lnkSearch.Text = GetLanguage("cmdSearch")
+
+
+
+            lnkHome.Text = GetLanguage("cmdHome")
+
+            cmdNewTopic1.Text = GetLanguage("cmdNewTopic")
+            cmdNewTopic2.Text = GetLanguage("cmdNewTopic")
+            CmdNewTopic1.ToolTip = GetLanguage("F_AddNewThread")
+            CmdNewTopic2.ToolTip = GetLanguage("F_AddNewThread")
 
         End Sub
 
@@ -251,13 +251,13 @@ Namespace DotNetZoom
 
             '<tam:note value=set property for forum control />
             TTTForum.IsFlatView = _flatView
-			
+
             '<tam:note value=update database if it's an authenticated user?>
             If Request.IsAuthenticated = True Then
                 ForumUserDB.TTTForum_UpdateUserViewType(Int16.Parse(Context.User.Identity.Name), _flatView)
-            else
-			Session("flatview") = _flatView
-			End If
+            Else
+                Session("flatview") = _flatView
+            End If
 
         End Sub
 
@@ -278,7 +278,7 @@ Namespace DotNetZoom
 
             sb.Append(Base)
             sb.Append("&nbsp;&raquo;&nbsp;<a href=""")
-			Expand = Expand.replace("&", "&amp;")
+            Expand = Expand.replace("&", "&amp;")
             sb.Append(Expand)
             sb.Append(""" class=""")
             sb.Append("ButtonCommand""")
@@ -307,20 +307,20 @@ Namespace DotNetZoom
             ElseIf _scope = "thread" Then
                 currentLink = (Request.Url).ToString
                 forumInfo = ForumItemInfo.GetForumInfo(ZforumID)
-				' Check security once more just to make sure
-				If forumInfo.IsActive Then
-               		If forumInfo.IsPrivate Then
-                 		If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
-                            HttpContext.Current.Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
-                 		End If
-              		End If
-    	    	else
-	        	HttpContext.Current.Response.Redirect("~" & GetDocument(), True)
-            	End If
+                ' Check security once more just to make sure
+                If forumInfo.IsActive Then
+                    If forumInfo.IsPrivate Then
+                        If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
+                            HttpContext.Current.Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
+                        End If
+                    End If
+                Else
+                    HttpContext.Current.Response.Redirect(GetFullDocument(), True)
+                End If
                 strBreadCrumbs = ExpandString(BasedLink, currentLink, forumInfo.Name)
             ElseIf _scope = "post" Then
                 If _threadID > 0 Then
-                	threadInfo = ForumThreadInfo.GetThreadInfo(_threadID)
+                    threadInfo = ForumThreadInfo.GetThreadInfo(_threadID)
                 ElseIf _threadID = 0 AndAlso IsNumeric(Request.Params("postid")) Then
                     Dim _postID As Integer = Int16.Parse(Request.Params("postid"))
                     postInfo = ForumPostInfo.GetPostInfo(_postID)
@@ -330,18 +330,18 @@ Namespace DotNetZoom
                 strBreadCrumbs = BasedLink
 
                 If Not threadInfo Is Nothing Then
-                forumInfo = threadInfo.Parent
+                    forumInfo = threadInfo.Parent
 
-					' Check security once more just to make sure
-					If forumInfo.IsActive Then
-        	       		If forumInfo.IsPrivate Then
-            	     		If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
-                	    		HttpContext.Current.Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabID   & "&def=Access Denied", True)
-                 			End If
-              			End If
-    	    		else
-	       		 	HttpContext.Current.Response.Redirect("~" & GetDocument(), True)
-            		End If
+                    ' Check security once more just to make sure
+                    If forumInfo.IsActive Then
+                        If forumInfo.IsPrivate Then
+                            If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
+                                HttpContext.Current.Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabID & "&def=Access Denied", True)
+                            End If
+                        End If
+                    Else
+                        HttpContext.Current.Response.Redirect(GetFullDocument(), True)
+                    End If
                     ForumLink = TTTUtils.GetURL(GetFullDocument(), TTTForum.Page, String.Format("scope=thread&forumid={0}", forumInfo.ForumID), "postid=&action=&searchpage=&threadspage=&threadid=")
                     strBreadCrumbs = ExpandString(BasedLink, ForumLink, forumInfo.Name)
                     ThreadLink = TTTUtils.GetURL(GetFullDocument(), TTTForum.Page, String.Format("scope=post&threadid={0}", threadInfo.ThreadID.ToString), "postid=&action=&searchpage=&searchterms=&threadspage=")
@@ -383,13 +383,13 @@ Namespace DotNetZoom
                 lnkPMS.NavigateUrl = strPMS
                 lnkPMS.Visible = Zconfig.UserOnlineIntegrate
                 ' profile
-                
+
                 Dim strProfile As String = TTTUtils.ForumUserProfileLink(TabId, Int16.Parse(Context.User.Identity.Name))
                 lnkProfile.NavigateUrl = strProfile
                 lnkProfile.Visible = True
 
                 ' subscribe
-                
+
                 If Zconfig.MailNotification Then
                     Dim strSubscribe As String = TTTUtils.ForumSubscribeLink(TabId, ModuleId, Int16.Parse(Context.User.Identity.Name))
                     lnkSubscribe.NavigateUrl = strSubscribe
@@ -399,7 +399,7 @@ Namespace DotNetZoom
                 ' <tam:note show thread email notification checkbox
                 If _scope = "post" AndAlso Zconfig.MailNotification Then
                     chkEmail.Visible = True
-					chkEmail.Text = GetLanguage("F_CheckMail")
+                    chkEmail.Text = GetLanguage("F_CheckMail")
                     Dim dbForum As New ForumDB()
                     chkEmail.Checked = dbForum.TTTForum_TrackingThreadExists(_threadID, Int16.Parse(Context.User.Identity.Name))
                 Else
@@ -407,7 +407,7 @@ Namespace DotNetZoom
                 End If
             Else
 
-            lnkProfile.Visible = False
+                lnkProfile.Visible = False
 
             End If
 
@@ -428,7 +428,7 @@ Namespace DotNetZoom
             ' admin
             If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString)) = True _
             OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) Then
-                
+
                 Dim strAdmin As String = TTTUtils.ForumSettingLink(TabId, ModuleId)
 
                 lnkAdmin.NavigateUrl = strAdmin
@@ -459,8 +459,8 @@ Namespace DotNetZoom
             Dim str As Boolean = chk.Checked
 
         End Sub
-		
-		Private Sub cmdNewTopic_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdNewTopic1.Click, cmdNewTopic2.Click
+
+        Private Sub cmdNewTopic_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdNewTopic1.Click, cmdNewTopic2.Click
             If IsNumeric(Request.Params("forumid")) Then
                 ZforumID = Int32.Parse(Request.Params("forumid"))
                 ' Security Check to see if the user try to access a place that is not allowed
@@ -468,15 +468,15 @@ Namespace DotNetZoom
                 If forumInfo.IsActive Then
                     If forumInfo.IsPrivate Then
                         If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
-                            HttpContext.Current.Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
+                            HttpContext.Current.Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
                         End If
                     End If
-                    HttpContext.Current.Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&forumid=" & ZforumID & "&scope=thread&action=new", True)
+                    HttpContext.Current.Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&forumid=" & ZforumID & "&scope=thread&action=new", True)
                 Else
-                    HttpContext.Current.Response.Redirect("~" & GetDocument(), True)
+                    HttpContext.Current.Response.Redirect(GetFullDocument(), True)
                 End If
             Else
-                HttpContext.Current.Response.Redirect("~" & GetDocument(), True)
+                HttpContext.Current.Response.Redirect(GetFullDocument(), True)
             End If
         End Sub
 

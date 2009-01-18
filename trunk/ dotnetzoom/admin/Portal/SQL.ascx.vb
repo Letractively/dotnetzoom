@@ -50,16 +50,17 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-   		Title1.DisplayTitle = getlanguage("title_sql")
-		Title1.DisplayHelp = "DisplayHelp_SQL"
+            ' Verify that the current user has access to access this page
+            If Not PortalSecurity.IsSuperUser Then
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+            End If
+
+            Title1.DisplayTitle = GetLanguage("title_sql")
+            Title1.DisplayHelp = "DisplayHelp_SQL"
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 			cmdExecute.Text = GetLanguage("SQL_ExecuteCMD")
 			SQLcmdExecute.Text = GetLanguage("SQL_Execute")
-            ' Verify that the current user has access to access this page
-            If not PortalSecurity.IsSuperUser Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
-            End If
 
             Try
                 SetFormFocus(txtQuery)

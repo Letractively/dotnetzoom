@@ -14,7 +14,7 @@
 							<br>
 						</ItemTemplate>
 						<headertemplate>
-							<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -119px;"> <b><u><%= DotNetZoom.GetLanguage("UO_online")%>:</u></b><br>
+							<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -119px;"> <b><u><%= DotNetZoom.GetLanguage("UO_online")%>:</u></b><br>
 						</HeaderTemplate>
 					</asp:DataList><asp:DataList id=lstOfflineBuddies Runat="server" cssclass="Normal">
 						<itemtemplate>
@@ -26,7 +26,7 @@
 						</ItemTemplate>
 						<headertemplate>
 							<hr>
-							<img height="14" width="17" src="images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;"> <b><u><%= DotNetZoom.GetLanguage("UO_offline")%>:</u></b><br>
+							<img height="14" width="17" src="/images/1x1.gif" Alt="*" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;"> <b><u><%= DotNetZoom.GetLanguage("UO_offline")%>:</u></b><br>
 						</HeaderTemplate>
 					</asp:DataList><asp:Label id=lblWarningMessage Runat="server"></asp:Label></td></tr></table>
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>

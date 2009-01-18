@@ -94,7 +94,7 @@ Namespace DotNetZoom
 
             ' Verify that the current user has access to access this page
             If not PortalSecurity.IsSuperUser Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
             End If
 
 			ddlTimeserver.Text = datetime.Now().ToString()

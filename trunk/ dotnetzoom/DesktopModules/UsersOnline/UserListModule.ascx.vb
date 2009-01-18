@@ -37,21 +37,25 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			If Request.Params("edit") <> "" Then
-			Title1.DisplayTitle = getlanguage("UserListModule")
-			end if
-			Title1.DisplayHelp = "DisplayHelp_UserListModule"
-			drpGroupFilter.Items.FindByValue("All Users").Text = GetLanguage("UO_AllUsers")
-			drpGroupFilter.Items.FindByValue("Online Users Only").Text = GetLanguage("UO_OnlineOnly")
-			drpSortOrder.Items.FindByValue("Username").Text = GetLanguage("UO_UserName")
-			drpSortOrder.Items.FindByValue("FirstName").Text = GetLanguage("UO_Name")
-			drpSortDirection.Items.FindByValue("ASC").Text = GetLanguage("UO_ASC")
-			drpSortDirection.Items.FindByValue("DESC").Text = GetLanguage("UO_DESC")
-			lnkSearch.Text = GetLanguage("search_search")
-			lnkFirstPage.Text = GetLanguage("UO_FirstPage")
-			lnkPrevPage.Text = GetLanguage("UO_PrevPage")
-			lnkNextPage.Text = GetLanguage("UO_NextPage")
-			lnkLastPage.Text = GetLanguage("UO_LastPage")
+            If Request.Params("edit") <> "" Then
+                If Not Request.IsAuthenticated Then
+                    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                    Response.Redirect(GetFullDocument() & "?edit=" & _portalSettings.ActiveTab.TabId & "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
+                End If
+                Title1.DisplayTitle = GetLanguage("UserListModule")
+            End If
+            Title1.DisplayHelp = "DisplayHelp_UserListModule"
+            drpGroupFilter.Items.FindByValue("All Users").Text = GetLanguage("UO_AllUsers")
+            drpGroupFilter.Items.FindByValue("Online Users Only").Text = GetLanguage("UO_OnlineOnly")
+            drpSortOrder.Items.FindByValue("Username").Text = GetLanguage("UO_UserName")
+            drpSortOrder.Items.FindByValue("FirstName").Text = GetLanguage("UO_Name")
+            drpSortDirection.Items.FindByValue("ASC").Text = GetLanguage("UO_ASC")
+            drpSortDirection.Items.FindByValue("DESC").Text = GetLanguage("UO_DESC")
+            lnkSearch.Text = GetLanguage("search_search")
+            lnkFirstPage.Text = GetLanguage("UO_FirstPage")
+            lnkPrevPage.Text = GetLanguage("UO_PrevPage")
+            lnkNextPage.Text = GetLanguage("UO_NextPage")
+            lnkLastPage.Text = GetLanguage("UO_LastPage")
             If Not IsPostBack Then
                 If Request.IsAuthenticated Then
                     drpGroupFilter.Items.Add(New ListItem(GetLanguage("UO_OnlyBody")))
@@ -86,7 +90,7 @@ Namespace DotNetZoom
             ViewState.Item("sortDirection") = sortDirection
 
             Dim myReader As SqlDataReader
- 		  Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If (drpGroupFilter.SelectedItem.Text = GetLanguage("UO_OnlineOnly")) Then
                 myReader = objUsers.GetUsersOnlineOnly(_portalSettings.PortalId, pageNumber, pageSize, loggedInUserID)
@@ -148,7 +152,7 @@ Namespace DotNetZoom
         End Sub
 
         Protected Function GetUserInfoLink(ByVal userID As String) As String
-            Return "~" & GetDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
+            Return GetFullDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
         End Function
 
         Protected Function GetUserInfoTooltip(ByVal userName As String) As String

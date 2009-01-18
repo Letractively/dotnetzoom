@@ -118,41 +118,49 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-			lnkicone.Tooltip = GetLanguage("select_icone_tooltip")	
-			lnkicone.Text = GetLanguage("select_icone")	
-			valtabName.ErrorMessage = "<br>" + GetLanguage("need_tab_name")
-			cmdUpdate.Text = getLanguage("enregistrer")
-			cmdUpdateName.Text = getLanguage("enregistrer")
-			cmdCancel.Text = getlanguage("annuler")
-            cmdDelete.Text = GetLanguage("delete")
-
-
             If Not (Request.Params("action") Is Nothing) Then
                 strAction = Request.Params("action")
+                ' Verify that the current user has access to edit this module
+                If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False And PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = False Then
+                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                End If
             Else
+                ' Only admin can create a new tab
                 strAction = ""
+                If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False Then
+                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                End If
             End If
 
 
 
+
+
+            lnkicone.ToolTip = GetLanguage("select_icone_tooltip")
+            lnkicone.Text = GetLanguage("select_icone")
+            valtabName.ErrorMessage = "<br>" + GetLanguage("need_tab_name")
+            cmdUpdate.Text = GetLanguage("enregistrer")
+            cmdUpdateName.Text = GetLanguage("enregistrer")
+            cmdCancel.Text = GetLanguage("annuler")
+            cmdDelete.Text = GetLanguage("delete")
+
+
+
+
+
             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) And strAction = "edit" Then
+                ' Only admin can play with XML
                 cmdXML.Visible = True
                 cmdXML.Text = GetLanguage("Generate_XML")
                 Title1.DisplayOptions2 = True
                 Title1.OptionsText2 = GetLanguage("Generate_XML")
                 Title1.Options2URL = Request.RawUrl
-                Title1.Options2IMG = "<img  src=""images/xml.gif"" alt=""xml"" style=""border-width:0px;"">"
+                Title1.Options2IMG = "<img  src=""" & glbPath & "images/xml.gif"" alt=""xml"" style=""border-width:0px;"">"
             Else
                 cmdXML.Visible = False
             End If
             IsVisible.ToolTip = GetLanguage("ts_visibleinfo")
             DisableLink.ToolTip = GetLanguage("ts_disableinfo")
-
-            ' Verify that the current user has access to edit this module
-            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False And PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = False Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
-            End If
-
 
             Dim objTIGRA As Control = Page.FindControl("tigra")
             If (Not objTIGRA Is Nothing) Then
@@ -263,7 +271,7 @@ Namespace DotNetZoom
                             item.Value = Mid(strFileName, InStrRev(strFileName, "\") + 1)
                             cboTemplate1.Items.Add(item)
                         Next strFileName
-                     End If
+                    End If
                     cboTemplate1.Items.FindByText(GetLanguage("list_none")).Selected = True
                 Else
                     rowTemplate.Visible = False
@@ -273,13 +281,13 @@ Namespace DotNetZoom
 
                 If Not Request.UrlReferrer Is Nothing Then
                     If InStr(Request.UrlReferrer.ToString(), "options=2") <> 0 Or InStr(Request.UrlReferrer.ToString(), "action=edit") <> 0 Then
-                        ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                        ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
                     Else
                         ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                     End If
 
                 Else
-                    ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                    ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
                 End If
 
                 If Not (Request.Params("options") Is Nothing) And PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
@@ -319,7 +327,7 @@ Namespace DotNetZoom
             lnkicone.NavigateUrl = "javascript:OpenNewWindow('" + TabId.ToString + "')"
 
             If cbocss.SelectedItem.Value <> "" Then
-                editcss.NavigateUrl = "javascript:var m = window.open('admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/" & cbocss.SelectedItem.Value & "&TabId=" & _portalSettings.ActiveTab.TabId & "','');m.focus();"
+                editcss.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/" & cbocss.SelectedItem.Value & "&TabId=" & _portalSettings.ActiveTab.TabId & "','');m.focus();"
                 editcss.Text = GetLanguage("ts_editcss")
                 editcss.ToolTip = GetLanguage("ts_editcssinfo")
                 editcss.Visible = True
@@ -327,7 +335,7 @@ Namespace DotNetZoom
                 editcss.Visible = False
             End If
             If cboskin.SelectedItem.Value <> "" Then
-                editskin.NavigateUrl = "javascript:var m = window.open('admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/" & cboskin.SelectedItem.Value & "&TabId=" & _portalSettings.ActiveTab.TabId & "','');m.focus();"
+                editskin.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/" & cboskin.SelectedItem.Value & "&TabId=" & _portalSettings.ActiveTab.TabId & "','');m.focus();"
                 editskin.Visible = True
                 editskin.Text = GetLanguage("ts_editskin")
                 editskin.ToolTip = GetLanguage("ts_editskininfo")
@@ -363,7 +371,7 @@ Namespace DotNetZoom
             tabName.Text = ""
 
             If Not cboTab.Items.FindByValue(TabId.ToString) Is Nothing Then
-                   cboTab.Items.FindByValue(TabId).Selected = True
+                cboTab.Items.FindByValue(TabId).Selected = True
             End If
 
             IsVisible.Checked = True
@@ -397,7 +405,7 @@ Namespace DotNetZoom
 
             While roles.Read()
                 Dim authItem As New ListItem()
-				authItem.Text = CType(roles("RoleName"), String)
+                authItem.Text = CType(roles("RoleName"), String)
                 authItem.Value = roles("RoleID").ToString()
                 If authItem.Value = _portalSettings.AdministratorRoleId.ToString Then
                     authItem.Selected = True
@@ -408,7 +416,7 @@ Namespace DotNetZoom
                 authRoles.Items.Add(authItem)
 
                 Dim adminItem As New ListItem()
-				adminItem.Text = CType(roles("RoleName"), String)
+                adminItem.Text = CType(roles("RoleName"), String)
                 adminItem.Value = roles("RoleID").ToString()
                 If adminItem.Value = _portalSettings.AdministratorRoleId.ToString Then
                     adminItem.Selected = True
@@ -423,53 +431,53 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdUpdateName_Click(ByVal Sender As Object, ByVal e As EventArgs) Handles cmdUpdateName.Click
-        ' Obtain PortalSettings from Current Context
-        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		Dim objAdmin As New AdminDB()
-		if ltabName.Text <> "" then
- 		objAdmin.UpdateTabName(_portalSettings.PortalId, TabID, ltabName.Text , ddlLanguage.SelectedItem.Value)
-		else
-		objAdmin.DeleteTabName( TabID, ddlLanguage.SelectedItem.Value)
-		end if
-		ClearTabCache(TabId)
-		End Sub
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim objAdmin As New AdminDB()
+            If ltabName.Text <> "" Then
+                objAdmin.UpdateTabName(_portalSettings.PortalId, TabId, ltabName.Text, ddlLanguage.SelectedItem.Value)
+            Else
+                objAdmin.DeleteTabName(TabId, ddlLanguage.SelectedItem.Value)
+            End If
+            ClearTabCache(TabId)
+        End Sub
 
         Private Sub ddlLanguage_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlLanguage.SelectedIndexChanged
-    	    ' Obtain PortalSettings from Current Context
-	        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Dim objAdmin As New AdminDB()
-			Dim TabLanguage As Hashtable
-			TabLanguage = objAdmin.GetTabsName(_portalSettings.PortalId, ddlLanguage.SelectedItem.Value)
-			ltabName.Text = TabLanguage(TabId)
-		End Sub		 
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim objAdmin As New AdminDB()
+            Dim TabLanguage As Hashtable
+            TabLanguage = objAdmin.GetTabsName(_portalSettings.PortalId, ddlLanguage.SelectedItem.Value)
+            ltabName.Text = TabLanguage(TabId)
+        End Sub
 
         Private Sub cmdUpdate_Click(ByVal Sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
             Dim admin As New AdminDB()
-			Dim TempTabName As String = tabName.Text
-			Dim dr As SqlDataReader = admin.GetTabByID(TabId, GetLanguage("N"))
+            Dim TempTabName As String = tabName.Text
+            Dim dr As SqlDataReader = admin.GetTabById(TabId, GetLanguage("N"))
             If dr.Read Then
-            TempTabName = dr("MTabName").ToString
+                TempTabName = dr("MTabName").ToString
             End If
             dr.Close()
 
-			
+
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-			SaveTabData(strAction)
+            SaveTabData(strAction)
 
-			If tabName.Text = TempTabName or TabID <> _portalSettings.ActiveTab.TabId then
-			' TabName did not change or TabAdmin menu
-			Response.Redirect(ViewState("UrlReferrer"), True)
-			else
-			' TabNameChange see if need to redirect
-            Dim objAdmin As New AdminDB()
-			Response.Redirect(replace(ViewState("UrlReferrer"),_portalSettings.ActiveTab.FriendlyTabName, objAdmin.convertstringtounicode(tabName.Text)), True)
-			end if
+            If tabName.Text = TempTabName Or TabId <> _portalSettings.ActiveTab.TabId Then
+                ' TabName did not change or TabAdmin menu
+                Response.Redirect(ViewState("UrlReferrer"), True)
+            Else
+                ' TabNameChange see if need to redirect
+                Dim objAdmin As New AdminDB()
+                Response.Redirect(Replace(ViewState("UrlReferrer"), _portalSettings.ActiveTab.FriendlyTabName, objAdmin.convertstringtounicode(tabName.Text)), True)
+            End If
         End Sub
 
         Private Sub chkStyleMenu_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkStyleMenu.CheckedChanged
-		    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Response.Redirect(FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "editmenu=1"), True)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "editmenu=1"), True)
         End Sub
 
         Private Sub cmdDelete_Click(ByVal Sender As Object, ByVal e As EventArgs) Handles cmdDelete.Click
@@ -482,11 +490,16 @@ Namespace DotNetZoom
             objAdmin.DeleteTab(TabId)
             Dim dr As SqlDataReader = objAdmin.GetTabById(TabId, GetLanguage("N"))
             If Not dr.Read Then
-                objAdmin.UpdatePortalTabOrder(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), TabId, -2)
+                objAdmin.UpdatePortalTabOrder(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), TabId, -2)
             End If
             dr.Close()
-			ClearPortalCache(_portalSettings.PortalId)
-            Response.Redirect(GetPortalDomainName(PortalAlias, Request), True)
+            ClearPortalCache(_portalSettings.PortalId)
+            If InStr(ViewState("UrlReferrer"), "adminpage=13") > 1 Then
+                Response.Redirect(_portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?adminpage=13", True)
+            Else
+                Response.Redirect(GetFullDocument(), True)
+            End If
+
 
         End Sub
 
@@ -527,17 +540,17 @@ Namespace DotNetZoom
             Next item
 
             Dim strIcon As String = ""
-			
-			strIcon = txtIcone.Text
-			
+
+            strIcon = txticone.Text
+
             Dim admin As New AdminDB()
 
             If strAction = "edit" Then
 
                 ' trap circular tab reference
                 If (TabId <> Int32.Parse(cboTab.SelectedItem.Value)) And (Int32.Parse(cboTab.SelectedItem.Value) = -1 Or IsVisible.Checked = True) Then
-                    admin.UpdateTab(TabId, tabName.Text, true, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, cbocss.SelectedItem.Value, cboskin.SelectedItem.Value)
-                    admin.UpdatePortalTabOrder(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), TabId, Int32.Parse(cboTab.SelectedItem.Value), , , IsVisible.Checked.ToString)
+                    admin.UpdateTab(TabId, tabName.Text, True, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, cbocss.SelectedItem.Value, cboskin.SelectedItem.Value)
+                    admin.UpdatePortalTabOrder(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), TabId, Int32.Parse(cboTab.SelectedItem.Value), , , IsVisible.Checked.ToString)
                 End If
 
             Else ' add
@@ -546,10 +559,10 @@ Namespace DotNetZoom
                 If Int32.Parse(cboTab.SelectedItem.Value) <> -1 Then
                     IsVisible.Checked = True
                 End If
-                intTabId = admin.AddTab(_portalSettings.PortalId, tabName.Text, true, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, intTabId)
-				Dim DesktopTabs As ArrayList = portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N"))
+                intTabId = admin.AddTab(_portalSettings.PortalId, tabName.Text, True, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, intTabId)
+                Dim DesktopTabs As ArrayList = PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N"))
                 admin.UpdatePortalTabOrder(DesktopTabs, intTabId, Int32.Parse(cboTab.SelectedItem.Value), , , IsVisible.Checked.ToString)
-				
+
                 If Int32.Parse(cboTemplate.SelectedItem.Value) <> -1 Then
                     ' copy all modules to new tab
                     admin.CopyTab(Int32.Parse(cboTemplate.SelectedItem.Value), intTabId)
@@ -571,7 +584,7 @@ Namespace DotNetZoom
 
                 End If
             End If
-		ClearPortalCache(_portalSettings.PortalId)
+            ClearPortalCache(_portalSettings.PortalId)
         End Sub
 
         '*******************************************************
@@ -588,33 +601,33 @@ Namespace DotNetZoom
             Dim tab As TabSettings = _portalSettings.ActiveTab
 
 
-			' Populate Tab Names, etc.
+            ' Populate Tab Names, etc.
 
-			Dim admin As New AdminDB()
-			Dim dr As SqlDataReader = admin.GetTabByID(TabId, GetLanguage("N"))
+            Dim admin As New AdminDB()
+            Dim dr As SqlDataReader = admin.GetTabById(TabId, GetLanguage("N"))
             If dr.Read Then
-            tabName.Text = dr("MTabName").ToString
+                tabName.Text = dr("MTabName").ToString
             End If
             dr.Close()
 
 
 
-           
-			TxtIcone.Text = tab.IconFile
-			If tab.IconFile <> ""
-			Dim ImageURL As STring
-    		ImageUrl =  "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory 
-    		If Not ImageUrl.EndsWith("/") Then
-          		ImageUrl += "/"
-   			End If
-		  	myHtmlImage.ImageUrl = ImageUrl & tab.IconFile
-		   	myHtmlImage.AlternateText = tab.IconFile
-	   		myHtmlImage.ToolTip = tab.IconFile
-			MyHtmlImage.Visible = True
-			else
-			MyHtmlImage.Visible = False
-			end if
-			
+
+            txticone.Text = tab.IconFile
+            If tab.IconFile <> "" Then
+                Dim ImageURL As String
+                ImageURL = "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory
+                If Not ImageURL.EndsWith("/") Then
+                    ImageURL += "/"
+                End If
+                MyHtmlImage.ImageUrl = ImageURL & tab.IconFile
+                MyHtmlImage.AlternateText = tab.IconFile
+                MyHtmlImage.ToolTip = tab.IconFile
+                MyHtmlImage.Visible = True
+            Else
+                MyHtmlImage.Visible = False
+            End If
+
             cboTab.Items.FindByValue(tab.ParentId).Selected = True
             IsVisible.Checked = tab.IsVisible
             DisableLink.Checked = tab.DisableLink
@@ -655,7 +668,7 @@ Namespace DotNetZoom
 
             While roles.Read()
                 Dim authItem As New ListItem()
-				authItem.Text = CType(roles("RoleName"), String)
+                authItem.Text = CType(roles("RoleName"), String)
                 authItem.Value = roles("RoleID").ToString()
                 If tab.AuthorizedRoles.LastIndexOf(authItem.Value & ";") > -1 Then
                     authItem.Selected = True
@@ -663,7 +676,7 @@ Namespace DotNetZoom
                 authRoles.Items.Add(authItem)
 
                 Dim adminItem As New ListItem()
-				adminItem.Text = CType(roles("RoleName"), String)
+                adminItem.Text = CType(roles("RoleName"), String)
                 adminItem.Value = roles("RoleID").ToString()
                 If tab.AdministratorRoles.LastIndexOf(adminItem.Value & ";") > -1 Then
                     adminItem.Selected = True
@@ -862,7 +875,7 @@ Namespace DotNetZoom
 
             Else
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
             End If
         End Sub
 
@@ -977,8 +990,6 @@ Namespace DotNetZoom
             Dim Admin As New AdminDB()
             Dim TempModuleID As Integer
             Dim TempDefinition As String
-            Dim xmllog As String = ""
-
 
 
             xmlDoc.Load(New StringReader(xmlData))
@@ -994,12 +1005,12 @@ Namespace DotNetZoom
 
 
                 For Each nodeTab In xmlDoc.SelectNodes(NodeToLoad)
-                    xmllog += "1 "
+
                     For Each nodePane In nodeTab.SelectSingleNode("panes").ChildNodes
-                        xmllog += "2 "
+
                         For Each nodeModule In nodePane.SelectSingleNode("modules").ChildNodes
                             ' get module definition
-                            xmllog += "3 "
+
                             dr = Admin.GetSingleModuleDefinitionByName(Language, nodeModule.Item("definition").InnerText)
                             If dr.Read Then
                                 ' add module
@@ -1012,7 +1023,7 @@ Namespace DotNetZoom
                                         End If
                                     Next
                                     For Each nodeData In nodeModule.SelectSingleNode("datas").ChildNodes
-                                        xmllog += "4 "
+
                                         If nodeData.Item("data1").InnerText <> "" Then
                                             If TempDefinition = "Forum" Then
                                                 PopulateForum(TempModuleID, nodeData.SelectSingleNode("data1"))
@@ -1030,13 +1041,6 @@ Namespace DotNetZoom
                 Next
             End If
 
-
-            Dim objStream As StreamWriter
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
-            objStream = File.CreateText(Request.MapPath(_portalSettings.UploadDirectory & "skin/templates/xml.log"))
-            objStream.WriteLine(xmllog)
-            objStream.Close()
 
         End Sub
 

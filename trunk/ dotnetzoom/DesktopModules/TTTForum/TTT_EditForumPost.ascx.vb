@@ -112,7 +112,7 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             
 			If not context.Request.IsAuthenticated Then
-			Response.Redirect(FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _PortalSettings.activetab.TabId.ToString, "edit=control&def=Register"), True)
+                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&def=Register"), True)
 			end if
  
  
@@ -124,24 +124,24 @@ Namespace DotNetZoom
 					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
 					Select Case UserCSS.Skin
 					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					case "Stibnite"
-                            objLink.Text = "<link href=""" & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					case "Algues bleues"
-                            objLink.Text = "<link href=""" & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case "Stibnite"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case "Algues bleues"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case Else
+                            objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                    End Select
+                Else
+                    objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                End If
+                objCSS.Controls.Add(objLink)
             End If
 
-	        If Zconfig Is Nothing Then
+            If Zconfig Is Nothing Then
                 Zconfig = ForumConfig.GetForumConfig(ModuleId)
             End If
-	
+
 
             _tabid = TabId
 
@@ -174,59 +174,62 @@ Namespace DotNetZoom
 
             RteDeskTop.Visible = (_author.UseRichText = True)
             txtMessage.Visible = (_author.UseRichText = False)
-			
-			Dim ZuserID As Integer = Int16.Parse(COntext.User.Identity.Name)
+
+            Dim ZuserID As Integer = Int16.Parse(COntext.User.Identity.Name)
             Dim _UserURL As String = _portalSettings.UploadDirectory
-		   _UserUrl = _UserURL & "userimage/" & ZuserID.ToString
+            _UserURL = _UserURL & "userimage/" & ZuserID.ToString
 
-			Session("FCKeditor:UserFilesPath") = _UserURL & "/"
-	            
-			If Request.IsAuthenticated = false Then
-        	FCKeditor1.LinkBrowser = False
-			else
-	        Dim objAdmin As New AdminDB()
-	        Dim tmpUploadRoles As String = ""
-    	    If Not CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String) Is Nothing Then
-            tmpUploadRoles = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String)
-        	End If
-	        FCKeditor1.LinkBrowser = PortalSecurity.IsInRoles(tmpUploadRoles)
-			End If
-				' set the css for the editor if it exist
-			If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) then
-				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
-				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-				FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
-			End If
-
-			
-			
-			FCKeditor1.width = unit.pixel(700)
-			FCKeditor1.Height = unit.pixel(500)
-			if GetLanguage("fckeditor_language") <> "auto"
-			FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-			FCKeditor1.AutoDetectLanguage = False
-			end if
+            Session("FCKeditor:UserFilesPath") = _UserURL & "/"
             FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+
+            If Request.IsAuthenticated = False Then
+                FCKeditor1.LinkBrowserURL = ""
+            Else
+                Dim objAdmin As New AdminDB()
+                Dim tmpUploadRoles As String = ""
+                If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+                    tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
+                End If
+                If Not PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                    FCKeditor1.LinkBrowserURL = ""
+                End If
+            End If
+
+            ' set the css for the editor if it exist
+            If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) Then
+                FCKeditor1.SkinPath = _portalSettings.UploadDirectory & "skin/fckeditor/"
+                FCKeditor1.EditorAreaCSS = _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
+                FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
+                ' FCKeditor1.TemplatesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml"
+            End If
+
+
+
+            FCKeditor1.width = unit.pixel(700)
+            FCKeditor1.Height = unit.pixel(500)
+            If GetLanguage("fckeditor_language") <> "auto" Then
+                FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
+                FCKeditor1.AutoDetectLanguage = False
+            End If
             FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
 
 
-	   Dim _UserphysicalPath As String = Server.MapPath(_UserURL)		
-	       If Not Directory.Exists(_UserphysicalPath) Then
-               Try
-                IO.Directory.CreateDirectory(_UserphysicalPath)
+            Dim _UserphysicalPath As String = Server.MapPath(_UserURL)
+            If Not Directory.Exists(_UserphysicalPath) Then
+                Try
+                    IO.Directory.CreateDirectory(_UserphysicalPath)
                 Catch exc As System.Exception
                 End Try
             End If
-			
-			
-			
-			
+
+
+
+
             If Page.IsPostBack = False Then
                 If ZforumID = 0 Then
                     Me.pnlForumSelect.Visible = True
                     Me.pnlNewPost.Visible = False
-                    Me.lblInfo.Text = GetLanguage("F_NeedF") 
+                    Me.lblInfo.Text = GetLanguage("F_NeedF")
                     'BindForumGroup()
                 Else
                     GeneratePost()
@@ -235,34 +238,34 @@ Namespace DotNetZoom
 
                 pnlNotify.Visible = Zconfig.MailNotification
                 pnlGetSmiley.Visible = (Zconfig.AvatarModuleID > 0)
-	           ' Store URL Referrer to return to portal
-			                   
+                ' Store URL Referrer to return to portal
+
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
                     ViewState("UrlReferrer") = ""
                 End If
 
-           
+
             End If
-			
-			
+
+
             Dim ParentID As String
             If _author.UseRichText = True Then
-                pnlGetSmiley.Visible = false
+                pnlGetSmiley.Visible = False
             Else
                 ParentID = Server.HtmlEncode(txtMessage.ClientID)
             End If
-            lblScript.Text = "<a href=""javascript:OpenNewWindow('" + ParentID + "&mid=" + ModuleId.ToString + "') "">" 
-       
+            lblScript.Text = "<a href=""javascript:OpenNewWindow('" + ParentID + "&mid=" + ModuleId.ToString + "') "">"
 
-			If TxtIcone.Text <> ""
-		  	myHtmlImage.ImageUrl = TxtIcone.Text
-		   	myHtmlImage.AlternateText = TxtIcone.Text
-	   		myHtmlImage.ToolTip = TxtIcone.Text
-			MyHtmlImage.Visible = True
-			else
-                MyHtmlImage.ImageUrl = "~/images/1x1.gif"
+
+            If txticone.Text <> "" Then
+                MyHtmlImage.ImageUrl = txticone.Text
+                MyHtmlImage.AlternateText = txticone.Text
+                MyHtmlImage.ToolTip = txticone.Text
+                MyHtmlImage.Visible = True
+            Else
+                MyHtmlImage.ImageUrl = glbPath & "images/1x1.gif"
 		   	myHtmlImage.AlternateText = "*"
 	   		myHtmlImage.ToolTip = "*"
 			MyHtmlImage.Visible = True
@@ -425,7 +428,7 @@ Namespace DotNetZoom
 			Dim forumInfo As ForumItemInfo = ForumItemInfo.GetForumInfo(ZforumID)
 			If forumInfo.IsActive and not forumInfo.IsPrivate Then
 			' Make new RSS Feed here
-			Dim RSSURL As String = AddHTTP(GetDomainName(Request)) &  GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                        Dim RSSURL As String = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
 			Dim dr As SqlDataReader = dbForum.TTTForum_GetThreads(ZforumID, 20, 0, RSSURL)
 			CreateForumRSS(dr, "Subject", "LastPostAlias", "URLField", "DateLastPost", forumInfo.name & " " & forumInfo.Description, Request.MapPath(_portalSettings.UploadDirectory) & "forum" & ZforumID.ToString & ".xml")
 			dr.Close()
@@ -434,7 +437,7 @@ Namespace DotNetZoom
   
 			
 			
-			Dim strURL As String = FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, forumid=" & ZforumID & "&scope=thread)
+                    Dim strURL As String = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, forumid = " & ZforumID & " & scope = thread)
             Response.Redirect(strURL)
             	
 			
@@ -587,7 +590,7 @@ Namespace DotNetZoom
 
             If _isModerated AndAlso Not _isTrusted Then
                 _emailType = ForumEmail.ForumEmailType.PostModerate
-                _URL = AddHTTP(GetDomainName(Request)) &  GetDocument() & "?tabid=" & _tabid '& "&scope=moderateforum&forumpage=0"
+                _URL = GetFullDocument() & "?tabid=" & _tabid '& "&scope=moderateforum&forumpage=0"
                 If Zconfig.MailNotification Then SendForumMail(_newPostID, _URL, _emailType)
 
                 Me.pnlNewPost.Visible = False
@@ -604,7 +607,7 @@ Namespace DotNetZoom
 	
 				If _forumInfo.IsActive and not _forumInfo.IsPrivate Then
 				' Make new RSS Feed here
-				Dim RSSURL As String = AddHTTP(GetDomainName(Request)) &  GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                    Dim RSSURL As String = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
 	 			Dim dr As SqlDataReader = dbForum.TTTForum_GetThreads(ZforumID, 20, 0, RSSURL)
 				CreateForumRSS(dr, "Subject", "LastPostAlias", "URLField", "DateLastPost",  _forumInfo.name & " " & _forumInfo.Description, Request.MapPath(_portalSettings.UploadDirectory) & "forum" & ZforumID.ToString & ".xml")
 				dr.Close()
@@ -619,15 +622,15 @@ Namespace DotNetZoom
             Dim returnString As String
 
             If action = "new" Then
-                returnString = AddHTTP(GetDomainName(Request)) & GetDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=post&threadid=" & PostID.ToString
+                returnString = GetFullDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=post&threadid=" & PostID.ToString
             ElseIf action = "edit" OrElse action = "delete" Then
                 returnString = CType(ViewState("UrlReferrer"), String)
             Else ' for reply & quote
                 Dim pageCount As Double = Math.Floor((ForumDB.TTTForum_GetThreadRepliesCount(_threadid)) / Zconfig.PostsPerPage) + 1
                 If pageCount > 1 Then
-                    returnString = AddHTTP(GetDomainName(Request)) & GetDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=post&threadid=" & _threadid & "&threadpage=" & pageCount.ToString
+                    returnString = GetFullDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=post&threadid=" & _threadid & "&threadpage=" & pageCount.ToString
                 Else
-                    returnString = AddHTTP(GetDomainName(Request)) & GetDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=post&threadid=" & _threadid.ToString
+                    returnString = GetFullDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=post&threadid=" & _threadid.ToString
                 End If
             End If
 
@@ -676,7 +679,7 @@ Namespace DotNetZoom
 
         Private Sub btnBackForum_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnBackForum.Click
             ' Redirect back to the forum thread page
-            Dim strURL As String = "~" & GetDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=thread"
+            Dim strURL As String = GetFullDocument() & "?forumid=" & ZforumID & "&tabid=" & _tabid & "&scope=thread"
             Response.Redirect(strURL)
         End Sub
 

@@ -19,7 +19,7 @@ Public Class TTT_EditGallery
 
 	Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
 	
-    Dim _editPage As String = "~/DeskTopModules/TTTGallery/TTT_GalleryEditAlbum.ascx"
+    Dim _editPage As String = glbPath & "DeskTopModules/TTTGallery/TTT_GalleryEditAlbum.ascx"
 
     Public Enum GalleryEditType
         GalleryAlbum
@@ -50,13 +50,13 @@ Public Class TTT_EditGallery
             Dim editType As Integer = CInt(Request.Params("editpage"))
             Select Case editType
                 Case GalleryEditType.GalleryEditAlbum
-                    _editPage = "~/DeskTopModules/TTTGallery/TTT_GalleryEditAlbum.ascx"
+                    _editPage = glbPath & "DeskTopModules/TTTGallery/TTT_GalleryEditAlbum.ascx"
                     Title1.DisplayHelp = "DisplayHelp_EditAlbum"
                 Case GalleryEditType.GalleryEditFile
-                    _editPage = "~/DeskTopModules/TTTGallery/TTT_GalleryEditFile.ascx"
+                    _editPage = glbPath & "DeskTopModules/TTTGallery/TTT_GalleryEditFile.ascx"
                     Title1.DisplayHelp = "DisplayHelp_EditFile"
                 Case GalleryEditType.GalleryAdmin
-                    _editPage = "~/DeskTopModules/TTTGallery/TTT_GalleryAdmin.ascx"
+                    _editPage = glbPath & "DeskTopModules/TTTGallery/TTT_GalleryAdmin.ascx"
                     Title1.DisplayHelp = "DisplayHelp_GalleryAdmin"
             End Select
         End If

@@ -342,18 +342,67 @@ Namespace DotNetZoom
         End Function
 
 		
-        Public Sub UpdatePortalInfo(ByVal PortalId As Integer, ByVal PortalName As String, ByVal PortalAlias As String, Optional ByVal LogoFile As String = "", Optional ByVal FooterText As String = "", Optional ByVal UserRegistration As Integer = 0, Optional ByVal BannerAdvertising As Integer = 0, Optional ByVal Currency As String = "", Optional ByVal AdministratorId As Integer = -1, Optional ByVal ExpiryDate As String = "", Optional ByVal HostFee As Double = 0, Optional ByVal HostSpace As Double = 0, Optional ByVal PaymentProcessor As String = "", Optional ByVal ProcessorUserId As String = "", Optional ByVal ProcessorPassword As String = "", Optional ByVal Description As String = "", Optional ByVal KeyWords As String = "", Optional ByVal BackgroundFile As String = "", Optional ByVal SiteLogHistory As Integer = -1, Optional ByVal TimeZone As Integer = 0)
+        Public Sub UpdatePortalInfo(ByVal PortalId As Integer, ByVal PortalName As String, ByVal PortalAlias As String, Optional ByVal LogoFile As String = "", Optional ByVal FooterText As String = "", Optional ByVal UserRegistration As Integer = 0, Optional ByVal BannerAdvertising As Integer = 0, Optional ByVal Currency As String = "", Optional ByVal AdministratorId As Integer = -1, Optional ByVal ExpiryDate As String = "", Optional ByVal HostFee As Double = 0, Optional ByVal HostSpace As Double = 0, Optional ByVal PaymentProcessor As String = "", Optional ByVal ProcessorUserId As String = "", Optional ByVal ProcessorPassword As String = "", Optional ByVal Description As String = "", Optional ByVal KeyWords As String = "", Optional ByVal BackgroundFile As String = "", Optional ByVal SiteLogHistory As Integer = -1, Optional ByVal TimeZone As Integer = 0, Optional ByVal SSL As Boolean = False)
             Dim myConnection As New SqlConnection(GetDBConnectionString)
 
             ' Generate Command Object based on Method
             Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
                 CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {PortalId, PortalName, PortalAlias, IIf(LogoFile <> "", LogoFile, SqlInt16.Null), IIf(FooterText <> "", FooterText, SqlInt16.Null), UserRegistration, BannerAdvertising, IIf(Currency <> "", Currency, SqlInt16.Null), IIf(AdministratorId <> -1, AdministratorId, SqlInt16.Null), IIf(ExpiryDate <> "", ExpiryDate, SqlInt16.Null), HostFee, HostSpace, PaymentProcessor, ProcessorUserId, ProcessorPassword, Description, KeyWords, BackgroundFile, IIf(SiteLogHistory <> -1, SiteLogHistory, SqlInt16.Null), TimeZone})
+                New Object() {PortalId, PortalName, PortalAlias, IIf(LogoFile <> "", LogoFile, SqlInt16.Null), IIf(FooterText <> "", FooterText, SqlInt16.Null), UserRegistration, BannerAdvertising, IIf(Currency <> "", Currency, SqlInt16.Null), IIf(AdministratorId <> -1, AdministratorId, SqlInt16.Null), IIf(ExpiryDate <> "", ExpiryDate, SqlInt16.Null), HostFee, HostSpace, PaymentProcessor, ProcessorUserId, ProcessorPassword, Description, KeyWords, BackgroundFile, IIf(SiteLogHistory <> -1, SiteLogHistory, SqlInt16.Null), TimeZone, SSL})
 
             myConnection.Open()
             myCommand.ExecuteNonQuery()
             myConnection.Close()
         End Sub
+
+
+        Public Function GetPortalAlias(ByVal PortalID As Integer) As SqlDataReader
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {PortalID})
+
+            ' Execute the command
+            myConnection.Open()
+            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+
+            ' Return the datareader
+            Return result
+        End Function
+
+        Public Sub DeletePortalAlias(ByVal PortalAlias As String)
+            ClearHostCache()
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {PortalAlias})
+
+            myConnection.Open()
+            myCommand.ExecuteNonQuery()
+            myConnection.Close()
+        End Sub
+
+
+
+        Public Sub UpdatePortalAlias(ByVal PortalId As Integer, ByVal PortalAlias As String, Optional ByVal SubPortal As Boolean = False, Optional ByVal ssl As Boolean = False)
+            ClearHostCache()
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {PortalId, PortalAlias, SubPortal, ssl})
+
+            myConnection.Open()
+            myCommand.ExecuteNonQuery()
+            myConnection.Close()
+        End Sub
+
+
 
         Public Sub DeletePortalInfo(ByVal PortalId As Integer)
             Dim myConnection As New SqlConnection(GetDBConnectionString)

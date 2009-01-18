@@ -122,25 +122,29 @@ Namespace DotNetZoom
             Dim _UserURL As String = _portalSettings.UploadDirectory
 		   		_UserUrl = _UserURL & "userimage/" & ZuserID.ToString
 				Session("FCKeditor:UserFilesPath") = _UserURL & "/"
-	            If Request.IsAuthenticated = false Then
-        	    FCKeditor1.LinkBrowser = False
-				else
-	            Dim objAdmin As New AdminDB()
-	            Dim tmpUploadRoles As String = ""
-    	        If Not CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String) Is Nothing Then
-                tmpUploadRoles = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String)
-        	    End If
-	            FCKeditor1.LinkBrowser = PortalSecurity.IsInRoles(tmpUploadRoles)
-				End If
-				FCKeditor1.width = unit.pixel(700)
+            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+
+            If Request.IsAuthenticated = False Then
+                FCKeditor1.LinkBrowserURL = ""
+            Else
+                Dim objAdmin As New AdminDB()
+                Dim tmpUploadRoles As String = ""
+                If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+                    tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
+                End If
+                If Not PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                    FCKeditor1.LinkBrowserURL = ""
+                End If
+            End If
+
+            FCKeditor1.Width = Unit.Pixel(700)
 				FCKeditor1.Height = unit.pixel(500)
 				if GetLanguage("fckeditor_language") <> "auto"
 				FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
 				FCKeditor1.AutoDetectLanguage = False
 				end if
-            	FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-            	FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-
+            FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+            Dim CSSFileName As String = ""
 				CSSFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css")
 				If File.Exists(CSSFileName) then
             	FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
@@ -440,9 +444,9 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If Request.Params("edit") <> "" Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=3&def=PrivateMessages&ReplyId=" & e.CommandArgument)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=3&def=PrivateMessages&ReplyId=" & e.CommandArgument)
             Else
-                Response.Redirect("~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=3&ReplyId=" & e.CommandArgument)
+                Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=3&ReplyId=" & e.CommandArgument)
             End If
 
         End Sub
@@ -456,15 +460,15 @@ Namespace DotNetZoom
 
             If e.CommandName = "InboxDelete" Then
                 If Request.Params("edit") <> "" Then
-                    Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=1")
+                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=1")
                 Else
-                    Response.Redirect("~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=1")
+                    Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=1")
                 End If
             Else
                 If Request.Params("edit") <> "" Then
-                    Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=2")
+                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=2")
                 Else
-                    Response.Redirect("~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=2")
+                    Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=2")
                 End If
             End If
 
@@ -478,9 +482,9 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If Request.Params("edit") <> "" Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=1")
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=1")
             Else
-                Response.Redirect("~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=1")
+                Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=1")
             End If
 
         End Sub
@@ -537,64 +541,64 @@ Namespace DotNetZoom
 
             Dim UserId As Integer = objMessages.GetUserId(_portalSettings.PortalId, txtReceipient.Text)
 
-	
+
             If Len(txtSubject.Text) = 0 _
             OrElse Len(Me.FCKeditor1.value) = 0 Then
                 lblErrMsg.Text = GetLanguage("UO_Need_Object") + "<br>"
                 lblErrMsg.Visible = True
-				SetFckEditor()
+                SetFckEditor()
                 Return
             End If
 
 
-            
+
             If UserId = -1 Then
                 lblErrMsg.Text = GetLanguage("UO_No_User") + "<br>"
                 lblErrMsg.Visible = True
-				SetFckEditor()
+                SetFckEditor()
                 Return
             Else
-			    FCKeditor1.value = FormatDisableHtml(FCKeditor1.value)
+                FCKeditor1.value = FormatDisableHtml(FCKeditor1.value)
                 objMessages.AddPrivateMessage((New Utility).GetUserID(), UserId, txtSubject.Text, FCKeditor1.value)
-            	SendMailNotification((New Utility).GetUserID(), UserId, txtSubject.Text)
-			End If
+                SendMailNotification((New Utility).GetUserID(), UserId, txtSubject.Text)
+            End If
 
             If Request.Params("edit") <> "" Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=1")
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=PrivateMessages&pmsTabId=1")
             Else
-                Response.Redirect("~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=1")
+                Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&pmsTabId=1")
             End If
 
         End Sub
-		
-		Private Sub SendMailNotification(ByVal SenderId As Integer, ByVal ReceiverId As Integer, ByVal Subject As String) 
-		Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		If portalSettings.GetSiteSettings(_portalSettings.PortalID)("PMSMailNotice") <> "NO" then
-		Dim StrBody As String
-        Dim objUser As New UsersDB()
-		Dim Sendername As String = ""
-    
-	    Dim drI As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, SenderID)
-		    If drI.Read() then
-			SenderName = drI("Username")
-			end If
-		drI.Close()
-		
-        Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, ReceiverId)
-		    If dr.Read() Then
-			 strBody = GetLanguage("UO_Message_Notice")
-			 strBody = Replace(StrBody, "{FullName}", dr("FullName"))
-			 strBody = Replace(StrBody, "{SenderName}", SenderName)
-			 strBody = Replace(StrBody, "{MessageURL}", GetPortalDomainName(PortalAlias, Request) & getdocument() & "?edit=control&pmsTabId=1&def=PrivateMessages")
-             strBody = vbCrLf & strBody & vbCrLf
-			 Dim StringObject as string = ProcessLanguage(GetLanguage("UO_Notice_Object"))
-             SendNotification(_portalSettings.Email, dr("Email").ToString, "", StringObject , strBody)
-            End If
-			   dr.Close()
-		End if
-		End Sub
 
-		
+        Private Sub SendMailNotification(ByVal SenderId As Integer, ByVal ReceiverId As Integer, ByVal Subject As String)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If portalSettings.GetSiteSettings(_portalSettings.PortalID)("PMSMailNotice") <> "NO" Then
+                Dim StrBody As String
+                Dim objUser As New UsersDB()
+                Dim Sendername As String = ""
+
+                Dim drI As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, SenderID)
+                If drI.Read() Then
+                    SenderName = drI("Username")
+                End If
+                drI.Close()
+
+                Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, ReceiverId)
+                If dr.Read() Then
+                    strBody = GetLanguage("UO_Message_Notice")
+                    strBody = Replace(StrBody, "{FullName}", dr("FullName"))
+                    strBody = Replace(StrBody, "{SenderName}", SenderName)
+                    StrBody = Replace(StrBody, "{MessageURL}", GetFullDocument() & "?edit=control&pmsTabId=1&def=PrivateMessages")
+                    strBody = vbCrLf & strBody & vbCrLf
+                    Dim StringObject As String = ProcessLanguage(GetLanguage("UO_Notice_Object"))
+                    SendNotification(_portalSettings.Email, dr("Email").ToString, "", StringObject, strBody)
+                End If
+                dr.Close()
+            End If
+        End Sub
+
+
         Private Sub btnFindUser_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFindUser.Click
             pnlFindUser.Visible = True
 
@@ -617,13 +621,13 @@ Namespace DotNetZoom
             If drpResults.Items.Count = 0 Then
                 drpResults.Items.Add(New ListItem(GetLanguage("UO_NotFound"), ""))
             End If
-			SetFckEditor()
+            SetFckEditor()
         End Sub
 
         Private Sub btnSelect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSelect.Click
             txtReceipient.Text = drpResults.SelectedItem.Value
             pnlFindUser.Visible = False
-			SetFckEditor()
+            SetFckEditor()
         End Sub
 
         Public Function GetToolTip(ByVal MessageRead As Boolean) As String
@@ -633,19 +637,19 @@ Namespace DotNetZoom
                 Return GetLanguage("UO_NewMessage")
             End If
         End Function
-		
-		
+
+
         Public Function GetImageStyle(ByVal MessageRead As Boolean) As String
             If MessageRead Then
-                Return "style=""background: url('/images/uostrip.gif') no-repeat; background-position: 0px -227px;"""
+                Return "style=""background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -227px;"""
             Else
-                Return "style=""background: url('/images/uostrip.gif') no-repeat; background-position: 0px -243px;"""
+                Return "style=""background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -243px;"""
             End If
         End Function
 
- 
+
         Protected Function GetUserInfoLink(ByVal userID As String) As String
-            Return "~" & GetDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
+            Return GetFullDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
         End Function
 
         Protected Function GetUserInfoTooltip(ByVal userName As String) As String

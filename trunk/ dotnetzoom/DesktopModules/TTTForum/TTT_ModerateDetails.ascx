@@ -47,7 +47,7 @@
                                         <table width="100%" cellpadding="0" cellspacing="0" border="0" runat="server">
                                             <tr>
                                                 <td class="TTTRow" width="25" height="25" align="center">
-                                                    <asp:ImageButton id="btnRemoveUser" ToolTip='<%# DotNetZoom.getlanguage("F_Remove") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Remove") %>' OnClick="RemoveUser_Click" ImageUrl="~/images/lt.gif" runat="server" CommandName="Remove" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                                    <asp:ImageButton id="btnRemoveUser" ToolTip='<%# DotNetZoom.getlanguage("F_Remove") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Remove") %>' OnClick="RemoveUser_Click" ImageURL="~/images/lt.gif" runat="server" CommandName="Remove" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
                                                 </td>
                                                 <td class="TTTRow" width="200" height="25">
                                                     <asp:HyperLink NavigateUrl='<%# FormatUserURL(DataBinder.Eval(Container.DataItem,"UserId")) %>' runat="server">
@@ -55,7 +55,7 @@
                                                     </asp:HyperLink>
                                                 </td>
                                                 <td class="TTTRow" height="25" width="25" align="center">
-                                                    <asp:ImageButton id="btnExpand" ToolTip='<%# DotNetZoom.getlanguage("F_SeeDetails") %>' AlternateText='<%# DotNetZoom.getlanguage("F_SeeDetails") %>' ImageUrl="~/images/plus2.gif" runat="server" CommandName="expand" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                                    <asp:ImageButton id="btnExpand" ToolTip='<%# DotNetZoom.getlanguage("F_SeeDetails") %>' AlternateText='<%# DotNetZoom.getlanguage("F_SeeDetails") %>' ImageURL="~/images/plus2.gif" runat="server" CommandName="expand" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
                                                 </td>
                                             </tr>
                                         </table>
@@ -64,7 +64,7 @@
                                         <table width="100%" cellpadding="0" cellspacing="0" border="0" runat="server">
                                             <tr>
                                                 <td class="TTTRow" width="25" height="25" align="center">
-                                                    <asp:ImageButton id="Imagebutton5" ToolTip='<%# DotNetZoom.getlanguage("F_Remove") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Remove") %>' OnClick="RemoveUser_Click" ImageUrl="~/images/lt.gif" runat="server" CommandName="Remove" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                                    <asp:ImageButton id="Imagebutton5" ToolTip='<%# DotNetZoom.getlanguage("F_Remove") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Remove") %>' OnClick="RemoveUser_Click" ImageURL="~/images/lt.gif" runat="server" CommandName="Remove" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
                                                 </td>
                                                 <td class="TTTRow" width="200" height="25">
                                                     <asp:HyperLink NavigateUrl='<%# FormatUserURL(DataBinder.Eval(Container.DataItem,"UserId")) %>' runat="server">
@@ -72,7 +72,7 @@
                                                     </asp:HyperLink>
                                                 </td>
                                                 <td class="TTTRow" height="25" width="25" align="Right">
-                                                    <asp:ImageButton id="btnCollapse" ToolTip='<%# DotNetZoom.getlanguage("F_Close") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Close") %>' ImageUrl="~/images/minus2.gif" runat="server" CommandName="collapse" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
+                                                    <asp:ImageButton id="btnCollapse" ToolTip='<%# DotNetZoom.getlanguage("F_Close") %>' AlternateText='<%# DotNetZoom.getlanguage("F_Close") %>' ImageURL="~/images/minus2.gif" runat="server" CommandName="collapse" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "UserID"), String) %>' BorderWidth="0" BorderStyle="none"/>
                                                 </td>
                                             </tr>
                                             <tr>

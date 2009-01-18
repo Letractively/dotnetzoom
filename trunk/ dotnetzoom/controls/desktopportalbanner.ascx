@@ -34,7 +34,7 @@
 </asp:TableCell>
 <asp:TableCell ID="cell2" Height="30" VerticalAlign="Bottom" HorizontalAlign="right" Wrap="false">
 <asp:Hyperlink Visible="False" id="LanguageLink" runat="server" EnableViewState="false">
-<asp:Image EnableViewState="false" ID="Image1" ImageUrl="~/images/icon_language_16px.gif" BorderWidth="0" AlternateText="*" runat="server" /></asp:Hyperlink>
+<asp:Image EnableViewState="false" ID="Image1" ImageURL="~/images/icon_language_16px.gif" BorderWidth="0" AlternateText="*" runat="server" /></asp:Hyperlink>
 &nbsp;<mail:check id="check" runat="server" EnableViewState="false"></mail:check>
 <asp:hyperlink id="hypUser" runat="server" EnableViewState="false" CssClass="SelectedTab">User</asp:hyperlink>
 &nbsp;<asp:literal id="hypHelp" runat="server" EnableViewState="false">Help</asp:literal>
@@ -56,7 +56,7 @@
 	    <span class="ItemTitle"><%= DotNetZoom.GetLanguage("admin_add_module")%></span>
 	   	</td>
 	   	<td align="right" valign="middle"><a title="<%= DotNetZoom.GetLanguage("admin_menu_hide")%>" href="javascript:toggleBox('signin',0)" >
-		<img height="14" width="14" border="0" src="images/1x1.gif" Alt="ca" title="<%= DotNetZoom.GetLanguage("admin_menu_hide")%>" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -333px;"></a>
+		<img height="14" width="14" border="0" src="/images/1x1.gif" Alt="ca" title="<%= DotNetZoom.GetLanguage("admin_menu_hide")%>" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -333px;"></a>
 	   	</td>
 	   	</tr>
 		</tbody>
@@ -67,7 +67,7 @@
 	     <asp:TemplateColumn ItemStyle-CssClass="OtherTabs" ItemStyle-Width="20">
             <ItemTemplate>
                 <asp:HyperLink EnableViewState="false" style="CURSOR: help" NavigateUrl='<%# FormatModuleURL( "mdi", DataBinder.Eval(Container.DataItem,"ModuleDefID")) %>' Visible="true" runat="server" ID="Hyperlink1">
-                    <asp:Image EnableViewState="false" height="12" width="12" onmouseover='<%# ReturnToolTip( DataBinder.Eval(Container.DataItem,"Description"))%>' style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -362px;" ImageUrl="~/images/1x1.gif" AlternateText='<%# DotNetZoom.GetLanguage("module_info") %>'  tooltip='<%# DotNetZoom.GetLanguage("module_info") &  DataBinder.Eval(Container.DataItem,"FriendlyName") %>' Visible="true" runat="server" ID="Hyperlink1Image" />
+                    <asp:Image EnableViewState="false" height="12" width="12" onmouseover='<%# ReturnToolTip( DataBinder.Eval(Container.DataItem,"Description"))%>' style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -362px;" ImageURL="~/images/1x1.gif" AlternateText='<%# DotNetZoom.GetLanguage("module_info") %>'  tooltip='<%# DotNetZoom.GetLanguage("module_info") &  DataBinder.Eval(Container.DataItem,"FriendlyName") %>' Visible="true" runat="server" ID="Hyperlink1Image" />
                 </asp:HyperLink>
             </ItemTemplate>
 		 </asp:TemplateColumn>
@@ -89,7 +89,7 @@
 <tr>
 <td align="right" width="350px">
 <a title="<%= DotNetZoom.GetLanguage("admin_hide_info")%>" href="javascript:toggleBox('admin',0)" >
-<img height="14" width="14" border="0" src="images/1x1.gif" Alt="ca"  title="<%= DotNetZoom.GetLanguage("admin_hide_info")%>" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -333px;"></a>
+<img height="14" width="14" border="0" src="/images/1x1.gif" Alt="ca"  title="<%= DotNetZoom.GetLanguage("admin_hide_info")%>" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -333px;"></a>
 </td>
 </tr>
 <tr>

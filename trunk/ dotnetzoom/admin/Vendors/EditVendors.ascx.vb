@@ -122,25 +122,25 @@ Namespace DotNetZoom
 		ClassificationsEdit.Visible = true
 		end if
 		else
-    	Response.Redirect("~" & GetDocument() & "?edit="  & _portalSettings.ActiveTab.TabId &    "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
- 		end if
-		else
-		pnlOptions.Visible = false
-		pnlContent.Visible = True
-		end if
-		
+                    Response.Redirect(GetFullDocument() & "?edit=" & _portalSettings.ActiveTab.TabId & "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+                End If
+            Else
+                pnlOptions.Visible = False
+                pnlContent.Visible = True
+            End If
 
-		
-        Dim objAdmin As New AdminDB()
-		
-		If Page.IsPostBack = False Then
-		Dim TempAuthLanguage As String = ""
-		If portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey("languageauth") then
-		TempAuthLanguage = portalSettings.GetSiteSettings(_portalSettings.PortalID)("languageauth")
-		else
-		TempAuthLanguage = GetLanguage("N") & ";"
-		objadmin.UpdatePortalSetting(_PortalSettings.PortalId, "languageauth", TempAuthLanguage)
-		end if 
+
+
+            Dim objAdmin As New AdminDB()
+
+            If Page.IsPostBack = False Then
+                Dim TempAuthLanguage As String = ""
+                If portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey("languageauth") Then
+                    TempAuthLanguage = portalSettings.GetSiteSettings(_portalSettings.PortalID)("languageauth")
+                Else
+                    TempAuthLanguage = GetLanguage("N") & ";"
+                    objAdmin.UpdatePortalSetting(_portalSettings.PortalId, "languageauth", TempAuthLanguage)
+                End If
 
                 ' Language to Use
                 Dim HashL As Hashtable = objAdmin.GetAvailablelanguage
@@ -154,23 +154,23 @@ Namespace DotNetZoom
                 Next de
 
 
-	 	If Not ddlLanguage.Items.FindByText(GetLanguage("language")) Is Nothing then
-			ddlLanguage.Items.FindByText(GetLanguage("language")).Selected = True
-		else 
-       		ddlLanguage.SelectedIndex = 0     
-		End If
-				
-		If ddlLanguage.Items.Count = 1 then
-		   ddlLanguage.visible = False
-		else
-		   ddlLanguage.visible = True
-		end if
-		end if
-		' end language
-         Dim blnBanner As Boolean = False
-         Dim blnSignup As Boolean = False
+                If Not ddlLanguage.Items.FindByText(GetLanguage("language")) Is Nothing Then
+                    ddlLanguage.Items.FindByText(GetLanguage("language")).Selected = True
+                Else
+                    ddlLanguage.SelectedIndex = 0
+                End If
 
-         Dim dr As SqlDataReader
+                If ddlLanguage.Items.Count = 1 Then
+                    ddlLanguage.visible = False
+                Else
+                    ddlLanguage.visible = True
+                End If
+            End If
+            ' end language
+            Dim blnBanner As Boolean = False
+            Dim blnSignup As Boolean = False
+
+            Dim dr As SqlDataReader
 
 
             If IsNumeric(Request.Params("VendorID")) Then
@@ -184,9 +184,9 @@ Namespace DotNetZoom
             If Not Request.Params("banner") Is Nothing Then
                 blnBanner = True
             End If
-           
+
             If Page.IsPostBack = False Then
-				ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
                 Address1.ModuleId = -2
                 Address1.StartTabIndex = 4
 
@@ -195,7 +195,7 @@ Namespace DotNetZoom
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
 
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=" , "")
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
                 Dim FileList As ArrayList
                 If Not (Request.Params("hostpage") Is Nothing) Then
                     FileList = GetFileList(, glbImageFileTypes)
@@ -205,12 +205,12 @@ Namespace DotNetZoom
                 cboLogo.DataSource = FileList
                 cboLogo.DataBind()
 
-				grdClassifications.DataSource =  objVendor.GetVendorClassifications(VendorID)
-				grdClassifications.DataBind()
-				
-				grdEditClassifications.DataSource =  objVendor.GetVendorClassifications(-1)
-				grdEditClassifications.DataBind() 
-				
+                grdClassifications.DataSource = objVendor.GetVendorClassifications(VendorID)
+                grdClassifications.DataBind()
+
+                grdEditClassifications.DataSource = objVendor.GetVendorClassifications(-1)
+                grdEditClassifications.DataBind()
+
                 If VendorID <> -1 Then
 
                     dr = objVendor.GetSingleVendor(VendorID)
@@ -239,7 +239,7 @@ Namespace DotNetZoom
                         lblViews.Text = dr("Views").ToString
                         lblClickThroughs.Text = dr("ClickThroughs").ToString
                     End If
-					dr.Close()
+                    dr.Close()
                     chkLog.Checked = False
                     grdLog.Visible = False
 
@@ -252,7 +252,7 @@ Namespace DotNetZoom
                     rowBanner2.Visible = False
                 End If
 
-                
+
                 txtInstructions.Text = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(ddlLanguage.SelectedItem.Value & "_instructions"), String)
                 Dim objUser As New UsersDB()
                 cboRoles.DataSource = objUser.GetPortalRoles(_portalSettings.PortalId, GetLanguage("N"))
@@ -280,18 +280,18 @@ Namespace DotNetZoom
                             lblInstructions.Text = txtInstructions.Text
                             lblInstructions.Visible = True
                         End If
-                        cmdUpdate.Text = GetLanguage("banner_register") 
+                        cmdUpdate.Text = GetLanguage("banner_register")
                     End If
 
                     If Not Request.UrlReferrer Is Nothing Then
-                       ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                        ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                     Else
                         ViewState("UrlReferrer") = ""
                     End If
                 Else
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId &  "&" & GetAdminPage()& "&filter=" & Request.Params("filter")
-                cmdUpdate.Text = GetLanguage("enregistrer")
-				End If
+                    ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&filter=" & Request.Params("filter")
+                    cmdUpdate.Text = GetLanguage("enregistrer")
+                End If
             End If
 
         End Sub
@@ -330,27 +330,27 @@ Namespace DotNetZoom
                 ' update vendor classifications
                 objVendor.DeleteVendorClassifications(VendorID)
 
-				
-			    Dim ItemCollection As DataGridItemCollection
-    	        Dim CurrentItem As DataGridItem
 
-	            ItemCollection = grdClassifications.Items
-				Dim ClsValue As Integer
-        	    For Each CurrentItem In ItemCollection
-            	    If CurrentItem.ItemType = ListItemType.AlternatingItem Or CurrentItem.ItemType = ListItemType.Item Then
-                	    Dim chkClassificationName As HtmlInputCheckBox
-                    	chkClassificationName = CType(CurrentItem.Cells(0).Controls(1), HtmlInputCheckBox)
-						ClsValue = Int32.Parse(chkClassificationName.Value)
-                    		If chkClassificationName.Checked Then
-								objVendor.AddVendorClassification(VendorID, ClsValue)
-                    		End If
-                	End If
-            	Next
+                Dim ItemCollection As DataGridItemCollection
+                Dim CurrentItem As DataGridItem
 
-				
-				
-				
-				
+                ItemCollection = grdClassifications.Items
+                Dim ClsValue As Integer
+                For Each CurrentItem In ItemCollection
+                    If CurrentItem.ItemType = ListItemType.AlternatingItem Or CurrentItem.ItemType = ListItemType.Item Then
+                        Dim chkClassificationName As HtmlInputCheckBox
+                        chkClassificationName = CType(CurrentItem.Cells(0).Controls(1), HtmlInputCheckBox)
+                        ClsValue = Int32.Parse(chkClassificationName.Value)
+                        If chkClassificationName.Checked Then
+                            objVendor.AddVendorClassification(VendorID, ClsValue)
+                        End If
+                    End If
+                Next
+
+
+
+
+
                 If cmdUpdate.Text = GetLanguage("banner_register") Then
                     Dim strBody As String = ""
                     strBody = strBody & GetLanguage("label_message_date") & ": " & ProcessLanguage("{date}") & vbCrLf & vbCrLf
@@ -368,14 +368,14 @@ Namespace DotNetZoom
                     strBody = strBody & GetLanguage("address_Email") & ": " & txtEmail.Text & vbCrLf
                     strBody = strBody & GetLanguage("address_WebSite") & ": " & txtWebsite.Text & vbCrLf
 
-                    SendNotification(txtEmail.Text, _portalSettings.Email, "", _portalSettings.PortalName & " " & GetLanguage("Vendor_request") , strBody)
+                    SendNotification(txtEmail.Text, _portalSettings.Email, "", _portalSettings.PortalName & " " & GetLanguage("Vendor_request"), strBody)
 
                     strBody = txtFirstName.Text & " " & txtLastName.Text & "," & vbCrLf & vbCrLf
                     strBody = strBody & GetLanguage("Vendor_ThankYou") & vbCrLf & vbCrLf
                     strBody = strBody & txtMessage.Text & vbCrLf & vbCrLf
                     strBody = strBody & _portalSettings.PortalName
 
-                    SendNotification(_portalSettings.Email, txtEmail.Text, "", " " & GetLanguage("Vendor_request") & " " & _portalSettings.PortalName , strBody)
+                    SendNotification(_portalSettings.Email, txtEmail.Text, "", " " & GetLanguage("Vendor_request") & " " & _portalSettings.PortalName, strBody)
 
                     If cboRoles.SelectedItem.Value <> "" Then
                         Response.Redirect("~/admin/Sales/PayPalSubscription.aspx?tabid=" & _portalSettings.ActiveTab.TabId & "&roleid=" & cboRoles.SelectedItem.Value, True)
@@ -405,7 +405,7 @@ Namespace DotNetZoom
 
         Private Sub cmdAddBanner_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdAddBanner.Click
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorID & "&def=Banner", True)
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorID & "&def=Banner", True)
         End Sub
 
         Private Sub cmdBack_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdBack.Click

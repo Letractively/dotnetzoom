@@ -213,7 +213,7 @@ Namespace DotNetZoom
 
         Public Sub EditForum_Click(ByVal Sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs)
             Dim forumID As Integer = Int32.Parse(CType(Sender, ImageButton).CommandArgument)
-            Dim strForumAdmin As String = "~" & GetDocument() & "?edit=control&editpage=" & TTT_EditForum.ForumEditType.ForumAdmin & "&mid=" & ZmoduleID & "&tabid=" & _portalSettings.ActiveTab.TabId & "&forumid=" & forumID
+            Dim strForumAdmin As String = GetFullDocument() & "?edit=control&editpage=" & TTT_EditForum.ForumEditType.ForumAdmin & "&mid=" & ZmoduleID & "&tabid=" & _portalSettings.ActiveTab.TabId & "&forumid=" & forumID
             If Not HttpContext.Current.Session("edititemindex") is nothing then
 			Response.Redirect(strForumAdmin + "&edititemindex=" + CType(HttpContext.Current.Session("edititemindex"), String))
 			end if

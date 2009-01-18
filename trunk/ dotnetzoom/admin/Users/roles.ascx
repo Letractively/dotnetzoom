@@ -7,14 +7,14 @@
         <asp:TemplateColumn ItemStyle-Width="20">
             <ItemTemplate>
                 <asp:HyperLink ToolTip='<%# DotNetZoom.GetLanguage("modifier")%>' NavigateUrl='<%# EditURL("RoleID",DataBinder.Eval(Container.DataItem,"RoleID")) %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1">
-                    <asp:Image ImageUrl="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image" />
+                    <asp:Image ImageURL="~/images/edit.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image" />
                 </asp:HyperLink>
             </ItemTemplate>
         </asp:TemplateColumn>
         <asp:TemplateColumn ItemStyle-Width="20">
             <ItemTemplate>
                 <asp:HyperLink ToolTip='<%# DotNetZoom.GetLanguage("modifier")%>' NavigateUrl='<%# EditURL("RoleID",DataBinder.Eval(Container.DataItem,"RoleID")) & "&def=User Roles" %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink2">
-                    <asp:Image ImageUrl="~/images/icon_users_16px.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier")%>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image2" />
+                    <asp:Image ImageURL="~/images/icon_users_16px.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier")%>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image2" />
                 </asp:HyperLink>
             </ItemTemplate>
         </asp:TemplateColumn>

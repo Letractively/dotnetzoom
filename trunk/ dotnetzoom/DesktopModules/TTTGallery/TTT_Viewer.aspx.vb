@@ -63,7 +63,8 @@ Namespace DotNetZoom
                     objCSS.Controls.Add(objLink)
             End If
 			
-			
+            MovePrevious.ImageUrl = glbPath & "images/lt.gif"
+            MoveNext.ImageUrl = glbPath & "images/rt.gif"
             Dim ModuleID As Integer = Int32.Parse(HttpContext.Current.Request("mid"))
 
             Zrequest = New GalleryViewerRequest(ModuleID)

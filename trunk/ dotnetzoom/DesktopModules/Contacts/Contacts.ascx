@@ -8,7 +8,7 @@
 <asp:TemplateColumn>
 <ItemTemplate>
 <asp:HyperLink NavigateUrl='<%# EditURL("ItemID",DataBinder.Eval(Container.DataItem,"ItemID")) %>' Visible="<%# IsEditable %>" runat="server">
-<asp:Image ImageUrl="~/images/edit.gif" AlterNateText="*" BorderWidth="0" ID="Image1" runat="server" />
+<asp:Image ImageURL="~/images/edit.gif" AlterNateText="*" BorderWidth="0" ID="Image1" runat="server" />
 </asp:HyperLink>
 </ItemTemplate>
 </asp:TemplateColumn>

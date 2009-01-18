@@ -10,7 +10,7 @@
 <asp:Image ID="imgIcon" AlternateText='<%# DataBinder.Eval(Container.DataItem,"AltText") %>' runat="server" ImageUrl='<%# FormatImage(DataBinder.Eval(Container.DataItem,"IconFile")) %>' Visible='<%# FormatImage(DataBinder.Eval(Container.DataItem,"IconFile")) <> "" %>'></asp:Image>
 </td><td>
 <asp:HyperLink id="editLink" NavigateUrl='<%# EditURL("ItemID",DataBinder.Eval(Container.DataItem,"ItemID")) %>' Visible="<%# IsEditable %>" runat="server">
-<asp:Image id="editLinkImage" ImageUrl="~/images/edit.gif" Visible="<%# IsEditable %>" AlternateText="Modifier" runat="server" />
+<asp:Image id="editLinkImage" ImageURL="~/images/edit.gif" Visible="<%# IsEditable %>" AlternateText="Modifier" runat="server" />
 </asp:HyperLink>
 <asp:Label id="lblTitle" runat="server" cssclass="ItemTitle" text='<%# DataBinder.Eval(Container.DataItem,"Title") %>'></asp:Label>
 </td></tr><tr><td>

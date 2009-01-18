@@ -109,7 +109,7 @@ Namespace DotNetZoom
 			UnregisterBtn.Text = GetLanguage("U_QUIT_site")
             ' Verify that the current user has access to this page
             If _portalSettings.UserRegistration = 0 And Request.IsAuthenticated = False Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
             End If
 
             If IsNumeric(Request.Params("Services")) Then
@@ -124,7 +124,7 @@ Namespace DotNetZoom
 
                 objUser.UpdateService(CType(Context.User.Identity.Name, Integer), RoleID, IIf(Not Request.Params("cancel") Is Nothing, True, False))
 
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Register", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Register", True)
 
             End If
 
@@ -184,9 +184,9 @@ Namespace DotNetZoom
             Address1.StartTabIndex = 7
             If Services = 1 Then
 
-				Tableservices.Visible = False
+                Tableservices.Visible = False
 
-				
+
                 UserRow.Visible = False
 
                 Dim objUser As New UsersDB()
@@ -195,21 +195,21 @@ Namespace DotNetZoom
                 myDataGrid.DataSource = objUser.GetServices(_portalSettings.PortalId, GetLanguage("N"))
                 myDataGrid.DataBind()
 
-	            Dim dr As SqlDataReader = objUser.GetServices(_portalSettings.PortalId, GetLanguage("N"))
-			
-				while dr.read()
-				if dr("TrialFrequency") <> "" then
-                myDataGrid.Columns(6).Visible = True 
-                myDataGrid.Columns(7).Visible = True 
-                myDataGrid.Columns(8).Visible = True 
-				end if
-				end while
-				
+                Dim dr As SqlDataReader = objUser.GetServices(_portalSettings.PortalId, GetLanguage("N"))
+
+                While dr.read()
+                    If dr("TrialFrequency") <> "" Then
+                        myDataGrid.Columns(6).Visible = True
+                        myDataGrid.Columns(7).Visible = True
+                        myDataGrid.Columns(8).Visible = True
+                    End If
+                End While
+
 
                 dr.close()
 
                 If myDataGrid.Items.Count <> 0 Then
-                    lblMessage.Text = ProcessLanguage(GetLanguage("register_more_info"), page)
+                    lblMessage.Text = ProcessLanguage(GetLanguage("register_more_info"), Page)
                 Else
                     myDataGrid.Visible = False
                     lblMessage.Text = GetLanguage("register_no")
@@ -249,44 +249,44 @@ Namespace DotNetZoom
 
                     Dim objUser As New UsersDB()
 
-					
 
-					
+
+
                     myDataGrid.DataSource = objUser.GetServices(_portalSettings.PortalId, GetLanguage("N"), CType(Context.User.Identity.Name, Integer))
                     myDataGrid.DataBind()
 
-					dr = objUser.GetServices(_portalSettings.PortalId, GetLanguage("N"), CType(Context.User.Identity.Name, Integer))
-   					while dr.read()
-					if dr("TrialFrequency") <> "" then
-        	        myDataGrid.Columns(6).Visible = True 
-            	    myDataGrid.Columns(7).Visible = True 
-                	myDataGrid.Columns(8).Visible = True 
-					end if
-					if dr("ExpiryDate").ToString <> "" then
-					myDataGrid.Columns(9).Visible = True 
-					end if
-					end while
-					dr.Close()
-					
+                    dr = objUser.GetServices(_portalSettings.PortalId, GetLanguage("N"), CType(Context.User.Identity.Name, Integer))
+                    While dr.read()
+                        If dr("TrialFrequency") <> "" Then
+                            myDataGrid.Columns(6).Visible = True
+                            myDataGrid.Columns(7).Visible = True
+                            myDataGrid.Columns(8).Visible = True
+                        End If
+                        If dr("ExpiryDate").ToString <> "" Then
+                            myDataGrid.Columns(9).Visible = True
+                        End If
+                    End While
+                    dr.Close()
+
                     ' if no e-commerce service available then hide options
                     ServicesRow.Visible = False
-					If myDataGrid.Items.Count <> 0 then
-                    dr = objAdmin.GetSinglePortal(_portalSettings.PortalId)
-                    If dr.Read Then
-                        If dr("PaymentProcessor").ToString <> "" and dr("ProcessorUserId").ToString <> "" Then
-		                    ServicesRow.Visible = True
-							Title1.DisplayHelp = "DisplayHelp_RegisterEditServices"
-							Tableservices.Visible = True
+                    If myDataGrid.Items.Count <> 0 Then
+                        dr = objAdmin.GetSinglePortal(_portalSettings.PortalId)
+                        If dr.Read Then
+                            If dr("PaymentProcessor").ToString <> "" And dr("ProcessorUserId").ToString <> "" Then
+                                ServicesRow.Visible = True
+                                Title1.DisplayHelp = "DisplayHelp_RegisterEditServices"
+                                Tableservices.Visible = True
+                            End If
                         End If
+                        dr.Close()
                     End If
-                    dr.Close()
-					end if
                 Else
-				Title1.DisplayHelp = "DisplayHelp_Register"
-                 Select Case _portalSettings.UserRegistration
+                    Title1.DisplayHelp = "DisplayHelp_Register"
+                    Select Case _portalSettings.UserRegistration
                         Case 1 ' private
                             Title1.DisplayTitle = GetLanguage("Register_Title")
-	                        lblRegister.Text = GetLanguage("Private_Info")
+                            lblRegister.Text = GetLanguage("Private_Info")
                         Case 2 ' public
                             Title1.DisplayTitle = GetLanguage("Register_Title")
                             lblRegister.Text = GetLanguage("Public_Register_info")
@@ -296,7 +296,7 @@ Namespace DotNetZoom
                     End Select
                     lblRegister.Text += GetLanguage("Register_Required_Info")
 
-                    RegisterBtn.Text = GetLanguage("banner_register") 
+                    RegisterBtn.Text = GetLanguage("banner_register")
                     UnregisterBtn.Visible = False
                     ServicesRow.Visible = False
                     valPassword.Enabled = True
@@ -310,8 +310,8 @@ Namespace DotNetZoom
         Private Sub RegisterBtn_Click(ByVal sender As Object, ByVal E As EventArgs) Handles RegisterBtn.Click
 
             Dim strBody As String
-                          
-            
+
+
             ' Only attempt a save/update if all form fields on the page are valid
             If Page.IsValid = True Then
 
@@ -333,7 +333,7 @@ Namespace DotNetZoom
 
                     If Message.Text = "" Then
                         Dim Username As String = Nothing
-                        Dim objreader As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, CType(context.User.Identity.Name, Integer))
+                        Dim objreader As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, CType(Context.User.Identity.Name, Integer))
                         If objreader.Read Then
                             Username = objreader.Item("Username")
                         End If
@@ -344,10 +344,10 @@ Namespace DotNetZoom
                         'if a user is found with that username and the username isn't our current user's username
                         If dr.Read And txtUsername.Text <> Username Then
                             'username already exists in DB so show user an error message
-                            Message.Text = ProcessEMail(GetLanguage("UserName_Already_Used")) 
+                            Message.Text = ProcessEMail(GetLanguage("UserName_Already_Used"))
                         Else
                             'update the user
- 
+
                             Dim GotAmod As Boolean = False
 
                             objUser.UpdateUser(_portalSettings.PortalId, CType(Context.User.Identity.Name, Integer), txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, IIf(txtPassword.Text <> "", objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), ""))
@@ -426,75 +426,75 @@ Namespace DotNetZoom
 
                             ' Redirect browser back to home page
                             Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
-                            End If
-                            dr.Close()
-                            dr = Nothing
+                        End If
+                        dr.Close()
+                        dr = Nothing
 
                     End If
                 Else
                     Dim UserId As Integer
 
-                    UserId = objUser.AddUser(_portalSettings.PortalId, txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, objSecurity.Encrypt(portalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), IIf(_portalSettings.UserRegistration = 1, CStr(False), CStr(True)), UserId)
+                    UserId = objUser.AddUser(_portalSettings.PortalId, txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), IIf(_portalSettings.UserRegistration = 1, CStr(False), CStr(True)), UserId)
 
                     If UserId >= 0 Then
-					    ' Add user to Forum Dbase
-						Dim dbForumUser As New ForumUserDB()
-                    	dbForumUser.TTTForum_UserCreateUpdateDelete(userId, txtUsername.Text, True, False, "", "", "", _portalSettings.TimeZone, "", "", "", "", "", "", "", False, True, False, True, True, True, 0)
-						
-                        strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_notice", PortalID)
-						if strBody = "" then
-						strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_notice")
-						end if
-						strBody = ProcessEmail(StrBody)
-						if (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = true) then
-                        SendNotification(txtEmail.Text, _portalSettings.Email, "", GetLanguage("Register_request") & " " &  _portalSettings.PortalName , strBody, "", "html")
-                        else
-                        SendNotification(txtEmail.Text, _portalSettings.Email, "", GetLanguage("Register_request") & " " &  _portalSettings.PortalName , strBody, "", "")
-						end if
-						' complete registration
+                        ' Add user to Forum Dbase
+                        Dim dbForumUser As New ForumUserDB()
+                        dbForumUser.TTTForum_UserCreateUpdateDelete(UserId, txtUsername.Text, True, False, "", "", "", _portalSettings.TimeZone, "", "", "", "", "", "", "", False, True, False, True, True, True, 0)
+
+                        strBody = admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_notice", PortalId)
+                        If strBody = "" Then
+                            strBody = admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_notice")
+                        End If
+                        strBody = ProcessEMail(strBody)
+                        If (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = True) Then
+                            SendNotification(txtEmail.Text, _portalSettings.Email, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "html")
+                        Else
+                            SendNotification(txtEmail.Text, _portalSettings.Email, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "")
+                        End If
+                        ' complete registration
                         Select Case _portalSettings.UserRegistration
-                        	               	
+
 
                             Case 1 ' private
-								strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_private")
-								strBody = ProcessEmail(StrBody)
-			             		If portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey(getlanguage("N") & "_signupmessage") then
-								strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
-								else 
-								strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
-								end if
-								if (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = true) then
-        		                SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "html")
-                		        else
-                        		SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "")
-								end if
-                               
+                                strBody = admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_private")
+                                strBody = ProcessEMail(strBody)
+                                If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey(GetLanguage("N") & "_signupmessage") Then
+                                    strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
+                                Else
+                                    strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
+                                End If
+                                If (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = True) Then
+                                    SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "html")
+                                Else
+                                    SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "")
+                                End If
+
                             Case 2 ' public
                                 UserId = objSecurity.UserLogin(txtUsername.Text, txtPassword.Text, _portalSettings.PortalId)
                                 FormsAuthentication.SetAuthCookie(UserId.ToString, False)
-                                
-                                
+
+
 
                             Case 3 ' verified
-								strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_verified")
-								strBody = ProcessEmail(StrBody, UserID)
+                                strBody = admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_verified")
+                                strBody = ProcessEMail(strBody, UserId)
 
-			             		If portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey(getlanguage("N") & "_signupmessage") then
-								strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
-								else 
-								strBody = Regex.Replace(strBody, "{signupmessage}" , CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(getlanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
-								end if
-								if (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = true) then
-        		                SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "html")
-                		        else
-                        		SendNotification(_portalSettings.Email, txtEmail.Text, "",   GetLanguage("Register_request") & " " &  _portalSettings.PortalName, strBody, "", "")
-								end if
-                               
-                       End Select
-                        Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Bienvenue", true)
+                                If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey(GetLanguage("N") & "_signupmessage") Then
+                                    strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "_signupmessage"), String), RegexOptions.IgnoreCase)
+                                Else
+                                    strBody = Regex.Replace(strBody, "{signupmessage}", CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "signupmessage"), String), RegexOptions.IgnoreCase)
+                                End If
+                                If (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = True) Then
+                                    SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "html")
+                                Else
+                                    SendNotification(_portalSettings.Email, txtEmail.Text, "", GetLanguage("Register_request") & " " & _portalSettings.PortalName, strBody, "", "")
+                                End If
+
+                        End Select
+                        Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Bienvenue", True)
                     Else
-					Message.Text = ProcessEMail(GetLanguage("UserName_Already_Used")) 
-                        
+                        Message.Text = ProcessEMail(GetLanguage("UserName_Already_Used"))
+
                     End If
                 End If
 
@@ -503,33 +503,33 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-            Response.Redirect(CType(Viewstate("UrlReferrer"), String), True)
+            Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
 
         Private Sub UnregisterBtn_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles UnregisterBtn.Click
             Dim users As New UsersDB()
-			Dim Admin as New AdminDB()
+            Dim Admin As New AdminDB()
             Dim strBody As String
 
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-  			strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_notice", PortalID)
-			if strBody = "" then
-			strBody = Admin.GetSingleLonglanguageSettings( GetLanguage("N"), "email_newuser_notice")
-			end if
-			strBody = ProcessEmail(StrBody)
-			if (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = true) then
-            SendNotification(txtEmail.Text, _portalSettings.Email, "", _portalSettings.PortalName & " " & GetLanguage("Member_Quit") , strBody, "", "html")
-            else
-            SendNotification(txtEmail.Text, _portalSettings.Email, "", _portalSettings.PortalName & " " & GetLanguage("Member_Quit") , strBody)
-			end if
+            strBody = Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_notice", PortalId)
+            If strBody = "" Then
+                strBody = Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_newuser_notice")
+            End If
+            strBody = ProcessEMail(strBody)
+            If (Regex.IsMatch(strBody, "<html>", RegexOptions.IgnoreCase) = True) Then
+                SendNotification(txtEmail.Text, _portalSettings.Email, "", _portalSettings.PortalName & " " & GetLanguage("Member_Quit"), strBody, "", "html")
+            Else
+                SendNotification(txtEmail.Text, _portalSettings.Email, "", _portalSettings.PortalName & " " & GetLanguage("Member_Quit"), strBody)
+            End If
 
-            
+
 
             users.DeleteUser(_portalSettings.PortalId, CType(Context.User.Identity.Name, Integer))
 
-            Response.Redirect("~" & GetDocument() & "?logoff=ok", True)
+            Response.Redirect(GetFullDocument() & "?logoff=ok", True)
 
         End Sub
 
@@ -552,43 +552,43 @@ Namespace DotNetZoom
 
         Public Function ServiceText(ByVal objSubscribed As Object) As String
             If IsDBNull(objSubscribed) Then
-                ServiceText = GetLanguage("banner_register") 
+                ServiceText = GetLanguage("banner_register")
             Else
                 ServiceText = GetLanguage("annuler")
             End If
         End Function
 
-		Public Function ServiceExpired(ByVal objExpiryDate As Object) As Boolean
-            Dim tempExpiryDate As DateTime = DateTime.parse("9999-12-31")
-			If Not IsDBNull(objExpiryDate) Then
-                if tempExpiryDate = objExpiryDate then
-				return False
-				else
-				return true
-				end if
-			else
-			Return True
+        Public Function ServiceExpired(ByVal objExpiryDate As Object) As Boolean
+            Dim tempExpiryDate As DateTime = DateTime.Parse("9999-12-31")
+            If Not IsDBNull(objExpiryDate) Then
+                If tempExpiryDate = objExpiryDate Then
+                    Return False
+                Else
+                    Return True
+                End If
+            Else
+                Return True
             End If
-		End Function
-		
+        End Function
+
 
         Public Function ServiceURL(ByVal strKeyName As String, ByVal strKeyValue As String, ByVal objServiceFee As Object, ByVal objSubscribed As Object) As String
             Dim dblServiceFee As Double = 0
             If Not IsDBNull(objServiceFee) Then
                 dblServiceFee = objServiceFee
             End If
-			
+
             If IsDBNull(objSubscribed) Then
                 If dblServiceFee <> 0 Then
                     ServiceURL = "~/admin/Sales/PayPalSubscription.aspx?tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue
                 Else
-                    ServiceURL = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&def=Register"
+                    ServiceURL = GetFullDocument() & "?edit=control&tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&def=Register"
                 End If
             Else ' cancel
                 If dblServiceFee <> 0 Then
                     ServiceURL = "~/admin/Sales/PayPalSubscription.aspx?tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&cancel=1"
                 Else
-                    ServiceURL = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&def=Register&cancel=1"
+                    ServiceURL = GetFullDocument() & "?edit=control&tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&def=Register&cancel=1"
                 End If
             End If
         End Function

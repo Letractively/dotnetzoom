@@ -129,8 +129,7 @@ Namespace DotNetZoom
 	
 		Private Sub SetFckEditor()
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			FCKeditor1.LinkBrowser = true
-			FCKeditor1.width = unit.pixel(700)
+            FCKeditor1.Width = Unit.Pixel(700)
 			FCKeditor1.Height = unit.pixel(500)
 			if GetLanguage("fckeditor_language") <> "auto"
 			FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
@@ -145,8 +144,7 @@ Namespace DotNetZoom
 				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
 				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
 				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-				FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
-				End If
+            End If
 
 		end sub
 		

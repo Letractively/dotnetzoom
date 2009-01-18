@@ -1,7 +1,7 @@
 <%@ Control Language="vb" codebehind="EditAnnouncements.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.EditAnnouncements" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 
-<script language="javascript" type="text/javascript"  src="controls/PopupCalendar.js"></script>
+<script language="javascript" type="text/javascript"  src="<%=dotnetzoom.glbpath + "controls/PopupCalendar.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <table cellspacing="0" cellpadding="0" width="750">

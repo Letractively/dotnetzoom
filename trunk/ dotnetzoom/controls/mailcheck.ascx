@@ -26,11 +26,10 @@
             
 			If portalSettings.GetSiteSettings(_portalSettings.PortalID)("SearchUser") <> "NO" then
 			TempString = "<a href="""
-            TempString +=  AddHTTP(GetDomainName(Request))
-            TempString +=  getdocument() & "?edit=control&amp;tabid="
+                        TempString += GetFullDocument() & "?edit=control&amp;tabid="
             TempString +=  _portalSettings.ActiveTab.TabId.ToString
 			TempString +=  "&amp;def=Liste%20membres"" title="""" onmouseover=""" & ReturnToolTip(GetLanguage("banner_ClickProfile")) & """>" 
-                        TempString += "<img height=""14"" width=""17"" border=""0"" src=""images/1x1.gif"" Alt=""*"" style="" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -91px;"">"
+                        TempString += "<img height=""14"" width=""17"" border=""0"" src=""/images/1x1.gif"" Alt=""*"" style="" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -91px;"">"
 			TempString += "</a>&nbsp;"
 			end if
 			
@@ -41,13 +40,13 @@
 			 UserString +=  "<br>" & MyReader("Alias").ToString & "&nbsp;(" & MyReader("Location").ToString  & ")"
 			End While
             myReader.Close()
-                        TempString += "<img src=""images/1x1.gif"" title="""" style=""background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;CURSOR: help"" onmouseover=""this.T_STICKY=true;this.T_WIDTH=100;" & "return escape('" & RTESafe(UserString) & "')" & """ border=""0"" width=""17"" height=""14"" alt=""Liste"">"
+                        TempString += "<img src=""/images/1x1.gif"" title="""" style=""background: url('/images/uostrip.gif') no-repeat; background-position: 0px -105px;CURSOR: help"" onmouseover=""this.T_STICKY=true;this.T_WIDTH=100;" & "return escape('" & RTESafe(UserString) & "')" & """ border=""0"" width=""17"" height=""14"" alt=""Liste"">"
             TempString += "&nbsp;"
 			End if
 			
 			If portalSettings.GetSiteSettings(_portalSettings.PortalID)("UserMessage") <> "NO" then
 			UserString = ""
-                        TempString += "<a href=""" & GetMessageUrl() & """><img src=""images/"
+                        TempString += "<a href=""" & GetMessageUrl() & """><img src=""/images/"
 			objMessagesDB.GetMessageCount((New Utility).GetUserID(), unreadCount, readCount)
 			If unreadCount > 0 then
 			UserString = " " & GetLanguage("Banner_Mail") & " " 
@@ -98,7 +97,7 @@
 		     Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
 	        Dim sb As New StringBuilder()
-            sb.Append("~" & getdocument() & "?edit=control&tabid=")
+            sb.Append(GetFullDocument() & "?edit=control&tabid=")
             sb.Append(_portalSettings.ActiveTab.TabId.ToString)
             sb.Append("&pmstabid=3")
             sb.Append("&userid=")
@@ -108,7 +107,7 @@
 		
         Protected Function GetMessageUrl() As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Return AddHTTP(GetDomainName(Request)) & getdocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=PrivateMessages"
+        Return GetFullDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=PrivateMessages"
         End Function
 </script>
 <asp:literal id="lblMailCheck" visible="false" runat="server" EnableViewState="false" />

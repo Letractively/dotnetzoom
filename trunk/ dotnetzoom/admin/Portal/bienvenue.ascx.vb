@@ -57,7 +57,7 @@ Namespace DotNetZoom
 		Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
            ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Response.Redirect("~" & GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId)
+            Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId)
         End Sub
 
 		

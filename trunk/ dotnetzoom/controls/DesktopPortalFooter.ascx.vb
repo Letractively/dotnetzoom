@@ -67,9 +67,9 @@ Namespace DotNetZoom
 			
             hypHost.Text = replace(GetLanguage("hypHost"), "{hostname}",  portalSettings.GetHostSettings("HostTitle"))
             hypHost.NavigateUrl = AddHTTP(portalSettings.GetHostSettings("HostURL"))
-            hypTerms.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Terms"
+            hypTerms.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Terms"
             hypTerms.Text = GetLanguage("hypTerms")
-			hypPrivacy.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Privacy"
+            hypPrivacy.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Privacy"
 			hypPrivacy.Text = GetLanguage("hypPrivacy")
 			
 		' modification par rene boulard pour enlever le id tag

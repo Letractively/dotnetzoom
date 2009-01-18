@@ -54,60 +54,60 @@ Namespace DotNetZoom
         Public Shared ReadOnly Property DefaultImageFolder() As String
             Get
                 Dim AppPath As String = HttpContext.Current.Request.ApplicationPath
-                Dim imageURL As String = Replace(AppPath & "/Images/TTT/", "//", "/")
+                Dim imageURL As String = Replace(AppPath & "/images/TTT/", "//", "/")
                 Return imageURL
             End Get
         End Property
 
         Public Shared ReadOnly Property SkinImageFolder() As String
             Get
-			Dim TempString As String
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            TempString = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("ImageFolder"), String)
-			If TempString = "" then
-                    TempString = "/images/ttt/"
+                Dim TempString As String
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                TempString = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("ImageFolder"), String)
+                If TempString = "" Then
+                    TempString = glbPath & "images/ttt/"
                 End If
-			
-			Dim context As HttpContext = HttpContext.Current
-			If context.Request.IsAuthenticated Then
-		 		Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            TempString = "/images/TTT/skin1/"
-					case "Stibnite"
-                            TempString = "/images/TTT/skin2/"
-					case "Algues bleues"
-                            TempString = "/images/TTT/skin3/"
-					End Select
-			end if
-            Return TempString
+
+                Dim context As HttpContext = HttpContext.Current
+                If context.Request.IsAuthenticated Then
+                    Dim UserCSS As ForumUser
+                    UserCSS = ForumUser.GetForumUser(Int16.Parse(context.User.Identity.Name))
+                    Select Case UserCSS.Skin
+                        Case "Jardin Floral"
+                            TempString = glbPath & "images/TTT/skin1/"
+                        Case "Stibnite"
+                            TempString = glbPath & "images/TTT/skin2/"
+                        Case "Algues bleues"
+                            TempString = glbPath & "images/TTT/skin3/"
+                    End Select
+                End If
+                Return TempString
             End Get
         End Property
 
         Public Shared ReadOnly Property SkinFolder() As String
             Get
-			Dim TempString As String
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            TempString = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("ImageFolder"), String)
-			If TempString = "" then
+                Dim TempString As String
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                TempString = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("ImageFolder"), String)
+                If TempString = "" Then
                     TempString = glbSiteDirectory() & "ttt/"
-			end if
+                End If
 
-			Dim context As HttpContext = HttpContext.Current
-			If context.Request.IsAuthenticated Then
-		 		Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            TempString = "images/TTT/skin1/"
-					case "Stibnite"
-                            TempString = "images/TTT/skin2/"
-					case "Algues bleues"
-                            TempString = "images/TTT/skin3/"
-					End Select
-			end if
-            Return TempString
+                Dim context As HttpContext = HttpContext.Current
+                If context.Request.IsAuthenticated Then
+                    Dim UserCSS As ForumUser
+                    UserCSS = ForumUser.GetForumUser(Int16.Parse(context.User.Identity.Name))
+                    Select Case UserCSS.Skin
+                        Case "Jardin Floral"
+                            TempString = glbPath & "images/TTT/skin1/"
+                        Case "Stibnite"
+                            TempString = glbPath & "images/TTT/skin2/"
+                        Case "Algues bleues"
+                            TempString = glbPath & "images/TTT/skin3/"
+                    End Select
+                End If
+                Return TempString
             End Get
         End Property
 

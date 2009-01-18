@@ -72,7 +72,7 @@ Namespace DotNetZoom
             Dim sb As New StringBuilder()
 
             ' Set the backward nav
-            sb.Append("~" & GetDocument() & "?tabid=")
+            sb.Append(GetFullDocument() & "?tabid=")
             sb.Append(tabID)
             sb.Append("&gallerypage=")
             sb.Append(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser)
@@ -80,12 +80,13 @@ Namespace DotNetZoom
             sb.Append(CStr(Zrequest.PreviousItem))
             sb.Append("&path=")
             sb.Append(Zrequest.Path)
+            sb.Append("&mid=" & ModuleId.ToString)
 
             MovePrevious.NavigateUrl = sb.ToString
             sb.Length = 0
 
             ' Set forward nav
-            sb.Append("~" & GetDocument() & "?tabid=")
+            sb.Append(GetFullDocument() & "?tabid=")
             sb.Append(tabID)
             sb.Append("&gallerypage=")
             sb.Append(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser)
@@ -93,6 +94,7 @@ Namespace DotNetZoom
             sb.Append(CStr(Zrequest.NextItem))
             sb.Append("&path=")
             sb.Append(Zrequest.Path)
+            sb.Append("&mid=" & ModuleId.ToString)
 
             MoveNext.NavigateUrl = sb.ToString
             sb.Length = 0
@@ -131,12 +133,13 @@ Namespace DotNetZoom
 
             sb.Length = 0
 
-            sb.Append("~" & GetDocument() & "?tabid=")
+            sb.Append(GetFullDocument() & "?tabid=")
             sb.Append(tabID)
             sb.Append("&gallerypage=")
             sb.Append(TTT_GalleryDispatch.GalleryDesktopType.GalleryMain)
             sb.Append("&path=")
             sb.Append(Zrequest.Path)
+            sb.Append("&mid=" & ModuleId.ToString)
 
             cmdAlbum.Text = Zrequest.Folder.Name
             cmdAlbum.NavigateUrl = sb.ToString

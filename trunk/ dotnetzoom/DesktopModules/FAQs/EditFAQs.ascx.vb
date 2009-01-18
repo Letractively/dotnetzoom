@@ -96,7 +96,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?tabid=" & TabId, True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
 
                 Else
@@ -105,7 +105,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-				ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 				
             End If
         End Sub

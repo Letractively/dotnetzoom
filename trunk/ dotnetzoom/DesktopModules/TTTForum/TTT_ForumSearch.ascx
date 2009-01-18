@@ -23,7 +23,7 @@ function SelectAllCheckboxes(intType)
 }
 //--></script>
 
-<script language="javascript" type="text/javascript"  src="controls/PopupCalendar.js"></script>
+<script language="javascript" type="text/javascript"  src="<%=dotnetzoom.glbpath + "controls/PopupCalendar.js"%>"></script>
 <table cellspacing="0" cellpadding="0" width="750" border="0">
     <tbody>
 	<tr>

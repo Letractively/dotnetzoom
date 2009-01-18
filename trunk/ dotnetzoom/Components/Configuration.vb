@@ -149,6 +149,8 @@ Namespace DotNetZoom
         Public PortalId As Integer
         Public GUID As String
         Public PortalAlias As String
+        Public HTTP As String
+        Public HTTPS As String
 		Public PortalChild As Boolean
         Public PortalName As String
         Public UploadDirectory As String
@@ -220,6 +222,8 @@ Namespace DotNetZoom
                     Me.SSL = False
                 End If
 
+                Me.HTTP = GetPortalDomainName(PortalAlias, Nothing, True)
+                Me.HTTPS = AddHTTPS(GetPortalDomainName(PortalAlias, Nothing, False))
                 Me.PortalId = Int32.Parse(result("PortalID").ToString)
                 Me.GUID = result("GUID").ToString
                 Me.PortalAlias = result("PortalAlias").ToString

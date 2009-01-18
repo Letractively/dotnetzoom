@@ -219,7 +219,7 @@ Namespace DotNetZoom
             wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
             wr.AddAttribute(HtmlTextWriterAttribute.Width, "32")
             wr.AddAttribute(HtmlTextWriterAttribute.Height, "32")
-            wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
+            wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
             wr.AddAttribute(HtmlTextWriterAttribute.Style, "border-width:0px; background: url('" & imageURL & "forum.gif') no-repeat; background-position: -16px -128px;")
             wr.AddAttribute(HtmlTextWriterAttribute.Alt, "*")
 
@@ -233,7 +233,7 @@ Namespace DotNetZoom
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "TTTSubHeader")
             wr.RenderBeginTag(HtmlTextWriterTag.Span)
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			' FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, String.Format("edit=control&mid={0}&forumid={1}&editpage={2}", ZmoduleID.ToString, ZforumID.ToString, CType(TTT_EditForum.ForumEditType.ForumModerate, Integer).ToString))
+            ' FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName,  _portalSettings.ActiveTab.ssl, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, String.Format("edit=control&mid={0}&forumid={1}&editpage={2}", ZmoduleID.ToString, ZforumID.ToString, CType(TTT_EditForum.ForumEditType.ForumModerate, Integer).ToString))
 
             wr.AddAttribute(HtmlTextWriterAttribute.Href, TTTUtils.GetURL(GetFullDocument(), Page, String.Format("edit=control&mid={0}&forumid={1}&editpage={2}&tabid={3}", ZmoduleID.ToString, ZforumID.ToString, CType(TTT_EditForum.ForumEditType.ForumModerate, Integer).ToString, _portalSettings.ActiveTab.TabId.ToString), "scope=&forumpage="))
             wr.RenderBeginTag(HtmlTextWriterTag.A) '<A

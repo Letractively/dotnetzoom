@@ -18,9 +18,9 @@
 						<table cellSpacing="0" cellPadding="0" width="100%" border="0">
 							<tr>
 								<td class="TTTAltHeader" align="left">&nbsp;
-									<asp:hyperlink id="MovePrevious" runat="server" ImageUrl="~/images/lt.gif"><%= DotNetZoom.getlanguage("Gal_Prev") %></asp:hyperlink></td>
+									<asp:hyperlink id="MovePrevious" runat="server" ><%= DotNetZoom.getlanguage("Gal_Prev") %></asp:hyperlink></td>
 								<td class="TTTAltHeader" valign="middle"><asp:label id="Title1" runat="server" cssclass="TTTNormalBold"></asp:label></td>
-								<td class="TTTAltHeader" align="right"><asp:hyperlink id="MoveNext" runat="server" ImageUrl="~/images/rt.gif"><%= DotNetZoom.getlanguage("Gal_Next") %></asp:hyperlink>&nbsp;
+								<td class="TTTAltHeader" align="right"><asp:hyperlink id="MoveNext" runat="server"><%= DotNetZoom.getlanguage("Gal_Next") %></asp:hyperlink>&nbsp;
 								</td>
 							</tr>
 						</table>

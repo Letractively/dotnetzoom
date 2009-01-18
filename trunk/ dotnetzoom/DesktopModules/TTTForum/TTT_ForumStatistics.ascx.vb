@@ -72,8 +72,7 @@ Namespace DotNetZoom
                 For iCount = 0 To forumStats.ActiveUsers.Count - 1
                     user = CType(forumStats.ActiveUsers.Item(iCount), ForumUser)
                     sb.Append("<A href=""")
-                    sb.Append(AddHTTP(GetDomainName(Request)))
-					sb.Append(GetDocument())
+                    sb.Append(GetFullDocument())
                     sb.Append("?tabid=")
                     sb.Append(_tabID.ToString)
                     sb.Append("&amp;forumpage=")

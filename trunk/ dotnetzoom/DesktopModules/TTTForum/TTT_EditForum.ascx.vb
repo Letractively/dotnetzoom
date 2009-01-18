@@ -16,7 +16,7 @@ Public Class TTT_EditForum
 
 	Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
 	
-    Dim _editPage As String = "~/DeskTopModules/TTTForum/TTT_EditForumPost.ascx"
+    Dim _editPage As String = glbPath & "DeskTopModules/TTTForum/TTT_EditForumPost.ascx"
     Public Enum ForumEditType
         ForumPost
         ForumAdmin
@@ -53,35 +53,35 @@ Public Class TTT_EditForum
             Select Case editType
                 Case ForumEditType.ForumPost
 				If context.Request.IsAuthenticated Then
-                _editPage = "~/DeskTopModules/TTTForum/TTT_EditForumPost.ascx"
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_EditForumPost.ascx"
 				Title1.DisplayHelp = "DisplayHelp_EditForumPost"
 				else
-				Response.Redirect(FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _PortalSettings.activetab.TabId.ToString, "def=Register"), True)
+                        Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
 				end if
 			end Select
 		If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = true then
 			Select Case editType	
                 Case ForumEditType.ForumAdmin
-                    _editPage = "~/DeskTopModules/TTTForum/TTT_ForumAdmin.ascx"
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumAdmin.ascx"
 					Title1.DisplayHelp = "DisplayHelp_ForumAdmin"
                 Case ForumEditType.GlobalSettings
-                    _editPage = "~/DeskTopModules/TTTForum/TTT_ForumSettings.ascx"
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumSettings.ascx"
 					Title1.DisplayHelp = "DisplayHelp_ForumSettings"
                 Case ForumEditType.ForumModerate
-                    _editPage = "~/DeskTopModules/TTTForum/TTT_ForumModerate.ascx"
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumModerate.ascx"
 					Title1.DisplayHelp = "DisplayHelp_ForumModerate"
                 Case ForumEditType.ForumModerateAdmin
-                    _editPage = "~/DeskTopModules/TTTForum/TTT_ModerateAdmin.ascx"
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ModerateAdmin.ascx"
 					Title1.DisplayHelp = "DisplayHelp_ModerateAdmin"
                 Case ForumEditType.ForumPrivateMessage
-                    _editPage = "~/DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
 					Title1.DisplayHelp = "DisplayHelp_ForumPMS"
                 Case ForumEditType.ForumUserAdmin
-                    _editPage = "~/DeskTopModules/TTTForum/TTT_ForumUserAdmin.ascx"
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumUserAdmin.ascx"
 					Title1.DisplayHelp = "DisplayHelp_ForumUserAdmin"
             End Select
 		 else
-		 Response.Redirect("~" & GetDocument() & "?edit="  & _portalSettings.ActiveTab.TabId &    "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=" & _portalSettings.ActiveTab.TabId & "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
 		 end if
         End If
         Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule(_editPage), PortalModuleControl)

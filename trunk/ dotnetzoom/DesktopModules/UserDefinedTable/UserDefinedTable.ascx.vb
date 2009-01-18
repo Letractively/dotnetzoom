@@ -56,7 +56,7 @@ Namespace DotNetZoom
 			
 
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 
             BindData()
 
@@ -169,7 +169,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdManage_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdManage.Click
-            Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&def=Manage UDT", True)
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&def=Manage UDT", True)
         End Sub
 
     End Class

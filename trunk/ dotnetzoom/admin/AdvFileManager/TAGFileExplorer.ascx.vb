@@ -413,11 +413,11 @@ Private Function XFillData() As ICollection
 					dr = dt.NewRow()
 					extIndex = Array.IndexOf(extensions, ChildFile.Extension.ToLower())
 					If extIndex > -1 Then
-                            TempImageUrl = "images/" & CType(ChildFile.Extension, String).Substring(1) & ".gif"
-					Else
-                            TempImageUrl = "images/unknown.gif"
+                            TempImageUrl = "/images/" & CType(ChildFile.Extension, String).Substring(1) & ".gif"
+                        Else
+                            TempImageUrl = "/images/unknown.gif"
 					End If
-                        dr("Icon") = "<img src=""" & glbPath & "Admin/AdvFileManager/" & TempImageUrl & """ Title=""" & ChildFile.Extension & """ alt=""" & ChildFile.Extension & """ border=""0"" style=""height:16px;width:16px;"">"
+                        dr("Icon") = "<img src=""" & glbPath & "Admin/AdvFileManager" & TempImageUrl & """ Title=""" & ChildFile.Extension & """ alt=""" & ChildFile.Extension & """ border=""0"" style=""height:16px;width:16px;"">"
 					dr("Name") = ChildFile.Name
 					dr("Type") = ChildFile.Extension
 					dr("Size") = FormatSize(ChildFile.Length)

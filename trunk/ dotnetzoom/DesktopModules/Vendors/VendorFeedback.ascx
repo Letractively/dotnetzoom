@@ -28,11 +28,11 @@
         </tbody>
     </table>
     <p align="left">
-        <asp:LinkButton class="CommandButton" id="cmdUpdate" runat="server" Text="Enregistrer" ></asp:LinkButton>
+        <asp:LinkButton cssclass="CommandButton" id="cmdUpdate" runat="server" Text="Enregistrer" ></asp:LinkButton>
         &nbsp; 
-        <asp:LinkButton class="CommandButton" id="cmdCancel" runat="server" Text="Annuler"  CausesValidation="False"></asp:LinkButton>
+        <asp:LinkButton cssclass="CommandButton" id="cmdCancel" runat="server" Text="Annuler"  CausesValidation="False"></asp:LinkButton>
         &nbsp; 
-        <asp:linkbutton class="CommandButton" id="cmdDelete" runat="server" Text="Supprimer"  CausesValidation="False"></asp:linkbutton>
+        <asp:linkbutton cssclass="CommandButton" id="cmdDelete" runat="server" Text="Supprimer"  CausesValidation="False"></asp:linkbutton>
     </p>
 </asp:placeholder>
 <br>
@@ -61,8 +61,8 @@
     </ItemTemplate>
 </asp:DataList>
 <p align="left">
-    <asp:LinkButton class="CommandButton" id="cmdFeedback" runat="server"  CausesValidation="False"></asp:LinkButton>
+    <asp:LinkButton cssclass="CommandButton" id="cmdFeedback" runat="server"  CausesValidation="False"></asp:LinkButton>
     &nbsp;&nbsp; 
-    <asp:LinkButton class="CommandButton" id="cmdBack" runat="server"  CausesValidation="False"></asp:LinkButton>
+    <asp:LinkButton cssclass="CommandButton" id="cmdBack" runat="server"  CausesValidation="False"></asp:LinkButton>
 </p>
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>

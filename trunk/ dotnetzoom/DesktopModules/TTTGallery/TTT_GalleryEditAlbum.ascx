@@ -150,7 +150,7 @@
 								<td class="TTTRow" align="left" style="white-space: nowrap;" height="22">
 									<INPUT class="NormalTextBox" id="htmlUploadFile" type="file" size="112" name="loFile" runat="server" />
 									&nbsp;&nbsp;&nbsp;<asp:imagebutton id="btnAdd" runat="server" CommandName="add" ImageUrl="~/Admin/AdvFileManager/Images/Upload.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>&nbsp;&nbsp;
-									<img id="rotation" src="images/rotation.gif" style="visibility:hidden; left: -20px; position: relative" alt="*" width="32" height="32">
+									<img id="rotation" src="/images/rotation.gif" style="visibility:hidden; left: -20px; position: relative" alt="*" width="32" height="32">
 									<br><asp:Label id="lblFileInfo" runat="server" CssClass="TTTNormal" ForeColor="Red"></asp:Label>&nbsp;
 								</td>
 							</tr>
@@ -203,7 +203,7 @@
 												<HeaderStyle Height="28px" Width="22px" CssClass="TTTAltHeader"></HeaderStyle>
 												<ItemStyle Wrap="False" HorizontalAlign="Center" Height="22px" CssClass="TTTRow"></ItemStyle>
 												<ItemTemplate>
-													<asp:ImageButton id="btnFileRemove" ImageUrl="~/images/Delete.gif" runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Name"), String) %>' BorderWidth="0" BorderStyle="none"/>
+													<asp:ImageButton id="btnFileRemove" ImageURL="~/images/Delete.gif" runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Name"), String) %>' BorderWidth="0" BorderStyle="none"/>
 												</ItemTemplate>
 											</asp:TemplateColumn>
 										</Columns>
@@ -214,7 +214,7 @@
 								<td class="TTTAltHeader"  valign="middle" align="left">&nbsp;
 									<asp:button id="btnFileClose" cssclass="button" runat="server" CommandName="close" ></asp:button>&nbsp;
 									<asp:button id="btnFileUpload" cssclass="button" runat="server" CommandName="upload"></asp:button>
-									<img id="rotation1" src="images/rotation.gif" style="visibility:hidden; left: -50px; position: relative" alt="*" width="32" height="32">
+									<img id="rotation1" src="/images/rotation.gif" style="visibility:hidden; left: -50px; position: relative" alt="*" width="32" height="32">
 									&nbsp;
 									
 								</td>
@@ -285,14 +285,14 @@
 									<HeaderStyle Height="28px" Width="22px" CssClass="TTTAltHeader"></HeaderStyle>
 									<ItemStyle Wrap="False" HorizontalAlign="Center" Height="22px" CssClass="TTTRow"></ItemStyle>
 									<ItemTemplate>
-										<asp:ImageButton id="btnEdit" visible="<%# CanEdit(Container.DataItem) %>" ImageUrl="~/images/Edit.gif" runat="server" CommandName="edit" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
+										<asp:ImageButton id="btnEdit" visible="<%# CanEdit(Container.DataItem) %>" ImageURL="~/images/Edit.gif" runat="server" CommandName="edit" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
 									</ItemTemplate>
 								</asp:TemplateColumn>
 								<asp:TemplateColumn>
 									<HeaderStyle Height="28px" Width="22px" CssClass="TTTAltHeader"></HeaderStyle>
 									<ItemStyle Wrap="False" HorizontalAlign="Center" Height="22px" CssClass="TTTRow"></ItemStyle>
 									<ItemTemplate>
-										<asp:ImageButton id="btnDelete" visible="<%# CanEdit(Container.DataItem) %>" ImageUrl="~/images/Delete.gif" runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
+										<asp:ImageButton id="btnDelete" visible="<%# CanEdit(Container.DataItem) %>" ImageURL="~/images/Delete.gif" runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
 									</ItemTemplate>
 								</asp:TemplateColumn>
 							</Columns>
@@ -356,14 +356,14 @@
 									<HeaderStyle Height="28px" Width="22px" CssClass="TTTAltHeader"></HeaderStyle>
 									<ItemStyle Wrap="False" HorizontalAlign="Center" Height="22px" CssClass="TTTRow"></ItemStyle>
 									<ItemTemplate>
-										<asp:ImageButton id="btnEdit" visible="<%# CanEdit(Container.DataItem) %>" ImageUrl="~/images/Edit.gif" runat="server" CommandName="edit" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
+										<asp:ImageButton id="btnEdit" visible="<%# CanEdit(Container.DataItem) %>" ImageURL="~/images/Edit.gif" runat="server" CommandName="edit" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
 									</ItemTemplate>
 								</asp:TemplateColumn>
 								<asp:TemplateColumn>
 									<HeaderStyle Height="28px" Width="22px" CssClass="TTTAltHeader"></HeaderStyle>
 									<ItemStyle Wrap="False" HorizontalAlign="Center" Height="22px" CssClass="TTTRow"></ItemStyle>
 									<ItemTemplate>
-										<asp:ImageButton id="btnDelete" visible="<%# CanEdit(Container.DataItem) %>" ImageUrl="~/images/Delete.gif" runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
+										<asp:ImageButton id="btnDelete" visible="<%# CanEdit(Container.DataItem) %>" ImageURL="~/images/Delete.gif" runat="server" CommandName="delete" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' BorderWidth="0" BorderStyle="none"/>
 									</ItemTemplate>
 								</asp:TemplateColumn>
 							</Columns>

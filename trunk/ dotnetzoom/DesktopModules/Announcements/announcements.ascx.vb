@@ -56,7 +56,7 @@ Namespace DotNetZoom
 			' Check to see if available in Cache
 			
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 			Dim objAdmin As New AdminDB()
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 			
@@ -79,15 +79,11 @@ Namespace DotNetZoom
 			lstAnnouncements.ID = ""
 
 	
-            if File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
-            rssLink.NavigateUrl = GetPortalDomainName(_portalSettings.PortalAlias, Request)
-            If Request.ApplicationPath <> "/" Then
-               rssLink.NavigateUrl = Left(rssLink.NavigateUrl, InStrRev(rssLink.NavigateUrl, "/") - 1)
+            If File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml") Then
+                rssLink.NavigateUrl = _portalSettings.UploadDirectory & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
+                rssLink.Visible = True
+                rssLink.ToolTip = GetLanguage("channel_syndicate") & " " & File.GetLastWriteTime(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml").ToString()
             End If
-            rssLink.NavigateUrl += _portalSettings.UploadDirectory & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
-			rssLink.visible = True
-			rssLink.ToolTip = GetLanguage("channel_syndicate") & " " & File.getlastwritetime(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml").ToString()
-			end if
 
 			
         End Sub
@@ -96,11 +92,12 @@ Namespace DotNetZoom
 
             If InStr(1, Link, "://") = 0 Then
                 If IsNumeric(Link) Then ' internal tab link
-                    Link = IIf(Request.ApplicationPath = "/", Request.ApplicationPath, Request.ApplicationPath & "/") & GetLanguage("N") & ".default.aspx?tabid=" & Link
+                    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                    Link = _portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?tabid=" & Link
                 End If
             End If
 
-            Return IIf(Request.ApplicationPath = "/", Request.ApplicationPath, Request.ApplicationPath & "/") & "admin/Portal/LinkClick.aspx?tabid=" & TabId & "&table=Announcements&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+            Return glbPath & "admin/Portal/LinkClick.aspx?tabid=" & TabId & "&table=Announcements&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
 
         End Function
 

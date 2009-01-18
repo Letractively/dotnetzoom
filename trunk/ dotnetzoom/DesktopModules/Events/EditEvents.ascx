@@ -1,12 +1,12 @@
 <%@ Control Language="vb" codebehind="EditEvents.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.EditEvents" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
-<script language="javascript" type="text/javascript"  src="controls/PopupCalendar.js"></script>
+<script language="javascript" type="text/javascript"  src="<%=dotnetzoom.glbpath + "controls/PopupCalendar.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <script language="JavaScript" type="text/javascript">
 		function OpenNewWindow(tabid)
 			{
-				var m = window.open('admin/tabs/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100');
+				var m = window.open('<%=dotnetzoom.glbpath%>admin/tabs/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid , 'icone', 'width=800,height=600,left=100,top=100');
 				m.focus();
 			}
 		function SetUrl(idParentValue)

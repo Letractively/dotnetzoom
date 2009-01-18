@@ -31,7 +31,15 @@ Choixbutton3.ToolTip = Choixbutton.ToolTip
 Choixbutton4.ToolTip = Choixbutton.ToolTip
 Choixbutton5.ToolTip = Choixbutton.ToolTip
 Choixbutton6.ToolTip = Choixbutton.ToolTip
-Choixbutton7.ToolTip = Choixbutton.ToolTip
+        Choixbutton7.ToolTip = Choixbutton.ToolTip
+        Choixbutton.ImageURL = DotNetZoom.glbPath & "images/TTT/folder.gif"
+        Choixbutton1.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder1.gif"
+        Choixbutton2.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder2.gif"
+        Choixbutton3.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder.jpg"
+        Choixbutton4.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder1.jpg"
+        Choixbutton5.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder2.jpg"
+        Choixbutton6.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder3.jpg"
+        Choixbutton7.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder4.jpg"
 Range1.Text = Getlanguage("ImageQualityRange")
 Range2.Text = Getlanguage("ImageRangeToSave")
 Range3.Text = Getlanguage("ImageRangeToSave")
@@ -39,7 +47,7 @@ Range3.Text = Getlanguage("ImageRangeToSave")
  ResultsMessage.Text = ""           
  If (Request.IsAuthenticated = false) or (Session("UploadPath") Is Nothing) or (Session("UploadPath") = "nil" )Then
  	Session("UploadPath") = "nil"
-    Response.Redirect("~/EditModule.aspx?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+            Response.Redirect(glbPath & "default.aspx?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
  End If
 
    Filename = Request("name") 
@@ -243,9 +251,9 @@ Public Sub Return_OnClick(ByVal sender As Object, ByVal e As EventArgs)
 
  If (Session("ReturnPath") Is Nothing) Then
     If Request.Params("tabid") Is Nothing Then
-                Response.Redirect("~" & GetDocument() & "?reset=oui", True)
+                Response.Redirect(GetFullDocument() & "?reset=oui", True)
 	Else
-                Response.Redirect("~" & GetDocument() & "?tabid=" & Request.Params("tabid") & "&reset=oui", True)
+                Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid") & "&reset=oui", True)
 	End if
  	else
 	If InStr(1, Lcase(Session("ReturnPath")), "reset") <> 0 Then
@@ -441,8 +449,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
            ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder.gif"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td>
 <td>
 <asp:ImageButton id="Choixbutton1" runat="server"
@@ -452,8 +459,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
            ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder1.gif"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td>
 <td>
 <asp:ImageButton id="Choixbutton2" runat="server"
@@ -463,8 +469,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
 		   ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder2.gif"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td>
 <td>
 <asp:ImageButton id="Choixbutton3" runat="server"
@@ -474,8 +479,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
 		   ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder.jpg"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td>
 <td>
 <asp:ImageButton id="Choixbutton4" runat="server"
@@ -485,8 +489,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
            ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder1.jpg"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td>
 <td>
 <asp:ImageButton id="Choixbutton5" runat="server"
@@ -496,8 +499,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
 		   ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder2.jpg"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td>
 <td>
 <asp:ImageButton id="Choixbutton6" runat="server"
@@ -507,8 +509,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
            ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder3.jpg"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td>
 <td>
 <asp:ImageButton id="Choixbutton7" runat="server"
@@ -518,8 +519,7 @@ End Sub
 		   BorderWidth="0" 
 		   BorderStyle="none"
            ImageAlign="left"
-		   ImageUrl= "~/images/TTT/folder4.jpg"
-           OnClick="ChoixButton_Click"/>
+		   OnClick="ChoixButton_Click"/>
 </td></tr></table>
 </td></tr>
 <tr><td height=16 style="padding-left:10px;border-top: 1 solid #999999; background-color:#99ccff;">

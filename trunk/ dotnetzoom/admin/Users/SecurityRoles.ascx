@@ -1,7 +1,7 @@
 <%@ Control Language="vb" codebehind="SecurityRoles.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.SecurityRoles" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 
-<script language="javascript" type="text/javascript"  src="controls/PopupCalendar.js"></script>
+<script language="javascript" type="text/javascript"  src="<%=dotnetzoom.glbpath + "controls/PopupCalendar.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <table cellspacing="0" cellpadding="0" width="750" border="0">
@@ -68,7 +68,7 @@
                     <Columns>
                         <asp:TemplateColumn>
                             <ItemTemplate>
-                                <asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("delete") %>' ID="cmdDeleteUserRole" Runat="server" AlternateText='<%# DotNetZoom.GetLanguage("delete") %>' CausesValidation="False" CommandName="Delete" ImageUrl="~/images/delete.gif" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
+                                <asp:ImageButton ToolTip='<%# DotNetZoom.GetLanguage("delete") %>' ID="cmdDeleteUserRole" Runat="server" AlternateText='<%# DotNetZoom.GetLanguage("delete") %>' CausesValidation="False" CommandName="Delete" ImageURL="~/images/delete.gif" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
                             </ItemTemplate>
                         </asp:TemplateColumn>
                         <asp:BoundColumn DataField="FullName" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold" />

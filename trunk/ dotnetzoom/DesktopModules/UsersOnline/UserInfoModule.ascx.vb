@@ -194,7 +194,7 @@ Namespace DotNetZoom
         End Function
 
         Protected Function GetUserInfoLink(ByVal userID As String) As String
-            Return "~" & GetDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
+            Return GetFullDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
         End Function
 
         Protected Function GetUserInfoTooltip(ByVal userName As String) As String
@@ -216,7 +216,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub lnkSendPrivateMessage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lnkSendPrivateMessage.Click
-            Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & Me.TabId & "&def=PrivateMessages&pmsTabID=3&UserID=" & Request("UserID"))
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & Me.TabId & "&def=PrivateMessages&pmsTabID=3&UserID=" & Request("UserID"))
         End Sub
     End Class
 

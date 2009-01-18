@@ -9,7 +9,7 @@
  
  
     Private NoImagesMessage As String = GetLanguage("NoImagesMessage")
-    Private ImageUrl As String = "~/images/containers/"
+    Private ImageUrl As String = glbPath & "images/containers/"
 Private Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
 
 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -18,7 +18,7 @@ StyleSheet.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/port
 Annuler.Attributes.Add("Onclick", "JavaScript:window.top.close();window.top.opener.focus();")
 Annuler.Text = GetLanguage("return")
 If Request.IsAuthenticated = false Then
-   Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+   Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
 End If
 DisplayImages()
 End Sub 
@@ -141,7 +141,7 @@ Public Sub DisplayImages()
         Dim FilesArray() As String = Nothing
  Dim NumOfImag As Integer = 1
 
- Dim strFolder As String = Request.MapPath("~/images/containers/")
+ Dim strFolder As String = Request.MapPath("/images/containers/")
 				
  If System.IO.Directory.Exists(strFolder) Then
     FilesArray = System.IO.Directory.GetDirectories(strFolder)

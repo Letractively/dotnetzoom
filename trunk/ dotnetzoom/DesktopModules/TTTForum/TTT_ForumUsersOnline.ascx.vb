@@ -108,8 +108,7 @@ Namespace DotNetZoom
                         While drmembers.Read
                             
                             sb.Append("<A href=""")
-                            sb.Append(AddHTTP(GetDomainName(Request)))
-							sb.Append(GetDocument())
+                        sb.Append(GetFullDocument())
                             sb.Append("?tabid=")
                             sb.Append(_portalSettings.ActiveTab.TabId.ToString)
                             sb.Append("&amp;forumpage=")

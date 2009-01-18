@@ -118,21 +118,17 @@ Namespace DotNetZoom
 				cmdCalendar.Text = GetLanguage("command_calendar")
 				
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
                 Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
                 cboFile.DataSource = FileList
                 cboFile.DataBind()
 
-                cboInternal.DataSource = GetPortalTabs(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), True, True)
+                cboInternal.DataSource = GetPortalTabs(portalSettings.Getportaltabs(_portalSettings.PortalID, GetLanguage("N")), True, True)
                 cboInternal.DataBind()
 
-                lblSyndicate.Text = GetPortalDomainName(_portalSettings.PortalAlias, Request)
-                If Request.ApplicationPath <> "/" Then
-                    lblSyndicate.Text = Left(lblSyndicate.Text, InStrRev(lblSyndicate.Text, "/") - 1)
-                End If
-				Dim ObjAdmin As New AdminDB()
-                lblSyndicate.Text += _portalSettings.UploadDirectory & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
-				lblSyndicate.Visible = File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
+                Dim ObjAdmin As New AdminDB()
+                lblSyndicate.Text = "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory & ObjAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
+                lblSyndicate.Visible = File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & ObjAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
                 If itemId <> -1 Then
 
                     ' Obtain a single row of announcement information
@@ -169,9 +165,9 @@ Namespace DotNetZoom
 
                         txtTitle.Text = dr("Title").ToString
                         txtDescription.Text = dr("Description").ToString
-						If Not IsDBNull(dr("ExpireDate")) Then
-                        txtExpires.Text = Format(CDate(dr("ExpireDate")), "yyyy-MM-dd")
-						end if
+                        If Not IsDBNull(dr("ExpireDate")) Then
+                            txtExpires.Text = Format(CDate(dr("ExpireDate")), "yyyy-MM-dd")
+                        End If
                         chkSyndicate.Checked = dr("Syndicate")
 
                         txtViewOrder.Text = dr("ViewOrder").ToString()
@@ -185,7 +181,7 @@ Namespace DotNetZoom
 
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?tabid=" & TabId, True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
                 Else
                     cmdDelete.Visible = False
@@ -193,7 +189,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
             End If
 

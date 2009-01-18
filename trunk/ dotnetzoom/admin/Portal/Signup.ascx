@@ -185,7 +185,7 @@
 </div>
 <div class="attendre" id="attendre" align="center" style="background: silver; border: thin dotted; padding: 4px; visibility:hidden;  top: -300px; position: relative">
 <span class="Head"><input class="button" onclick="toggleBox('attendre',0);toggleBox('main',1);" type="button" value="<%= DotNetZoom.GetLanguage("S_F_Wait") %>"></span><br><br>
-<img src="images/rotation.gif" alt="*" width="32" height="32">
+<img src="/images/rotation.gif" alt="*" width="32" height="32">
 <br><br>
 <span class="SubHead"><%= DotNetZoom.GetLanguage("S_F_Wait_Info") %></span>
 </div>

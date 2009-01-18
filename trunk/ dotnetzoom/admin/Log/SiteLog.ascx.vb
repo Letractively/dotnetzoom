@@ -64,16 +64,18 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-            ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+            End If
 
-			Title1.DisplayHelp = "DisplayHelp_SiteLog"
+            Title1.DisplayHelp = "DisplayHelp_SiteLog"
             ' If this is the first visit to the page, bind the role data to the datalist
             If Page.IsPostBack = False Then
-				cmdStartCalendar.Text = GetLanguage("Stat_Calendar")
-				cmdEndCalendar.Text = GetLanguage("Stat_Calendar")
-				cmdDisplay.Text = GetLanguage("Stat_Display")
-				cmdCancel.Text = GetLanguage("annuler")
+                cmdStartCalendar.Text = GetLanguage("Stat_Calendar")
+                cmdEndCalendar.Text = GetLanguage("Stat_Calendar")
+                cmdDisplay.Text = GetLanguage("Stat_Display")
+                cmdCancel.Text = GetLanguage("annuler")
                 cmdStartCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtStartDate)
                 cmdEndCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtEndDate)
 
@@ -83,7 +85,7 @@ Namespace DotNetZoom
                         lblMessage.Text = GetLanguage("SiteLogOff")
                     Case Else
                         lblMessage.Text = GetLanguage("SiteLogLimited")
-						lblMessage.Text = Replace(GetLanguage("SiteLogLimited"), "{days}" , _portalSettings.SiteLogHistory.ToString)
+                        lblMessage.Text = Replace(GetLanguage("SiteLogLimited"), "{days}", _portalSettings.SiteLogHistory.ToString)
                 End Select
 
                 Dim objAdmin As New AdminDB()
@@ -92,8 +94,8 @@ Namespace DotNetZoom
                 cboReportType.DataBind()
                 cboReportType.SelectedIndex = 0
 
-                txtStartDate.Text = FormatAnsiDate(DateAdd(DateInterval.Day, -6, Date.Today).ToString("yyyy-MM-dd"))
-                txtEndDate.Text = FormatAnsiDate(DateAdd(DateInterval.Day, 1, Date.Today).ToString("yyyy-MM-dd"))
+                txtStartDate.Text = formatansidate(DateAdd(DateInterval.Day, -6, Date.Today).ToString("yyyy-MM-dd"))
+                txtEndDate.Text = formatansidate(DateAdd(DateInterval.Day, 1, Date.Today).ToString("yyyy-MM-dd"))
 
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
@@ -105,16 +107,16 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        	 If Not ViewState("UrlReferrer") = Nothing Then
-                Response.Redirect(CType(Viewstate("UrlReferrer"), String), True)
-			 else
-			 If Request.Params("tabid") Is Nothing Then
-                    Response.Redirect("~" & GetDocument() & "?" & GetAdminPage(), True)
-			 Else
-                    Response.Redirect("~" & GetDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
-			 End if
-			 end if
-   
+            If Not ViewState("UrlReferrer") = Nothing Then
+                Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
+            Else
+                If Request.Params("tabid") Is Nothing Then
+                    Response.Redirect(GetFullDocument() & "?" & GetAdminPage(), True)
+                Else
+                    Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
+                End If
+            End If
+
         End Sub
 
         Private Sub cmdDisplay_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdDisplay.Click

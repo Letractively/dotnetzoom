@@ -101,13 +101,13 @@ Namespace DotNetZoom
 					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
 					Select Case UserCSS.Skin
 					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					
-					case "Stibnite"
-                            objLink.Text = "<link href=""" & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					
-					case "Algues bleues"
-                            objLink.Text = "<link href=""" & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+
+                        Case "Stibnite"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+
+                        Case "Algues bleues"
+                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
 					
 					Case Else
 					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
@@ -199,7 +199,7 @@ Namespace DotNetZoom
                 If myCheck.Checked Then
                     Dim _postID As Integer = CType(lstPost.DataKeys(i), Integer)
                     Dim _post As ForumPostInfo = ForumPostInfo.GetPostInfo(_postID)
-                    Dim _mailURL As String = AddHTTP(GetDomainName(Request)) &  GetDocument() & "?forumid=" & forumid & "&tabid=" & _portalSettings.ActiveTab.TabId & "&scope=post&threadid=" & _post.ThreadID & "#" & _post.ThreadID
+                    Dim _mailURL As String = GetFullDocument() & "?forumid=" & forumid & "&tabid=" & _portalSettings.ActiveTab.TabId & "&scope=post&threadid=" & _post.ThreadID & "#" & _post.ThreadID
 
                     Select Case cmd.ToLower
                         Case "approve"
@@ -221,7 +221,7 @@ Namespace DotNetZoom
             Dim ZuserID As Integer = Int16.Parse(Context.User.Identity.Name)
             Dim _postID As Integer = Int16.Parse(lblID.Text)
             Dim _notes As String = txtNotes.Text
-            Dim _mailURL As String = AddHTTP(GetDomainName(Request)) & GetDocument() & "?forumid=" & forumid & "&tabid=" & _portalSettings.ActiveTab.TabId & "&scope=post&threadid=" & _postID.ToString
+            Dim _mailURL As String = GetFullDocument() & "?forumid=" & forumid & "&tabid=" & _portalSettings.ActiveTab.TabId & "&scope=post&threadid=" & _postID.ToString
 
             Select Case _action.ToLower
                 Case "approve"
@@ -252,7 +252,7 @@ Namespace DotNetZoom
 			Dim forumInfo As ForumItemInfo = ForumItemInfo.GetForumInfo(forumID)
 			If forumInfo.IsActive and not forumInfo.IsPrivate Then
 			' Make new RSS Feed here
-			Dim RSSURL As String = AddHTTP(GetDomainName(Request)) &  GetDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                Dim RSSURL As String = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
 			Dim dr As SqlDataReader = dbForum.TTTForum_GetThreads(forumID, 20, 0, RSSURL)
 			CreateForumRSS(dr, "Subject", "LastPostAlias", "URLField", "DateLastPost",  forumInfo.name & " " & forumInfo.Description, Request.MapPath(_portalSettings.UploadDirectory) & "forum" & forumID.ToString & ".xml")
 			dr.Close()

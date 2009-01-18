@@ -58,7 +58,7 @@
 <script language="JavaScript" type="text/javascript">
 		function OpeniconeWindow(tabid , idParent)
 			{
-				var m = window.open('DesktopModules/TTTForum/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid + '&parentID=' + idParent, 'icone', 'width=800,height=600,left=100,top=100');
+				var m = window.open('<%= dotnetzoom.glbPath %>DesktopModules/TTTForum/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid + '&parentID=' + idParent, 'icone', 'width=800,height=600,left=100,top=100');
 				m.focus();
 			}
 		function SetUrl(idParentValue, idParent)

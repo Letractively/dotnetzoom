@@ -8,7 +8,7 @@
 				<b><%# Container.DataItem.Value %></b>
 		</itemtemplate>
 		<separatortemplate>
-			<img src="images/1x1.gif" alt="*" border="0">
+			<img src="/images/1x1.gif" alt="*" border="0">
 		</separatortemplate>
 </asp:datalist>
 <asp:datalist width="100%" id="dlTabsBottom" ItemStyle-Height="25" separatorstyle-cssclass="TabSeparator"  runat="Server" cssclass="TabHolder" selecteditemstyle-cssclass="TabSelected" itemstyle-cssclass="TabDefault" itemstyle-wrap="False" cellpadding="0" repeatcolumns="5">
@@ -16,7 +16,7 @@
 				<b><%# Container.DataItem.Value %></b>
 		</itemtemplate>
 		<separatortemplate>
-			<img src="images/1x1.gif"  alt="*" border="0">
+			<img src="/images/1x1.gif"  alt="*" border="0">
 		</separatortemplate>
 </asp:datalist>
 <table class="TabPage" cellspacing="0" cellpadding="0" width="100%">
@@ -118,8 +118,8 @@
 		</asp:TemplateColumn>
         <asp:TemplateColumn ItemStyle-Width="20" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold">
         <ItemTemplate>
-		<asp:image id="image" runat="server" visible='<%# not DataBinder.Eval(Container, "DataItem.New") %>' AlternateText="new" ImageUrl="~/images/node.gif"></asp:image>
-		<asp:imagebutton id="cmdEdit" runat="server" causesvalidation="false" commandname="Edit" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ImageUrl="~/images/edit.gif"></asp:imagebutton>
+		<asp:image id="image" runat="server" visible='<%# not DataBinder.Eval(Container, "DataItem.New") %>' AlternateText="new" ImageURL="~/images/node.gif"></asp:image>
+		<asp:imagebutton id="cmdEdit" runat="server" causesvalidation="false" commandname="Edit" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ImageURL="~/images/edit.gif"></asp:imagebutton>
 		</ItemTemplate>
 		<EditItemTemplate>
         <asp:ImageButton tooltip='<%# DotNetZoom.GetLanguage("delete") & " -> " & DataBinder.Eval(Container, "DataItem.SettingValue") %>' id="imgdelete" ImageURL="~/images/delete.gif" CommandName="Delete" Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.SettingName") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
@@ -136,7 +136,7 @@
         <asp:TemplateColumn ItemStyle-Width="40" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold">
         <EditItemTemplate>
 		<asp:ImageButton tooltip='<%# DotNetZoom.GetLanguage("enregistrer") & " -> " & DataBinder.Eval(Container, "DataItem.SettingValue") %>' id="imgEditOK" ImageURL="~/images/save.gif" CommandName="EditOK" Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.SettingName") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
-        <asp:imagebutton id="cmdCancel" runat="server" causesvalidation="false" commandname="Cancel" tooltip='<%# DotNetZoom.GetLanguage("annuler") %>' AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ImageUrl="~/images/cancel.gif"></asp:imagebutton>
+        <asp:imagebutton id="cmdCancel" runat="server" causesvalidation="false" commandname="Cancel" tooltip='<%# DotNetZoom.GetLanguage("annuler") %>' AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ImageURL="~/images/cancel.gif"></asp:imagebutton>
 		</EditItemTemplate>
 		</asp:TemplateColumn>
     </Columns>
@@ -265,7 +265,7 @@
     <Columns>
 	    <asp:TemplateColumn ItemStyle-Width="20" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold">
         <ItemTemplate>
-        <asp:imagebutton id="cmdEdit" runat="server" causesvalidation="false" commandname="Edit" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ImageUrl="~/images/edit.gif"></asp:imagebutton>
+        <asp:imagebutton id="cmdEdit" runat="server" causesvalidation="false" commandname="Edit" AlternateText='<%# DotNetZoom.GetLanguage("modifier") %>' ImageURL="~/images/edit.gif"></asp:imagebutton>
 		</ItemTemplate>
 		<EditItemTemplate>
         <asp:ImageButton tooltip='<%# DotNetZoom.GetLanguage("delete") & " -> " & DataBinder.Eval(Container, "DataItem.Description") %>' id="imgdelete" ImageURL="~/images/delete.gif" CommandName='delete' Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.Code") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
@@ -287,7 +287,7 @@
 		<asp:TemplateColumn ItemStyle-Width="40" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold">
         <EditItemTemplate>
 		<asp:ImageButton tooltip='<%# DotNetZoom.GetLanguage("enregistrer") & " -> " & DataBinder.Eval(Container, "DataItem.Description") %>' id="imgEditOK" ImageURL="~/images/save.gif" CommandName="EditOK" Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.Code") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
-        <asp:imagebutton id="cmdCancel" runat="server" causesvalidation="false" commandname="Cancel" tooltip='<%# DotNetZoom.GetLanguage("annuler") %>' AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ImageUrl="~/images/cancel.gif"></asp:imagebutton>
+        <asp:imagebutton id="cmdCancel" runat="server" causesvalidation="false" commandname="Cancel" tooltip='<%# DotNetZoom.GetLanguage("annuler") %>' AlternateText='<%# DotNetZoom.GetLanguage("annuler") %>' ImageURL="~/images/cancel.gif"></asp:imagebutton>
         </EditItemTemplate>
 		</asp:TemplateColumn>
 

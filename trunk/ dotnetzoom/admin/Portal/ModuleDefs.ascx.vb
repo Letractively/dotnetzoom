@@ -54,10 +54,10 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
             ' Verify that the current user has access to this page
             If Not PortalSecurity.IsSuperUser Then
-                Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
             End If
 
 			grdDefinitions.Columns(1).HeaderText = GetLanguage("MS_ModuleName")

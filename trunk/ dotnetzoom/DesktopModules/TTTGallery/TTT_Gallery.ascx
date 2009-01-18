@@ -1,7 +1,7 @@
 <%@ Import namespace="DotNetZoom" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx"%>
 <%@ Control language="vb" Inherits="DotNetZoom.TTT_Gallery" CodeBehind="TTT_Gallery.ascx.vb" AutoEventWireup="false" %>
-<script language="javascript" type="text/javascript" src="javascript/popup.js"></script>
+<script language="javascript" type="text/javascript" src="<%= dotnetzoom.glbPath + "javascript/popup.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:PlaceHolder ID="pnlModuleContent" Runat="server" EnableViewState="false" >
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
@@ -20,9 +20,9 @@
 </itemtemplate>
 <separatortemplate>&nbsp;&raquo;&nbsp;</separatortemplate>
 </asp:datalist>&nbsp;
-<asp:imagebutton id="ClearCache" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/images/1x1.gif" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -256px;"></asp:imagebutton>
-<asp:imagebutton id="SubAlbum" runat="server" EnableViewState="false" visible="True" height="16" width="16" imageurl="~/Admin/AdvFileManager/Images/NewFolder.gif" style="border-width:0px"></asp:imagebutton>
-<asp:imagebutton id="UploadImage" runat="server" EnableViewState="false" visible="True" height="16" width="16" imageurl="~/Admin/AdvFileManager/Images/Upload.gif" style="border-width:0px"></asp:imagebutton>
+<asp:imagebutton id="ClearCache" runat="server" EnableViewState="false" visible="False" height="16" width="16" ImageURL="~/images/1x1.gif" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -256px;"></asp:imagebutton>
+<asp:imagebutton id="SubAlbum" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/Admin/AdvFileManager/Images/NewFolder.gif" style="border-width:0px"></asp:imagebutton>
+<asp:imagebutton id="UploadImage" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/Admin/AdvFileManager/Images/Upload.gif" style="border-width:0px"></asp:imagebutton>
 </td>
 <td class="TTTHeader" valign="middle" style="white-space: nowrap;" align="right" height="28">
 <font color="#ff0000">
@@ -100,20 +100,20 @@
 <tr>
 <td align="center" valign="top" height="20">
 <asp:hyperlink id="lnkSlideshow" visible="<%# CanView(Container.DataItem) %>" navigateurl="<%# GetSlideshowURL(Container.DataItem) %>"  EnableViewState="false" runat="server">
-<img height="16" width="16" src="images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -288px;">
+<img height="16" width="16" src="/images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -288px;">
 </asp:hyperlink>
 <asp:hyperlink id="lnkDiscussion" runat="server" EnableViewState="false" navigateurl="<%# GetForumURL(Container.DataItem) %>" visible="<%# CanDiscuss()%>">
-<img height="16" width="16" src="images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -48px;">
+<img height="16" width="16" src="/images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -48px;">
 </asp:hyperlink>
 <asp:hyperlink id="lnkEditRes" runat="server" EnableViewState="false" visible="<%# ItemIconAuthority(Container.DataItem) %>" navigateurl="<%# GetEditIconURL(Container.DataItem) %>">
-<img height="16" width="16" src="images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px 0px;">
+<img height="16" width="16" src="/images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px 0px;">
 </asp:hyperlink>
 <asp:hyperlink id="lnkEdit" runat="server" EnableViewState="false" visible="<%# ItemAuthority(Container.DataItem) %>" navigateurl="<%# GetEditURL(Container.DataItem) %>">
-<img height="16" width="16" src="images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -128px;">
+<img height="16" width="16" src="/images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -128px;">
 </asp:hyperlink>
-<asp:ImageButton id="btnDownload" runat="server"  height="16" width="16" visible="<%# CanDownload(Container.DataItem) %>" CommandName="edit" ImageUrl="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -96px;" >
+<asp:ImageButton id="btnDownload" runat="server"  height="16" width="16" visible="<%# CanDownload(Container.DataItem) %>" CommandName="edit" ImageURL="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -96px;" >
 </asp:ImageButton>
-<asp:ImageButton id="Delete" runat="server"  height="16" width="16" visible="<%# ItemAuthority(Container.DataItem) %>" CommandName="delete" ImageUrl="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -32px;">
+<asp:ImageButton id="Delete" runat="server"  height="16" width="16" visible="<%# ItemAuthority(Container.DataItem) %>" CommandName="delete" ImageURL="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -32px;">
 </asp:ImageButton>
 </td>
 </tr>

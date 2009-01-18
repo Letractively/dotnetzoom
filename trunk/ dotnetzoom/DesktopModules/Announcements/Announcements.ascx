@@ -18,7 +18,7 @@
 </asp:DataList>
 <br>
 <asp:HyperLink id="rssLink" Visible="False" runat="server">
-<img height="14" width="36" src="images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -445px;">
+<img height="14" width="36" src="/images/1x1.gif" Alt="*" style="border-width:0px; background: url('/images/uostrip.gif') no-repeat; background-position: 0px -445px;">
 </asp:HyperLink>
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>
 </asp:PlaceHolder>

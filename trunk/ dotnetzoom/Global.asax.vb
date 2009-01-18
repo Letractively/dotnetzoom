@@ -166,6 +166,7 @@ Namespace DotNetZoom
         End Sub
 
         Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)
+
             If Not Application("error403") Is Nothing Then
                 Dim TempError As String = Application("error403")
                 Application("error403") = Nothing
@@ -334,7 +335,7 @@ Namespace DotNetZoom
                     End If
                 End If
 
-                
+
                 ' get tabId from querystring
                 If Not (Request.Params("tabid") Is Nothing) Then
                     If Request.Params("tabid") <> "" Then
@@ -375,16 +376,19 @@ Namespace DotNetZoom
 
                 ' validate the alias
                 PortalNumber = PortalSettings.GetPortalByAlias(PortalAlias)
+
                 If PortalNumber <> -1 Then
-
-
                     ' see if file name is not a tab
-                    Dim StringFileName As String = Request.Path
-                    If Request.ApplicationPath.Length > 1 Then
-                        StringFileName = StringFileName.Remove(0, Request.ApplicationPath.Length + 1).ToString.ToLower
-                    Else
-                        StringFileName = StringFileName.Remove(0, Request.ApplicationPath.Length).ToString.ToLower
-                    End If
+                    Dim StringFileName As String = Mid(Request.Path, InStrRev(Request.Path, "/") + 1).ToLower
+
+
+                    ' Dim StringFileName As String = Request.Path
+                    'If Request.ApplicationPath.Length > 1 Then
+                    'StringFileName = StringFileName.Remove(0, Request.ApplicationPath.Length + 1).ToString.ToLower
+                    'Else
+                    'StringFileName = StringFileName.Remove(0, Request.ApplicationPath.Length).ToString.ToLower
+                    'End If
+
                     Dim TempLanguageCode As String
                     TempLanguageCode = Replace(StringFileName, ".aspx", "")
                     If InStr(1, TempLanguageCode, ".") <> 0 Then
@@ -441,6 +445,9 @@ Namespace DotNetZoom
 
                     context.Items.Add("Language", LanguageHash)
 
+                    ' put url in memory
+                    context.Items.Add("RequestURL", Request.Url.ToString())
+                    context.Items.Add("RequestDocument", Request.Path.ToString())
                     ' end language				
 
                     If TempLanguageCode = TempLanguage Then
@@ -449,6 +456,8 @@ Namespace DotNetZoom
 
                     If StringFileName <> "default.aspx" Then
                         StringFileName = Replace(StringFileName, ".aspx", "")
+
+
                         If StringFileName <> "" Then
                             Dim result As SqlDataReader = objAdmin.GetTabByFriendLyName(StringFileName, PortalNumber)
                             If result.Read() Then
@@ -461,7 +470,7 @@ Namespace DotNetZoom
                                         TempQuerystring = "tabid=" & tabId.ToString & "&" & TempQuerystring
                                     End If
                                 End If
-                                context.RewritePath("~/default.aspx", String.Empty, TempQuerystring)
+                                HttpContext.Current.RewritePath(IIf(HttpContext.Current.Request.ApplicationPath = "/", "", HttpContext.Current.Request.ApplicationPath) + "/default.aspx", String.Empty, TempQuerystring)
                             Else
                                 'not a tab in data base
                                 'see if file exist otherwise send 404
@@ -470,16 +479,16 @@ Namespace DotNetZoom
                                     SendHttpException("404", "Not Found", Request)
                                 End If
 
-
                             End If
                             result.Close()
                         End If
                     Else
-                        context.RewritePath("~/default.aspx", String.Empty, context.Request.QueryString.ToString())
+                        HttpContext.Current.RewritePath(IIf(HttpContext.Current.Request.ApplicationPath = "/", "", HttpContext.Current.Request.ApplicationPath) + "/default.aspx", String.Empty, HttpContext.Current.Request.QueryString.ToString())
+
                     End If
                     ' Cashe Portal Setting 
 
-                    Dim TempKey As String = GetDBname() & "Portal" & PortalNumber & "_Tab" & tabId & "_ " & TempLanguage
+                    Dim TempKey As String = GetDBname() & "Portal" & PortalNumber & DomainName & "_Tab" & tabId & "_ " & TempLanguage
 
 
                     Dim _settings As PortalSettings = CType(context.Cache(TempKey), PortalSettings)
@@ -493,18 +502,18 @@ Namespace DotNetZoom
                             'Create the new directory and put in files
                             Try
                                 System.IO.Directory.CreateDirectory(Request.MapPath(_settings.UploadDirectory))
-                                Dim fileEntries As String() = System.IO.Directory.GetFiles(Request.MapPath("~/templates/base/"))
+                                Dim fileEntries As String() = System.IO.Directory.GetFiles(GetAbsoluteServerPath(Request) + "templates\base\")
                                 Dim TempFileName As String
                                 Dim strFileName As String
                                 For Each strFileName In fileEntries
                                     If InStr(1, strFileName.ToLower, "template.") = 0 Then
-                                        TempFileName = strFileName.Replace(Request.MapPath("~/templates/base/"), Request.MapPath(_settings.UploadDirectory))
+                                        TempFileName = strFileName.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory))
                                         System.IO.File.Copy(strFileName, TempFileName)
                                     End If
                                 Next strFileName
                                 Dim StrFolder As String
-                                For Each StrFolder In System.IO.Directory.GetDirectories(Request.MapPath("~/templates/base/"))
-                                    CopyFileRecursively(StrFolder, StrFolder.Replace(Request.MapPath("~/templates/base/"), Request.MapPath(_settings.UploadDirectory)))
+                                For Each StrFolder In System.IO.Directory.GetDirectories(GetAbsoluteServerPath(Request) + "templates\base\")
+                                    CopyFileRecursively(StrFolder, StrFolder.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory)))
                                 Next
                             Catch
                                 ClearHostCache()
@@ -554,9 +563,9 @@ Namespace DotNetZoom
 
                         FormsAuthentication.SignOut()
                         If Request.Params("tabid") Is Nothing Then
-                            Response.Redirect("~" & GetDocument(), True)
+                            Response.Redirect(GetFullDocument(), True)
                         Else
-                            Response.Redirect("~" & GetDocument() & "?tabid=" & Request.Params("tabid"), True)
+                            Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid"), True)
                         End If
                         Exit Sub
                     End If
@@ -681,6 +690,7 @@ Namespace DotNetZoom
 
                     End If
                 End If
+
             End If
         End Sub
 

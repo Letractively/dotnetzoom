@@ -55,7 +55,7 @@ Namespace DotNetZoom
 		
             Title1.EditText = GetLanguage("upload")
             Title1.OptionsText = GetLanguage("F_cmdSynchronize") + "<br>" + GetLanguage("F_Update")
-            Title1.EditIMG = "<img  src=""admin/advfileManager/images/upload.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "admin/advfileManager/images/upload.gif"" alt=""*"" style=""border-width:0px;"">"
             Title1.DisplayHelp = "DisplayHelp_FileManager"
             BindData()
         End Sub

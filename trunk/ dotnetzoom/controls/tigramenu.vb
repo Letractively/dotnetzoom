@@ -186,7 +186,7 @@ End Function
 				If objTab.DisableLink Then
 				TempString.append("' , '' , {'sb' : '" & TempTabName &"'} ")
 				else
-				TempString.append("' , '" & FormatFriendlyURL(objtab.FriendlyTabName, objTab.ShowFriendly, objtab.Tabid.ToString) & "' , {'sb' : '" & TempTabName &"'} ")
+                        TempString.Append("' , '" & FormatFriendlyURL(objTab.FriendlyTabName, objTab.ssl, objTab.ShowFriendly, objTab.TabId.ToString) & "' , {'sb' : '" & TempTabName & "'} ")
 				end if
 				NotFirstTimeAround = True
 				LastLevel = objTab.Level
@@ -201,9 +201,9 @@ End Function
 			   
 			TempString.append(" ];" & ControlChars.Cr)
             TempString.append("function Ti (text) { return '<img src=""" & _portalSettings.UploadDirectory & "' + text + '"" border=""0"" alt=""""> ';}" & ControlChars.Cr)
-            TempString.Append("function Ta (text) { return '<img src=""" & "images/" & "' + text + '"" border=""0"" alt=""""> ';}" & ControlChars.Cr)
-			TempString.append("//--></SCRIPT>" & ControlChars.Cr)
-            TempString.Append("<script language=""JavaScript"" type=""text/javascript"" src=""/javascript/menu.js""></script>" & ControlChars.Cr)
+            TempString.Append("function Ta (text) { return '<img src=""" & glbPath & "images/" & "' + text + '"" border=""0"" alt=""""> ';}" & ControlChars.Cr)
+            TempString.Append("//--></SCRIPT>" & ControlChars.Cr)
+            TempString.Append("<script language=""JavaScript"" type=""text/javascript"" src=""" & glbPath & "javascript/menu.js""></script>" & ControlChars.Cr)
 			TempString.append("<script language=""JavaScript"" type=""text/javascript""> new menu(MENU_ITEMS, MENU_POS1); </script>" & ControlChars.Cr)
 			TempString.Append("<!-- tigra menu you can find a copy at http://www.softcomplex.com/products/tigra_menu/ = " & " -->")
 			tigraMenuString = TempString.ToString()

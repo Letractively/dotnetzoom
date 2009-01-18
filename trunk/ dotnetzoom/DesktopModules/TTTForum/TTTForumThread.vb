@@ -134,11 +134,11 @@ Namespace DotNetZoom
                 If forumInfo.IsActive Then
                     If forumInfo.IsPrivate Then
                         If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
-                            HttpContext.Current.Response.Redirect("~" & GetDocument() & "?edit=control&def=Access Denied", True)
+                            HttpContext.Current.Response.Redirect(GetFullDocument() & "?edit=control&def=Access Denied", True)
                         End If
                     End If
                 Else
-                    HttpContext.Current.Response.Redirect("~" & GetDocument(), True)
+                    HttpContext.Current.Response.Redirect(GetFullDocument(), True)
                 End If
 
 
@@ -326,7 +326,7 @@ Namespace DotNetZoom
             End If
             dr.Close()
             If NeedToExit Then
-                HttpContext.Current.Response.Redirect(FormatFriendlyURL(_PortalSettings.activetab.FriendlyTabName, _PortalSettings.activetab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString))
+                HttpContext.Current.Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString))
             End If
         End Sub
 
@@ -430,7 +430,7 @@ Namespace DotNetZoom
                 wr.RenderEndTag() ' Img
                 wr.RenderEndTag() ' A
             Else
-                wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
+                wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
                 wr.AddAttribute(HtmlTextWriterAttribute.Width, "32")
                 wr.AddAttribute(HtmlTextWriterAttribute.Height, "32")
                 If _pinned Then
@@ -517,7 +517,7 @@ Namespace DotNetZoom
                 wr.AddAttribute(HtmlTextWriterAttribute.Href, TTTUtils.GetURL(document, page, String.Format("edit=control&postid={0}&forumid={1}&mid={2}&tabid={3}&action=edit", _threadID.ToString, ZforumID.ToString, ZmoduleID.ToString, _portalSettings.ActiveTab.TabId), "searchpage=&threadspage="))
                 wr.RenderBeginTag(HtmlTextWriterTag.A)
                 wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
-                wr.AddAttribute(HtmlTextWriterAttribute.Src, "images/1x1.gif")
+                wr.AddAttribute(HtmlTextWriterAttribute.Src, glbPath & "images/1x1.gif")
                 wr.AddAttribute(HtmlTextWriterAttribute.Width, "16")
                 wr.AddAttribute(HtmlTextWriterAttribute.Height, "16")
 

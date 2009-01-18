@@ -86,8 +86,8 @@ Namespace DotNetZoom
             If Page.IsPostBack = False Then
 
                 ' load the list of files found in the upload directory
-                cmdUpload1.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
-                cmdUpload2.NavigateUrl = "~" & GetDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload1.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload2.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
 
                 Dim FileList1 As ArrayList = GetFileList(_portalSettings.PortalId, "rss,xml")
                 cboXML.DataSource = FileList1
@@ -95,7 +95,7 @@ Namespace DotNetZoom
                 Dim FileList2 As ArrayList = GetFileList(_portalSettings.PortalId, "xsl")
                 cboXSL.DataSource = FileList2
                 cboXSL.DataBind()
-                
+
 
                 If ModuleId > 0 Then
 
@@ -137,7 +137,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
             End If
 

@@ -186,7 +186,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?tabid=" & TabId, True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
                 Else
                     cmdDelete.Visible = False
@@ -197,7 +197,7 @@ Namespace DotNetZoom
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
-                    ViewState("UrlReferrer") = ViewState("UrlReferrer") = "~" & GetDocument() & "?tabid=" & TabId
+                    ViewState("UrlReferrer") = ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
                 End If
                 If InStr(1, ViewState("UrlReferrer"), "VisibleDate=") Then
                     ViewState("UrlReferrer") = Left(ViewState("UrlReferrer"), InStr(1, ViewState("UrlReferrer"), "VisibleDate=") - 2)

@@ -24,7 +24,7 @@ end if
 end sub
 		Private Sub SetFckEditor()
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			FCKeditor1.LinkBrowser = true
+        ' FCKeditor1.LinkBrowser = true
 			FCKeditor1.width = unit.pixel(650)
 			FCKeditor1.Height = unit.pixel(350)
 			if GetLanguage("fckeditor_language") <> "auto"
@@ -41,7 +41,7 @@ end sub
 			end if
 			CSSFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/htmlstyles.xml")
 			If System.IO.File.Exists(CSSFileName) then
-			FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/htmlstyles.xml"
+            FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/htmlstyles.xml"
 			else
 			CSSFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml")
 			If System.IO.File.Exists(CSSFileName) then

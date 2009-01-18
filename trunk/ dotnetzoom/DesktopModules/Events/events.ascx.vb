@@ -69,7 +69,7 @@ Namespace DotNetZoom
 
 
             Title1.EditText = GetLanguage("add")
-            Title1.EditIMG = "<img  src=""images/add.gif"" alt=""*"" style=""border-width:0px;"">"
+            Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
             Dim EventView As String = CType(Settings("eventview"), String)
             If EventView Is Nothing Then
                 EventView = "C" ' calendar
@@ -81,30 +81,30 @@ Namespace DotNetZoom
                 Case "L" ' list
                     lstEvents.Visible = True
                     calEvents.Visible = False
-  					' Check to see if available in Cache
-					Dim TempKey as String = GetDBname & "ModuleID_" & CStr(ModuleId)
-					Dim context As HttpContext = HttpContext.Current
-					Dim content as system.data.DataTable = Context.Cache(TempKey)
-            		If content Is Nothing Then
-					'	Item not in cache, get it manually    
-            		Dim objAdmin As New AdminDB()
-					content = AdminDB.ConvertDataReaderToDataTable(events.GetModuleEvents(ModuleId))
-  			        Context.Cache.Insert(TempKey, content, CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.Tabid, ModuleID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-  					End If
-					lstEvents.DataSource =  content					
-	                lstEvents.DataBind()
+                    ' Check to see if available in Cache
+                    Dim TempKey As String = GetDBname() & "ModuleID_" & CStr(ModuleId)
+                    Dim context As HttpContext = HttpContext.Current
+                    Dim content As System.Data.DataTable = context.Cache(TempKey)
+                    If content Is Nothing Then
+                        '	Item not in cache, get it manually    
+                        Dim objAdmin As New AdminDB()
+                        content = AdminDB.ConvertDataReaderToDataTable(events.GetModuleEvents(ModuleId))
+                        context.Cache.Insert(TempKey, content, CDp(_portalSettings.PortalId, _portalSettings.ActiveTab.TabId, ModuleId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
+                    End If
+                    lstEvents.DataSource = content
+                    lstEvents.DataBind()
                 Case "C" ' calendar
                     lstEvents.Visible = False
                     calEvents.Visible = True
 
-                     If CType(Settings("eventcalendarcellwidth"), String) <> "" Then
+                    If CType(Settings("eventcalendarcellwidth"), String) <> "" Then
                         calEvents.Width = System.Web.UI.WebControls.Unit.Parse(CType(Settings("eventcalendarcellwidth"), String) & "px")
-                     End If
-                     If CType(Settings("eventcalendarcellheight"), String) <> "" Then
+                    End If
+                    If CType(Settings("eventcalendarcellheight"), String) <> "" Then
                         calEvents.Height = System.Web.UI.WebControls.Unit.Parse(CType(Settings("eventcalendarcellheight"), String) & "px")
-                     End If
-					
-					
+                    End If
+
+
                     If Not Page.IsPostBack Then
                         If Not Request.Params("VisibleDate") Is Nothing Then
                             calEvents.VisibleDate = Request.Params("VisibleDate")
@@ -131,10 +131,10 @@ Namespace DotNetZoom
             If e.Day.Date.Month = intMonth Then
                 Dim ctlLabel As Label = New Label()
                 ctlLabel.Text = arrEvents(e.Day.Date.Day)
-				if ctlLabel.Text <> "" then
-                e.Cell.BackColor = System.Drawing.Color.Yellow
-                e.Cell.ForeColor = System.Drawing.Color.Red
-				end if
+                If ctlLabel.Text <> "" Then
+                    e.Cell.BackColor = System.Drawing.Color.Yellow
+                    e.Cell.ForeColor = System.Drawing.Color.Red
+                End If
 
                 e.Cell.Controls.Add(ctlLabel)
             End If
@@ -143,46 +143,46 @@ Namespace DotNetZoom
 
         Private Sub calEvents_VisibleMonthChanged(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.MonthChangedEventArgs) Handles calEvents.VisibleMonthChanged
 
-                Dim StartDate As Date = GetFirstDayofMonthDate(e.NewDate.Date)
-                Dim EndDate As Date = GetLastDayofMonthDate(e.NewDate.Date)
+            Dim StartDate As Date = GetFirstDayofMonthDate(e.NewDate.Date)
+            Dim EndDate As Date = GetLastDayofMonthDate(e.NewDate.Date)
 
-                GetCalendarEvents(StartDate, EndDate)
+            GetCalendarEvents(StartDate, EndDate)
 
         End Sub
 
         Private Sub GetCalendarEvents(ByVal StartDate As Date, ByVal EndDate As Date)
             Dim events As New EventsDB()
             Dim strDayText As String
-			Dim StringTip As String
+            Dim StringTip As String
             Dim datTargetDate As Date
             Dim datDate As Date
             Dim blnDisplay As Boolean
-            Dim StrStartDate as String = FormatAnsiDate(StartDate.Tostring("yyyy-MM-dd"))
-            Dim StrEndDate as String = FormatAnsiDate(EndDate.Tostring("yyyy-MM-dd"))
+            Dim StrStartDate As String = formatansidate(StartDate.ToString("yyyy-MM-dd"))
+            Dim StrEndDate As String = formatansidate(EndDate.ToString("yyyy-MM-dd"))
             Array.Clear(arrEvents, 0, 32)
 
 
-           Dim dr As SqlDataReader = events.GetModuleEvents(ModuleId, CheckDateSql(StrStartDate), CheckDateSql(StrEndDate) & " 23:59")
-       
-			While dr.Read()
+            Dim dr As SqlDataReader = events.GetModuleEvents(ModuleId, CheckDateSqL(StrStartDate), CheckDateSqL(StrEndDate) & " 23:59")
+
+            While dr.Read()
                 If dr("Period").ToString = "" Then
-                    
-					strDayText = "<br>"
-					StringTip = "<span class='ItemTitle'>" & dr("Title") & "</span>"
+
+                    strDayText = "<br>"
+                    StringTip = "<span class='ItemTitle'>" & dr("Title") & "</span>"
                     If Format(dr("DateTime"), "HH:mm") <> "00:00" Then
-                        StringTip += "<br>" & Format(dr("DateTime"), "HH:mm") 
+                        StringTip += "<br>" & Format(dr("DateTime"), "HH:mm")
                     End If
                     StringTip += "<br>" & dr("Description")
 
-					
+
                     If IsEditable Then
-                        strDayText += "<a href=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & getdocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&ItemID=" & dr("ItemID") & "&VisibleDate=" & calEvents.VisibleDate.ToShortDateString & """  title=""Modifier"">"
+                        strDayText += "<a href=""" & GetFullDocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&ItemID=" & dr("ItemID") & "&VisibleDate=" & calEvents.VisibleDate.ToShortDateString & """  title=""Modifier"">"
                     End If
-					
+
                     If FormatImage(dr("IconFile")) <> "" Then
                         strDayText += "<img title="""" onmouseover=""" & ReturnToolTip(StringTip) & """ alt=""" & dr("AltText") & """ src=""" & FormatImage(dr("IconFile")) & """ border=""0"">"
-					Else
-                        strDayText += "<img title="""" onmouseover=""" & ReturnToolTip(StringTip) & """ alt=""" & dr("AltText") & """ src=""images/view.gif"" width=""16"" height=""16"" border=""0"">"
+                    Else
+                        strDayText += "<img title="""" onmouseover=""" & ReturnToolTip(StringTip) & """ alt=""" & dr("AltText") & """ src=""" & glbPath & "images/view.gif"" width=""16"" height=""16"" border=""0"">"
                     End If
                     If IsEditable Then
                         strDayText += "</a>"
@@ -230,26 +230,26 @@ Namespace DotNetZoom
                                 End If
                             End If
                         End If
-                    If blnDisplay Then
-                    strDayText = "<br>"
-					StringTip = dr("Title") 
-                    If Format(dr("DateTime"), "HH:mm") <> "00:00" Then
-                        StringTip += "<br>" &  Format(dr("DateTime"), "HH:mm") 
-                    End If
-                    StringTip += "<br>" & dr("Description")
-                    
-					
-					If IsEditable Then
-                        strDayText += "<a href=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & getdocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&ItemID=" & dr("ItemID") & "&VisibleDate=" & calEvents.VisibleDate.ToShortDateString & """  title=""Modifier"">"
-                    End If
-                    If FormatImage(dr("IconFile")) <> "" Then
-                        strDayText += "<img title="""" onmouseover=""" & ReturnToolTip(StringTip) & """ alt=""" & dr("AltText") & """ src=""" & FormatImage(dr("IconFile")) & """ border=""0"">"
-					Else
-                                strDayText += "<img title="""" onmouseover=""" & ReturnToolTip(StringTip) & """ alt=""" & dr("AltText") & """ src=""images/view.gif"" width=""16"" height=""16"" border=""0"">"
-                    End If
-                    If IsEditable Then
-                        strDayText += "</a>"
-                    End If
+                        If blnDisplay Then
+                            strDayText = "<br>"
+                            StringTip = dr("Title")
+                            If Format(dr("DateTime"), "HH:mm") <> "00:00" Then
+                                StringTip += "<br>" & Format(dr("DateTime"), "HH:mm")
+                            End If
+                            StringTip += "<br>" & dr("Description")
+
+
+                            If IsEditable Then
+                                strDayText += "<a href=""" & GetFullDocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&ItemID=" & dr("ItemID") & "&VisibleDate=" & calEvents.VisibleDate.ToShortDateString & """  title=""Modifier"">"
+                            End If
+                            If FormatImage(dr("IconFile")) <> "" Then
+                                strDayText += "<img title="""" onmouseover=""" & ReturnToolTip(StringTip) & """ alt=""" & dr("AltText") & """ src=""" & FormatImage(dr("IconFile")) & """ border=""0"">"
+                            Else
+                                strDayText += "<img title="""" onmouseover=""" & ReturnToolTip(StringTip) & """ alt=""" & dr("AltText") & """ src=""" & glbPath & "images/view.gif"" width=""16"" height=""16"" border=""0"">"
+                            End If
+                            If IsEditable Then
+                                strDayText += "</a>"
+                            End If
 
 
                             arrEvents(datDate.Day) += strDayText

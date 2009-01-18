@@ -42,7 +42,8 @@ Namespace DotNetZoom
 #End Region
 
 		Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			'Put user code to initialize the page here
+
+            'Put user code to initialize the page here
 			Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("dialog.js"))
 			Page.RegisterClientScriptBlock("FileManager", incScript)
 

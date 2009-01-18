@@ -71,64 +71,68 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			Title1.DisplayHelp = "DisplayHelp_EditRole"
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			valRoleName.ErrorMessage = "<br>" + GetLanguage("need_role_name")
-			valServiceFee1.ErrorMessage = "<br>" + GetLanguage("bad_value_services")
-			valServiceFee2.ErrorMessage = "<br>" + GetLanguage("bad_value_services0")
-			valBillingPeriod1.ErrorMessage = "<br>" + GetLanguage("bad_billing_period")
-			valBillingPeriod2.ErrorMessage = "<br>" + GetLanguage("bad_billing_period0")
-			valTrialFee1.ErrorMessage = "<br>" + GetLanguage("bad_trial_fee")
-			valTrialFee2.ErrorMessage = "<br>" + GetLanguage("bad_trial_fee0")
-			valTrialPeriod1.ErrorMessage = "<br>" + GetLanguage("bad_trial_period")
-			valTrialPeriod2.ErrorMessage = "<br>" + GetLanguage("bad_trial_period0")
-			cmdUpdate.Text = GetLanguage("enregistrer")
-			cmdCancel.Text = GetLanguage("annuler")
-			cmdDelete.Text = GetLanguage("delete")
-			cmdManage.Text = GetLanguage("ManageRoles")
-			
-			
-			
+            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+            End If
+            Title1.DisplayHelp = "DisplayHelp_EditRole"
+
+            valRoleName.ErrorMessage = "<br>" + GetLanguage("need_role_name")
+            valServiceFee1.ErrorMessage = "<br>" + GetLanguage("bad_value_services")
+            valServiceFee2.ErrorMessage = "<br>" + GetLanguage("bad_value_services0")
+            valBillingPeriod1.ErrorMessage = "<br>" + GetLanguage("bad_billing_period")
+            valBillingPeriod2.ErrorMessage = "<br>" + GetLanguage("bad_billing_period0")
+            valTrialFee1.ErrorMessage = "<br>" + GetLanguage("bad_trial_fee")
+            valTrialFee2.ErrorMessage = "<br>" + GetLanguage("bad_trial_fee0")
+            valTrialPeriod1.ErrorMessage = "<br>" + GetLanguage("bad_trial_period")
+            valTrialPeriod2.ErrorMessage = "<br>" + GetLanguage("bad_trial_period0")
+            cmdUpdate.Text = GetLanguage("enregistrer")
+            cmdCancel.Text = GetLanguage("annuler")
+            cmdDelete.Text = GetLanguage("delete")
+            cmdManage.Text = GetLanguage("ManageRoles")
+
+
+
             If IsNumeric(Request.Params("RoleID")) Then
                 RoleID = Int32.Parse(Request.Params("RoleID"))
             End If
 
             If Page.IsPostBack = False Then
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
                 Dim objUser As New UsersDB()
                 Dim objAdmin As New AdminDB()
 
-			
-		    Dim dt As New DataTable()
-    	    Dim drw As DataRow
-	   		
-    	    dt.Columns.Add(New DataColumn("Code", GetType(String)))
-        	dt.Columns.Add(New DataColumn("Description", GetType(String)))
 
-			Dim Result As SqlDataReader = objAdmin.GetBillingFrequencyCodes(GetLanguage("N"))
-			While result.Read()
-			drw = dt.NewRow()
-    	    drw(0) =  result(0)
-			drw(1) =  result(2)
-			dt.Rows.Add(drw)
-	        End While  
-			result.Close()
-			Dim dv As New DataView(dt)
+                Dim dt As New DataTable()
+                Dim drw As DataRow
 
-				
+                dt.Columns.Add(New DataColumn("Code", GetType(String)))
+                dt.Columns.Add(New DataColumn("Description", GetType(String)))
+
+                Dim Result As SqlDataReader = objAdmin.GetBillingFrequencyCodes(GetLanguage("N"))
+                While Result.Read()
+                    drw = dt.NewRow()
+                    drw(0) = Result(0)
+                    drw(1) = Result(2)
+                    dt.Rows.Add(drw)
+                End While
+                Result.Close()
+                Dim dv As New DataView(dt)
+
+
                 cboBillingFrequency.DataSource = dv
                 cboBillingFrequency.DataBind()
                 cboBillingFrequency.Items.FindByValue("N").Selected = True
 
-				
+
                 cboTrialFrequency.DataSource = dv
                 cboTrialFrequency.DataBind()
                 cboTrialFrequency.Items.FindByValue("N").Selected = True
 
                 If RoleID <> -1 Then
-			
+
                     Dim dr As SqlDataReader = objUser.GetSingleRole(RoleID, GetLanguage("N"))
                     If dr.Read() Then
                         txtRoleName.Text = dr("RoleName").ToString
@@ -154,31 +158,31 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect("~" & GetDocument() & "?tabid=" & TabId & Request.Params("tabid") & "&" & GetAdminPage(), True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & TabId & Request.Params("tabid") & "&" & GetAdminPage(), True)
                     End If
-					Dim Admin As New AdminDB()
-		            Dim UploadRoles As String = _portalSettings.AdministratorRoleId.ToString & ";"
-        		    If Not CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String) Is Nothing Then
-                		UploadRoles = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String)
-            		End If
-                	If InStr(1, UploadRoles, RoleID.ToString() & ";") Then
-                    chkUpload.Checked = True
-					else
-					chkUpload.Checked = False
-                	End If
-					
-					If RoleID = _portalSettings.AdministratorRoleId then
-					chkUpload.Checked = True
-					end if
-					
-					
+                    Dim Admin As New AdminDB()
+                    Dim UploadRoles As String = _portalSettings.AdministratorRoleId.ToString & ";"
+                    If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+                        UploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
+                    End If
+                    If InStr(1, UploadRoles, RoleID.ToString() & ";") Then
+                        chkUpload.Checked = True
+                    Else
+                        chkUpload.Checked = False
+                    End If
+
+                    If RoleID = _portalSettings.AdministratorRoleId Then
+                        chkUpload.Checked = True
+                    End If
+
+
                     If RoleID = _portalSettings.AdministratorRoleId Or RoleID = _portalSettings.RegisteredRoleId Then
                         cmdDelete.Visible = False
-                        pnlServicesFee.Visible = False 
-		                pnlAssignation.Visible = False
-					else
-					pnlServicesFee.Visible = True 
-		            pnlAssignation.Visible = True
+                        pnlServicesFee.Visible = False
+                        pnlAssignation.Visible = False
+                    Else
+                        pnlServicesFee.Visible = True
+                        pnlAssignation.Visible = True
                     End If
 
                     If RoleID = _portalSettings.RegisteredRoleId Then
@@ -229,31 +233,31 @@ Namespace DotNetZoom
                     objUser.AddRole(_portalSettings.PortalId, txtRoleName.Text, txtDescription.Text, dblServiceFee, intBillingPeriod, strBillingFrequency, dblTrialFee, intTrialPeriod, strTrialFrequency, chkIsPublic.Checked, chkAutoAssignment.Checked)
                 Else
                     objUser.UpdateRole(RoleID, GetLanguage("N"), txtRoleName.Text, txtDescription.Text, dblServiceFee, intBillingPeriod, strBillingFrequency, dblTrialFee, intTrialPeriod, strTrialFrequency, chkIsPublic.Checked, chkAutoAssignment.Checked)
-				Dim Admin As New AdminDB()
-		        Dim UploadRoles As String = _portalSettings.AdministratorRoleId.ToString & ";"
-        		If Not CType(settings("uploadroles"), String) Is Nothing Then
-                   UploadRoles = CType(settings("uploadroles"), String)
-            	End If
-                
-				If RoleID = _portalSettings.AdministratorRoleId then
-				chkUpload.Checked = True
-				end if
+                    Dim Admin As New AdminDB()
+                    Dim UploadRoles As String = _portalSettings.AdministratorRoleId.ToString & ";"
+                    If Not CType(Settings("uploadroles"), String) Is Nothing Then
+                        UploadRoles = CType(Settings("uploadroles"), String)
+                    End If
 
-				
-				If chkUpload.Checked then
-					If InStr(1, UploadRoles, RoleID.ToString() & ";") = 0 Then
-	                ' Add 
-					UploadRoles += RoleID.ToString() & ";"
-	                End If
-				else
-				UploadRoles = Replace(UploadRoles, RoleID.ToString() & ";", "")
-				end if
-				admin.UpdatePortalSetting(_portalSettings.PortalId, "uploadroles", UploadRoles)
+                    If RoleID = _portalSettings.AdministratorRoleId Then
+                        chkUpload.Checked = True
+                    End If
+
+
+                    If chkUpload.Checked Then
+                        If InStr(1, UploadRoles, RoleID.ToString() & ";") = 0 Then
+                            ' Add 
+                            UploadRoles += RoleID.ToString() & ";"
+                        End If
+                    Else
+                        UploadRoles = Replace(UploadRoles, RoleID.ToString() & ";", "")
+                    End If
+                    Admin.UpdatePortalSetting(_portalSettings.PortalId, "uploadroles", UploadRoles)
 
 
                 End If
 
-                Response.Redirect("~" & GetDocument() & "?tabid=" & TabId & Request.Params("tabid") & "&" & GetAdminPage(), True)
+                Response.Redirect(GetFullDocument() & "?tabid=" & TabId & Request.Params("tabid") & "&" & GetAdminPage(), True)
 
             End If
         End Sub
@@ -263,16 +267,16 @@ Namespace DotNetZoom
 
             objUser.DeleteRole(RoleID)
 
-            Response.Redirect("~" & GetDocument() & "?tabid=" & TabId & "&" & GetAdminPage(), True)
+            Response.Redirect(GetFullDocument() & "?tabid=" & TabId & "&" & GetAdminPage(), True)
 
         End Sub
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-            Response.Redirect("~" & GetDocument() & "?tabid=" & TabId &  "&" & GetAdminPage(), True)
+            Response.Redirect(GetFullDocument() & "?tabid=" & TabId & "&" & GetAdminPage(), True)
         End Sub
 
         Private Sub cmdManage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdManage.Click
-            Response.Redirect("~" & GetDocument() & "?edit=control&tabid=" & TabId & "&RoleId=" & RoleID & "&def=User Roles", True)
+            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&RoleId=" & RoleID & "&def=User Roles", True)
         End Sub
 
         Public Function FormatURL(ByVal strKeyName As String, ByVal strKeyValue As String) As String
