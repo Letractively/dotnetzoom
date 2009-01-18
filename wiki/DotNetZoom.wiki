@@ -3,7 +3,7 @@
 
 ==Français==
 
-La version 1.0.1 est :
+La version 1.0.2 est :
 
     *  Plus rapide, optimisé pour fonctionner sur un ligne DSL avec SQL Express 2005 et ASP-Net 2.0, windows XP.
     * Grande utilisation d'antémémoire, donc limite l'accès à la base de donnée et augmente la rapidité.
@@ -23,7 +23,7 @@ La version 1.0.1 est :
 
 ==English==
 
-Version 1.0.1:
+Version 1.0.2:
 
     * Is faster and was optimized to run on a DSL line with SQL Express 2005, ASP-Net 2.0 and windows XP.
     * Uses caching, thus limiting access to the database and increases the speed.
