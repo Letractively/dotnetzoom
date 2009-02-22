@@ -131,12 +131,13 @@ Namespace DotNetZoom
                     End Try
 
                 Else
-                    sb.Append(GetLanguage("F_Anonymous") & " ")
-                    sb.Append("<A href=""")
-                sb.Append(GetFullDocument())
-                    sb.Append("?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=Register""")
-                    sb.Append("><b>" & GetLanguage("F_AnonymousClick") & "</b></A>")
-                    lblGuestMessage.Text = sb.ToString
+                sb.Append(GetLanguage("F_Anonymous") & " ")
+                ' javascript:__doPostBack('banner$cmdRegister','')
+                sb.Append("<A href=""javascript:__doPostBack('banner$cmdRegister','')")
+                ' sb.Append(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&amp;def=Register", GetLanguage("N"), "&amp;"))
+                sb.Append("""><b>" & GetLanguage("F_AnonymousClick") & "</b></A>")
+
+                lblGuestMessage.Text = sb.ToString
                 End If
         End Sub
 

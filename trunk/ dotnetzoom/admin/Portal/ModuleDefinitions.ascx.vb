@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -91,7 +91,7 @@ Namespace DotNetZoom
 
             ' Verify that the current user has access to this page
             If Not PortalSecurity.IsSuperUser Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
 
             If IsAdminTab() And Not (HttpContext.Current.Request.Params("defid") Is Nothing) Then
@@ -106,7 +106,7 @@ Namespace DotNetZoom
 
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
-                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&hostpage=&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?hostpage=&tabid=" & TabId & "&def=Gestion fichiers"
 
                 If defId = -1 Then
 
@@ -179,7 +179,7 @@ Namespace DotNetZoom
             Dim xmlDoc As New XmlDocument()
             Dim nodeModule As XmlNode
             Dim nodeFile As XmlNode
-
+            Page.Validate()
             If Page.IsValid = True Then
 
                 Dim objAdmin As New AdminDB()

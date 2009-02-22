@@ -42,32 +42,7 @@ Public Class TTT_ForumSmiley
 #End Region
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                        objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    Case "Stibnite"
-                        objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    Case "Algues bleues"
-                        objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
-            End If
+        ForumConfig.SetSkinCSS(Page)
 
         Dim ModuleID As Integer = Int32.Parse(HttpContext.Current.Request("mid"))
 

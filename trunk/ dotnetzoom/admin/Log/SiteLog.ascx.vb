@@ -2,7 +2,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -30,7 +30,6 @@ Namespace DotNetZoom
         Protected WithEvents txtStartDate As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtEndDate As System.Web.UI.WebControls.TextBox
         Protected WithEvents cmdDisplay As System.Web.UI.WebControls.LinkButton
-        Protected WithEvents cmdCancel As System.Web.UI.WebControls.LinkButton
         Protected WithEvents grdLog As System.Web.UI.WebControls.DataGrid
         Protected WithEvents lblMessage As System.Web.UI.WebControls.Label
 
@@ -66,16 +65,16 @@ Namespace DotNetZoom
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
 
             Title1.DisplayHelp = "DisplayHelp_SiteLog"
             ' If this is the first visit to the page, bind the role data to the datalist
             If Page.IsPostBack = False Then
+
                 cmdStartCalendar.Text = GetLanguage("Stat_Calendar")
                 cmdEndCalendar.Text = GetLanguage("Stat_Calendar")
                 cmdDisplay.Text = GetLanguage("Stat_Display")
-                cmdCancel.Text = GetLanguage("annuler")
                 cmdStartCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtStartDate)
                 cmdEndCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtEndDate)
 
@@ -97,26 +96,7 @@ Namespace DotNetZoom
                 txtStartDate.Text = formatansidate(DateAdd(DateInterval.Day, -6, Date.Today).ToString("yyyy-MM-dd"))
                 txtEndDate.Text = formatansidate(DateAdd(DateInterval.Day, 1, Date.Today).ToString("yyyy-MM-dd"))
 
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
             End If
-        End Sub
-
-        Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-            If Not ViewState("UrlReferrer") = Nothing Then
-                Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
-            Else
-                If Request.Params("tabid") Is Nothing Then
-                    Response.Redirect(GetFullDocument() & "?" & GetAdminPage(), True)
-                Else
-                    Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
-                End If
-            End If
-
         End Sub
 
         Private Sub cmdDisplay_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdDisplay.Click

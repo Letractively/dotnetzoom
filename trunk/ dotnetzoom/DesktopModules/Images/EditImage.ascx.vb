@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -91,9 +91,11 @@ Namespace DotNetZoom
             EnableControls()
 
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
 
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
                 Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId, glbImageFileTypes)
                 cboInternal.DataSource = FileList
                 cboInternal.DataBind()
@@ -106,31 +108,31 @@ Namespace DotNetZoom
                     settings = PortalSettings.GetModuleSettings(ModuleId)
 
                     If InStr(1, CType(settings("src"), String), "://") = 0 Then
-                        fileName = Server.MapPath(_portalSettings.UploadDirectory & CType(Settings("src"), String))
+                        fileName = Server.MapPath(_portalSettings.UploadDirectory & CType(settings("src"), String))
                         optInternal.Checked = True
                         optExternal.Checked = False
                         EnableControls()
                         If cboInternal.Items.Contains(New ListItem(CType(settings("src"), String))) Then
                             cboInternal.Items.FindByText(CType(settings("src"), String)).Selected = True
                         End If
-                        If File.Exists(FileName) Then
-                            Dim Exif As New ExifWorks(FileName)
+                        If File.Exists(fileName) Then
+                            Dim Exif As New ExifWorks(fileName)
                             txtArtist.Text = Exif.Artist
-                            If TxtArtist.Text = "" Then
+                            If txtArtist.Text = "" Then
 
                                 Dim objUser As New UsersDB()
                                 Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
 
                                 ' Read first row from database
                                 If dr.Read() Then
-                                    TxtArtist.Text = dr("FirstName").ToString
-                                    TxtArtist.Text += " " & dr("LastName").ToString
+                                    txtArtist.Text = dr("FirstName").ToString
+                                    txtArtist.Text += " " & dr("LastName").ToString
                                 End If
                                 dr.Close()
                             End If
                             txtCopyright.Text = Exif.Copyright
-                            If TxtCopyright.Text = "" Then
-                                TxtCopyright.Text = GetDomainName(Request)
+                            If txtCopyright.Text = "" Then
+                                txtCopyright.Text = GetDomainName(Request)
                             End If
                             txtDescription.Text = Exif.Description
                             txtTitle.Text = Exif.Title
@@ -149,8 +151,6 @@ Namespace DotNetZoom
 
                 End If
 
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
             End If
 
@@ -177,25 +177,26 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
+
             If txtExternal.Text <> "" Then
                 strImage = AddHTTP(txtExternal.Text)
             Else
                 strImage = cboInternal.SelectedItem.Text
-				fileName = Server.MapPath(_portalSettings.UploadDirectory & strImage)
-				
-				If File.Exists(FileName) then
-				Dim Exif As New ExifWorks(FileName)
-		        Exif.Artist = txtArtist.Text
-        		Exif.Copyright = txtCopyright.Text
-        		Exif.Description = txtDescription.Text
-        		Exif.Title = txtTitle.Text
-        		Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
-        		BMP.Save(FileName & ".tmp")
-        		BMP.Dispose()
-        		Exif.Dispose()
-		        System.IO.File.Delete(FileName)
-        		System.IO.File.Move(FileName & ".tmp", FileName)
- 				End If
+                fileName = Server.MapPath(_portalSettings.UploadDirectory & strImage)
+
+                If File.Exists(fileName) Then
+                    Dim Exif As New ExifWorks(fileName)
+                    Exif.Artist = txtArtist.Text
+                    Exif.Copyright = txtCopyright.Text
+                    Exif.Description = txtDescription.Text
+                    Exif.Title = txtTitle.Text
+                    Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
+                    BMP.Save(fileName & ".tmp")
+                    BMP.Dispose()
+                    Exif.Dispose()
+                    System.IO.File.Delete(fileName)
+                    System.IO.File.Move(fileName & ".tmp", fileName)
+                End If
                 Dim dr As SqlDataReader = objAdmin.GetSingleFile(cboInternal.SelectedItem.Text, _portalSettings.PortalId)
                 If dr.Read Then
                     If txtWidth.Text = "" Then

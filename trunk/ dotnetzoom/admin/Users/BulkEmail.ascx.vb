@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -65,7 +65,7 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
             Title1.DisplayHelp = "DisplayHelp_BulkEmail"
 
@@ -74,7 +74,7 @@ Namespace DotNetZoom
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
-                    btnReturn.Visible = False
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 End If
 
                 TableMessage.Visible = True
@@ -92,7 +92,7 @@ Namespace DotNetZoom
                 cboRoles.DataBind()
                 dr.Close()
                 cboRoles.Items.Insert(0, New ListItem(GetLanguage("list_none"), "-1"))
-                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
 
                 Dim FileList As ArrayList
                 FileList = GetFileList(_portalSettings.PortalId)
@@ -119,23 +119,11 @@ Namespace DotNetZoom
 		Private Sub SetFckEditor()
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
-
-				FCKeditor1.width = unit.pixel(700)
-				FCKeditor1.Height = unit.pixel(500)
-				if GetLanguage("fckeditor_language") <> "auto"
-				FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-				FCKeditor1.AutoDetectLanguage = False
-				end if
-            	FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-            	FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-				' set the css for the editor if it exist
-				If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) then
-				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
-				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-                ' FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
-				End If
-
+            FCKeditor1.Width = Unit.Pixel(700)
+            FCKeditor1.Height = Unit.Pixel(500)
+            SetEditor(FCKeditor1)
+            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+            FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
         End Sub
 		
         Private Sub btnReturn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnReturn.Click

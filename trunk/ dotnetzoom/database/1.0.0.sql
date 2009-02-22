@@ -7459,7 +7459,7 @@ Mot de passe: webmestre&lt;br&gt;
 &lt;br&gt;
 * Utiliser l''option du menu&amp;nbsp;&lt;a href=&quot;fr.accueil.aspx?adminpage=72&quot;&gt;&lt;img width=&quot;16&quot; height=&quot;14&quot; border=&quot;0&quot; src=&quot;images/icon_hostsettings_16px.gif&quot; alt=&quot;webmestre&quot; /&gt;&lt;/a&gt;&lt;strong&gt;&lt;/strong&gt; pour g&amp;eacute;rer les options globales pour tous les portails du serveur. Assurez vous de modifier le m&amp;ocirc;t de passe pour le webmestre ainsi que&amp;nbsp;d''inscrire une adresse de courriel valide.&lt;br&gt;
 &lt;/p&gt;
-&lt;p&gt;DotNetZoom - http://www.dotnetzoom.com Copyright(c) 2004-2007 Ren&amp;eacute; Boulard Tous droits r&amp;eacute;serv&amp;eacute;s.&lt;br&gt;
+&lt;p&gt;DotNetZoom - http://www.dotnetzoom.com Copyright(c) 2004-2009 Ren&amp;eacute; Boulard Tous droits r&amp;eacute;serv&amp;eacute;s.&lt;br&gt;
 &lt;/p&gt;
 &lt;p&gt;DotNetNuke - http://www.dotnetnuke.com Copyright (c) 2002-2003 Shaun Walker ( sales@perpetualmotion.ca ) de Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca ) Tous droits r&amp;eacute;serv&amp;eacute;s.&lt;/p&gt;
 &lt;p&gt;La redistribution et l''utilisation sous forme binaire ou de code source, avec ou sans modification, est autoris&amp;eacute;e &amp;agrave; condition que les conditions suivantes soient respect&amp;eacute;es: Les redistributions du code source doivent conserver l''indication de copyright ci-dessus, cette liste de conditions et la renonciation suivante. Les redistributions sous forme binaire doivent reproduire l''indication de copyright ci-dessus, cette liste de conditions et la renonciation suivante dans la documentation et/ou les autres accessoires fournis avec la distribution.&lt;/p&gt;
@@ -7491,7 +7491,7 @@ Password: webmestre&lt;br&gt;
 &lt;strong&gt;Open Source License:&lt;/strong&gt; &lt;br&gt;
 &lt;br&gt;
 DotNetZoom - http://www.dotnetzoom.com&lt;br&gt;
-Copyright (c) 2004-2007&lt;br&gt;
+Copyright (c) 2004-2009&lt;br&gt;
 by Ren&amp;eacute; Boulard&lt;br&gt;
 &lt;br&gt;
 DotNetNuke -  &lt;a href=&quot;http://www.dotnetnuke.com&quot;&gt;http://www.dotnetnuke.com&lt;/a&gt;&lt;br&gt;
@@ -12740,7 +12740,7 @@ GO
 --Insert data into dbo.Portals
 -----------------------------------------------------------
 IF(	IDENT_INCR( 'dbo.Portals' ) IS NOT NULL OR IDENT_SEED('dbo.Portals') IS NOT NULL ) SET IDENTITY_INSERT dbo.Portals ON
-INSERT INTO [dbo].[Portals] ([PortalID],[PortalAlias],[PortalName],[LogoFile],[FooterText],[ExpiryDate],[UserRegistration],[BannerAdvertising],[AdministratorId],[Currency],[HostFee],[HostSpace],[AdministratorRoleId],[RegisteredRoleId],[Description],[KeyWords],[BackgroundFile],[PaymentProcessor],[ProcessorUserId],[ProcessorPassword],[SiteLogHistory],[TimeZone]) VALUES('0','localhost,.default','DotNetZoom','dotnetzoom.gif','Copyright 2004-2008 DotNetZoom',NULL,'2','0','9','CAD',0,'0','0','11','','','','PayPal','','','60','-300')
+INSERT INTO [dbo].[Portals] ([PortalID],[PortalAlias],[PortalName],[LogoFile],[FooterText],[ExpiryDate],[UserRegistration],[BannerAdvertising],[AdministratorId],[Currency],[HostFee],[HostSpace],[AdministratorRoleId],[RegisteredRoleId],[Description],[KeyWords],[BackgroundFile],[PaymentProcessor],[ProcessorUserId],[ProcessorPassword],[SiteLogHistory],[TimeZone]) VALUES('0','localhost,.default','DotNetZoom','dotnetzoom.gif','Copyright 2004-2009 DotNetZoom',NULL,'2','0','9','CAD',0,'0','0','11','','','','PayPal','','','60','-300')
 IF(	IDENT_INCR( 'dbo.Portals' ) IS NOT NULL OR IDENT_SEED('dbo.Portals') IS NOT NULL ) SET IDENTITY_INSERT dbo.Portals OFF
 GO
 
@@ -12783,7 +12783,7 @@ INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VAL
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','fr_signupmessage','')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','fr_Description','')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','fr_KeyWords','')
-INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','fr_FooterText','copyright 2004-2008 DotNetZoom')
+INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','fr_FooterText','copyright 2004-2009 DotNetZoom')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','fr_PortalName','DotNetZoom')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','flash','')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','fr_DemoDirectives','')
@@ -12800,7 +12800,7 @@ INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VAL
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','en_signupmessage','')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','en_Description','')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','en_KeyWords','')
-INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','en_FooterText','copyright 2004-2008 DotNetZoom')
+INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','en_FooterText','copyright 2004-2009 DotNetZoom')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','en_PortalName','DotNetZoom')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','en_DemoDirectives','')
 INSERT INTO [dbo].[PortalSettings] ([PortalID],[SettingName],[SettingValue]) VALUES('0','container339','[MODULE]')

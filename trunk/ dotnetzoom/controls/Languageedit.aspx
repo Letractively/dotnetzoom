@@ -7,18 +7,34 @@
 Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 StyleSheet.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/portal.css"" type=""text/css"" rel=""stylesheet"">"
-	   If Request.IsAuthenticated and not Page.IsPostBack then	
-    	  If Context.User.Identity.Name = _portalSettings.SuperUserId then
-    	 btnLanguageEdit.Text = GetLanguage("btnLanguageEdit") & " " & GetLanguage("N")
-		 btnLanguageEditAll.Text = GetLanguage("btnLanguageEditAll") & " " & GetLanguage("N")
- 		grdLanguage.Columns(0).HeaderText = GetLanguage("language_param")
-		grdLanguage.Columns(1).HeaderText = GetLanguage("language_change")
-
-    	 end if
-	 end if
+        If Request.IsAuthenticated Then
+            If Context.User.Identity.Name = _portalSettings.SuperUserId Then
+                If Not Page.IsPostBack Then
+                    btnLanguageEdit.Text = GetLanguage("btnLanguageEdit") & " " & GetLanguage("N")
+                    btnLanguageEditAll.Text = GetLanguage("btnLanguageEditAll") & " " & GetLanguage("N")
+                    grdLanguage.Columns(0).HeaderText = GetLanguage("language_param")
+                    grdLanguage.Columns(1).HeaderText = GetLanguage("language_change")
+                End If
+            Else
+                AccessDenied()
+            End If
+        Else
+            AccessDenied()
+        End If
 End Sub
 
 
+    Private Sub AccessDenied()
+        RegisterBADip(Request.UserHostAddress)
+        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+        Dim Admin As New AdminDB()
+        lblTerms.Visible = True
+        btnLanguageEdit.Visible = False
+        btnLanguageEditAll.Visible = False
+        grdLanguage.Visible = False
+        lblTerms.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "AccessDeniedInfo"), Page)
+    End Sub
+    
 Private Sub ShowNewOnly()
 		  Dim Admin As New AdminDB()
           Dim dr As System.Data.SqlClient.SqlDataReader
@@ -162,6 +178,8 @@ Public Sub ShowAll_OnClick(ByVal sender As Object, ByVal e As EventArgs)
 <asp:Button cssclass="button" runat="server" ID="btnLanguageEdit" onclick="ShowNew_OnClick"></asp:Button>
 &nbsp;&nbsp;<asp:Button cssclass="button" runat="server" ID="btnLanguageEditAll" onclick="ShowAll_OnClick"></asp:Button>
 <div id="ScrollingPanel" class="scroll">
+<asp:literal EnableViewState="false" id="lblTerms" runat="server">
+</asp:literal>
 <asp:datagrid id="grdLanguage" runat="server"  EnableViewState="true" OnItemCommand="grdLanguage_ItemCommand" AutoGenerateColumns="false" cellspacing="4" CellPadding="4" BorderStyle="None" gridlines="none">
     <Columns>
         <asp:TemplateColumn ItemStyle-Width="200" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold">

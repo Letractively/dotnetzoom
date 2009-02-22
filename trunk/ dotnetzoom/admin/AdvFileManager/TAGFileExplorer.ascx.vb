@@ -214,8 +214,11 @@ Namespace DotNetZoom
 					If chkItem.Checked = True Then
 						Dim FName As String = GetNameLinkButton(grdItem).Text()
 						If IsFile(grdItem) Then
-						    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-							Response.Redirect(ResolveUrl("TAGFileDownload.aspx") & "?File=" & Root & RelativeDir & "\" & FName & "&tabid=" & CStr(_portalSettings.ActiveTab.TabID))
+                            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+                            Dim objSecurity As New PortalSecurity()
+                            Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), Root & RelativeDir & "\" & FName))
+                            Response.Redirect(ResolveUrl("TAGFileDownload.aspx") & "?File=" & crypto & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId))
 							chkItem.Checked = False
 							Exit For
 						End If

@@ -86,201 +86,201 @@ End Function
         Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
         If PortalSecurity.IsInRole(_portalSettings.AdministratorRoleId.ToString) = False Then
-              Response.Redirect("~/default.aspx?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+            EditDenied()
         End If
 
 		
-		If Not Page.IsPostBack then
+        If Not Page.IsPostBack Then
 		
-        If _portalSettings.LogoFile <> "" Then
-		Dim objAdmin As New AdminDB()
-		Dim dr As System.Data.SqlClient.SqlDataReader
-		dr = objAdmin.GetSingleFile(_portalSettings.LogoFile,_portalSettings.PortalId)
-		If dr.Read Then
-		if isnumeric(dr("Width").ToString) then
-		Centrer.Text = dr("Width").ToString
-		else
-		Centrer.Text = "0"
-		end if
-		if isnumeric(dr("Height").ToString) then
-		Block_Top.Text = dr("Height").ToString
-		else
-		Block_Top.Text = "0"
-		end if
-		end if
-		dr.Close()
-        Else
-		Centrer.Text = "0"
-		Block_Top.Text = "0"
-        End If
+            If _portalSettings.LogoFile <> "" Then
+                Dim objAdmin As New AdminDB()
+                Dim dr As System.Data.SqlClient.SqlDataReader
+                dr = objAdmin.GetSingleFile(_portalSettings.LogoFile, _portalSettings.PortalId)
+                If dr.Read Then
+                    If IsNumeric(dr("Width").ToString) Then
+                        Centrer.Text = dr("Width").ToString
+                    Else
+                        Centrer.Text = "0"
+                    End If
+                    If IsNumeric(dr("Height").ToString) Then
+                        Block_Top.Text = dr("Height").ToString
+                    Else
+                        Block_Top.Text = "0"
+                    End If
+                End If
+                dr.Close()
+            Else
+                Centrer.Text = "0"
+                Block_Top.Text = "0"
+            End If
     
 	
-		Open_Delay.Text = "20"
-		Close_Delay.Text = "200"
-		Block_Left.Text = "0"
-		Top.Text = "0"
-		Left.Text = "125"
-		Height.Text = "24"
-		Width.Text = "125"
+            Open_Delay.Text = "20"
+            Close_Delay.Text = "200"
+            Block_Left.Text = "0"
+            Top.Text = "0"
+            Left.Text = "125"
+            Height.Text = "24"
+            Width.Text = "125"
 		
 		
-		Block_Top2.Text = "25"
-		Block_Left2.Text = "0"
-		Top2.Text = "25"
-		Left2.Text = "0"
-		Height2.Text = "24"
-		Width2.Text = "190"
+            Block_Top2.Text = "25"
+            Block_Left2.Text = "0"
+            Top2.Text = "25"
+            Left2.Text = "0"
+            Height2.Text = "24"
+            Width2.Text = "190"
 
-		Block_Top3.Text = "0"
-		Block_Left3.Text = "180"
-		Top3.Text = "25"
-		Left3.Text = "0"
-		Height3.Text = "24"
-		Width3.Text = "190"
+            Block_Top3.Text = "0"
+            Block_Left3.Text = "180"
+            Top3.Text = "25"
+            Left3.Text = "0"
+            Height3.Text = "24"
+            Width3.Text = "190"
 
-		ReadTplFile()
-
-		
-		End If
-		
-		If Not IsNumeric(Centrer.Text) then
-		Centrer.Text = "0"
-		end if
-
-		If Not IsNumeric(Open_Delay.Text) then
-		Open_Delay.Text = "20"
-		end if
-		If Not IsNumeric(Close_Delay.Text) then
-		Close_Delay.Text = "220"
-		end if
+            ReadTplFile()
 
 		
+        End If
 		
-		If Not IsNumeric(Block_Top.Text) then
-		Block_Top.Text = "0"
-		end if
-		If Not IsNumeric(Block_Left.Text) then
-		Block_Left.Text = "0"
-		end if
+        If Not IsNumeric(Centrer.Text) Then
+            Centrer.Text = "0"
+        End If
+
+        If Not IsNumeric(Open_Delay.Text) Then
+            Open_Delay.Text = "20"
+        End If
+        If Not IsNumeric(Close_Delay.Text) Then
+            Close_Delay.Text = "220"
+        End If
 
 		
-		If Not IsNumeric(Top.Text) then
-		Top.Text = "0"
-		end if
-		If Not IsNumeric(Left.Text) then
-		Left.Text = "0"
-		end if
 		
-		If Not IsNumeric(Height.Text) then
-		Height.Text = "24"
-		else
-		if Double.Parse(Height.Text) < 10 then
-		Height.Text = "10"
-		else
-		if Double.Parse(Height.Text) > 60 then
-		Height.Text = "60"
-		end if
-		end if
-		End if
-		
-		If Not IsNumeric(Width.Text) then
-		Width.Text = "90"
-		else
-		if Double.Parse(Width.Text) < 30 then
-		Width.Text = "30"
-		else
-		if Double.Parse(Width.Text) > 300 then
-		Width.Text = "300"
-		end if
-		end if
-		end if
-
-		If Not IsNumeric(Block_Top2.Text) then
-		Block_Top2.Text = "0"
-		end if
-		If Not IsNumeric(Block_Left2.Text) then
-		Block_Left2.Text = "0"
-		end if
+        If Not IsNumeric(Block_Top.Text) Then
+            Block_Top.Text = "0"
+        End If
+        If Not IsNumeric(Block_Left.Text) Then
+            Block_Left.Text = "0"
+        End If
 
 		
-		If Not IsNumeric(Top2.Text) then
-		Top2.Text = "0"
-		end if
-		If Not IsNumeric(Left2.Text) then
-		Left2.Text = "0"
-		end if
+        If Not IsNumeric(Top.Text) Then
+            Top.Text = "0"
+        End If
+        If Not IsNumeric(Left.Text) Then
+            Left.Text = "0"
+        End If
 		
-		If Not IsNumeric(Height2.Text) then
-		Height2.Text = "24"
-		else
-		if Double.Parse(Height2.Text) < 10 then
-		Height2.Text = "10"
-		else
-		if Double.Parse(Height2.Text) > 60 then
-		Height2.Text = "60"
-		end if
-		end if
-		End if
+        If Not IsNumeric(Height.Text) Then
+            Height.Text = "24"
+        Else
+            If Double.Parse(Height.Text) < 10 Then
+                Height.Text = "10"
+            Else
+                If Double.Parse(Height.Text) > 60 Then
+                    Height.Text = "60"
+                End If
+            End If
+        End If
 		
-		If Not IsNumeric(Width2.Text) then
-		Width2.Text = "90"
-		else
-		if Double.Parse(Width2.Text) < 30 then
-		Width2.Text = "30"
-		else
-		if Double.Parse(Width2.Text) > 300 then
-		Width2.Text = "300"
-		end if
-		end if
-		end if
-		
-		
-		
-		If Not IsNumeric(Block_Top3.Text) then
-		Block_Top3.Text = "0"
-		end if
-		If Not IsNumeric(Block_Left3.Text) then
-		Block_Left3.Text = "0"
-		end if
+        If Not IsNumeric(Width.Text) Then
+            Width.Text = "90"
+        Else
+            If Double.Parse(Width.Text) < 30 Then
+                Width.Text = "30"
+            Else
+                If Double.Parse(Width.Text) > 300 Then
+                    Width.Text = "300"
+                End If
+            End If
+        End If
+
+        If Not IsNumeric(Block_Top2.Text) Then
+            Block_Top2.Text = "0"
+        End If
+        If Not IsNumeric(Block_Left2.Text) Then
+            Block_Left2.Text = "0"
+        End If
 
 		
-		If Not IsNumeric(Top3.Text) then
-		Top3.Text = "0"
-		end if
-		If Not IsNumeric(Left3.Text) then
-		Left3.Text = "0"
-		end if
+        If Not IsNumeric(Top2.Text) Then
+            Top2.Text = "0"
+        End If
+        If Not IsNumeric(Left2.Text) Then
+            Left2.Text = "0"
+        End If
 		
-		If Not IsNumeric(Height3.Text) then
-		Height3.Text = "24"
-		else
-		if Double.Parse(Height3.Text) < 10 then
-		Height3.Text = "10"
-		else
-		if Double.Parse(Height3.Text) > 60 then
-		Height3.Text = "60"
-		end if
-		end if
-		End if
+        If Not IsNumeric(Height2.Text) Then
+            Height2.Text = "24"
+        Else
+            If Double.Parse(Height2.Text) < 10 Then
+                Height2.Text = "10"
+            Else
+                If Double.Parse(Height2.Text) > 60 Then
+                    Height2.Text = "60"
+                End If
+            End If
+        End If
 		
-		If Not IsNumeric(Width3.Text) then
-		Width3.Text = "90"
-		else
-		if Double.Parse(Width3.Text) < 30 then
-		Width3.Text = "30"
-		else
-		if Double.Parse(Width3.Text) > 300 then
-		Width3.Text = "300"
-		end if
-		end if
-		end if
+        If Not IsNumeric(Width2.Text) Then
+            Width2.Text = "90"
+        Else
+            If Double.Parse(Width2.Text) < 30 Then
+                Width2.Text = "30"
+            Else
+                If Double.Parse(Width2.Text) > 300 Then
+                    Width2.Text = "300"
+                End If
+            End If
+        End If
 		
 		
 		
-		If Not Page.IsPostBack then
-	    CreateMenu()
-		CreateTigraMenu()
-		End IF
+        If Not IsNumeric(Block_Top3.Text) Then
+            Block_Top3.Text = "0"
+        End If
+        If Not IsNumeric(Block_Left3.Text) Then
+            Block_Left3.Text = "0"
+        End If
+
+		
+        If Not IsNumeric(Top3.Text) Then
+            Top3.Text = "0"
+        End If
+        If Not IsNumeric(Left3.Text) Then
+            Left3.Text = "0"
+        End If
+		
+        If Not IsNumeric(Height3.Text) Then
+            Height3.Text = "24"
+        Else
+            If Double.Parse(Height3.Text) < 10 Then
+                Height3.Text = "10"
+            Else
+                If Double.Parse(Height3.Text) > 60 Then
+                    Height3.Text = "60"
+                End If
+            End If
+        End If
+		
+        If Not IsNumeric(Width3.Text) Then
+            Width3.Text = "90"
+        Else
+            If Double.Parse(Width3.Text) < 30 Then
+                Width3.Text = "30"
+            Else
+                If Double.Parse(Width3.Text) > 300 Then
+                    Width3.Text = "300"
+                End If
+            End If
+        End If
+		
+		
+		
+        If Not Page.IsPostBack Then
+            CreateMenu()
+            CreateTigraMenu()
+        End If
 		
         End Sub
 

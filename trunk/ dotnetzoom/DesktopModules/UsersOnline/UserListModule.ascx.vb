@@ -37,10 +37,10 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            If Request.Params("edit") <> "" Then
+            If Request.Params("def") <> "" Then
                 If Not Request.IsAuthenticated Then
                     Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                    Response.Redirect(GetFullDocument() & "?edit=" & _portalSettings.ActiveTab.TabId & "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Access Denied", True)
+                    AccessDenied()
                 End If
                 Title1.DisplayTitle = GetLanguage("UserListModule")
             End If
@@ -152,7 +152,7 @@ Namespace DotNetZoom
         End Sub
 
         Protected Function GetUserInfoLink(ByVal userID As String) As String
-            Return GetFullDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
+            Return GetFullDocument() & "?TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
         End Function
 
         Protected Function GetUserInfoTooltip(ByVal userName As String) As String

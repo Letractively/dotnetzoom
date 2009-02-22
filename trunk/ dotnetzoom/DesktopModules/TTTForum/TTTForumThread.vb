@@ -46,7 +46,7 @@ Namespace DotNetZoom
             _threadsPerPage = ZforumConfig.ThreadsPerPage
             _postsPerPage = ZforumConfig.PostsPerPage
 			' PUT IN SKIN IMAGEFOLDER
-            _imageURL = ForumConfig.SkinFolder()
+            _imageURL = ForumConfig.SkinImageFolder()
 
         End Sub 'New
 
@@ -134,7 +134,7 @@ Namespace DotNetZoom
                 If forumInfo.IsActive Then
                     If forumInfo.IsPrivate Then
                         If Not PortalSecurity.IsInRoles(forumInfo.AuthorizedRoles) = True Then
-                            HttpContext.Current.Response.Redirect(GetFullDocument() & "?edit=control&def=Access Denied", True)
+                            AccessDenied()
                         End If
                     End If
                 Else

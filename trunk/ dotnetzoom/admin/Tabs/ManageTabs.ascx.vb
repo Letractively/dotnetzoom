@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -42,8 +42,9 @@ Namespace DotNetZoom
 		
         Protected WithEvents chkStyleMenu As System.Web.UI.WebControls.CheckBox
         Protected WithEvents StyleRow As System.Web.UI.HtmlControls.HtmlTableRow
-		
-		Protected WithEvents ddlLanguage As System.Web.UI.WebControls.DropDownList		
+        Protected WithEvents chkssl As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents sllline As System.Web.UI.HtmlControls.HtmlTableRow
+        Protected WithEvents ddlLanguage As System.Web.UI.WebControls.DropDownList
 		Protected WithEvents ltabName As System.Web.UI.WebControls.TextBox
 		Protected WithEvents cmdUpdateName As System.Web.UI.WebControls.LinkButton
 		Protected WithEvents rowlanguage As System.Web.UI.HtmlControls.HtmlTableRow
@@ -122,16 +123,15 @@ Namespace DotNetZoom
                 strAction = Request.Params("action")
                 ' Verify that the current user has access to edit this module
                 If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False And PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = False Then
-                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                    EditDenied()
                 End If
             Else
                 ' Only admin can create a new tab
                 strAction = ""
                 If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False Then
-                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                    EditDenied()
                 End If
             End If
-
 
 
 
@@ -145,20 +145,24 @@ Namespace DotNetZoom
             cmdDelete.Text = GetLanguage("delete")
 
 
-
-
-
-            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) And strAction = "edit" Then
-                ' Only admin can play with XML
-                cmdXML.Visible = True
-                cmdXML.Text = GetLanguage("Generate_XML")
-                Title1.DisplayOptions2 = True
-                Title1.OptionsText2 = GetLanguage("Generate_XML")
-                Title1.Options2URL = Request.RawUrl
-                Title1.Options2IMG = "<img  src=""" & glbPath & "images/xml.gif"" alt=""xml"" style=""border-width:0px;"">"
+            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                ' Only admin can set ssl
+                sllline.Visible = _portalSettings.SSL
+                If strAction = "edit" Then
+                    ' Only admin can play with XML
+                    cmdXML.Visible = True
+                    cmdXML.Text = GetLanguage("Generate_XML")
+                    Title1.DisplayOptions2 = True
+                    Title1.OptionsText2 = GetLanguage("Generate_XML")
+                    Title1.Options2URL = Request.RawUrl
+                    Title1.Options2IMG = "<img  src=""" & glbPath & "images/xml.gif"" alt=""xml"" style=""border-width:0px;"">"
+                Else
+                    cmdXML.Visible = False
+                End If
             Else
                 cmdXML.Visible = False
             End If
+
             IsVisible.ToolTip = GetLanguage("ts_visibleinfo")
             DisableLink.ToolTip = GetLanguage("ts_disableinfo")
 
@@ -172,6 +176,13 @@ Namespace DotNetZoom
 
 
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
                 Title1.DisplayHelp = "DisplayHelp_ManageTabs"
                 PlaceHolder1.Visible = True
                 PlaceHolder2.Visible = False
@@ -281,13 +292,13 @@ Namespace DotNetZoom
 
                 If Not Request.UrlReferrer Is Nothing Then
                     If InStr(Request.UrlReferrer.ToString(), "options=2") <> 0 Or InStr(Request.UrlReferrer.ToString(), "action=edit") <> 0 Then
-                        ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                        ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "")
                     Else
                         ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                     End If
 
                 Else
-                    ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "")
                 End If
 
                 If Not (Request.Params("options") Is Nothing) And PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
@@ -497,7 +508,7 @@ Namespace DotNetZoom
             If InStr(ViewState("UrlReferrer"), "adminpage=13") > 1 Then
                 Response.Redirect(_portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?adminpage=13", True)
             Else
-                Response.Redirect(GetFullDocument(), True)
+                Response.Redirect(_portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx", True)
             End If
 
 
@@ -549,7 +560,7 @@ Namespace DotNetZoom
 
                 ' trap circular tab reference
                 If (TabId <> Int32.Parse(cboTab.SelectedItem.Value)) And (Int32.Parse(cboTab.SelectedItem.Value) = -1 Or IsVisible.Checked = True) Then
-                    admin.UpdateTab(TabId, tabName.Text, True, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, cbocss.SelectedItem.Value, cboskin.SelectedItem.Value)
+                    admin.UpdateTab(TabId, tabName.Text, True, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, cbocss.SelectedItem.Value, cboskin.SelectedItem.Value, chkssl.Checked)
                     admin.UpdatePortalTabOrder(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), TabId, Int32.Parse(cboTab.SelectedItem.Value), , , IsVisible.Checked.ToString)
                 End If
 
@@ -559,7 +570,7 @@ Namespace DotNetZoom
                 If Int32.Parse(cboTab.SelectedItem.Value) <> -1 Then
                     IsVisible.Checked = True
                 End If
-                intTabId = admin.AddTab(_portalSettings.PortalId, tabName.Text, True, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, intTabId)
+                intTabId = admin.AddTab(_portalSettings.PortalId, tabName.Text, True, "", strAuthorizedRoles, txtLeftPaneWidth.Text, txtRightPaneWidth.Text, IsVisible.Checked, DisableLink.Checked, Int32.Parse(cboTab.SelectedItem.Value), strIcon, strAdministratorRoles, intTabId, cbocss.SelectedItem.Value, cboskin.SelectedItem.Value, chkssl.Checked)
                 Dim DesktopTabs As ArrayList = PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N"))
                 admin.UpdatePortalTabOrder(DesktopTabs, intTabId, Int32.Parse(cboTab.SelectedItem.Value), , , IsVisible.Checked.ToString)
 
@@ -629,6 +640,8 @@ Namespace DotNetZoom
             End If
 
             cboTab.Items.FindByValue(tab.ParentId).Selected = True
+            chkssl.Checked = tab.ssl And _portalSettings.SSL
+            chkssl.Enabled = _portalSettings.SSL
             IsVisible.Checked = tab.IsVisible
             DisableLink.Checked = tab.DisableLink
             txtLeftPaneWidth.Text = tab.LeftPaneWidth
@@ -875,7 +888,7 @@ Namespace DotNetZoom
 
             Else
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "")
             End If
         End Sub
 

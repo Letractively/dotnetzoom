@@ -36,11 +36,21 @@
                                 <asp:textbox id="txtExpiryDate" runat="server" CssClass="NormalTextBox" Width="151px"></asp:textbox>
                             </td>
 							<td valign="top" width="240">
-							<asp:HyperLink id="cmdExpiryCalendar" CssClass="CommandButton" Runat="server"></asp:HyperLink>
-                             &nbsp;&nbsp;&nbsp;
-                             <asp:linkbutton id="cmdAdd" runat="server" Width="159px" cssclass="CommandButton">Ajouter</asp:linkbutton>
+                             <asp:linkbutton id="cmdAdd" runat="server" Width="100px" cssclass="CommandButton">Ajouter</asp:linkbutton>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+							<asp:HyperLink id="cmdExpiryCalendar" width="140" CssClass="CommandButton" Runat="server"></asp:HyperLink>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td>
                             </td>

@@ -59,37 +59,9 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 			
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
  			
 
-
-
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
-            End If
-
-		
             If IsNumeric(Request.Params("userid")) Then
                 ZuserID = Int32.Parse(Request.Params("userid"))
             End If
@@ -107,6 +79,8 @@ Namespace DotNetZoom
 
             If Not Page.IsPostBack Then
 			
+                ' Store URL Referrer to return to portal
+                ViewState("UrlReferrer") = GetFullDocument() + "?edit=user&editpage=6&mid=" & ModuleId.ToString()
 
                 If ZuserID > 0 Then
                     Dim Zconfig As ForumConfig = ForumConfig.GetForumConfig(ModuleId)
@@ -125,19 +99,13 @@ Namespace DotNetZoom
 
                     Dim strProfile As String = TTTUtils.ForumUserProfileLink(TabId, ZuserID)
                     lnkProfile.NavigateUrl = strProfile
-                    
+
 
                     ' disply moderated forum list if user is moderator
                     Me.pnlModerate.Visible = Zuser.IsModerator
                 End If
 
-                
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
+
             End If
 
 			

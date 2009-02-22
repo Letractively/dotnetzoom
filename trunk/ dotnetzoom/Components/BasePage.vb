@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -406,25 +406,63 @@ Namespace DotNetZoom
             writer.Write(html)
         End Sub
 
-
-
+        Private Sub Page_Error(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Error
+            If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                Dim URLReferrer As String = ""
+                If Not Request.UrlReferrer Is Nothing Then
+                    URLReferrer = Request.UrlReferrer.ToString()
+                End If
+                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "Page_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Server.GetLastError().ToString, "")
+            End If
+            If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
+                ' read script file for version
+                Dim objStreamReader As StreamReader
+                objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
+                Dim strHTML As String = objStreamReader.ReadToEnd
+                objStreamReader.Close()
+                Response.Write(strHTML)
+            End If
+            Server.ClearError()
+        End Sub
 
 
         Protected Overrides Sub OnInit(ByVal e As System.EventArgs)
-            ' 4/12/2003 by Scott McCulloch (smcculloch@csc.com.au)
-            ' Added functionality to support Session Management
-            'Set response encoding
-
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
-            If PortalSettings.GetSiteSettings(_portalSettings.PortalId)("PortalUserOnline") <> "NO" Then
-                ' turn it off if not On the Portal
-                Dim objSession As New SessionTrackerDB
-                If (Request.IsAuthenticated) Then
-                    objSession.UpdateSession(_portalSettings.PortalId, Session.SessionID, _portalSettings.ActiveTab.TabName, _portalSettings.ActiveTab.TabId, Request.UserHostAddress, Request.Browser.Type, Int32.Parse(User.Identity.Name))
-                Else
-                    objSession.UpdateSession(_portalSettings.PortalId, Session.SessionID, _portalSettings.ActiveTab.TabName, _portalSettings.ActiveTab.TabId, Request.UserHostAddress, Request.Browser.Type)
+            If Page.IsPostBack = False Then
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                Dim UserId As Integer = -1
+                If Request.IsAuthenticated Then
+                    UserId = CType(Context.User.Identity.Name, Integer)
                 End If
+
+                If PortalSettings.GetSiteSettings(_portalSettings.PortalId)("PortalUserOnline") <> "NO" And Not Request.Browser.Crawler Then
+                    ' turn it off if not On the Portal
+                    Dim objSession As New SessionTrackerDB
+                    If (Request.IsAuthenticated) Then
+                        objSession.UpdateSession(_portalSettings.PortalId, Session.SessionID, _portalSettings.ActiveTab.TabName, _portalSettings.ActiveTab.TabId, Request.UserHostAddress, Request.Browser.Type, Int32.Parse(User.Identity.Name))
+                    Else
+                        objSession.UpdateSession(_portalSettings.PortalId, Session.SessionID, _portalSettings.ActiveTab.TabName, _portalSettings.ActiveTab.TabId, Request.UserHostAddress, Request.Browser.Type)
+                    End If
+                End If
+
+
+                ' log visit to site and not a postBack
+                If _portalSettings.SiteLogHistory <> 0 Then
+                    Dim URLReferrer As String = ""
+                    If Not Request.UrlReferrer Is Nothing Then
+                        URLReferrer = Request.UrlReferrer.ToString()
+                    End If
+                    Dim AffiliateId As Integer = -1
+                    If Not Request.Params("AffiliateId") Is Nothing Then
+                        If IsNumeric(Request.Params("AffiliateId")) Then
+                            AffiliateId = Int32.Parse(Request.QueryString("AffiliateId"))
+                        End If
+                    End If
+                    Dim objAdmin As New AdminDB()
+                    objAdmin.AddSiteLog(_portalSettings.PortalId, UserId, URLReferrer, Request.Url.ToString(), Request.UserAgent, Request.UserHostAddress, Request.UserHostName, _portalSettings.ActiveTab.TabId, AffiliateId)
+
+                End If
+
+
             End If
             MyBase.OnInit(e)
         End Sub

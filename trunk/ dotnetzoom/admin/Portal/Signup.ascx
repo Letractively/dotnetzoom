@@ -17,7 +17,7 @@
                 </table>
             </td>
         </tr>
-        <tr valign="top" height=*>
+        <tr valign="top">
             <td colspan="3">
                 <table cellspacing="0" cellpadding="0" width="100%" >
                     <tbody>
@@ -40,7 +40,7 @@
                 <table cellspacing="0" cellpadding="2"  border="0">
                     <tbody>
                         <tr>
-                            <td valign="middle" colspan="3">
+                            <td valign="middle" colspan="2">
                                 <asp:Label id="lblMessage" runat="server" cssclass="NormalRed"></asp:Label></td>
                         </tr>
                         <tr id="rowType" runat="server">
@@ -59,6 +59,9 @@
                             <td>
                                 <asp:textbox id="txtPortalName" runat="server" CssClass="NormalTextBox" width="300" MaxLength="128"></asp:textbox>
                             </td>
+                       </tr>
+                       <tr>
+                       <td></td>
                             <td>
                                 <asp:requiredfieldvalidator id="valPortalName" runat="server" CssClass="Normal" Display="Dynamic" ControlToValidate="txtPortalName"></asp:requiredfieldvalidator>
                             </td>
@@ -69,16 +72,14 @@
                             <td>
                                 <asp:DropDownList id="cboTemplate" AutoPostBack="True" Runat="server" CssClass="NormalTextBox" Width="300"></asp:DropDownList>
                             </td>
-                            <td>
-                                &nbsp;</td>
                         </tr>
                         <tr>
-                            <td colspan="3">
+                            <td colspan="2">
                                 &nbsp;</td>
                         </tr>
                          
                         <tr>
-                            <td colspan="3">
+                            <td colspan="2">
                                 <asp:Label id="lblAdminAccount" runat="server" cssclass="NormalBold">
 								<%= DotNetZoom.GetLanguage("S_PortalAdmin") %></asp:Label></td>
                         </tr>
@@ -89,6 +90,9 @@
                             <td>
                                 <asp:textbox id="txtFirstName" runat="server" CssClass="NormalTextBox" width="300" MaxLength="100"></asp:textbox>
                             </td>
+                       </tr>
+                       <tr>
+                        <td></td>
                             <td>
                                 <asp:requiredfieldvalidator id="valFirstName" runat="server" CssClass="Normal" Display="Dynamic"  ControlToValidate="txtFirstName"></asp:requiredfieldvalidator>
                             </td>
@@ -99,8 +103,11 @@
                             <td>
                                 <asp:textbox id="txtLastName" runat="server" CssClass="NormalTextBox" width="300" MaxLength="100"></asp:textbox>
                             </td>
-                            <td>
-                                <asp:requiredfieldvalidator id="valLastName" runat="server" CssClass="Normal" Display="Dynamic" ControlToValidate="txtLastName"></asp:requiredfieldvalidator>
+                       </tr>
+                       <tr>
+                       <td></td>
+                            <td> 
+                              <asp:requiredfieldvalidator id="valLastName" runat="server" CssClass="Normal" Display="Dynamic" ControlToValidate="txtLastName"></asp:requiredfieldvalidator>
                             </td>
                         </tr>
                         <tr>
@@ -109,6 +116,9 @@
                             <td>
                                 <asp:textbox id="txtUsername" runat="server" CssClass="NormalTextBox" width="300" MaxLength="100"></asp:textbox>
                             </td>
+                       </tr>
+                       <tr>
+                       <td></td>
                             <td>
                                 <asp:requiredfieldvalidator id="valUsername" runat="server" CssClass="Normal" Display="Dynamic"  ControlToValidate="txtUsername"></asp:requiredfieldvalidator>
 								<asp:RegularExpressionValidator id="RvalUsername" CssClass="Normal" ControlToValidate="txtUsername" ValidationExpression=".{8,}"  Display="dynamic" RunAt="server" ></asp:RegularExpressionValidator>
@@ -120,6 +130,9 @@
                             <td>
                                 <asp:textbox id="txtPassword" runat="server" CssClass="NormalTextBox" width="300" MaxLength="20" textmode="password"></asp:textbox>
                             </td>
+                       </tr>
+                       <tr>
+                       <td></td>
                             <td>
                                 <asp:requiredfieldvalidator id="valPassword" runat="server" CssClass="Normal" Display="Dynamic" ControlToValidate="txtPassword"></asp:requiredfieldvalidator>
 								<asp:RegularExpressionValidator id="RvalPassword" CssClass="Normal" ControlToValidate="TxtPassword" ValidationExpression=".{8,}"  Display="dynamic" RunAt="server" ></asp:RegularExpressionValidator>
@@ -131,6 +144,9 @@
                             <td>
                                 <asp:textbox id="txtEmail" runat="server" CssClass="NormalTextBox" width="300" MaxLength="100"></asp:textbox>
                             </td>
+                       </tr>
+                       <tr>
+                       <td></td>
                             <td>
                                 <asp:requiredfieldvalidator id="valEmail" runat="server" CssClass="Normal" Display="Dynamic" ControlToValidate="txtEmail"></asp:requiredfieldvalidator>
 								<asp:RegularExpressionValidator id="RvalEmail" ControlToValidate="txtEMail" CssClass="Normal" ValidationExpression="^[\w\.-]+@[\w-]+\.[\w\.-]+$"   Display="static" RunAt="server"></asp:RegularExpressionValidator>
@@ -183,10 +199,20 @@
     </tbody>
 </table>
 </div>
-<div class="attendre" id="attendre" align="center" style="background: silver; border: thin dotted; padding: 4px; visibility:hidden;  top: -300px; position: relative">
+<div align="left">
+<asp:ValidationSummary 
+     id="valSum"
+     ShowMessageBox = "true"
+     DisplayMode="BulletList" 
+     runat="server"
+     Font-Size="12"/>
+</div>
+<div class="attendre" id="attendre" align="center" style="background: silver; border: thin dotted; padding: 4px; visibility:hidden;  top: -400px; position: relative">
 <span class="Head"><input class="button" onclick="toggleBox('attendre',0);toggleBox('main',1);" type="button" value="<%= DotNetZoom.GetLanguage("S_F_Wait") %>"></span><br><br>
 <img src="/images/rotation.gif" alt="*" width="32" height="32">
 <br><br>
-<span class="SubHead"><%= DotNetZoom.GetLanguage("S_F_Wait_Info") %></span>
+<span class="SubHead">
+<%= DotNetZoom.GetLanguage("S_F_Wait_Info") %></span>
 </div>
+
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>

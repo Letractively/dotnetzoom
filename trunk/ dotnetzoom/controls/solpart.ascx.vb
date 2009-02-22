@@ -45,7 +45,7 @@ Namespace DotNetZoom
             ctlMenu.ArrowImage = "breadcrumb.gif"
             ctlMenu.RootArrow = True
             ctlMenu.RootArrowImage = "menu_down.gif"
-            ctlMenu.SystemScriptPath = IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/controls/SolpartMenu/"
+            ctlMenu.SystemScriptPath = glbPath() & "controls/SolpartMenu/"
 
             Dim objTab As TabStripDetails
             Dim objMenuItem As Solpart.WebControls.SPMenuItemNode

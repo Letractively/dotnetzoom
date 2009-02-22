@@ -53,7 +53,7 @@ Namespace DotNetZoom
             _PostsPerPage = ZforumConfig.ThreadsPerPage
 			
 			' PUT IN SKIN IMAGEFOLDER
-            _imageURL = ForumConfig.SkinFolder()
+            _imageURL = ForumConfig.SkinImageFolder()
             _avatarURL = ZforumConfig.AvatarFolder
         End Sub 'New
 

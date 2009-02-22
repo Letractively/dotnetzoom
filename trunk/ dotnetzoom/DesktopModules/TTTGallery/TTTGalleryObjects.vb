@@ -679,7 +679,8 @@ Namespace DotNetZoom
                 Else
 				SpaceUsed -= Filelen(Child.Path)
                 IO.File.Delete(Child.Path)
-                    If (Child.Thumbnail <> glbPath & "images/TTT/TTT_folder.gif") And (Child.ThumbNail <> "/images/TTT/TTT_MediaPlayer.gif") And (Child.ThumbNail <> "/images/TTT/TTT_Flash.gif") Then
+                    If (Child.Thumbnail <> glbPath & "images/TTT/TTT_folder.gif") And (Child.ThumbNail <> glbPath & "images/TTT/TTT_MediaPlayer.gif") And (Child.ThumbNail <> glbPath & "images/TTT/TTT_Flash.gif") And _
+                       (Child.Thumbnail <> ForumConfig.DefaultImageFolder() & "TTT_folder.gif") And (Child.ThumbNail <> ForumConfig.DefaultImageFolder() & "TTT_MediaPlayer.gif") And (Child.ThumbNail <> ForumConfig.DefaultImageFolder() & "TTT_Flash.gif") Then
                         SpaceUsed -= FileLen(HttpContext.Current.Server.MapPath(Child.Thumbnail))
                         IO.File.Delete(HttpContext.Current.Server.MapPath(Child.Thumbnail))
                     End If
@@ -752,10 +753,10 @@ Namespace DotNetZoom
                         If File.Exists(thumbNail) Then
                             thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "/", False, False)
                         Else
-                            thumbNail = glbPath & "images/TTT/TTT_folder.gif"
+                            thumbNail = ForumConfig.DefaultImageFolder() & "TTT_folder.gif"
                         End If
                     End If
-                    icon = glbPath & "images/TTT/TTT_s_folder.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_folder.gif"
                     Dim newFolder As GalleryFolder = New GalleryFolder(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), BuildPath(New String(1) {_galleryHierarchy, name}, "/"), _thumbFolder, thumbNail, icon, Me, Counter, ZgalleryConfig, metaData.Title(name), metaData.Description(name), metaData.Categories(name), albumOwnerID, albumOwner)
                     _list.Add(name, newFolder)
                     Counter += 1
@@ -780,7 +781,7 @@ Namespace DotNetZoom
                     _browsableItems.Add(Counter) ' store reference to index
 
                     thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "\", False, False)
-                    icon = glbPath & "images/TTT/TTT_s_jpg.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_jpg.gif"
                     thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "/", False, False)
                     lwidth = ConvertInteger(metaData.Width(name))
                     lHeight = ConvertInteger(metaData.height(name))
@@ -804,10 +805,10 @@ Namespace DotNetZoom
                         If File.Exists(thumbNail) Then
                             thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
                         Else
-                            thumbNail = glbPath & "images/TTT/TTT_MediaPlayer.gif"
+                            thumbNail = ForumConfig.DefaultImageFolder() & "TTT_MediaPlayer.gif"
                         End If
                     End If
-                    icon = glbPath & "images/TTT/TTT_s_MediaPlayer.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_MediaPlayer.gif"
                     ' Add the file and increment the counter
                     Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Movie, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
@@ -828,11 +829,11 @@ Namespace DotNetZoom
                         If File.Exists(thumbNail) Then
                             thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
                         Else
-                            thumbNail = glbPath & "images/TTT/TTT_Flash.gif"
+                            thumbNail = ForumConfig.DefaultImageFolder() & "TTT_Flash.gif"
                         End If
                     End If
 
-                    icon = glbPath & "images/TTT/TTT_s_flash.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_flash.gif"
 
                     ' Add the file and increment the counter
                     Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Flash, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
@@ -967,10 +968,10 @@ Namespace DotNetZoom
                         If File.Exists(thumbNail) Then
                             thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileName(item) & ".gif"}, "/", False, False)
                         Else
-                            thumbNail = glbPath & "images/TTT/TTT_folder.gif"
+                            thumbNail = ForumConfig.DefaultImageFolder() & "TTT_folder.gif"
                         End If
                     End If
-                    icon = glbPath & "images/TTT/TTT_s_folder.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_folder.gif"
                     Dim newFolder As GalleryFolder = New GalleryFolder(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), BuildPath(New String(1) {_galleryHierarchy, name}, "/"), _thumbFolder, thumbNail, icon, Me, Counter, ZgalleryConfig, metaData.Title(name), metaData.Description(name), metaData.Categories(name), albumOwnerID, albumOwner)
                     _list.Add(name, newFolder)
                     Counter += 1
@@ -997,7 +998,7 @@ Namespace DotNetZoom
                     _browsableItems.Add(Counter) ' store reference to index
 
                     thumbNail = BuildPath(New String(2) {IO.Path.GetDirectoryName(item), ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "\", False, False)
-                    icon = glbPath & "images/TTT/TTT_s_jpg.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_jpg.gif"
 
                     If File.Exists(thumbNail) Then
                         thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "/", False, False)
@@ -1045,11 +1046,11 @@ Namespace DotNetZoom
                         If File.Exists(thumbNail) Then
                             thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
                         Else
-                            thumbNail = glbPath & "images/TTT/TTT_MediaPlayer.gif"
+                            thumbNail = ForumConfig.DefaultImageFolder() & "TTT_MediaPlayer.gif"
                         End If
                     End If
 
-                    icon = glbPath & "images/TTT/TTT_s_MediaPlayer.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_MediaPlayer.gif"
                     ' Add the file and increment the counter
                     Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Movie, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)
                     _list.Add(name, newFile)
@@ -1072,11 +1073,11 @@ Namespace DotNetZoom
                         If File.Exists(thumbNail) Then
                             thumbNail = BuildPath(New String(2) {_url, ZgalleryConfig.ResFolder, IO.Path.GetFileNameWithoutExtension(item) & ".gif"}, "/", False, False)
                         Else
-                            thumbNail = glbPath & "images/TTT/TTT_Flash.gif"
+                            thumbNail = ForumConfig.DefaultImageFolder() & "TTT_Flash.gif"
                         End If
                     End If
 
-                    icon = glbPath & "images/TTT/TTT_s_flash.gif"
+                    icon = ForumConfig.DefaultImageFolder() & "TTT_s_flash.gif"
 
                     ' Add the file and increment the counter
                     Dim newFile As GalleryFile = New GalleryFile(name, IO.Path.Combine(_path, name), BuildPath(New String(1) {_url, name}, "/", False, False), "0", "0", thumbNail, icon, New FileInfo(item).Length, Counter, IGalleryObjectInfo.ItemType.Flash, metaData.Title(name), metaData.Description(name), metaData.Categories(name), fileOwnerID, fileOwner)

@@ -50,17 +50,8 @@ Namespace DotNetZoom
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
 			cmdBack.Text = GetLanguage("return")
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    objCSS.Controls.Add(objLink)
-            End If
-         
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
             Dim tabID As Integer = Int32.Parse(HttpContext.Current.Request("tabid"))
 
             Zrequest = New GalleryViewerRequest(ModuleId)

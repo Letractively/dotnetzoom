@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -66,11 +66,23 @@ Namespace DotNetZoom
 			End If
 			
             hypHost.Text = replace(GetLanguage("hypHost"), "{hostname}",  portalSettings.GetHostSettings("HostTitle"))
-            hypHost.NavigateUrl = AddHTTP(portalSettings.GetHostSettings("HostURL"))
-            hypTerms.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Terms"
+            hypHost.NavigateUrl = AddHTTP(PortalSettings.GetHostSettings("HostURL"))
+
+            Dim TempURL As String
+            ' Or HttpContext.Current.Request.IsSecureConnection
+            TempURL = _portalSettings.HTTP
+
+            If Not TempURL.EndsWith("/") Then
+                TempURL += "/"
+            End If
+
+
+            ' hypTerms.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&def=Terms")
+            hypTerms.NavigateUrl = _portalSettings.HTTP + "/" + GetLanguage("N") + ".default.aspx?edit=control&def=Terms"
             hypTerms.Text = GetLanguage("hypTerms")
-            hypPrivacy.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Privacy"
-			hypPrivacy.Text = GetLanguage("hypPrivacy")
+            ' hypPrivacy.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&def=Privacy")
+            hypPrivacy.NavigateUrl = _portalSettings.HTTP + "/" + GetLanguage("N") + ".default.aspx?edit=control&def=Privacy"
+            hypPrivacy.Text = GetLanguage("hypPrivacy")
 			
 		' modification par rene boulard pour enlever le id tag
         lblFooter.ID = ""

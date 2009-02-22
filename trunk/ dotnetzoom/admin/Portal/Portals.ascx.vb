@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -48,19 +48,22 @@ Namespace DotNetZoom
             Title1.EditText = GetLanguage("add")
             Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
             Title1.DisplayHelp = "DisplayHelp_Portals"
+
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
+            Title1.EditURL = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, HttpContext.Current.Request.IsSecureConnection, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Signup&hostpage=")
+
             ' Verify that the current user has access to access this page
             If Not PortalSecurity.IsSuperUser Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
-			grdPortals.Columns(1).HeaderText = GetLanguage("P_PortalName")
-			grdPortals.Columns(2).HeaderText = GetLanguage("P_Alias")
-			grdPortals.Columns(3).HeaderText = GetLanguage("P_Users")
-			grdPortals.Columns(4).HeaderText = GetLanguage("P_Disk_Space")
-			grdPortals.Columns(5).HeaderText = GetLanguage("P_Host_Fee")
-			grdPortals.Columns(6).HeaderText = GetLanguage("P_EndDate")
+            grdPortals.Columns(1).HeaderText = GetLanguage("P_PortalName")
+            grdPortals.Columns(2).HeaderText = GetLanguage("P_Alias")
+            grdPortals.Columns(3).HeaderText = GetLanguage("P_Users")
+            grdPortals.Columns(4).HeaderText = GetLanguage("P_Disk_Space")
+            grdPortals.Columns(5).HeaderText = GetLanguage("P_Host_Fee")
+            grdPortals.Columns(6).HeaderText = GetLanguage("P_EndDate")
             BindData()
 
         End Sub

@@ -6,7 +6,7 @@
 <asp:DataList repeatdirection="Vertical" id=lstBanners runat="server" EnableViewState="false" CellPadding="4">
 <ItemStyle VerticalAlign="Middle" HorizontalAlign="Center"></ItemStyle>
 <ItemTemplate>
-<asp:HyperLink id="hypBanner" Runat="server" EnableViewState="false" NavigateUrl='<%# DotNetZoom.glbPath & "DesktopModules/Banners/BannerClickThrough.aspx?BannerId=" & DataBinder.Eval(Container.DataItem,"BannerId") %>'>
+<asp:HyperLink id="hypBanner" Runat="server" EnableViewState="false" NavigateUrl='<%# FormatURL(DataBinder.Eval(Container.DataItem,"BannerId")) %>'>
 <asp:Image id="hypBannerImage" Runat="server" EnableViewState="false" ToolTip=' <%# DataBinder.Eval(Container.DataItem,"BannerName") %> ' AlternateText='<%# DataBinder.Eval(Container.DataItem,"BannerName") %>' ImageUrl='<%# FormatImagePath(DataBinder.Eval(Container.DataItem,"ImageFile")) %>'/>
 </asp:HyperLink>
 </ItemTemplate>

@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -104,26 +104,28 @@ Namespace DotNetZoom
             EnableControls()
 
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
 
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
                 cmdCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtExpires)
-				cmdUpdate.Text = GetLanguage("enregistrer")
-				cmdCancel.Text = GetLanguage("annuler")
-				cmdDelete.Text = GetLanguage("delete")
-				cmdSyndicate.Text = GetLanguage("syndicate")
-				valTitle.ErrorMessage = GetLanguage("need_title")
-				valViewOrder.ErrorMessage = GetLanguage("need_number")
-				valDescription.ErrorMessage = GetLanguage("need_description")
-				cmdUpload.Text = GetLanguage("command_upload")
-				cmdCalendar.Text = GetLanguage("command_calendar")
-				
+                cmdUpdate.Text = GetLanguage("enregistrer")
+                cmdCancel.Text = GetLanguage("annuler")
+                cmdDelete.Text = GetLanguage("delete")
+                cmdSyndicate.Text = GetLanguage("syndicate")
+                valTitle.ErrorMessage = GetLanguage("need_title")
+                valViewOrder.ErrorMessage = GetLanguage("need_number")
+                valDescription.ErrorMessage = GetLanguage("need_description")
+                cmdUpload.Text = GetLanguage("command_upload")
+                cmdCalendar.Text = GetLanguage("command_calendar")
+
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
                 Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
                 cboFile.DataSource = FileList
                 cboFile.DataBind()
 
-                cboInternal.DataSource = GetPortalTabs(portalSettings.Getportaltabs(_portalSettings.PortalID, GetLanguage("N")), True, True)
+                cboInternal.DataSource = GetPortalTabs(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), True, True)
                 cboInternal.DataBind()
 
                 Dim ObjAdmin As New AdminDB()
@@ -188,8 +190,6 @@ Namespace DotNetZoom
                     pnlAudit.Visible = False
                 End If
 
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
             End If
 
@@ -205,7 +205,7 @@ Namespace DotNetZoom
         '****************************************************************
 
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
-
+            Page.Validate()
             Dim strLink As String
 			' Reset Cache
 			

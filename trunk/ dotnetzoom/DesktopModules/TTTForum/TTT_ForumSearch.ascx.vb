@@ -53,10 +53,7 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 			
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
  			cmdBack.Text = GetLanguage("return")
 			cmdBack.Tooltip = GetLanguage("return")
@@ -64,47 +61,24 @@ Namespace DotNetZoom
 			cmdSearch.Tooltip = GetLanguage("cmdSearch")
 			Dim ImageFolder As String = ForumConfig.SkinImageFolder()
 
-
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
-            End If
-
-		
-		
             If Not Page.IsPostBack Then
-				cmdStartCalendar.Text = GetLanguage("Stat_Calendar")
-				cmdEndCalendar.Text = GetLanguage("Stat_Calendar")
-                cmdStartCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtStartDate)
-                cmdEndCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtEndDate)
-                txtStartDate.Text = FormatAnsiDate(DateAdd(DateInterval.Day, -6, Date.Today).ToString("yyyy-MM-dd"))
-                txtEndDate.Text = FormatAnsiDate(DateAdd(DateInterval.Day, 1, Date.Today).ToString("yyyy-MM-dd"))
-
+                ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
-                    ViewState("UrlReferrer") = ""
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 End If
-				Dim dbForum As New ForumDB
-            	lstGroup.DataSource = dbForum.TTTForum_GetGroups(_PortalSettings.PortalID, ModuleID)
-            	lstGroup.DataBind()
+
+                cmdStartCalendar.Text = GetLanguage("Stat_Calendar")
+                cmdEndCalendar.Text = GetLanguage("Stat_Calendar")
+                cmdStartCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtStartDate)
+                cmdEndCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtEndDate)
+                txtStartDate.Text = formatansidate(DateAdd(DateInterval.Day, -6, Date.Today).ToString("yyyy-MM-dd"))
+                txtEndDate.Text = formatansidate(DateAdd(DateInterval.Day, 1, Date.Today).ToString("yyyy-MM-dd"))
+
+                Dim dbForum As New ForumDB
+                lstGroup.DataSource = dbForum.TTTForum_GetGroups(_portalSettings.PortalId, ModuleId)
+                lstGroup.DataBind()
 
 
 

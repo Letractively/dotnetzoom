@@ -139,9 +139,7 @@ Namespace DotNetZoom
 			grdFile.Columns(5).HeaderText = GetLanguage("Gal_Desc")
 			
             If Request.IsAuthenticated Then
-                ZuserID = Int16.Parse(Context.Current.User.Identity.Name)
-            else
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+                ZuserID = Int16.Parse(Context.User.Identity.Name)
             End If
 
             If IsNumeric(Request.Params("mid")) Then
@@ -180,9 +178,11 @@ Namespace DotNetZoom
             Authorize()
             BindCategories()
 
-
-
+            If Not Page.IsPostBack Then
+                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+            End If
             If Not Page.IsPostBack AndAlso Zconfig.IsValidPath Then
+
 
                 BindData()
                 BuildStringInfo()
@@ -190,7 +190,7 @@ Namespace DotNetZoom
 
                 If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
                             OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
-                OrElse (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
+                OrElse (PortalSecurity.IsInRoles(CType(PortalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                     btnEditOwner.Visible = True
                 Else
                     btnEditOwner.Visible = False
@@ -200,7 +200,7 @@ Namespace DotNetZoom
                 lblInfo.Text = strFolderInfo
                 pnlAdd1.Visible = True
                 pnlAdd.Visible = True
-                btnFileUpload.visible = False
+                btnFileUpload.Visible = False
 
                 If Zfolder.Parent Is Nothing Then
                     lblHeader.Text = GetLanguage("Gal_ModG")
@@ -209,12 +209,6 @@ Namespace DotNetZoom
                     lblHeader.Text = GetLanguage("Gal_ModA")
                 End If
 
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
                 If Not Request.Params("action") Is Nothing Then
                     SetUpAction(Request.Params("action"))
                 End If

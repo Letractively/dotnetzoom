@@ -60,6 +60,7 @@ Namespace DotNetZoom
             End If
 
             Zconfig = ForumConfig.GetForumConfig(ModuleId)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If Not Page.IsPostBack Then
                 BindList()
@@ -67,8 +68,9 @@ Namespace DotNetZoom
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
-                    ViewState("UrlReferrer") = ""
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 End If
+
             End If
 			Dim ImageFolder As String = ForumConfig.SkinImageFolder()
 			cmdBack.Text = GetLanguage("return")
@@ -89,36 +91,6 @@ Namespace DotNetZoom
 			btnClose.Text = GetLanguage("return")
 			btnClose.ToolTip = GetLanguage("return")
 
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
-            End If
-				
-			
         End Sub
 
         Sub BindList()

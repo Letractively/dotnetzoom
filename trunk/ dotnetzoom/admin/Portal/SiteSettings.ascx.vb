@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -104,6 +104,7 @@ Namespace DotNetZoom
 
         Protected WithEvents chkStyleMenu As System.Web.UI.WebControls.CheckBox
         Protected WithEvents StyleRow As System.Web.UI.HtmlControls.HtmlTableRow
+        Protected WithEvents ssltd As System.Web.UI.HtmlControls.HtmlTableCell
 
         
         Protected WithEvents grdModuleDefs As System.Web.UI.WebControls.DataGrid
@@ -125,6 +126,8 @@ Namespace DotNetZoom
         Protected WithEvents grdPortalsAlias As System.Web.UI.WebControls.DataGrid
         Protected WithEvents AddSetting As System.Web.UI.WebControls.ImageButton
         Protected WithEvents sslCheckBox1 As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents sslSubDomainBox1 As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents sllline As System.Web.UI.HtmlControls.HtmlTableRow
 
 
 
@@ -160,90 +163,98 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
 
             Dim objAdmin As New AdminDB()
-			valExpiryDate.ErrorMessage = "<br>" + GetLanguage("not_a_date")
+            valExpiryDate.ErrorMessage = "<br>" + GetLanguage("not_a_date")
             If Not (Request.QueryString("PortalID") Is Nothing) And PortalSecurity.IsSuperUser Then
                 intPortalId = Int32.Parse(Request.QueryString("PortalID"))
+                cmdCancel.Visible = True
             Else
                 intPortalId = PortalId
+                cmdCancel.Visible = False
             End If
 
-			Dim objTIGRA As Control = page.FindControl("tigra")
-			If (Not objTIGRA Is Nothing) then
-			StyleRow.visible = True
-			else
-			StyleRow.visible = False
-			end if
-
+            Dim objTIGRA As Control = Page.FindControl("tigra")
+            If (Not objTIGRA Is Nothing) Then
+                StyleRow.Visible = True
+            Else
+                StyleRow.Visible = False
+            End If
 
             ' If this is the first visit to the page, populate the site data
             If Page.IsPostBack = False Then
-			    chkcontainerInfo.Checked = True
-				ContainerEdit.Visible = True
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
-				ContainerEdit.ModuleID = -4
-				ContainerEdit.ModuleTitle = GetLanguage("SS_SiteModuleSkin")
-				ContainerEdit.TabID = _portalSettings.ActiveTab.TabId
+                chkContainerInfo.Checked = True
+                ContainerEdit.Visible = True
 
-				ContainerEdit1.ModuleID = -3
-				ContainerEdit1.ModuleTitle = GetLanguage("SS_AdminModuleSkin")
-				ContainerEdit1.TabID = _portalSettings.ActiveTab.TabId
+                ContainerEdit.ModuleId = -4
+                ContainerEdit.ModuleTitle = GetLanguage("SS_SiteModuleSkin")
+                ContainerEdit.TabID = _portalSettings.ActiveTab.TabId
 
-				ContainerEdit2.ModuleID = -2
-				ContainerEdit2.ModuleTitle = GetLanguage("SS_EditModuleSkin")
-				ContainerEdit2.TabID = _portalSettings.ActiveTab.TabId
+                ContainerEdit1.ModuleId = -3
+                ContainerEdit1.ModuleTitle = GetLanguage("SS_AdminModuleSkin")
+                ContainerEdit1.TabID = _portalSettings.ActiveTab.TabId
 
-				ContainerEdit3.ModuleID = -1
-				ContainerEdit3.ModuleTitle = GetLanguage("SS_LoginModuleSkin")
-				ContainerEdit3.TabID = _portalSettings.ActiveTab.TabId
+                ContainerEdit2.ModuleId = -2
+                ContainerEdit2.ModuleTitle = GetLanguage("SS_EditModuleSkin")
+                ContainerEdit2.TabID = _portalSettings.ActiveTab.TabId
 
-				ContainerEdit4.ModuleID = -5
-				ContainerEdit4.ModuleTitle = GetLanguage("SS_ToolTipModuleSkin")
-				ContainerEdit4.TabID = _portalSettings.ActiveTab.TabId
+                ContainerEdit3.ModuleId = -1
+                ContainerEdit3.ModuleTitle = GetLanguage("SS_LoginModuleSkin")
+                ContainerEdit3.TabID = _portalSettings.ActiveTab.TabId
 
-				
-				chkContainerInfo.Text = GetLanguage("SS_SiteModuleSkin")
-				chkContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(getlanguage("ms_edit_contener")))
-				chkadminContainerInfo.Text = GetLanguage("SS_AdminModuleSkin") 
-				chkadminContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(getlanguage("ms_edit_contener")))
-				chkeditContainerInfo.Text = GetLanguage("SS_EditModuleSkin")
-				chkeditContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(getlanguage("ms_edit_contener")))
-				chkloginContainerInfo.Text = GetLanguage("SS_LoginModuleSkin")
-				chkloginContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(getlanguage("ms_edit_contener")))
-				chkToolTipContainerInfo.Text = GetLanguage("SS_ToolTipModuleSkin")
-				chkToolTipContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(getlanguage("ms_edit_contener")))
+                ContainerEdit4.ModuleId = -5
+                ContainerEdit4.ModuleTitle = GetLanguage("SS_ToolTipModuleSkin")
+                ContainerEdit4.TabID = _portalSettings.ActiveTab.TabId
 
 
+                chkContainerInfo.Text = GetLanguage("SS_SiteModuleSkin")
+                chkContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ms_edit_contener")))
+                chkadminContainerInfo.Text = GetLanguage("SS_AdminModuleSkin")
+                chkadminContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ms_edit_contener")))
+                chkeditContainerInfo.Text = GetLanguage("SS_EditModuleSkin")
+                chkeditContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ms_edit_contener")))
+                chkloginContainerInfo.Text = GetLanguage("SS_LoginModuleSkin")
+                chkloginContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ms_edit_contener")))
+                chkToolTipContainerInfo.Text = GetLanguage("SS_ToolTipModuleSkin")
+                chkToolTipContainerInfo.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ms_edit_contener")))
 
-				cmdProcessor.Text = GetLanguage("SS_cmdProcessor")
-				cmdGoogle.Text = GetLanguage("SS_cmdGoogle")
-				cmdUpdate.Text = GetLanguage("enregistrer")
-				cmdCancel.Text = GetLanguage("annuler")
-				cmdDelete.Text = GetLanguage("delete")
 
-				cmdRenew.Text = GetLanguage("cmdRenew")
-				PortalTerms.ToolTip = GetLanguage("SS_Terms_Tooltip")
-				PortalTerms.Text = GetLanguage("SS_Terms_Text")
-				PortalPrivacy.ToolTip = GetLanguage("SS_Privacy_Tooltip")
-				PortalPrivacy.Text = GetLanguage("SS_Privacy_Text")
-			
+
+                cmdProcessor.Text = GetLanguage("SS_cmdProcessor")
+                cmdGoogle.Text = GetLanguage("SS_cmdGoogle")
+                cmdUpdate.Text = GetLanguage("enregistrer")
+                cmdCancel.Text = GetLanguage("annuler")
+                cmdDelete.Text = GetLanguage("delete")
+
+                cmdRenew.Text = GetLanguage("cmdRenew")
+                PortalTerms.ToolTip = GetLanguage("SS_Terms_Tooltip")
+                PortalTerms.Text = GetLanguage("SS_Terms_Text")
+                PortalPrivacy.ToolTip = GetLanguage("SS_Privacy_Tooltip")
+                PortalPrivacy.Text = GetLanguage("SS_Privacy_Text")
+
                 Portalcss.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/portal.css&TabId=" & _portalSettings.ActiveTab.TabId & "', 'edit', 'width=800,height=600,left=100,top=100,resizable=1');m.focus();"
-				Portalcss.ToolTip = GetLanguage("SS_PortalCSS_Tooltip")
+                Portalcss.ToolTip = GetLanguage("SS_PortalCSS_Tooltip")
                 TTTcss.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/ttt.css&TabId=" & _portalSettings.ActiveTab.TabId & "','edit', 'width=800,height=600,left=100,top=100,resizable=1');m.focus();"
-				TTTcss.ToolTip = GetLanguage("SS_TTTCSS_Tooltip")
+                TTTcss.ToolTip = GetLanguage("SS_TTTCSS_Tooltip")
                 Portalskin.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/portal.skin&TabId=" & _portalSettings.ActiveTab.TabId & "','edit' , 'width=800,height=600,left=100,top=100,resizable=1');m.focus();"
-				Portalskin.ToolTip = GetLanguage("SS_PortalSkin_Tooltip")
+                Portalskin.ToolTip = GetLanguage("SS_PortalSkin_Tooltip")
                 PortalEditskin.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/skinedit.aspx?L=" & GetLanguage("N") & "&file=skin/portaledit.skin&TabId=" & _portalSettings.ActiveTab.TabId & "','edit' , 'width=800,height=600,left=100,top=100,resizable=1');m.focus();"
-				PortalEditskin.ToolTip = GetLanguage("SS_EditSkin_Tooltip")
-				
-				
-				
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm_portal")) & "');")
+                PortalEditskin.ToolTip = GetLanguage("SS_EditSkin_Tooltip")
+
+
+
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm_portal")) & "');")
                 cmdExpiryCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtExpiryDate)
-				cmdExpiryCalendar.Text = GetLanguage("Stat_Calendar")
+                cmdExpiryCalendar.Text = GetLanguage("Stat_Calendar")
                 ' load the list of files found in the upload directory
                 Dim ImageFileList As ArrayList = GetFileList(intPortalId, glbImageFileTypes)
                 cboLogo.DataSource = ImageFileList
@@ -251,21 +262,26 @@ Namespace DotNetZoom
                 cboBackground.DataSource = ImageFileList
                 cboBackground.DataBind()
 
-                
-				Dim objUser As New UsersDB()
-				
-				ddlTimeZone.DataSource =  objAdmin.GetTimeZoneCodes(GetLanguage("N"))
-				ddlTimeZone.DataBind()
+
+                Dim objUser As New UsersDB()
+
+                ddlTimeZone.DataSource = objAdmin.GetTimeZoneCodes(GetLanguage("N"))
+                ddlTimeZone.DataBind()
                 cboProcessor.DataSource = objAdmin.GetProcessorCodes
                 cboProcessor.DataBind()
-				
+                sllline.Visible = PortalSettings.GetHostSettings("chkEnableSSL").ToString = "Y"
+
                 Dim dr As Data.SqlClient.SqlDataReader = objAdmin.GetSinglePortal(intPortalId)
                 If dr.Read Then
-                    If PortalSettings.GetHostSettings("chkEnableSSL").ToString = "Y" Then
+                    If sllline.Visible Then
                         SSLCheckBox.Checked = Boolean.Parse(dr("ssl").ToString)
                     Else
                         SSLCheckBox.Checked = False
                         SSLCheckBox.Enabled = False
+                        sslSubDomainBox1.Visible = False
+                        sslSubDomainBox1.Checked = False
+                        sslCheckBox1.Visible = False
+                        sslCheckBox1.Checked = False
                     End If
 
                     txtPortalName.Text = dr("PortalName").ToString
@@ -342,11 +358,11 @@ Namespace DotNetZoom
                     txtUserId.Text = dr("ProcessorUserId").ToString
                     txtPassword.Text = dr("ProcessorPassword").ToString
                 End If
-                    dr.Close()
+                dr.Close()
 
-                    Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(intPortalId)
-                    chkUserInfo.Items.Clear()
-                    Dim item As New ListItem()
+                Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(intPortalId)
+                chkUserInfo.Items.Clear()
+                Dim item As New ListItem()
                 item.Text = "<img height=""14"" width=""17"" src=""" & glbPath & "images/1x1.gif"" Alt=""*"" style="" background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -91px;"">"
                 item.Value = "SearchUser"
                 If Tsettings("SearchUser") <> "NO" Then
@@ -389,202 +405,200 @@ Namespace DotNetZoom
 
                 item = New ListItem()
                 item.Text = "<img height=""16"" width=""17"" src=""" & glbPath & "images/1x1.gif"" style=""background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -243px;"" border=""0"" alt=""*"">"
-                    item.Value = "PMSMailNotice"
-                    If Tsettings("PMSMailNotice") <> "NO" Then
-                        item.Selected = True
-                    Else
-                        item.Selected = False
+                item.Value = "PMSMailNotice"
+                If Tsettings("PMSMailNotice") <> "NO" Then
+                    item.Selected = True
+                Else
+                    item.Selected = False
+                End If
+                chkUserInfo.Items.Add(item)
+
+
+
+                Dim TempAuthLanguage As String = ""
+                If Tsettings.ContainsKey("languageauth") Then
+                    TempAuthLanguage = Tsettings("languageauth")
+                Else
+                    TempAuthLanguage = GetLanguage("N") & ";"
+                    objAdmin.UpdatePortalSetting(intPortalId, "languageauth", TempAuthLanguage)
+                End If
+
+
+                ' Language to Use
+                Dim HashL As Hashtable = objAdmin.GetAvailablelanguage
+                For Each de As DictionaryEntry In HashL
+
+                    Dim itemL As New ListItem()
+                    itemL.Text = de.Value
+                    itemL.Value = de.Key
+
+                    Dim itemX As New ListItem()
+                    itemX.Text = de.Value
+                    itemX.Value = de.Key
+
+                    Dim itemR As New ListItem()
+                    itemR.Text = de.Value
+                    itemR.Value = de.Key
+
+                    If InStr(1, TempAuthLanguage, itemL.Value & ";") Then
+                        ddlLanguage.Items.Add(itemX)
+                        ddlSiteLanguage.Items.Add(itemL)
                     End If
-                    chkUserInfo.Items.Add(item)
-
-
-
-                    Dim TempAuthLanguage As String = ""
-                    If Tsettings.ContainsKey("languageauth") Then
-                        TempAuthLanguage = Tsettings("languageauth")
+                    If GetLanguage("N") = itemR.Value Then
+                        itemR.Selected = True
                     Else
-                        TempAuthLanguage = GetLanguage("N") & ";"
-                        objAdmin.UpdatePortalSetting(intPortalId, "languageauth", TempAuthLanguage)
-                    End If
-
-
-                    ' Language to Use
-                    Dim HashL As Hashtable = objAdmin.GetAvailablelanguage
-                    For Each de As DictionaryEntry In HashL
-
-                        Dim itemL As New ListItem()
-                        itemL.Text = de.Value
-                        itemL.Value = de.Key
-
-                        Dim itemX As New ListItem()
-                        itemX.Text = de.Value
-                        itemX.Value = de.Key
-
-                        Dim itemR As New ListItem()
-                        itemR.Text = de.Value
-                        itemR.Value = de.Key
-
-                        If InStr(1, TempAuthLanguage, itemL.Value & ";") Then
-                            ddlLanguage.Items.Add(itemX)
-                            ddlSiteLanguage.Items.Add(itemL)
-                        End If
-                        If GetLanguage("N") = itemR.Value Then
+                        If InStr(1, TempAuthLanguage, itemR.Value & ";") Then
                             itemR.Selected = True
-                        Else
-                            If InStr(1, TempAuthLanguage, itemR.Value & ";") Then
-                                itemR.Selected = True
-                            End If
-                        End If
-                        chkAuthLanguage.Items.Add(itemR)
-                    Next de
-
-
-                    If Tsettings.ContainsKey("language") Then
-                        If Not ddlSiteLanguage.Items.FindByValue(Tsettings("language")) Is Nothing Then
-                            ddlSiteLanguage.Items.FindByValue(Tsettings("language")).Selected = True
-                        Else
-                            ddlSiteLanguage.SelectedIndex = 0
-                        End If
-                    Else
-                        objAdmin.UpdatePortalSetting(intPortalId, "language", GetLanguage("N"))
-                    End If
-
-
-                    If Not ddlLanguage.Items.FindByText(GetLanguage("language")) Is Nothing Then
-                        ddlLanguage.Items.FindByText(GetLanguage("language")).Selected = True
-                    Else
-                        ddlLanguage.SelectedIndex = 0
-                    End If
-
-                    If ddlLanguage.Items.Count = 1 Then
-                        ddlLanguage.Visible = False
-                    Else
-                        ddlLanguage.Visible = True
-                    End If
-
-
-                    PortalTerms.NavigateUrl = "javascript:var m = window.open('" & "default.aspx?edit=mod&def=Terms&Language=" & ddlLanguage.SelectedItem.Value & "&TabID=" & _portalSettings.ActiveTab.TabId & "','');m.focus();"
-                    PortalPrivacy.NavigateUrl = "javascript:var m = window.open('" & "default.aspx?edit=mod&def=Privacy&Language=" & ddlLanguage.SelectedItem.Value & "&TabID=" & _portalSettings.ActiveTab.TabId & "','');m.focus();"
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_loginmessage") Then
-                        txtLogin.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_loginmessage"), String)
-                    Else
-                        txtLogin.Text = CType(Tsettings("loginmessage"), String)
-                    End If
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_registrationmessage") Then
-                        txtRegistration.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_registrationmessage"), String)
-                    Else
-                        txtRegistration.Text = CType(Tsettings("registrationmessage"), String)
-                    End If
-
-                    txtRegisterEMail.Text = CType(Tsettings("registeremail"), String)
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_Description") Then
-                        txtDescription.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_Description"), String)
-                    End If
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_KeyWords") Then
-                        txtKeyWords.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_KeyWords"), String)
-                    End If
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_FooterText") Then
-                        txtFooterText.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_FooterText"), String)
-                    End If
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_PortalName") Then
-                        txtPortalName.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_PortalName"), String)
-                    End If
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_signupmessage") Then
-                        txtSignup.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_signupmessage"), String)
-                    Else
-                        txtSignup.Text = CType(Tsettings("signupmessage"), String)
-                    End If
-
-
-
-
-                    txtFlash.Text = ""
-                    If Tsettings("flash") <> Nothing Then
-                        txtFlash.Text = CType(Tsettings("flash"), String)
-                    End If
-                    txtInstructionDemo.Text = ""
-
-                    If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_DemoDirectives") Then
-                        txtInstructionDemo.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_DemoDirectives"), String)
-                    Else
-                        txtInstructionDemo.Text = CType(Tsettings("DemoDirectives"), String)
-                    End If
-
-                    Dim TempDomainName As String = GetDomainName(Request)
-
-                    chkDemoDomain.Items.FindByValue("N").Text = TempDomainName & "/" & GetLanguage("chkDemoDomain")
-                    TempDomainName = Replace(TempDomainName, "www.", "")
-                    chkDemoDomain.Items.FindByValue("Y").Text = GetLanguage("chkDemoDomain") & "." & TempDomainName
-
-                    If Tsettings("DemoDomain") <> Nothing Then
-                        chkDemoDomain.Items.FindByValue(CType(Tsettings("DemoDomain"), String)).Selected = True
-                    Else
-                        chkDemoDomain.SelectedIndex = 0
-                    End If
-
-                    If Tsettings("DemoSignup") <> Nothing Then
-                        If CType(Tsettings("DemoSignup"), String) = "Y" Then
-                            chkDemoSignup.Checked = True
-                            SiteRow7.Visible = True
-                            DemoCell.Visible = True
-                            pnlDemoContent.Visible = True
-                        Else
-                            chkDemoSignup.Checked = False
-                            SiteRow7.Visible = False
-                            pnlDemoContent.Visible = False
-                            DemoCell.Visible = False
                         End If
                     End If
+                    chkAuthLanguage.Items.Add(itemR)
+                Next de
 
 
-                    Dim slTabs As SortedList = New SortedList
-                    Dim TabSelectedIndex As Integer = 0
-                    If Request("TabSelected") <> "" Then
-                        TabSelectedIndex = Request("TabSelected") - 1
-                    End If
-
-                    GetTabVisible((TabSelectedIndex + 1).ToString)
-
-                    slTabs.Add("1", GetLanguage("SiteSettings1"))
-                    slTabs.Add("2", GetLanguage("SiteSettings2"))
-                    slTabs.Add("3", GetLanguage("SiteSettings3"))
-                    If pnlDemoContent.Visible Or PortalSecurity.IsSuperUser Then
-                        slTabs.Add("4", GetLanguage("SiteSettings4"))
+                If Tsettings.ContainsKey("language") Then
+                    If Not ddlSiteLanguage.Items.FindByValue(Tsettings("language")) Is Nothing Then
+                        ddlSiteLanguage.Items.FindByValue(Tsettings("language")).Selected = True
                     Else
-                        If TabSelectedIndex = 4 Then
-                            TabSelectedIndex = 3
-                        End If
-                    End If
-                    slTabs.Add("5", GetLanguage("SiteSettings5"))
-
-
-                    dlTabs.DataSource = slTabs
-                    dlTabs.DataBind()
-
-                    dlTabs.SelectedIndex = TabSelectedIndex
-
-
-
-                    BindData()
-                    InitializeDemo()
-
-                    If Not Request.UrlReferrer Is Nothing Then
-                        ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                    Else
-                        ViewState("UrlReferrer") = ""
+                        ddlSiteLanguage.SelectedIndex = 0
                     End If
                 Else
-                    Title1.DisplayHelp = ViewState("DisplayHelp")
+                    objAdmin.UpdatePortalSetting(intPortalId, "language", GetLanguage("N"))
                 End If
-		
-		
+
+
+                If Not ddlLanguage.Items.FindByText(GetLanguage("language")) Is Nothing Then
+                    ddlLanguage.Items.FindByText(GetLanguage("language")).Selected = True
+                Else
+                    ddlLanguage.SelectedIndex = 0
+                End If
+
+                If ddlLanguage.Items.Count = 1 Then
+                    ddlLanguage.Visible = False
+                Else
+                    ddlLanguage.Visible = True
+                End If
+
+
+                PortalTerms.NavigateUrl = "javascript:var m = window.open('" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, False, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=mod&def=Terms&Language=" & ddlLanguage.SelectedItem.Value) & "','');m.focus();"
+                PortalPrivacy.NavigateUrl = "javascript:var m = window.open('" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, False, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=mod&def=Privacy&Language=" & ddlLanguage.SelectedItem.Value) & "','');m.focus();"
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_loginmessage") Then
+                    txtLogin.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_loginmessage"), String)
+                Else
+                    txtLogin.Text = CType(Tsettings("loginmessage"), String)
+                End If
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_registrationmessage") Then
+                    txtRegistration.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_registrationmessage"), String)
+                Else
+                    txtRegistration.Text = CType(Tsettings("registrationmessage"), String)
+                End If
+
+                txtRegisterEMail.Text = CType(Tsettings("registeremail"), String)
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_Description") Then
+                    txtDescription.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_Description"), String)
+                End If
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_KeyWords") Then
+                    txtKeyWords.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_KeyWords"), String)
+                End If
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_FooterText") Then
+                    txtFooterText.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_FooterText"), String)
+                End If
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_PortalName") Then
+                    txtPortalName.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_PortalName"), String)
+                End If
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_signupmessage") Then
+                    txtSignup.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_signupmessage"), String)
+                Else
+                    txtSignup.Text = CType(Tsettings("signupmessage"), String)
+                End If
+
+
+
+
+                txtFlash.Text = ""
+                If Tsettings("flash") <> Nothing Then
+                    txtFlash.Text = CType(Tsettings("flash"), String)
+                End If
+                txtInstructionDemo.Text = ""
+
+                If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_DemoDirectives") Then
+                    txtInstructionDemo.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_DemoDirectives"), String)
+                Else
+                    txtInstructionDemo.Text = CType(Tsettings("DemoDirectives"), String)
+                End If
+
+                Dim TempDomainName As String = GetDomainName(Request)
+
+                chkDemoDomain.Items.FindByValue("N").Text = TempDomainName & "/" & GetLanguage("chkDemoDomain")
+                TempDomainName = Replace(TempDomainName, "www.", "")
+                chkDemoDomain.Items.FindByValue("Y").Text = GetLanguage("chkDemoDomain") & "." & TempDomainName
+
+                If Tsettings("DemoDomain") <> Nothing Then
+                    chkDemoDomain.Items.FindByValue(CType(Tsettings("DemoDomain"), String)).Selected = True
+                Else
+                    chkDemoDomain.SelectedIndex = 0
+                End If
+
+                If Tsettings("DemoSignup") <> Nothing Then
+                    If CType(Tsettings("DemoSignup"), String) = "Y" Then
+                        chkDemoSignup.Checked = True
+                        SiteRow7.Visible = True
+                        DemoCell.Visible = True
+                        pnlDemoContent.Visible = True
+                    Else
+                        chkDemoSignup.Checked = False
+                        SiteRow7.Visible = False
+                        pnlDemoContent.Visible = False
+                        DemoCell.Visible = False
+                    End If
+                End If
+
+
+                Dim slTabs As SortedList = New SortedList
+                Dim TabSelectedIndex As Integer = 0
+                If Request("TabSelected") <> "" Then
+                    TabSelectedIndex = Request("TabSelected") - 1
+                End If
+
+                GetTabVisible((TabSelectedIndex + 1).ToString)
+
+                slTabs.Add("1", GetLanguage("SiteSettings1"))
+                slTabs.Add("2", GetLanguage("SiteSettings2"))
+                slTabs.Add("3", GetLanguage("SiteSettings3"))
+                If pnlDemoContent.Visible Or PortalSecurity.IsSuperUser Then
+                    slTabs.Add("4", GetLanguage("SiteSettings4"))
+                Else
+                    If TabSelectedIndex = 4 Then
+                        TabSelectedIndex = 3
+                    End If
+                End If
+                slTabs.Add("5", GetLanguage("SiteSettings5"))
+
+
+                dlTabs.DataSource = slTabs
+                dlTabs.DataBind()
+
+                dlTabs.SelectedIndex = TabSelectedIndex
+
+
+
+                BindData()
+                InitializeDemo()
+
+            Else
+                Title1.DisplayHelp = ViewState("DisplayHelp")
+            End If
+
+            ssltd.Visible = SSLCheckBox.Checked
+            sslCheckBox1.Visible = SSLCheckBox.Checked
+            sslSubDomainBox1.Visible = SSLCheckBox.Checked
+
         End Sub
 
 
@@ -854,15 +868,22 @@ Namespace DotNetZoom
             Dim dr As SqlDataReader = objAdmin.GetSinglePortal(intPortalId)
             If dr.Read Then
                     ' delete upload directory
-                    deleteFolderRecursive(strServerPath & "Portals\" & dr("GUID").ToString)
-
-                    ' delete child directory
-
-                    strPortalName = GetPortalDomainName(dr("PortalAlias").ToString)
-                    If InStr(1, dr("PortalAlias").ToString, "/") Then
-                        strPortalName = Mid(dr("PortalAlias").ToString, InStrRev(dr("PortalAlias").ToString, "/") + 1)
+                    If dr("GUID").ToString <> "" Then
+                        deleteFolderRecursive(strServerPath & "Portals\" & dr("GUID").ToString)
                     End If
-                    deleteFolderRecursive(strServerPath & strPortalName)
+                    ' delete child directory
+                    Dim Drd As SqlDataReader = objAdmin.GetPortalAlias(intPortalId)
+                    While Drd.Read
+                        strPortalName = CType(Drd("PortalAlias"), String)
+                        If InStr(1, strPortalName, "/") Then
+                            strPortalName = Mid(strPortalName, InStrRev(strPortalName, "/") + 1)
+                            If strPortalName <> "" And strPortalName.ToLower <> "portals" And System.IO.Directory.Exists(strServerPath & strPortalName) Then
+                                deleteFolderRecursive(strServerPath & strPortalName)
+                            End If
+                        End If
+
+                    End While
+                    Drd.close()
 
                     ' remove database references
                     objAdmin.DeletePortalInfo(intPortalId)
@@ -941,7 +962,7 @@ Namespace DotNetZoom
                 strProcessorURL = strProcessorURL & "&return=" & HTTPPOSTEncode(Request.UrlReferrer.ToString())
                 strProcessorURL = strProcessorURL & "&cancel_return=" & HTTPPOSTEncode(Request.UrlReferrer.ToString()) & "&charset=utf-8"
 
-                strProcessorURL = strProcessorURL & "&notify_url=http://" & HTTPPOSTEncode( GetDomainName(Request) & "/admin/Sales/PayPalIPN.aspx")
+                strProcessorURL = strProcessorURL & "&notify_url=" & HTTPPOSTEncode(glbHTTP() & "/admin/Sales/PayPalIPN.aspx")
 
             End If
 
@@ -1106,8 +1127,8 @@ Namespace DotNetZoom
 				txtFooterText.Text = ""
 				end if
 
-				PortalTerms.NavigateUrl =  "javascript:var m = window.open('" & "default.aspx?edit=mod&def=Terms&Language=" &  ddlLanguage.SelectedItem.Value  & "&TabID=" & _portalSettings.ActiveTab.TabId & "','');m.focus();"
-				PortalPrivacy.NavigateUrl =  "javascript:var m = window.open('" & "default.aspx?edit=mod&def=Privacy&Language=" &  ddlLanguage.SelectedItem.Value  & "&TabID=" & _portalSettings.ActiveTab.TabId & "','');m.focus()"
+            PortalTerms.NavigateUrl = "javascript:var m = window.open('" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, False, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=mod&def=Terms&Language=" & ddlLanguage.SelectedItem.Value) & "','');m.focus();"
+            PortalPrivacy.NavigateUrl = "javascript:var m = window.open('" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, False, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=mod&def=Privacy&Language=" & ddlLanguage.SelectedItem.Value) & "','');m.focus();"
 
 	
 		End Sub
@@ -1145,8 +1166,9 @@ Namespace DotNetZoom
         Private Sub AddSetting_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles AddSetting.Click
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim objAdmin As New AdminDB()
-            objAdmin.UpdatePortalAlias(intPortalId, txtPortalAlias.Text, False, sslCheckBox1.Checked)
+            objAdmin.UpdatePortalAlias(intPortalId, txtPortalAlias.Text, sslSubDomainBox1.Checked, sslCheckBox1.Checked)
             sslCheckBox1.Checked = False
+            sslSubDomainBox1.Checked = False
             txtPortalAlias.Text = ""
             BindDataAlias()
         End Sub
@@ -1167,10 +1189,10 @@ Namespace DotNetZoom
             Select Case e.CommandName
                 Case "EditOK"
                     If e.CommandArgument = GetTextBox(e.Item, "txtRename").Text.ToLower Then
-                        objAdmin.UpdatePortalAlias(intPortalId, e.CommandArgument, False, GetCheckBox(e.Item, "sslCheckBox").Checked)
+                        objAdmin.UpdatePortalAlias(intPortalId, e.CommandArgument, GetCheckBox(e.Item, "sslSubDomainBox").Checked, GetCheckBox(e.Item, "sslCheckBox").Checked)
                     Else
                         objAdmin.DeletePortalAlias(e.CommandArgument)
-                        objAdmin.UpdatePortalAlias(intPortalId, GetTextBox(e.Item, "txtRename").Text.ToLower, False, GetCheckBox(e.Item, "sslCheckBox").Checked)
+                        objAdmin.UpdatePortalAlias(intPortalId, GetTextBox(e.Item, "txtRename").Text.ToLower, GetCheckBox(e.Item, "sslSubDomainBox").Checked, GetCheckBox(e.Item, "sslCheckBox").Checked)
                     End If
 
                     BindDataAlias()

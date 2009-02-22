@@ -40,40 +40,19 @@ Namespace DotNetZoom
 
 
 						
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
- 			Dim ImageFolder As String = ForumConfig.SkinImageFolder()
+            Dim ImageFolder As String = ForumConfig.SkinImageFolder()
 
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
-            End If
-			
-			
-			
             If IsNumeric(Request.Params("ItemIndex")) Then
                 itemIndex = Int32.Parse(Request.Params("ItemIndex"))
             End If
 
             If Not Page.IsPostBack Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
 			btnBack.Text = GetLanguage("return")
 			btnBack.Tooltip = GetLanguage("return")
@@ -90,12 +69,6 @@ Namespace DotNetZoom
                 End If
 
                 
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
 
             End If
 			

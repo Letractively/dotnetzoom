@@ -75,7 +75,9 @@ Namespace DotNetZoom
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             'Put user code to initialize the page here
    			Title1.EditText = getlanguage("modifier")
-			ClearCache.ToolTip = getlanguage("Gal_Clear")
+            ClearCache.ToolTip = GetLanguage("Gal_Clear")
+            ClearCache.Style.Add("background", "url('" & ForumConfig.DefaultImageFolder() & "forum.gif" & "') no-repeat")
+            ClearCache.Style.Add("background-position", "0px -256px")
             SubAlbum.ToolTip = GetLanguage("Gal_AddFolderTip")
             UploadImage.ToolTip = GetLanguage("Gal_AddFileTip")
 			lnkAdmin.Text =  getlanguage("Gal_SetUp")
@@ -86,17 +88,7 @@ Namespace DotNetZoom
 
 			SlideshowLink.Text =  getlanguage("Gal_showLink")
 
-			
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    objCSS.Controls.Add(objLink)
-            End If
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
 			If Not Request.Params("reset") Is Nothing Then
 			GalleryConfig.ResetGalleryConfig(ModuleID)
@@ -207,7 +199,6 @@ Namespace DotNetZoom
 
             If Not Zconfig.IsPrivate AndAlso (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ModuleId), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                 mGalleryEdit = True
-
             End If
 
             ' Allow download file?
@@ -620,6 +611,15 @@ Namespace DotNetZoom
 
         End Function
 
+        Public Function SetImage(ByVal ImageData As String) As String
+            Return "<img height=""16"" width=""16"" src=""/images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ForumConfig.DefaultImageFolder & "forum.gif') no-repeat; background-position:" & ImageData & ";"">"
+        End Function
+
+        Public Function GetImageStyle(ByVal ImageData As String) As String
+            Return "border-width:0px; background: url('" & ForumConfig.DefaultImageFolder & "forum.gif') no-repeat; background-position: " & ImageData & ";"
+        End Function
+
+
         Public Function GetForumURL(ByVal DataItem As Object) As String
 
             bCanDiscuss = False
@@ -691,12 +691,14 @@ Namespace DotNetZoom
                 If Item.IsFolder Then
                     Dim _galleryFolder As GalleryFolder = CType(Zrequest.Folder.List.Item(ItemIndex), GalleryFolder)
                     Dim folderPath As String = _galleryFolder.Path
-                    System.IO.Directory.Delete(folderPath, True)
+                    If GetAbsoluteServerPath(Request) <> folderPath Then
+                        System.IO.Directory.Delete(folderPath, True)
+                    End If
 
 
                     ' ne pas oublier d'effacer tous les fichiers  
                     ' System.IO.File.Delete(folderPath + _res + foldername + .gif ou .jpg
-                    If Item.Thumbnail <> glbPath & "images/TTT/TTT_folder.gif" Then
+                    If Item.Thumbnail <> glbPath & "images/TTT/TTT_folder.gif" And Item.Thumbnail <> ForumConfig.DefaultImageFolder() & "TTT_folder.gif" Then
                         System.IO.File.Delete(Server.MapPath(Item.Thumbnail))
                     End If
                     ' Clear integrated info of forum
@@ -715,7 +717,8 @@ Namespace DotNetZoom
                     Dim thumbURL As String = _galleryFile.ThumbNail
                     Dim thumbPath As String = Server.MapPath(thumbURL)
                     System.IO.File.Delete(filePath)
-                    If (_galleryFile.ThumbNail <> glbPath & "images/TTT/TTT_MediaPlayer.gif") And (_galleryFile.ThumbNail <> glbPath & "images/TTT/TTT_Flash.gif") Then
+                    If (_galleryFile.ThumbNail <> glbPath & "images/TTT/TTT_MediaPlayer.gif") And (_galleryFile.ThumbNail <> glbPath & "images/TTT/TTT_Flash.gif") And _
+                        _galleryFile.ThumbNail <> ForumConfig.DefaultImageFolder() & "TTT_MediaPlayer.gif" And _galleryFile.ThumbNail <> ForumConfig.DefaultImageFolder() & "TTT_Flash.gif" Then
                         System.IO.File.Delete(thumbPath)
                     End If
                 End If

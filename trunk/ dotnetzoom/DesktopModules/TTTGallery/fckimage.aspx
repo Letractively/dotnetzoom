@@ -182,7 +182,9 @@ End Sub
 
 
 Public Sub UploadImage_OnClick(ByVal sender As Object, ByVal e As EventArgs) 
-ResultsMessage.Text = ""
+        Page.Validate()
+
+        ResultsMessage.Text = ""
 ' Obtain PortalSettings from Current Context
 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 Dim objAdmin As New AdminDB()

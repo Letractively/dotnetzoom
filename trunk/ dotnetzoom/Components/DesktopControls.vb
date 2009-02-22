@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -125,7 +125,13 @@ Namespace DotNetZoom
         Public ReadOnly Property EditURL(ByVal strKeyName As String, ByVal strKeyValue As String) As String
 
             Get
-                Return GetFullDocument() & "?edit=control&tabid=" & TabId.ToString & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")) & "&" & strKeyName & "=" & strKeyValue
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                If IsAdminTab() Then
+                    Return FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, HttpContext.Current.Request.IsSecureConnection, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control" & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")) & "&" & strKeyName & "=" & strKeyValue)
+                Else
+                    Return FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control" & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")) & "&" & strKeyName & "=" & strKeyValue)
+                End If
             End Get
 
         End Property

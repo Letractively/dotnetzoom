@@ -450,7 +450,7 @@ Namespace DotNetZoom
             Dim sb As New StringBuilder()
             sb.Append("forumpage=")
             sb.Append(TTT_ForumDispatch.ForumDesktopType.ForumPrivateMessage)
-            sb.Append("&def=UsersPMS")
+            ' sb.Append("&def=UsersPMS")
 			Dim _PortalSetting As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Return FormatFriendlyURL(_PortalSetting.ActiveTab.FriendlyTabName, _PortalSetting.ActiveTab.ssl, _PortalSetting.ActiveTab.ShowFriendly, TabID.ToString, sb.ToString)
         End Function

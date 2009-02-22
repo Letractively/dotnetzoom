@@ -70,11 +70,7 @@ Namespace DotNetZoom
 	    
 			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
  
-	        If Request.IsAuthenticated = false Then
-                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1"))
-            End If
-	
-			btnBack.Text = GetLanguage("return")
+            btnBack.Text = GetLanguage("return")
 			btnBack.Tooltip = GetLanguage("return")
 			btnDeleteAllInbox.Text = GetLanguage("erase")
 			btnDeleteAllInbox.ToolTip = GetLanguage("UO_erase")
@@ -86,37 +82,15 @@ Namespace DotNetZoom
 			btnFindUser.ToolTip = GetLanguage("UO_FindUser")
 			btnSelect.Text = GetLanguage("UO_Select")
 			btnSelect.Tooltip = GetLanguage("UO_Select")
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			
-			
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case Else
-                            objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End Select
-                Else
-                    objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                End If
-                objCSS.Controls.Add(objLink)
-            End If
-
-            ZuserID = Int16.Parse(COntext.User.Identity.Name)
-
+            ZuserID = Int16.Parse(Context.User.Identity.Name)
 
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
                 If Request.Params("pmsTabId") = "1" Or Request.Params("pmsTabId") = "" Then
                     BindInbox()
@@ -133,7 +107,7 @@ Namespace DotNetZoom
                 End If
 
                 CreateLink()
-                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+
             End If
 
 
@@ -149,45 +123,37 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim ZuserURL As String = _portalSettings.UploadDirectory
             ZuserUrl = ZuserURL & "userimage/" & ZuserID.ToString
-            Session("FCKeditor:UserFilesPath") = ZuserURL & "/"
-            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
 
             If Request.IsAuthenticated = False Then
                 FCKeditor1.LinkBrowserURL = ""
+                FCKeditor1.ImageBrowserURL = ""
+                Session("FCKeditor:UserFilesPath") = Nothing
             Else
+                FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+                Session("FCKeditor:UserFilesPath") = ZuserURL & "/"
+                Dim ZuserphysicalPath As String = Server.MapPath(ZuserURL)
+                If Not Directory.Exists(ZuserphysicalPath) Then
+                    Try
+                        IO.Directory.CreateDirectory(ZuserphysicalPath)
+                    Catch exc As System.Exception
+                    End Try
+                End If
                 Dim objAdmin As New AdminDB()
                 Dim tmpUploadRoles As String = ""
                 If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
                     tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
                 End If
-                If Not PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                If PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                    FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+                Else
                     FCKeditor1.LinkBrowserURL = ""
                 End If
             End If
+            SetEditor(FCKeditor1)
             FCKeditor1.Width = Unit.Pixel(610)
             FCKeditor1.Height = unit.pixel(500)
-            If GetLanguage("fckeditor_language") <> "auto" Then
-                FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-                FCKeditor1.AutoDetectLanguage = False
-            End If
-            FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-
-            ' set the css for the editor if it exist
-            If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) Then
-                FCKeditor1.SkinPath = _portalSettings.UploadDirectory & "skin/fckeditor/"
-                FCKeditor1.EditorAreaCSS = _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-                FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-                ' FCKeditor1.TemplatesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml"
-            End If
 
 
-            Dim ZuserphysicalPath As String = Server.MapPath(ZuserURL)
-            If Not Directory.Exists(ZuserphysicalPath) Then
-                Try
-                    IO.Directory.CreateDirectory(ZuserphysicalPath)
-                Catch exc As System.Exception
-                End Try
-            End If
 
         End Sub
 
@@ -514,8 +480,9 @@ Namespace DotNetZoom
                     strBody = GetLanguage("UO_Message_Notice")
                     strBody = Replace(StrBody, "{FullName}", dr("FullName").ToString)
                     strBody = Replace(StrBody, "{SenderName}", SenderName)
-                    StrBody = Replace(StrBody, "{MessageURL}", GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId.ToString & "&pmsTabId=1&def=UsersPMS&forumpage=4")
-                    strBody = vbCrLf & strBody & vbCrLf
+                    ' StrBody = Replace(StrBody, "{MessageURL}", GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId.ToString & "&pmsTabId=1&def=UsersPMS&forumpage=4")
+                    StrBody = Replace(StrBody, "{MessageURL}", GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId.ToString & "&pmsTabId=1&forumpage=4")
+                    StrBody = vbCrLf & StrBody & vbCrLf
                     Dim StringObject As String = ProcessLanguage(GetLanguage("UO_Notice_Object"))
                     SendNotification(_portalSettings.Email, dr("Email").ToString, "", StringObject, strBody)
                 End If

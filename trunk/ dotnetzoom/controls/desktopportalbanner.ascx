@@ -38,8 +38,10 @@
 &nbsp;<mail:check id="check" runat="server" EnableViewState="false"></mail:check>
 <asp:hyperlink id="hypUser" runat="server" EnableViewState="false" CssClass="SelectedTab">User</asp:hyperlink>
 &nbsp;<asp:literal id="hypHelp" runat="server" EnableViewState="false">Help</asp:literal>
-<asp:Label id="lblSeparator" cssclass="OtherTabs" runat="server" EnableViewState="false" >&nbsp;</asp:Label>
-<asp:hyperlink id="hypLogin" runat="server" EnableViewState="false" CssClass="OtherTabs"></asp:hyperlink>
+<asp:linkButton cssclass="OtherTabs" visible="false" id="cmdRegister" runat="server" ></asp:linkButton>
+<asp:Label id="lblSeparator" cssclass="OtherTabs" runat="server" EnableViewState="false" >&nbsp;|&nbsp;</asp:Label>
+<asp:linkButton cssclass="OtherTabs" visible="false" id="cmdLogin" runat="server" ></asp:linkButton>
+&nbsp;<asp:linkButton cssclass="OtherTabs" visible="false" id="cmdLogOff" runat="server" ></asp:linkButton>
 &nbsp;&nbsp;&nbsp;
 <asp:DropDownList id="ddlLanguage" EnableViewState="true" visible="false" AutoPostBack="True" DataValueField="language" DataTextField="SettingValue" runat="server" CssClass="NormalTextBox" ></asp:DropDownList>
 </asp:TableCell>

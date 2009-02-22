@@ -29,9 +29,9 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			If Request.Params("edit") <> "" Then
-			Title1.DisplayTitle = getlanguage("MyBuddiesModule")
-			end if
+            If Request.Params("def") <> "" Then
+                Title1.DisplayTitle = GetLanguage("MyBuddiesModule")
+            End If
             If (Request.IsAuthenticated) Then
 				Title1.DisplayHelp = "DisplayHelp_MyBuddiesModule"
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -93,7 +93,7 @@ Namespace DotNetZoom
         End Sub
 
         Protected Function GetUserInfoLink(ByVal userID As String) As String
-            Return GetFullDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
+            Return GetFullDocument() & "?TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
         End Function
 
         Protected Function GetUserInfoTooltip(ByVal userName As String) As String

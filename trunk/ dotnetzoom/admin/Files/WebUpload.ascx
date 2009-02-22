@@ -13,6 +13,7 @@
         <tr>
 		<td class="SubHead" align="left" colspan="2"><%= DotNetZoom.GetLanguage("F_UploadInDirec") %>
         <asp:Label id="lblRootDir" runat="server" cssclass="Normal"></asp:Label></td>
+        <td>
         </td>
 		</tr>
         <tr>

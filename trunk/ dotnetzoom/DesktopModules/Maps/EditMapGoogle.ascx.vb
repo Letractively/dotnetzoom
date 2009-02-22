@@ -1,4 +1,4 @@
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -89,6 +89,12 @@ Namespace DotNetZoom
 			hypgetAPI.Text = GetLanguage("GetGoogleAPI")
 			hypgetAPI.NavigateURL = "http://www.google.com/apis/maps/signup.html"
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
                 If ModuleId > 0 Then
 
@@ -115,8 +121,6 @@ Namespace DotNetZoom
 					txtScript.Text = CType(settings("script"), String)
                 End If
 
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
             End If
 
 			If TxtIcone.Text <> ""
@@ -164,6 +168,7 @@ Namespace DotNetZoom
 		
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
 
+            Page.Validate()
 
 			If page.IsValid then
             ' Update settings in the database

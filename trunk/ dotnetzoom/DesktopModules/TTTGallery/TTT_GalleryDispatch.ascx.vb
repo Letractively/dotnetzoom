@@ -69,6 +69,7 @@ Namespace DotNetZoom
                 objModule.ModuleConfiguration = Me.ModuleConfiguration
                 Controls.Add(objModule)
             End If
+            GalleryConfig.SetSkinCSS(Me.Page)
 
 
         End Sub

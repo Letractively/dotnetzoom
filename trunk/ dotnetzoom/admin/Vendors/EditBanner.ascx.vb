@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -102,6 +102,12 @@ Namespace DotNetZoom
             End If
 
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
                 cmdStartCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtStartDate)
@@ -136,7 +142,7 @@ Namespace DotNetZoom
 				
 				
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
+                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
                 Dim FileList As ArrayList
                 If Not (Request.Params("hostpage") Is Nothing) Then
                     FileList = GetFileList(, glbImageFileTypes, False)
@@ -176,7 +182,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
-                        Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorId & "&def=Fournisseurs", True)
+                        Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorId & "&def=Fournisseurs", True)
                     End If
 
                     chkLog.Checked = False
@@ -190,7 +196,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorId & "&def=Fournisseurs"
+                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorId & "&def=Fournisseurs"
 
             End If
 
@@ -209,6 +215,7 @@ Namespace DotNetZoom
 
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Page.Validate()
 
             ' Only Update if the Entered Data is val
             If Page.IsValid = True Then

@@ -19,48 +19,58 @@ Private AcceptedFileTypes As String = "jpg gif"
 Private Filename as string = ""
 Private CurrentImagesFolder as string = ""
 
-Private Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
-Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-StyleSheet.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/portal.css"" type=""text/css"" rel=""stylesheet"">"
-Retour.Text = GetLanguage("annuler") 
-UploadImage.Text = Getlanguage("upload")
-Choixbutton.ToolTip = getlanguage("select_this_image")
-Choixbutton1.ToolTip = Choixbutton.ToolTip
-Choixbutton2.ToolTip = Choixbutton.ToolTip
-Choixbutton3.ToolTip = Choixbutton.ToolTip
-Choixbutton4.ToolTip = Choixbutton.ToolTip
-Choixbutton5.ToolTip = Choixbutton.ToolTip
-Choixbutton6.ToolTip = Choixbutton.ToolTip
-        Choixbutton7.ToolTip = Choixbutton.ToolTip
-        Choixbutton.ImageURL = DotNetZoom.glbPath & "images/TTT/folder.gif"
-        Choixbutton1.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder1.gif"
-        Choixbutton2.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder2.gif"
-        Choixbutton3.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder.jpg"
-        Choixbutton4.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder1.jpg"
-        Choixbutton5.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder2.jpg"
-        Choixbutton6.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder3.jpg"
-        Choixbutton7.ImageUrl = DotNetZoom.glbPath & "images/TTT/folder4.jpg"
-Range1.Text = Getlanguage("ImageQualityRange")
-Range2.Text = Getlanguage("ImageRangeToSave")
-Range3.Text = Getlanguage("ImageRangeToSave")
+    Private Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
+        If Not Request.QueryString("image") Is Nothing And Not Session("IconeFilePath") Is Nothing Then
+            Dim sImagePath As String = Server.MapPath(Session("IconeFilePath"))
+            Dim oImage As System.Drawing.Image
+            oImage = System.Drawing.Image.FromFile(sImagePath)
+            Response.ContentType = "image/" & Request.QueryString("image")
+            oImage.Save(Response.OutputStream, ImageFormat.Jpeg)
+            oImage.Dispose()
+            Response.End()
+        Else
+        
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            StyleSheet.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/portal.css"" type=""text/css"" rel=""stylesheet"">"
+            Retour.Text = GetLanguage("return")
+            UploadImage.Text = GetLanguage("upload")
+            Choixbutton.ToolTip = GetLanguage("select_this_image")
+            Choixbutton1.ToolTip = Choixbutton.ToolTip
+            Choixbutton2.ToolTip = Choixbutton.ToolTip
+            Choixbutton3.ToolTip = Choixbutton.ToolTip
+            Choixbutton4.ToolTip = Choixbutton.ToolTip
+            Choixbutton5.ToolTip = Choixbutton.ToolTip
+            Choixbutton6.ToolTip = Choixbutton.ToolTip
+            Choixbutton7.ToolTip = Choixbutton.ToolTip
+            Choixbutton.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder.gif"
+            Choixbutton1.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder1.gif"
+            Choixbutton2.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder2.gif"
+            Choixbutton3.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder.jpg"
+            Choixbutton4.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder1.jpg"
+            Choixbutton5.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder2.jpg"
+            Choixbutton6.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder3.jpg"
+            Choixbutton7.ImageUrl = DotNetZoom.ForumConfig.DefaultImageFolder() & "folder4.jpg"
+            Range1.Text = GetLanguage("ImageQualityRange")
+            Range2.Text = GetLanguage("ImageRangeToSave")
+            Range3.Text = GetLanguage("ImageRangeToSave")
 
- ResultsMessage.Text = ""           
- If (Request.IsAuthenticated = false) or (Session("UploadPath") Is Nothing) or (Session("UploadPath") = "nil" )Then
- 	Session("UploadPath") = "nil"
-            Response.Redirect(glbPath & "default.aspx?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
- End If
+            ResultsMessage.Text = ""
+            If (Request.IsAuthenticated = False) Or (Session("UploadPath") Is Nothing) Or (Session("UploadPath") = "nil") Then
+                Session("UploadPath") = "nil"
+                EditDenied()
+            End If
 
-   Filename = Request("name") 
-   CurrentImagesFolder = "/" & CType((Session("UploadPath")), String)
+            Filename = Request("name")
+            CurrentImagesFolder = "/" & CType((Session("UploadPath")), String)
    
-if not Page.IsPostBack Then
-TxtQuality.Text = "80"
-txtSizeH.Text = "200"
-txtSizeL.Text = "200"
-DisplayImages() 
-end if
-
-End Sub 
+            If Not Page.IsPostBack Then
+                txtquality.Text = "80"
+                txtSizeH.Text = "200"
+                txtSizeL.Text = "200"
+                DisplayImages()
+            End If
+        End If
+    End Sub
 
 
         Public Sub ResizeImage(ByVal Source As String, ByVal Destination As String, ByVal MaxWidth As Integer, ByVal MaxHeight As Integer, ByVal Extension As String, ByVal Quality As Integer)
@@ -171,7 +181,9 @@ End Sub
 
 
 Public Sub UploadImage_OnClick(ByVal sender As Object, ByVal e As EventArgs) 
-Dim StrFolder As String
+        Page.Validate()
+
+        Dim StrFolder As String
 ResultsMessage.text = ""
 ' Obtain PortalSettings from Current Context
 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -248,7 +260,8 @@ End Sub
 
 
 Public Sub Return_OnClick(ByVal sender As Object, ByVal e As EventArgs)
-
+        Session("IconeFilePath") = Nothing
+        Session("UploadPath") = Nothing
  If (Session("ReturnPath") Is Nothing) Then
     If Request.Params("tabid") Is Nothing Then
                 Response.Redirect(GetFullDocument() & "?reset=oui", True)
@@ -320,6 +333,7 @@ End Function
 
 
 Public Sub DisplayImages() 
+        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
    Dim UploadFileName As String = "" 
    Dim UploadFileDestination As String = "" 
@@ -333,45 +347,42 @@ Public Sub DisplayImages()
    IconeMessage.visible = "true"
    IconeMessage.Text = GetLanguage("MagicFileMessage")
    Iconebutton.Attributes("onclick") = "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm_delete_icone")) & "');"
-   If System.IO.File.Exists(UploadFileDestination + FileName + ".jpg") then
-	'Display the image
-	Iconebutton.visible = "true"
-	IconeMessage.visible = "false"
-    Iconebutton.ImageUrl = CurrentImagesFolder & "/" & Filename & ".jpg"
-   End if
-			
-   If System.IO.File.Exists(UploadFileDestination + FileName + ".gif") then
-    Iconebutton.visible = "true"
-	IconeMessage.visible = "false"
-            Iconebutton.ImageUrl = CurrentImagesFolder & "/" & Filename & ".gif"
-   end if
-	If ResultsMessage.Text = "" then
-   	ResultsMessage.Text = "URL: " & IconeButton.ImageUrl
-	end if
+        If System.IO.File.Exists(UploadFileDestination + Filename + ".jpg") Then
+            'Display the image
+            Iconebutton.Visible = "true"
+            IconeMessage.Visible = "false"
+            Iconebutton.ImageUrl = glbPath() & "DesktopModules/TTTGallery/magicfile.aspx?image=jpeg" & "&tabid=" & _portalSettings.ActiveTab.TabId.ToString()
+            Session("IconeFilePath") = CurrentImagesFolder & "/" & Filename & ".jpg"
+        ElseIf System.IO.File.Exists(UploadFileDestination + Filename + ".gif") Then
+            Iconebutton.Visible = "true"
+            IconeMessage.Visible = "false"
+            Iconebutton.ImageUrl = glbPath() & "DesktopModules/TTTGallery/magicfile.aspx?image=gif" & "&tabid=" & _portalSettings.ActiveTab.TabId.ToString()
+            Session("IconeFilePath") = CurrentImagesFolder & "/" & Filename & ".gif"
+        End If
+        If ResultsMessage.Text = "" Then
+            ResultsMessage.Text = "URL: " & Iconebutton.ImageUrl
+        End If
   
-End Sub
+    End Sub
 
-      Sub ImageButton_Click(sender As Object, e As ImageClickEventArgs) 
-            Dim UploadFileDestination As String = "" 
-        
-        UploadFileDestination += Request.MapPath(CurrentImagesFolder)
-            UploadFileDestination += "\"
-			UpLoadFileDestination = Replace(UpLoadFileDestination, "/" , "\")
-   					
-   				    		
+    Sub ImageButton_Click(ByVal sender As Object, ByVal e As ImageClickEventArgs)
+        Dim UploadFileDestination As String = Request.MapPath(CurrentImagesFolder)
+        UploadFileDestination += "\"
+        UploadFileDestination = Replace(UploadFileDestination, "/", "\")
+   			   				    		
 
-			If System.IO.File.Exists(UploadFileDestination + FileName + ".jpg") then
-		    System.IO.File.Delete(UploadFileDestination + FileName + ".jpg")
-			End if
+        If System.IO.File.Exists(UploadFileDestination + Filename + ".jpg") Then
+            System.IO.File.Delete(UploadFileDestination + Filename + ".jpg")
+        End If
 			
 			
-			If System.IO.File.Exists(UploadFileDestination + FileName + ".gif") then
-	 		System.IO.File.Delete(UploadFileDestination + FileName + ".gif")
-			end if
+        If System.IO.File.Exists(UploadFileDestination + Filename + ".gif") Then
+            System.IO.File.Delete(UploadFileDestination + Filename + ".gif")
+        End If
 
-       DisplayImages()
+        DisplayImages()
 	   
-      End Sub
+    End Sub
 
       Sub ChoixButton_Click(sender As Object, e As ImageClickEventArgs) 
             Dim TempFileName As String = ""
@@ -431,7 +442,10 @@ End Sub
            AlternateText="icone"
            ImageAlign="left"
            OnClick="ImageButton_Click"/>
-</td></tr></table>
+</td></tr>
+</table>
+<p>&nbsp;</p>
+<p><asp:button id="Retour" runat="server" onclick="Return_OnClick" /></p>
 <p>&nbsp;</p>
 <table cellpadding=10 border=5>
 <tr>
@@ -537,7 +551,6 @@ End Sub
 	<tr align="left">
 		<td Align=Left valign=top><input id="UploadFile" type="file" name="UploadFile" size="65" runat="server" /></td>
 		<td Align=Left valign=top><asp:button id="UploadImage" runat="server" onclick="UploadImage_OnClick" /></td>
-		<td Align=Left valign=top><asp:button id="Retour" runat="server" onclick="Return_OnClick" /></td>
 	</tr>
 <tr align="left"><td bgcolor="#d7d79f" colspan="3">
 <%= DotNetZoom.GetLanguage("LabelQuaImage")%>
@@ -574,8 +587,7 @@ End Sub
 	</td></tr>
 </table>
 </div>
-
-
+</td></tr></table>
 </form>
 </body>
 </html>

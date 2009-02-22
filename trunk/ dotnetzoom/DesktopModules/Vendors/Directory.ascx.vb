@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -92,14 +92,22 @@ Namespace DotNetZoom
 
             Dim strURL As String
 
-            strURL = "VendorClickThrough.aspx?tabid=" & TabId & "&mid=" & ModuleId
-            strURL += "&VendorId=" & e.Item.DataItem("VendorId").ToString
+            ' strURL = "VendorClickThrough.aspx?tabid=" & TabId & "&mid=" & ModuleId
+            ' strURL += "&VendorId=" & e.Item.DataItem("VendorId").ToString
+
+            strURL = glbPath & GetLanguage("N") & ".default.aspx?linkclick="
+            Dim objSecurity As New PortalSecurity()
+            Dim crypto As String = "tabid=" & TabId & "&mid=" & ModuleId & "&VendorId=" & e.Item.DataItem("VendorId").ToString
+
+            ' "tabid=" & TabId & "&table=Links&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+            ' Return glbPath & "default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
+
 
             Select Case e.Item.ItemType
                 Case ListItemType.Item, ListItemType.AlternatingItem
                     CType(e.Item.FindControl("lnkVendorName"), HyperLink).Text = e.Item.DataItem("VendorName").ToString
                     If e.Item.DataItem("Website").ToString <> "" Then
-                        CType(e.Item.FindControl("lnkVendorName"), HyperLink).NavigateUrl = strURL & "&link=name"
+                        CType(e.Item.FindControl("lnkVendorName"), HyperLink).NavigateUrl = strURL + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto + "&link=name"))
                     End If
 
                     CType(e.Item.FindControl("lblAddress"), Label).Text = FormatAddress(e.Item.DataItem("Unit"), e.Item.DataItem("Street"), e.Item.DataItem("City"), e.Item.DataItem("Region"), e.Item.DataItem("Country"), e.Item.DataItem("PostalCode"))
@@ -114,32 +122,32 @@ Namespace DotNetZoom
                     End If
                     If e.Item.DataItem("Website").ToString <> "" Then
                         CType(e.Item.FindControl("lnkWebsite"), HyperLink).Text = "<br>" & e.Item.DataItem("Website").ToString
-                        CType(e.Item.FindControl("lnkWebsite"), HyperLink).NavigateUrl = strURL & "&link=url"
+                        CType(e.Item.FindControl("lnkWebsite"), HyperLink).NavigateUrl = strURL + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto + "&link=url"))
                     End If
 
-                    CType(e.Item.FindControl("lnkMap"), HyperLink).NavigateUrl = strURL & "&link=map"
+                    CType(e.Item.FindControl("lnkMap"), HyperLink).NavigateUrl = strURL + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto + "&link=map"))
                     CType(e.Item.FindControl("lnkMap"), HyperLink).Visible = True
 					CType(e.Item.FindControl("lnkMap"), HyperLink).Text = getlanguage("lnkmap")
 
-                    CType(e.Item.FindControl("lnkDirections"), HyperLink).NavigateUrl = strURL & "&link=directions"
+                    CType(e.Item.FindControl("lnkDirections"), HyperLink).NavigateUrl = strURL + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto + "&link=directions"))
                     CType(e.Item.FindControl("lnkDirections"), HyperLink).Visible = True
 			 		CType(e.Item.FindControl("lnkDirections"), HyperLink).Text = getlanguage("lnkDirections")
 
                     If CType(Settings("directoryfeedback"), Boolean) Then
-                        CType(e.Item.FindControl("lnkFeedback"), HyperLink).NavigateUrl = strURL & "&link=feedback&search=" & txtSearch.Text
+                        CType(e.Item.FindControl("lnkFeedback"), HyperLink).NavigateUrl = strURL + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto + "&link=feedback&search=" + txtSearch.Text))
                         CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text = getlanguage("lnkFeedback")
                         CType(e.Item.FindControl("lnkFeedback"), HyperLink).Visible = True
 						If e.Item.DataItem("Feedback").ToString <> "" Then
                             Select Case Int32.Parse(e.Item.DataItem("Feedback").ToString)
                                 Case Is > 0
-                                    CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/ratingplus.gif"" border=""0"" alt=""" + getlanguage("lnkFeedback") + ": +" & e.Item.DataItem("Feedback").ToString & """>"
+                                    CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & glbPath() & "images/ratingplus.gif"" border=""0"" alt=""" + GetLanguage("lnkFeedback") + ": +" & e.Item.DataItem("Feedback").ToString & """>"
                                 Case Is < 0
-                                    CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/ratingminus.gif"" border=""0"" alt=""" + getlanguage("lnkFeedback") + ": " & e.Item.DataItem("Feedback").ToString & """>"
+                                    CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & glbPath() & "images/ratingminus.gif"" border=""0"" alt=""" + GetLanguage("lnkFeedback") + ": " & e.Item.DataItem("Feedback").ToString & """>"
                                 Case Else
-                                    CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/ratingzero.gif"" border=""0"" alt=""" + getlanguage("lnkFeedback") + ": " & e.Item.DataItem("Feedback").ToString & """>"
+                                    CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & glbPath() & "images/ratingzero.gif"" border=""0"" alt=""" + GetLanguage("lnkFeedback") + ": " & e.Item.DataItem("Feedback").ToString & """>"
                             End Select
                         Else
-                            CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/ratingzero.gif"" border=""0"" alt=""" + getlanguage("noFeedback") + """>"
+                            CType(e.Item.FindControl("lnkFeedback"), HyperLink).Text += "&nbsp;<img src=""" & glbPath() & "images/ratingzero.gif"" border=""0"" alt=""" + GetLanguage("noFeedback") + """>"
                         End If
                     End If
 
@@ -149,7 +157,7 @@ Namespace DotNetZoom
                         Else
                             CType(e.Item.FindControl("lnkLogo"), HyperLink).ImageUrl = glbSiteDirectory & e.Item.DataItem("LogoFile").ToString
                         End If
-                        CType(e.Item.FindControl("lnkLogo"), HyperLink).NavigateUrl = strURL & "&link=logo"
+                        CType(e.Item.FindControl("lnkLogo"), HyperLink).NavigateUrl = strURL + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto + "&link=logo"))
                     End If
             End Select
         End Sub
@@ -171,7 +179,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdSignup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdSignup.Click
-            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Fournisseurs", True)
+            Response.Redirect(GetFullDocument() & "?tabid=" & TabId & "&def=Fournisseurs", True)
         End Sub
 
     End Class

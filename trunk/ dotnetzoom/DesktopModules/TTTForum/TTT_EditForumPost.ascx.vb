@@ -88,6 +88,12 @@ Namespace DotNetZoom
 
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            ' Obtain PortalSettings from Current Context
+
+            If Not Context.Request.IsAuthenticated Then
+                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
+            End If
 
 
 
@@ -105,38 +111,7 @@ Namespace DotNetZoom
 			btnCancel.Tooltip = GetLanguage("annuler")
 			btnBackEdit.Text = GetLanguage("return")	
 			btnBackEdit.Tooltip = GetLanguage("return")		
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            ' Obtain PortalSettings from Current Context
-            
-			If not context.Request.IsAuthenticated Then
-                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&def=Register"), True)
-			end if
- 
- 
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case Else
-                            objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End Select
-                Else
-                    objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                End If
-                objCSS.Controls.Add(objLink)
-            End If
+
 
             If Zconfig Is Nothing Then
                 Zconfig = ForumConfig.GetForumConfig(ModuleId)
@@ -180,52 +155,46 @@ Namespace DotNetZoom
             _UserURL = _UserURL & "userimage/" & ZuserID.ToString
 
             Session("FCKeditor:UserFilesPath") = _UserURL & "/"
-            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
 
             If Request.IsAuthenticated = False Then
                 FCKeditor1.LinkBrowserURL = ""
+                Session("FCKeditor:UserFilesPath") = Nothing
+                FCKeditor1.ImageBrowserURL = ""
             Else
+                Dim _UserphysicalPath As String = Server.MapPath(_UserURL)
+                If Not Directory.Exists(_UserphysicalPath) Then
+                    Try
+                        IO.Directory.CreateDirectory(_UserphysicalPath)
+                    Catch exc As System.Exception
+                    End Try
+                End If
+                FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
                 Dim objAdmin As New AdminDB()
                 Dim tmpUploadRoles As String = ""
                 If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
                     tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
                 End If
-                If Not PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                If PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                    FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+                Else
                     FCKeditor1.LinkBrowserURL = ""
                 End If
             End If
 
-            ' set the css for the editor if it exist
-            If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) Then
-                FCKeditor1.SkinPath = _portalSettings.UploadDirectory & "skin/fckeditor/"
-                FCKeditor1.EditorAreaCSS = _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-                FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-                ' FCKeditor1.TemplatesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml"
-            End If
-
-
-
-            FCKeditor1.width = unit.pixel(700)
+            SetEditor(FCKeditor1)
+            FCKeditor1.Width = Unit.Pixel(700)
             FCKeditor1.Height = unit.pixel(500)
-            If GetLanguage("fckeditor_language") <> "auto" Then
-                FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-                FCKeditor1.AutoDetectLanguage = False
-            End If
-            FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-
-
-            Dim _UserphysicalPath As String = Server.MapPath(_UserURL)
-            If Not Directory.Exists(_UserphysicalPath) Then
-                Try
-                    IO.Directory.CreateDirectory(_UserphysicalPath)
-                Catch exc As System.Exception
-                End Try
-            End If
-
 
 
 
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
                 If ZforumID = 0 Then
                     Me.pnlForumSelect.Visible = True
                     Me.pnlNewPost.Visible = False
@@ -238,13 +207,6 @@ Namespace DotNetZoom
 
                 pnlNotify.Visible = Zconfig.MailNotification
                 pnlGetSmiley.Visible = (Zconfig.AvatarModuleID > 0)
-                ' Store URL Referrer to return to portal
-
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
 
 
             End If
@@ -273,12 +235,8 @@ Namespace DotNetZoom
 			ParentID = Server.HtmlEncode(TxtIcone.ClientID)
             lnkicone.NavigateUrl = "javascript:OpeniconeWindow('" + tabID.ToString + "','" + ParentID + "')"
 
-			
-			
-		
-		
 		btnSubmit.Attributes.Add("onclick", "toggleBox('hide',0);toggleBox('show',1);")
-		
+
 		
         End Sub
 

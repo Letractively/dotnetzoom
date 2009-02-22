@@ -59,7 +59,7 @@ Namespace DotNetZoom
             ZforumConfig = forum.Config
             _postsPerPage = ZforumConfig.PostsPerPage
 			' PUT IN SKIN IMAGEFOLDER
-            _imageURL = ForumConfig.SkinFolder()
+            _imageURL = ForumConfig.SkinImageFolder()
             _avatarURL = ZforumConfig.AvatarFolder
 
         End Sub 'New
@@ -587,23 +587,23 @@ Namespace DotNetZoom
 
                 Select Case User.PostCount
                     Case 0 To 10
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px 0px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px 0px;")
                     Case 11 To 15
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -12px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -12px;")
                     Case 16 To 20
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -24px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -24px;")
                     Case 21 To 25
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -36px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -36px;")
                     Case 26 To 30
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -48px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -48px;")
                     Case 31 To 35
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -60px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -60px;")
                     Case 36 To 40
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -72px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -72px;")
                     Case 41 To 45
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -84px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -84px;")
                     Case Else
-                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & glbPath & "images/ttt/stars.gif') no-repeat; background-position: 0px -96px;")
+                        wr.AddAttribute(HtmlTextWriterAttribute.Style, "background: url('" & ForumConfig.SkinImageFolder() & "stars.gif') no-repeat; background-position: 0px -96px;")
                 End Select
                 Dim TempString As String
                 TempString = replace(GetLanguage("F_Contributed"), "{username}", user.Alias)

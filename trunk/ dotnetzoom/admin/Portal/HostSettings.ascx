@@ -127,7 +127,7 @@
                 <label for="<%=chkDemoSignup.ClientID%>"><%=DotNetZoom.GetLanguage("HS_DemoAllow") %></label></td>
             <td>
                 <asp:checkbox id="chkDemoSignup" runat="server" CssClass="NormalTextBox"></asp:checkbox>
-				&nbsp;&nbsp;<font size="1">(/default.aspx?edit=control&def=demo)</font>
+				&nbsp;&nbsp;<font size="1">(/default.aspx?def=demo)</font>
 			</td>
         </tr>
         <tr>

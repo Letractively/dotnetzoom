@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -74,7 +74,7 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
             Title1.DisplayHelp = "DisplayHelp_EditRole"
 
@@ -198,6 +198,8 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
+            Page.Validate()
+
             If Page.IsValid Then
                 Dim _portalSettings As PortalSettings = CType(Context.Items("PortalSettings"), PortalSettings)
 
@@ -276,7 +278,9 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdManage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdManage.Click
-            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&RoleId=" & RoleID & "&def=User Roles", True)
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "RoleId=" & RoleID & "&def=User Roles"), True)
         End Sub
 
         Public Function FormatURL(ByVal strKeyName As String, ByVal strKeyValue As String) As String

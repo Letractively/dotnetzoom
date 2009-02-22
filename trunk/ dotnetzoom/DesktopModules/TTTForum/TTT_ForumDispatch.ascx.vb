@@ -45,8 +45,12 @@ Namespace DotNetZoom
             Title1.EditText = GetLanguage("add")
             Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
 
-            Dim _DefaultPage As String = glbPath & "DeskTopModules/TTTForum/TTT_Forum.ascx"
+            ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+            Title1.EditURL = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&forumid=0&action=new")
+ 
+            Dim _DefaultPage As String = glbPath & "DeskTopModules/TTTForum/TTT_Forum.ascx"
 
            If Request.IsAuthenticated and ((PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True _
                 OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
@@ -84,9 +88,15 @@ Namespace DotNetZoom
                         End If
 
                     Case ForumDesktopType.ForumSubscribe
+                        If Request.IsAuthenticated = False Then
+                            AccessDenied()
+                        End If
                         _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumSubscribe.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ForumSubscribe"
                     Case ForumDesktopType.ForumPrivateMessage
+                        If Request.IsAuthenticated = False Then
+                            AccessDenied()
+                        End If
                         _DefaultPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
                         Title1.DisplayHelp = "DisplayHelp_PMSInbox"
                         If Request.Params("pmsTabId") = "1" Then Title1.DisplayHelp = "DisplayHelp_PMSInbox"
@@ -116,6 +126,7 @@ Namespace DotNetZoom
             End If
 			
 			
+            ForumConfig.SetSkinCSS(Me.Page)
 
 
 	

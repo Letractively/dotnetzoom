@@ -69,14 +69,8 @@ Namespace DotNetZoom
             End If
 
             If (Page.IsPostBack = False) Then
-	            If Request.Params("edit") <> "" Then
-					Title1.DisplayTitle = getlanguage("UserInfoModule")
-				end if
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
+                If Request.Params("def") <> "" Then
+                    Title1.DisplayTitle = GetLanguage("UserInfoModule")
                 End If
             End If
 
@@ -167,12 +161,12 @@ Namespace DotNetZoom
 
             If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) Then
                 If ((New Utility).GetUserID() = Request.Params("UserID")) Then
-                    Return GetFullDocument() & "?edit=control&tabid=" & TabId.ToString() & "&def=Register"
+                    Return FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register")
                 Else
-                    Return GetFullDocument() & "?edit=control&tabid=" & TabId.ToString() & "&def=Gestion%20usagers&UserID=" & Request.Params("UserID")
+                    Return FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Gestion%20usagers&UserID=" & Request.Params("UserID"))
                 End If
             Else
-                Return getFulldocument() & "?edit=control&tabid=" & TabId.ToString() & "&def=Register"
+                Return FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register")
             End If
 
         End Function
@@ -194,7 +188,7 @@ Namespace DotNetZoom
         End Function
 
         Protected Function GetUserInfoLink(ByVal userID As String) As String
-            Return GetFullDocument() & "?edit=control&TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
+            Return GetFullDocument() & "?TabID=" & TabId.ToString() + "&def=UserInfo&UserID=" + userID
         End Function
 
         Protected Function GetUserInfoTooltip(ByVal userName As String) As String
@@ -216,7 +210,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub lnkSendPrivateMessage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lnkSendPrivateMessage.Click
-            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & Me.TabId & "&def=PrivateMessages&pmsTabID=3&UserID=" & Request("UserID"))
+            Response.Redirect(GetFullDocument() & "?tabid=" & Me.TabId & "&def=PrivateMessages&pmsTabID=3&UserID=" & Request("UserID"))
         End Sub
     End Class
 

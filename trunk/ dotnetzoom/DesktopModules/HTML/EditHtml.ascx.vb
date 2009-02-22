@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -115,8 +115,16 @@ Namespace DotNetZoom
             End If
         
 		If Page.IsPostBack = False Then
-	
-				
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
                 ' Obtain a single row of text information
                 Dim objHTML As New HtmlTextDB()
                 Dim dr As SqlDataReader = objHTML.GetHtmlText(ModuleId)
@@ -136,58 +144,40 @@ Namespace DotNetZoom
 
                 dr.Close()
 
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
             Else
-		        If (LastDesktopView <> optView.SelectedItem.Value) And (Not LastDesktopView Is Nothing) Then
+                If (LastDesktopView <> optView.SelectedItem.Value) And (Not LastDesktopView Is Nothing) Then
                     If optView.SelectedItem.Value = "B" Then
-					cmdPreview.Visible = True
-                    txtDesktopHTML.Text = FCKeditor1.value
-                 	Else
-					 cmdPreview.Visible = False
-                     FCKeditor1.value = txtDesktopHTML.Text
-                 	End If
-            	End If
+                        cmdPreview.Visible = True
+                        txtDesktopHTML.Text = FCKeditor1.Value
+                    Else
+                        cmdPreview.Visible = False
+                        FCKeditor1.Value = txtDesktopHTML.Text
+                    End If
+                End If
 			End If
         End Sub
 
 
 		Private Sub SetFckEditor()
-			    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
-            FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-
-            If Request.IsAuthenticated = False Then
-                FCKeditor1.LinkBrowserURL = ""
-            Else
-                Dim objAdmin As New AdminDB()
-                Dim tmpUploadRoles As String = ""
-                If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
-                    tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
-                End If
-                If Not PortalSecurity.IsInRoles(tmpUploadRoles) Then
-                    FCKeditor1.LinkBrowserURL = ""
-                End If
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim objAdmin As New AdminDB()
+            Dim tmpUploadRoles As String = ""
+            If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+                tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
             End If
-				FCKeditor1.width = unit.pixel(700)
-				FCKeditor1.Height = unit.pixel(500)
-				if GetLanguage("fckeditor_language") <> "auto"
-				FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-				FCKeditor1.AutoDetectLanguage = False
-				end if
-
-            FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-
-				' set the css for the editor if it exist
-				If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) then
-				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
-				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-                ' FCKeditor1.TemplatesXmlPath	= _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml" 
-				End If
-	
-
-		End Sub		
+            If PortalSecurity.IsInRoles(tmpUploadRoles) Then
+                Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
+                FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+                FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+            Else
+                Session("FCKeditor:UserFilesPath") = Nothing
+                FCKeditor1.LinkBrowserURL = ""
+                FCKeditor1.ImageBrowserURL = ""
+            End If
+            FCKeditor1.Width = Unit.Pixel(700)
+            FCKeditor1.Height = Unit.Pixel(500)
+            SetEditor(FCKeditor1)
+        End Sub
 		
 
         '****************************************************************
@@ -241,9 +231,9 @@ Namespace DotNetZoom
 
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Dim strDesktopHTML As String
+
             If pnlBasicTextBox.Visible Then
-               strDesktopHTML = Server.HtmlEncode(txtDesktopHTML.Text)
+                lblPreview.Text = txtDesktopHTML.Text
             Else
                 lblPreview.Text = ""
 			End IF
