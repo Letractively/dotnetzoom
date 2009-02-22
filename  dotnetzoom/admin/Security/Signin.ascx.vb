@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -67,7 +67,7 @@ Namespace DotNetZoom
 			
 			Help.ToolTip = getlanguage("title_enter")
 			Help.Visible = True
-            help.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/help.aspx?help=DisplayHelp_Signin&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
+            help.NavigateUrl = "javascript:var m = window.open('" + glbHTTP() + "admin/tabs/help.aspx?help=DisplayHelp_Signin&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
 
      		Dim _Setting As HashTable = PortalSettings.GetSiteSettings(_portalSettings.PortalID)
 			If _Setting("loginModuleContainer") <> "" then
@@ -233,30 +233,33 @@ Namespace DotNetZoom
 				end if
 				end if
 				
-                 if  TempUserCode = "" or InStr(1, TempUserCode.ToLower , DisplayCountryCode(Request.UserHostAddress).ToLower) then
-                    ' Use security system to set the UserID within a client-side Cookie
-					objUser.UpdateUserIP(UserID, Request.UserHostAddress, "")
-                    FormsAuthentication.SetAuthCookie(userId.ToString(), chkCookie.Checked)
-				    objUser.UpdateCheckUserSecurity(UserID, "", DateTime.now.ADDYears(-30), 0)
-					' Reset Session variable
-			          Session.Contents.RemoveAll()
-                    ' Redirect browser back to home page
-					' If admin admin or webmestre webmestre then redirect to account
-					If (txtUsername.Text.tolower() = txtPassword.Text.tolower()) and (TxtUserName.Text.ToLower() = "admin" or TxtUserName.Text.ToLower() = "webmestre" ) then
-					' http://my-dnz.com/fr.accueil.aspx?edit=control&tabid=1&def=Register
-                                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Register", True)
+                            If TempUserCode = "" Or InStr(1, TempUserCode.ToLower, DisplayCountrycode(Request.UserHostAddress).ToLower) Then
+                                ' Use security system to set the UserID within a client-side Cookie
+                                objUser.UpdateUserIP(userId, Request.UserHostAddress, "")
+                                FormsAuthentication.SetAuthCookie(userId.ToString(), chkCookie.Checked)
+                                objUser.UpdateCheckUserSecurity(userId, "", DateTime.Now.AddYears(-30), 0)
+                                ' Reset Session variable
+                                Session.Contents.RemoveAll()
+                                ' Redirect browser back to home page
+                                ' If admin admin or webmestre webmestre then redirect to account
+                                If (txtUsername.Text.ToLower() = txtPassword.Text.ToLower()) And (txtUsername.Text.ToLower() = "admin" Or txtUsername.Text.ToLower() = "webmestre") Then
+                                    ' http://my-dnz.com/fr.accueil.aspx?edit=control&tabid=1&def=Register
+                                    Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
                                 Else
-
-                                    Response.Redirect(Replace(Request.Url.ToString(), "showlogin=", "login="), True)
+                                    Dim TempQuerystring As String = Context.Request.QueryString.ToString()
+                                    If Not Request.Params("showlogin") Is Nothing Then
+                                        TempQuerystring = TempQuerystring.Replace("&showlogin=1", "")
+                                        TempQuerystring = TempQuerystring.Replace("showlogin=1&", "")
+                                        TempQuerystring = TempQuerystring.Replace("?showlogin=1", "")
+                                    End If
+                                    Response.Redirect(GetFullDocument(_portalSettings.ActiveTab.ssl) & "?" & TempQuerystring, True)
                                 End If
-                            Else
-                                lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
-                                lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
-                            End If
+                        Else
+                            lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
+                            lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
                         End If
+                            End If
                         dr.Close()
-
-
                     Else
                         RegisterBADip(Request.UserHostAddress)
                         Dim drUser As SqlDataReader = objUser.GetSingleUserByUsername(_portalSettings.PortalId, txtUsername.Text)
@@ -265,7 +268,7 @@ Namespace DotNetZoom
                             objUser.UpdateCheckUserSecurity(drUser("UserId"), "", DateTime.Now.AddMinutes(10), Attempt)
                         End If
                         drUser.Close()
-                        If Attenpt > 2 Then
+                        If Attempt > 2 Then
                             lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalWait1"), Page)
                         Else
                             lblMessage.Text = GetLanguage("RegisterMessage3")
@@ -343,7 +346,7 @@ Namespace DotNetZoom
 
         Private Sub cmdRegister_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdRegister.Click
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Register", True)
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
         End Sub
 
     End Class

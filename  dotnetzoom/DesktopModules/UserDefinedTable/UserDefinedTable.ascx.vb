@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -108,9 +108,9 @@ Namespace DotNetZoom
                 colField.HeaderText = dr("FieldTitle").ToString
                 If dr("FieldTitle").ToString = strSortField Then
                     If strSortOrder = "ASC" Then
-                        colField.HeaderText += "<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/sortascending.gif"" border=""0"" alt=""Sorted By " & strSortField & " In Ascending Order"">"
+                        colField.HeaderText += "<img src=""" & glbPath() & "images/sortascending.gif"" border=""0"" alt=""Sorted By " & strSortField & " In Ascending Order"">"
                     Else
-                        colField.HeaderText += "<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/sortdescending.gif"" border=""0"" alt=""Sorted By " & strSortField & " In Descending Order"">"
+                        colField.HeaderText += "<img src=""" & glbPath() & "images/sortdescending.gif"" border=""0"" alt=""Sorted By " & strSortField & " In Descending Order"">"
                     End If
                 End If
                 colField.DataField = dr("FieldTitle").ToString
@@ -169,7 +169,7 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdManage_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdManage.Click
-            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&mid=" & ModuleId & "&def=Manage UDT", True)
+            Response.Redirect(GetFullDocument() & "?tabid=" & TabId & "&mid=" & ModuleId & "&def=Manage UDT", True)
         End Sub
 
     End Class

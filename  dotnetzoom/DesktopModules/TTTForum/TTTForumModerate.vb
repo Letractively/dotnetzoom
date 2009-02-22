@@ -90,7 +90,7 @@ Namespace DotNetZoom
 
             Dim document As String = GetFullDocument()
 			' PUT IN SKIN IMAGEFOLDER
-            _imageURL = ForumConfig.SkinFolder()
+            _imageURL = ForumConfig.SkinImageFolder()
             Dim _forumModerateInfo As ForumModerateInfo
 
             For Each _forumModerateInfo In _forumModerateCollection

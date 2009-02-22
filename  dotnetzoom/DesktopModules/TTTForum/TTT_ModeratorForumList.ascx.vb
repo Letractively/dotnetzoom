@@ -56,12 +56,6 @@ Namespace DotNetZoom
 				btnSave.Text = GetLanguage("enregistrer")
 				btnSave.ToolTip = GetLanguage("enregistrer")	
                 BindModerateForum()
-                 ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
 
             End If
 		    

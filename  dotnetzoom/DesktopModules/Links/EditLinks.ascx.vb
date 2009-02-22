@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -122,28 +122,29 @@ Namespace DotNetZoom
             ' link itemId value is specified, and if so populate page
             ' contents with the link details
             If Page.IsPostBack = False Then
-
+                ' Store URL Referrer to return to portal
+                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 ' module options
-				If not request.params("options") is nothing then
-				pnlOptions.visible = True
-				pnlContent.visible = False
-				end if
-			
-			
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
+                If Not Request.Params("options") Is Nothing Then
+                    pnlOptions.Visible = True
+                    pnlContent.Visible = False
+                End If
+
+
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
                 If CType(Settings("linkcontrol"), String) <> "" Then
                     optControl.Items.FindByValue(CType(Settings("linkcontrol"), String)).Selected = True
                 Else
                     optControl.SelectedIndex = 0 ' list
                 End If
-				
-				If CType(Settings("linkClass"), String) <> "" Then
+
+                If CType(Settings("linkClass"), String) <> "" Then
                     txtCSS.Text = CType(Settings("linkClass"), String)
                 Else
                     txtCSS.Text = "Normal"
                 End If
-				
+
                 If CType(Settings("linkview"), String) <> "" Then
                     optView.Items.FindByValue(CType(Settings("linkview"), String)).Selected = True
                 Else
@@ -155,11 +156,11 @@ Namespace DotNetZoom
                     optInfo.SelectedIndex = 0 ' vertical
                 End If
 
-                cboInternal.DataSource = GetPortalTabs(portalSettings.Getportaltabs(_PortalSettings.PortalID, GetLanguage("N")), True, True)
+                cboInternal.DataSource = GetPortalTabs(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), True, True)
                 cboInternal.DataBind()
 
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
                 Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
                 cboFiles.DataSource = FileList
                 cboFiles.DataBind()
@@ -221,9 +222,6 @@ Namespace DotNetZoom
                     pnlAudit.Visible = False
                 End If
 
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
-
 
             End If
 
@@ -240,6 +238,7 @@ Namespace DotNetZoom
 
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
 
+            Page.Validate()
             Dim strLink As String
 
             If optExternal.Checked = True Then

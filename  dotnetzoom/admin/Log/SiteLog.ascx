@@ -37,8 +37,6 @@
             <tr>
                 <td class="NormalBold" valign="top" align="center" colspan="2">
                     <asp:LinkButton id="cmdDisplay" runat="server" Text="Display" cssclass="CommandButton"></asp:LinkButton>
-                    &nbsp;&nbsp; 
-                    <asp:LinkButton id="cmdCancel" runat="server" CssClass="CommandButton"></asp:LinkButton>
                 </td>
             </tr>
         </tbody>

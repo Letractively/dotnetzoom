@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -92,14 +92,22 @@ Namespace DotNetZoom
 
             ' Populate message contents if this is the first visit to the page
             If Page.IsPostBack = False Then
-			   ' module options
-				If not request.params("options") is nothing then
-				pnlOptions.visible = True
-				pnlContent.visible = False
-				end if
 
-				cmdUpdate.Text = getLanguage("enregistrer")
-				cmdCancel.Text = getlanguage("annuler")
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
+                ' module options
+                If Not Request.Params("options") Is Nothing Then
+                    pnlOptions.Visible = True
+                    pnlContent.Visible = False
+                End If
+
+                cmdUpdate.Text = GetLanguage("enregistrer")
+                cmdCancel.Text = GetLanguage("annuler")
 
                 If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
                     cmdEdit.Visible = False
@@ -117,9 +125,9 @@ Namespace DotNetZoom
                         Subject.Text = objSecurity.InputFilter(CType(dr("Title"), String), PortalSecurity.FilterFlag.MultiLine)
                         Body.Text = objSecurity.InputFilter(CType(dr("Body"), String), PortalSecurity.FilterFlag.MultiLine)
                         CreatedByUser.Text = dr("CreatedByUser").ToString
-						If CreatedByUser.Text = "Anonymous Anonymous" then
-						CreatedByUser.Text = GetLanguage("label_anonymous")
-						end if
+                        If CreatedByUser.Text = "Anonymous Anonymous" Then
+                            CreatedByUser.Text = GetLanguage("label_anonymous")
+                        End If
                         CreatedDate.Text = String.Format("{0:d}", dr("CreatedDate"))
                         TitleField.Text = ReTitle(CType(dr("Title"), String))
                         BodyField.Text = CType(dr("Body"), String)
@@ -145,15 +153,13 @@ Namespace DotNetZoom
                         strURLReferrer = strURLReferrer & IIf(itemIndex <> -1, "&ItemIndex=" & itemIndex, "")
                     End If
                     ViewState("UrlReferrer") = strURLReferrer
-                Else
-                    ViewState("UrlReferrer") = ""
                 End If
 
             End If
 
             If PortalSecurity.HasEditPermissions(ModuleId) = False Then
                 If itemId = -1 Then
-                    Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Register", True)
+                    Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
                 Else
                     cmdReply.Visible = False
                 End If

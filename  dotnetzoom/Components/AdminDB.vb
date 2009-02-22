@@ -2,7 +2,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -728,13 +728,13 @@ Namespace DotNetZoom
             Next
         End Sub
 
-        Public Function AddTab(ByVal PortalId As Integer, ByVal TabName As String, ByVal ShowFriendly As Boolean, ByVal FriendlyTabName As String, ByVal AuthorizedRoles As String, ByVal LeftPaneWidth As String, ByVal RightPaneWidth As String, ByVal IsVisible As Boolean, ByVal DisableLink As Boolean, ByVal ParentId As Integer, ByVal IconFile As String, ByVal AdministratorRoles As String, <SqlParameter(, , , , , ParameterDirection.Output)> ByVal TabId As Integer) As Integer
+        Public Function AddTab(ByVal PortalId As Integer, ByVal TabName As String, ByVal ShowFriendly As Boolean, ByVal FriendlyTabName As String, ByVal AuthorizedRoles As String, ByVal LeftPaneWidth As String, ByVal RightPaneWidth As String, ByVal IsVisible As Boolean, ByVal DisableLink As Boolean, ByVal ParentId As Integer, ByVal IconFile As String, ByVal AdministratorRoles As String, <SqlParameter(, , , , , ParameterDirection.Output)> ByVal TabId As Integer, Optional ByVal css As String = "", Optional ByVal skin As String = "", Optional ByVal ssl As Boolean = False, Optional ByVal AltUrl As String = "") As Integer
             Dim myConnection As New SqlConnection(GetDBConnectionString)
 
             ' Generate Command Object based on Method
             Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
                 CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {PortalId, TabName, ShowFriendly, convertstringtounicode(TabName), AuthorizedRoles, LeftPaneWidth, RightPaneWidth, IsVisible, DisableLink, IIf(ParentId <> -1, ParentId, SqlInt16.Null), IconFile, AdministratorRoles, TabId})
+                New Object() {PortalId, TabName, ShowFriendly, convertstringtounicode(TabName), AuthorizedRoles, LeftPaneWidth, RightPaneWidth, IsVisible, DisableLink, IIf(ParentId <> -1, ParentId, SqlInt16.Null), IconFile, AdministratorRoles, TabId, IIf(css <> "", css, SqlInt16.Null), IIf(skin <> "", skin, SqlInt16.Null), ssl, AltUrl})
 
             myConnection.Open()
             myCommand.ExecuteNonQuery()
@@ -764,13 +764,13 @@ Namespace DotNetZoom
 
 		
 		
-        Public Sub UpdateTab(ByVal TabId As Integer, ByVal TabName As String, ByVal ShowFriendly As Boolean, ByVal FriendlyTabName As String, ByVal AuthorizedRoles As String, ByVal LeftPaneWidth As String, ByVal RightPaneWidth As String, ByVal IsVisible As Boolean, ByVal DisableLink As Boolean, ByVal ParentId As Integer, ByVal IconFile As String, ByVal AdministratorRoles As String, Optional ByVal css As String = "" , Optional ByVal skin As String = "")
+        Public Sub UpdateTab(ByVal TabId As Integer, ByVal TabName As String, ByVal ShowFriendly As Boolean, ByVal FriendlyTabName As String, ByVal AuthorizedRoles As String, ByVal LeftPaneWidth As String, ByVal RightPaneWidth As String, ByVal IsVisible As Boolean, ByVal DisableLink As Boolean, ByVal ParentId As Integer, ByVal IconFile As String, ByVal AdministratorRoles As String, Optional ByVal css As String = "", Optional ByVal skin As String = "", Optional ByVal ssl As Boolean = False, Optional ByVal AltUrl As String = "")
             Dim myConnection As New SqlConnection(GetDBConnectionString)
 
             ' Generate Command Object based on Method
             Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
                 CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {TabId, TabName, ShowFriendly, convertstringtounicode(TabName), AuthorizedRoles, LeftPaneWidth, RightPaneWidth, IsVisible, DisableLink, IIf(ParentId <> -1, ParentId, SqlInt16.Null), IconFile, AdministratorRoles, IIf(css <> "", css, SqlInt16.Null) , IIf(skin <> "", skin, SqlInt16.Null)})
+                New Object() {TabId, TabName, ShowFriendly, convertstringtounicode(TabName), AuthorizedRoles, LeftPaneWidth, RightPaneWidth, IsVisible, DisableLink, IIf(ParentId <> -1, ParentId, SqlInt16.Null), IconFile, AdministratorRoles, IIf(css <> "", css, SqlInt16.Null), IIf(skin <> "", skin, SqlInt16.Null), ssl, AltUrl})
 
             myConnection.Open()
             myCommand.ExecuteNonQuery()

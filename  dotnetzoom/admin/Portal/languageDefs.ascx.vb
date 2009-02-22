@@ -80,66 +80,66 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             ' Verify that the current user has access to this page
             If Not PortalSecurity.IsSuperUser Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
 
-			if Session("language") is nothing then
-			' in case the session expired
-			Session("language") = GetLanguage("N")
-			end if
- 			Dim TabSelectedIndex As Integer = 0
-	
-			If page.IsPostBack = False then
-			   
-			  
-               If Request("TabSelected") <> "" Then
-				  TabSelectedIndex = Request("TabSelected")
-			   end if
-    			GetTabVisible( (TabSelectedIndex).ToString)
+            If Session("language") Is Nothing Then
+                ' in case the session expired
+                Session("language") = GetLanguage("N")
+            End If
+            Dim TabSelectedIndex As Integer = 0
+
+            If Page.IsPostBack = False Then
+
+
+                If Request("TabSelected") <> "" Then
+                    TabSelectedIndex = Request("TabSelected")
+                End If
+                GetTabVisible((TabSelectedIndex).ToString)
 
                 ddlModLanguage = Setddl(ddlModLanguage)
-       		   If Not ddlModLanguage.Items.FindByValue(Session("language")) Is Nothing then
-				  ddlModLanguage.Items.FindByValue(Session("language")).Selected = True
-			   else 
-    			  ddlModLanguage.SelectedIndex = 0     
-	    	  End If
-			    lblMessage.text = ""
-				Session("DataTable") = nothing
-	            
-				Dim slTabs As SortedList = New SortedList
+                If Not ddlModLanguage.Items.FindByValue(Session("language")) Is Nothing Then
+                    ddlModLanguage.Items.FindByValue(Session("language")).Selected = True
+                Else
+                    ddlModLanguage.SelectedIndex = 0
+                End If
+                lblMessage.Text = ""
+                Session("DataTable") = Nothing
+
+                Dim slTabs As SortedList = New SortedList
 
                 slTabs.Add("0", GetSubLink("0", GetLanguage("LanguageSettings1")))
                 slTabs.Add("1", GetSubLink("1", GetLanguage("LanguageSettings2")))
                 slTabs.Add("2", GetSubLink("2", GetLanguage("LanguageSettings3")))
                 slTabs.Add("3", GetSubLink("3", GetLanguage("LanguageSettings4")))
                 slTabs.Add("4", GetSubLink("4", GetLanguage("LanguageSettings5")))
-				 If TabSelectedIndex > 4 then
-                 dlTabsTop.DataSource = slTabs
-	             dlTabsTop.DataBind()
-	             else
-                 dlTabsBottom.DataSource = slTabs
-	             dlTabsBottom.DataBind()
-	             dlTabsBottom.SelectedIndex = TabSelectedIndex
-				 end if
+                If TabSelectedIndex > 4 Then
+                    dlTabsTop.DataSource = slTabs
+                    dlTabsTop.DataBind()
+                Else
+                    dlTabsBottom.DataSource = slTabs
+                    dlTabsBottom.DataBind()
+                    dlTabsBottom.SelectedIndex = TabSelectedIndex
+                End If
 
-				slTabs = New SortedList
+                slTabs = New SortedList
                 slTabs.Add("0", GetSubLink("5", GetLanguage("LanguageSettings6")))
                 slTabs.Add("1", GetSubLink("6", GetLanguage("LanguageSettings7")))
                 slTabs.Add("2", GetSubLink("7", GetLanguage("LanguageSettings8")))
                 slTabs.Add("3", GetSubLink("8", GetLanguage("LanguageSettings9")))
                 slTabs.Add("4", GetSubLink("9", GetLanguage("LanguageSettings10")))
 
-				 If TabSelectedIndex > 4 then
-				 dlTabsBottom.DataSource = slTabs
-	             dlTabsBottom.DataBind()
-	             dlTabsBottom.SelectedIndex = TabSelectedIndex - 5
-	             else
-                 dlTabsTop.DataSource = slTabs
-	             dlTabsTop.DataBind()
-				 end if
-			else
-			Title1.DisplayHelp = ViewState("title") 
-			end if
+                If TabSelectedIndex > 4 Then
+                    dlTabsBottom.DataSource = slTabs
+                    dlTabsBottom.DataBind()
+                    dlTabsBottom.SelectedIndex = TabSelectedIndex - 5
+                Else
+                    dlTabsTop.DataSource = slTabs
+                    dlTabsTop.DataBind()
+                End If
+            Else
+                Title1.DisplayHelp = ViewState("title")
+            End If
 
         End Sub
 

@@ -127,7 +127,7 @@
         </asp:radiobuttonlist>
         </td>
    </tr>
-  	<tr>
+  	<tr id="sllline" runat="server" visible="false">
 	    <td class="SubHead" width="187">
 		<%= DotNetZoom.GetLanguage("SS_Use_SSL") %>:&nbsp;<asp:Label id="Label4" runat="server" CssClass="NormalTextBox" ></asp:Label>
 		</td>
@@ -289,7 +289,7 @@
     <tbody>
        <tr id="SiteRow7" runat="server" visible="false">
                                 <td colspan="2" align="left">
-                                <span class="Head"><%= DotNetZoom.GetLanguage("SS_Head_Demo") %></span><font size="1">&nbsp;(/<%= DotNetZoom.GetLanguage("N") %>.default.aspx?edit=control&def=demo)</font> 
+                                <span class="Head"><%= DotNetZoom.GetLanguage("SS_Head_Demo") %></span><font size="1">&nbsp;(/<%= DotNetZoom.GetLanguage("N") %>.default.aspx?def=demo)</font> 
                             </td>
                         </tr>
 
@@ -472,10 +472,11 @@
            </td>
            <td colspan="2">
             <table cellspacing="0" cellpadding="0" width="100%">
-            <tr><td class="NormalBold" align="left">&nbsp;ssl&nbsp;</td><td class="NormalBold"><%= DotNetZoom.GetLanguage("P_Alias") %></td></tr>
+            <tr><td id="ssltd" width="30" runat="server" class="NormalBold" align="left">Sub&nbsp;&nbsp;ssl&nbsp;</td><td align="center" colspan="2" class="NormalBold"><%= DotNetZoom.GetLanguage("P_Alias") %></td></tr>
                 <tr>
                     <td class="SubHead" align="left" colspan="2">
-                    &nbsp;<asp:CheckBox ID="sslCheckBox1" runat="server"  Checked="False" />
+                    &nbsp;<asp:CheckBox ID="sslSubDomainBox1" runat="server"  Checked="False"/>
+                    &nbsp;<asp:CheckBox ID="sslCheckBox1" runat="server"  Checked="False"/>
                     &nbsp;&nbsp;<asp:textbox id="txtPortalAlias" runat="server" CssClass="NormalTextBox" MaxLength="50" Width="300px"></asp:textbox>
                     &nbsp;&nbsp;<asp:ImageButton id="AddSetting" ImageURL="~/images/add.gif" Width="16px" Height="16px" runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
                     </td>
@@ -486,7 +487,8 @@
                         <Columns>
                         <asp:TemplateColumn  ItemStyle-Width="300">
                             <ItemTemplate>
-                            <asp:CheckBox ID="sslCheckBox" runat="server"  Checked='<%# DataBinder.Eval(Container, "DataItem.ssl") %>' />
+                            <asp:CheckBox ID="sslSubDomainBox" runat="server"  Checked='<%# DataBinder.Eval(Container, "DataItem.SubPortal") %>' visible='<%# sslCheckBox.checked %>'/>
+                            &nbsp;<asp:CheckBox ID="sslCheckBox" runat="server"  Checked='<%# DataBinder.Eval(Container, "DataItem.ssl") %>' visible='<%# sslCheckBox.checked %>'/>
                             &nbsp;&nbsp;<asp:TextBox id="txtRename" runat="server" MaxLength="50" Width="300px" Text='<%# DataBinder.Eval(Container, "DataItem.PortalAlias") %>'></asp:TextBox>
                             &nbsp;&nbsp;<asp:ImageButton tooltip='<%# DotNetZoom.GetLanguage("enregistrer") %>' id="imgEditOK" ImageURL="~/images/save.gif" CommandName="EditOK" Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.PortalAlias") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
                             &nbsp;&nbsp;<asp:ImageButton id="DelAlias" tooltip='<%# DotNetZoom.GetLanguage("delete") %>' visible="true" ImageURL="~/images/delete.gif" CommandName="DeleteOK" Width="16px" Height="16px" CommandArgument='<%# DataBinder.Eval(Container, "DataItem.PortalAlias") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="True"></asp:ImageButton>

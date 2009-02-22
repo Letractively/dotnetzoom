@@ -74,13 +74,14 @@ If Not CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadrol
    tmpUploadRoles = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String)
 End If
 
-If Request.IsAuthenticated = false Then
-   Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-End If
-			
-CanIUpload.Visible = PortalSecurity.IsInRoles(tmpUploadRoles)
 
-DisplayImages()
+            If Request.IsAuthenticated = False Then
+                EditDenied()
+            End If
+			
+            CanIUpload.Visible = PortalSecurity.IsInRoles(tmpUploadRoles)
+
+            DisplayImages()
 
 end if
 End Sub 
@@ -194,7 +195,8 @@ End Sub
 
 
 Public Sub AfficherImage_OnClick(ByVal sender As Object, ByVal e As EventArgs)
-ResultsMessage.text = "" 
+        Page.Validate()
+        ResultsMessage.Text = ""
 If not Page.IsValid then
 If TxtMinSize.Text > 180 then 
 TxtMinSize.Text = "180"
@@ -215,6 +217,7 @@ end if
 end sub
 
 Public Sub UploadImage_OnClick(ByVal sender As Object, ByVal e As EventArgs) 
+        Page.Validate()
 
 ResultsMessage.Text = ""
 ' Obtain PortalSettings from Current Context

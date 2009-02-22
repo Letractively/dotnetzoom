@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -64,59 +64,60 @@ Namespace DotNetZoom
 		Title1.DisplayHelp = "DisplayHelp_Terms"
 
             ' Obtain PortalSettings from Current Context
-		If Page.IsPostBack = False Then
+            If Page.IsPostBack = False Then
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Dim objAdmin As New DotNetZoom.AdminDB()
-			Dim Language As String = GetLanguage("N")
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
-			If Request.Params("edit") = "mod" and PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) then
-			If Not Request.Params("Language") is Nothing then
-			Language = Request.Params("Language")
-			end if
+                Dim objAdmin As New DotNetZoom.AdminDB()
+                Dim Language As String = GetLanguage("N")
 
-			If objAdmin.GetSinglelonglanguageSettings(Language, "PortalTerms" , _PortalSettings.PortalID) = "" then
-				Dim TempString As String = objAdmin.GetSinglelonglanguageSettings(Language, "PortalTerms")
-				If TempString <> "" then
-				objAdmin.UpdatelonglanguageSetting(Language, "PortalTerms" , TempString, _PortalSettings.PortalID)
-				FCKeditor1.value = TempString
-				else
-				objAdmin.UpdatelonglanguageSetting(Language, "PortalTerms" , lblTerms.Text , _PortalSettings.PortalID)
-				FCKeditor1.value = lblTerms.Text
-				end if
-			else
-			FCKeditor1.value = objAdmin.GetSinglelonglanguageSettings(Language, "PortalTerms" , _PortalSettings.PortalID)
-			end if
-            ' Store URL Referrer to return to portal
-              If Not Request.UrlReferrer Is Nothing Then
-                 ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-              Else
-                 ViewState("UrlReferrer") = ""
-              End If
-			  Dim _language As HashTable = HttpContext.Current.Items("Language")
-			cmdUpdate.Text = _Language("enregistrer")
-			cmdUpdate.CommandArgument = Language
-			cmdCancel.Text = _Language("return")
-			cmdCancel.Attributes.Add("onClick", "javascript:window.close();")
-		
-			pnlRichTextBox.Visible = True
-			SetFckEditor()
-			else
-			If objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalTerms" , _PortalSettings.PortalID) = "" then
-				Dim TempString As String = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalTerms")
-				If TempString <> "" then
-				objAdmin.UpdatelonglanguageSetting(GetLanguage("N"), "PortalTerms" , TempString, _PortalSettings.PortalID)
-				lblTerms.Text = TempString
-				else
-				objAdmin.UpdatelonglanguageSetting(GetLanguage("N"), "PortalTerms" , lblTerms.Text , _PortalSettings.PortalID)
-				end if
-			else
-			lblTerms.Text = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalTerms" , _PortalSettings.PortalID)
-			end if
-				Terms.Visible = True
-				lblTerms.Text = ProcessLanguage(lblTerms.Text, Page)
-           end if
-		end if
+                If Request.Params("edit") = "mod" And PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                    If Not Request.Params("Language") Is Nothing Then
+                        Language = Request.Params("Language")
+                    End If
+
+                    If objAdmin.GetSinglelonglanguageSettings(Language, "PortalTerms", _portalSettings.PortalId) = "" Then
+                        Dim TempString As String = objAdmin.GetSinglelonglanguageSettings(Language, "PortalTerms")
+                        If TempString <> "" Then
+                            objAdmin.UpdatelonglanguageSetting(Language, "PortalTerms", TempString, _portalSettings.PortalId)
+                            FCKeditor1.Value = TempString
+                        Else
+                            objAdmin.UpdatelonglanguageSetting(Language, "PortalTerms", lblTerms.Text, _portalSettings.PortalId)
+                            FCKeditor1.Value = lblTerms.Text
+                        End If
+                    Else
+                        FCKeditor1.Value = objAdmin.GetSinglelonglanguageSettings(Language, "PortalTerms", _portalSettings.PortalId)
+                    End If
+                    Dim _language As Hashtable = HttpContext.Current.Items("Language")
+                    cmdUpdate.Text = _language("enregistrer")
+                    cmdUpdate.CommandArgument = Language
+                    cmdCancel.Text = _language("return")
+                    cmdCancel.Attributes.Add("onClick", "javascript:window.close();")
+
+                    pnlRichTextBox.Visible = True
+                    SetFckEditor()
+                Else
+                    If objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalTerms", _portalSettings.PortalId) = "" Then
+                        Dim TempString As String = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalTerms")
+                        If TempString <> "" Then
+                            objAdmin.UpdatelonglanguageSetting(GetLanguage("N"), "PortalTerms", TempString, _portalSettings.PortalId)
+                            lblTerms.Text = TempString
+                        Else
+                            objAdmin.UpdatelonglanguageSetting(GetLanguage("N"), "PortalTerms", lblTerms.Text, _portalSettings.PortalId)
+                        End If
+                    Else
+                        lblTerms.Text = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalTerms", _portalSettings.PortalId)
+                    End If
+                    Terms.Visible = True
+                    lblTerms.Text = ProcessLanguage(lblTerms.Text, Page)
+                End If
+            End If
         End Sub
 
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
@@ -130,23 +131,12 @@ Namespace DotNetZoom
 		Private Sub SetFckEditor()
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             FCKeditor1.Width = Unit.Pixel(700)
-			FCKeditor1.Height = unit.pixel(500)
-			if GetLanguage("fckeditor_language") <> "auto"
-			FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-			FCKeditor1.AutoDetectLanguage = False
-			end if
+            FCKeditor1.Height = Unit.Pixel(500)
+            SetEditor(FCKeditor1)
             FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
             FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
             Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
-			' set the css for the editor if it exist
-				' set the css for the editor if it exist
-				If Directory.Exists(Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) then
-				FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
-				FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-				FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-            End If
-
-		end sub
+        End Sub
 		
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
             Response.Redirect(CType(ViewState("UrlReferrer"), String), True)

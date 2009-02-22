@@ -2,7 +2,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -18,6 +18,7 @@
 ' CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 ' DEALINGS IN THE SOFTWARE.
 '
+Imports System.Data
 
 Namespace DotNetZoom
 
@@ -29,7 +30,7 @@ Namespace DotNetZoom
         Protected WithEvents cmdDelete As System.Web.UI.WebControls.LinkButton
     	Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
 
-        Dim strFilter As String
+        Dim strFilter As String = " "
 
 #Region " Web Form Designer Generated Code "
 
@@ -56,25 +57,22 @@ Namespace DotNetZoom
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
 
 
             Title1.EditText = GetLanguage("add")
             Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
-			Title1.DisplayHelp = "DisplayHelp_Users"
+            Title1.DisplayHelp = "DisplayHelp_Users"
             If Not Page.IsPostBack Then
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm_erase")) & "');")
-            	cmdDelete.Text = GetLanguage("Users_Delete")
-			End If
-
-            If Not Request.Params("filter") Is Nothing Then
-                strFilter = Request.Params("filter")
-            Else
-                strFilter = " "
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm_erase")) & "');")
+                cmdDelete.Text = GetLanguage("Users_Delete")
+                If Not Request.Params("filter") Is Nothing Then
+                    strFilter = Request.Params("filter")
+                End If
             End If
-
             BindData()
+
 
         End Sub
 
@@ -100,22 +98,28 @@ Namespace DotNetZoom
             grdUsers.PageSize = ds.Tables(0).Rows.Count + 1
 
             grdUsers.DataBind()
-			grdUsers.Columns(2).HeaderText = GetLanguage("Name")
+            grdUsers.Columns(2).HeaderText = GetLanguage("Name")
             grdUsers.Columns(3).HeaderText = GetLanguage("Label_UserName")
             grdUsers.Columns(4).HeaderText = GetLanguage("F_UserAdress")
             grdUsers.Columns(5).HeaderText = GetLanguage("address_telephone")
             grdUsers.Columns(6).HeaderText = GetLanguage("address_Email")
-			grdUsers.Columns(7).HeaderText = GetLanguage("U_LastLogin_Date")
-			grdUsers.Columns(8).HeaderText = GetLanguage("U_Autorized")
-			
+            grdUsers.Columns(7).HeaderText = GetLanguage("U_LastLogin_Date")
+            grdUsers.Columns(8).HeaderText = GetLanguage("U_Autorized")
+
+            If strFilter = "-" Then
+                cmdDelete.Visible = True
+            Else
+                cmdDelete.Visible = False
+            End If
+
         End Sub
 
         Public Function FormatURL(ByVal strKeyName As String, ByVal strKeyValue As String)  As String
-            FormatURL = EditURL(strKeyName, strKeyValue) & IIf(strFilter <> "", "&filter=" & strFilter, "")
+            FormatURL = EditURL(strKeyName, strKeyValue) & "&filter=" & strFilter
         End Function
 
 		Public Function FormatURLRole(ByVal strKeyName As String, ByVal strKeyValue As String)  As String
-            FormatURLRole =  EditURL(strKeyName, strKeyValue) & "&def=User Roles"
+            FormatURLRole = EditURL(strKeyName, strKeyValue) & "&def=User Roles" & "&filter=" & strFilter
          End Function
 		
 		

@@ -71,10 +71,6 @@ Namespace DotNetZoom
 			CancelButton.ToolTip = GetLanguage("Gal_CancelTip")
 			UpdateButton.ToolTip = GetLanguage("Gal_UpdateTip")
 
-            If not Request.IsAuthenticated Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-            End If
-
             If IsNumeric(Request.Params("mid")) Then
                 ZmoduleID = Int32.Parse(Request.Params("mid"))
             End If
@@ -91,12 +87,19 @@ Namespace DotNetZoom
             If Not Zfolder.IsPopulated Then
                 Zrequest.Folder.Populate()
             End If
-
+            If Not Page.IsPostBack Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+            End If
             If Not Page.IsPostBack AndAlso Zconfig.IsValidPath Then
 
                 If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
                             OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
-                OrElse (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
+                OrElse (PortalSecurity.IsInRoles(CType(PortalSettings.GetEditModuleSettings(ZmoduleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                     btnEditOwner.Visible = True
                 Else
                     btnEditOwner.Visible = False
@@ -109,12 +112,6 @@ Namespace DotNetZoom
                 'BindData(Zrequest)
                 BindData()
 
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
 
             End If
 

@@ -97,7 +97,7 @@ Namespace DotNetZoom
             ' Loop round thread items, rendering information about individual groups
             
             Dim document As String = GetFullDocument()
-			Dim imageURL As String = ForumConfig.SkinFolder()
+            Dim imageURL As String = ForumConfig.SkinImageFolder()
             
 
             Dim lastVisited As DateTime

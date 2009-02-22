@@ -51,7 +51,7 @@
         </tr>
         <tr>
             <td valign="middle" colspan="2">
-                <asp:checkbox class="Normal" id="chkCookie" runat="server"></asp:checkbox>
+                <asp:checkbox cssclass="Normal" id="chkCookie" runat="server"></asp:checkbox>
             </td>
         </tr>
         <tr>

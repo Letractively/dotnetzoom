@@ -45,7 +45,7 @@ Namespace DotNetZoom
 			_StartDate = objSecurity.InputFilter(StartDate, PortalSecurity.FilterFlag.NoSQL)
 			_EndDate = objSecurity.InputFilter(EndDate, PortalSecurity.FilterFlag.NoSQL)
 			' PUT IN SKIN IMAGEFOLDER
-            _imageURL = ForumConfig.SkinFolder()
+            _imageURL = ForumConfig.SkinImageFolder()
 
         End Sub 'New
 

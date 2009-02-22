@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -123,7 +123,11 @@ Namespace DotNetZoom
                 End If
             End If
 
-            Return IIf(Request.ApplicationPath = "/", Request.ApplicationPath, Request.ApplicationPath & "/") & "admin/Portal/LinkClick.aspx?tabid=" & TabId & "&table=Links&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+            Dim objSecurity As New PortalSecurity()
+            Dim crypto As String = "tabid=" & TabId & "&table=Links&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+            Return glbPath & GetLanguage("N") & ".default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
+
+            ' Return glbPath() & "admin/Portal/LinkClick.aspx?tabid=" & TabId & "&table=Links&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
 
         End Function
 

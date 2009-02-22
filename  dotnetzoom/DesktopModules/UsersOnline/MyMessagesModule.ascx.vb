@@ -35,13 +35,20 @@ Namespace DotNetZoom
             objMessagesDB.GetMessageCount((New Utility).GetUserID(), unreadCount, readCount)
 
             lblUnreadCount.Text = unreadCount.ToString()
+
+            If unreadCount > 0 Then
+                lblUnreadCount.Style.Add("text-decoration", "blink")
+                ' "text-decoration: blink"
+            Else
+                lblUnreadCount.Style.Clear()
+            End If
             lblReadCount.Text = readCount.ToString()
 
         End Sub
 
         Protected Function GetMessageUrl() As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Return GetFullDocument() & "?edit=control&amp;tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=PrivateMessages"
+            Return GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&amp;def=PrivateMessages"
         End Function
 
     End Class

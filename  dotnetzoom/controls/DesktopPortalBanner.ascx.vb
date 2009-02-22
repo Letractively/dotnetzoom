@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -24,6 +24,7 @@
 Imports System.IO
 Imports System.Text
 Imports System.Data.SqlClient
+
 
 
 Namespace DotNetZoom
@@ -64,8 +65,11 @@ Namespace DotNetZoom
         Protected WithEvents hypUser As System.Web.UI.WebControls.HyperLink
         Protected WithEvents hypHelp As System.Web.UI.WebControls.literal
         Protected WithEvents lblSeparator As System.Web.UI.WebControls.Label
-        Protected WithEvents hypLogin As System.Web.UI.WebControls.HyperLink
-		Protected WithEvents Flash As System.Web.UI.WebControls.Literal
+        Protected WithEvents Flash As System.Web.UI.WebControls.Literal
+        Protected WithEvents cmdLogin As System.Web.UI.WebControls.LinkButton
+        Protected WithEvents cmdLogOff As System.Web.UI.WebControls.LinkButton
+        Protected WithEvents cmdRegister As System.Web.UI.WebControls.LinkButton
+
 
 #Region " Web Form Designer Generated Code "
 
@@ -139,14 +143,9 @@ Namespace DotNetZoom
 
 
 
-            Dim ServerPath As String
+
             Dim BannerId As Integer
 
-            ' format the Request.ApplicationPath
-            ServerPath = Request.ApplicationPath
-            If Not ServerPath.EndsWith("/") Then
-                ServerPath += "/"
-            End If
 
             ' dynamically populate the portal settings
 
@@ -170,14 +169,9 @@ Namespace DotNetZoom
             hypLogo.NavigateUrl = GetPortalDomainName(_portalSettings.PortalAlias, Request)
             hypHelp.Visible = False
             lblSeparator.Visible = False
-            If _portalSettings.UserRegistration <> 0 Then
 
-                hypHelp.Text = "<a class=""OtherTabs"" href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&amp;def=Register", GetLanguage("N"), "&amp;") & """>" & GetLanguage("banner_register") & "</a>&nbsp;|&nbsp;"
-                hypHelp.Visible = True
-                lblSeparator.Visible = True
-            End If
-            hypLogin.Text = GetLanguage("login")
-            hypLogin.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1")
+
+
             lblDate.Text = ProcessLanguage("{date}")
             Dim objUser As New UsersDB()
             Dim dr As SqlDataReader
@@ -201,14 +195,13 @@ Namespace DotNetZoom
             If context.Cache(TempKey) = "oui" Then
                 hypUser.Text = GetLanguage("Membership_Serv") + " | "
                 hypUser.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("admin_services")))
-                hypUser.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&def=Register&services=1")
+                hypUser.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register&services=1")
             End If
 
 
 
             ' banner advertising
             If _portalSettings.BannerAdvertising <> 0 Then
-
                 Dim objVendor As New VendorsDB()
                 Dim result As SqlDataReader
                 Select Case _portalSettings.BannerAdvertising
@@ -248,12 +241,13 @@ Namespace DotNetZoom
                 End If
                 result.Close()
 
-                hypBanner.NavigateUrl = ServerPath & "DesktopModules/Banners/BannerClickThrough.aspx?BannerId=" & CStr(BannerId)
+                hypBanner.NavigateUrl = glbHTTP() & "DesktopModules/Banners/BannerClickThrough.aspx?BannerId=" & CStr(BannerId)
             Else
                 hypBanner.Visible = False
                 hypBannerImage.Visible = False
                 BannerId = -1
             End If
+            ' banner advertising
 
             ' If user logged in, customize welcome message
             If Request.IsAuthenticated = True Then
@@ -262,31 +256,48 @@ Namespace DotNetZoom
                 hypUser.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("admin_profile")))
 
                 If PortalSecurity.IsSuperUser Then
-                    hypUser.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&UserId=" & _portalSettings.SuperUserId & "&def=Gestion usagers")
+                    hypUser.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "UserId=" & _portalSettings.SuperUserId & "&def=Gestion usagers")
                 Else
-                    hypUser.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&def=Register")
+                    hypUser.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register")
                 End If
 
                 If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
                     hypHelp.Text = "<span onmouseover=""" & ReturnToolTip(GetLanguage("help")) & """>" & FormatEmail(PortalSettings.GetHostSettings("HostEmail"), Page, "<img height='12' width='12' border='0' src='" & glbPath & "images/1x1.gif' Alt='?' style='background: url(" & glbPath & "images/uostrip.gif) no-repeat; background-position: 0px -362px;'>", _portalSettings.PortalName & " " & GetLanguage("need_help")) & "</span>"
                     hypHelp.Visible = True
-                    lblSeparator.Visible = True
                 Else ' registered user
                     hypHelp.Text = "<span onmouseover=""" & ReturnToolTip(GetLanguage("help")) & """>" & FormatEmail(_portalSettings.Email, Page, "<img height='12' width='12' border='0' src='" & glbPath & "images/1x1.gif' Alt='?' style='background: url(" & glbPath & "images/uostrip.gif) no-repeat; background-position: 0px -362px;'>", GetLanguage("need_help")) & "</span>"
                     hypHelp.Visible = True
-                    lblSeparator.Visible = True
                 End If
 
-                hypLogin.Text = "<img height=""14"" width=""14"" border=""0"" src=""" & glbPath & "images/1x1.gif""  title="""" onmouseover=""" & ReturnToolTip(GetLanguage("exit")) & """ border=""0"" Alt=""ca"" style="" background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -333px;"">"
-                hypLogin.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "logoff=ok")
+                cmdLogOff.Text = "<img height=""14"" width=""14"" border=""0"" src=""" & glbPath & "images/1x1.gif""  title="""" onmouseover=""" & ReturnToolTip(GetLanguage("exit")) & """ border=""0"" Alt=""ca"" style="" background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -333px;"">"
+                cmdLogOff.Visible = True
+            Else
+                ' not log in need to log in
+                cmdLogOff.Visible = False
+                If _portalSettings.UserRegistration <> 0 Then
+                    lblSeparator.Visible = True
+                    cmdRegister.Text = GetLanguage("banner_register")
+                    cmdRegister.Visible = True
+                    cmdRegister.ToolTip = GetLanguage("Button_RegisterTooltip")
+                End If
+
+                If Not Request.QueryString("showlogin") = "1" Then
+                    cmdLogin.Text = GetLanguage("login")
+                    cmdLogin.ToolTip = GetLanguage("Button_EnterTooltip")
+                    cmdLogin.Visible = True
+                Else
+                    cmdLogin.Visible = False
+                    lblSeparator.Visible = False
+                End If
+
             End If
 
 
 
-            ' To Show Admin Menu			
-            If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) Then
-                editpanel.Visible = True
-                If IsAdminTab() Or (Not Request.Params("edit") Is Nothing) Then
+                ' To Show Admin Menu			
+                If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) Then
+                    editpanel.Visible = True
+                If IsAdminTab() Or (Not Request.Params("def") Is Nothing) Or (Not Request.Params("edit") Is Nothing) Then
                     editpanel.Visible = False
                 Else
                     If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
@@ -294,7 +305,7 @@ Namespace DotNetZoom
                         cmdAdminMenu.Text = cmdAdminMenu.Text + GetLanguage("admin_txt")
                         cmdAdminMenu.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("admin_menu"), "100"))
                         liadmin.Visible = True
-                        cmdAddTab.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Onglets"
+                        cmdAddTab.NavigateUrl = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Onglets"
                         cmdAddTab.Text = cmdAddTab.Text + GetLanguage("admin_tab_add")
                         cmdAddTab.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("admin_add_tab"), "100"))
                         liaddtab.Visible = True
@@ -303,7 +314,7 @@ Namespace DotNetZoom
                         cmdDelete.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("admin_tab_delete"), "100"))
                         lideletetab.Visible = True
                     End If
-                    cmdEditTab.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Onglets&action=edit"
+                    cmdEditTab.NavigateUrl = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Onglets&action=edit"
                     cmdEditTab.Text = cmdEditTab.Text + GetLanguage("admin_tab_edit")
                     cmdEditTab.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("admin_edit_tab"), "100"))
                     liedittab.Visible = True
@@ -326,91 +337,91 @@ Namespace DotNetZoom
                     End If
                 End If
 
-                cmdPreview.Visible = True
-                pnlmodulehelp.Visible = False
-                pnlmoduleinfo.Visible = False
-                If Not Page.IsPostBack Then
-                    ' Show Help if asked for	
-                    If Not Request.Params("mdi") Is Nothing Then
-                        If IsNumeric(Request.Params("mdi")) Then
-                            ShowinfoModule()
-                            lblmodulehelp.Text = GetLanguage("error")
-                            Dim dri As SqlDataReader = objAdmin.GetSingleModuleDefinition(GetLanguage("N"), Int32.Parse(Request.QueryString("mdi")))
-                            If dri.Read Then
-                                lblmodulehelp.Text = "<b>" & GetLanguage("module_info") & " " & dri("FriendlyName") & "</b>"
+                    cmdPreview.Visible = True
+                    pnlmodulehelp.Visible = False
+                    pnlmoduleinfo.Visible = False
+                    If Not Page.IsPostBack Then
+                        ' Show Help if asked for	
+                        If Not Request.Params("mdi") Is Nothing Then
+                            If IsNumeric(Request.Params("mdi")) Then
+                                ShowinfoModule()
+                                lblmodulehelp.Text = GetLanguage("error")
+                                Dim dri As SqlDataReader = objAdmin.GetSingleModuleDefinition(GetLanguage("N"), Int32.Parse(Request.QueryString("mdi")))
+                                If dri.Read Then
+                                    lblmodulehelp.Text = "<b>" & GetLanguage("module_info") & " " & dri("FriendlyName") & "</b>"
 
-                                Dim TempString As String = dri("Description").ToString
-                                If TempString <> "" Then
-                                    lblmodulehelp.Text += "<BLOCKQUOTE>" & TempString & "</BLOCKQUOTE>"
-                                Else
-                                    lblmodulehelp.Text += "<BLOCKQUOTE>" & GetLanguage("no_module_info") & "</BLOCKQUOTE>"
+                                    Dim TempString As String = dri("Description").ToString
+                                    If TempString <> "" Then
+                                        lblmodulehelp.Text += "<BLOCKQUOTE>" & TempString & "</BLOCKQUOTE>"
+                                    Else
+                                        lblmodulehelp.Text += "<BLOCKQUOTE>" & GetLanguage("no_module_info") & "</BLOCKQUOTE>"
+                                    End If
+                                    pnlmodulehelp.Visible = True
                                 End If
-                                pnlmodulehelp.Visible = True
+                                dri.Close()
                             End If
-                            dri.Close()
-                        End If
-                    End If
-
-                    If Not Request.Params("mda") Is Nothing Then
-                        ' add module
-                        If IsNumeric(Request.Params("mda")) Then
-                            Dim strEditRoles As String = _portalSettings.ActiveTab.AdministratorRoles
-                            If InStr(1, strEditRoles, _portalSettings.AdministratorRoleId.ToString & ";") = 0 Then
-                                strEditRoles += _portalSettings.AdministratorRoleId.ToString & ";"
-                            End If
-
-                            ' save to database
-                            Dim dra As SqlDataReader = objAdmin.GetSingleModuleDefinition(GetLanguage("N"), Int32.Parse(Request.QueryString("mda")))
-                            Dim TempString As String = ""
-                            If dra.Read Then
-                                If dra("FriendlyName").ToString <> "" Then
-                                    TempString = dra("FriendlyName").ToString
-                                End If
-                            End If
-                            dra.Close()
-
-
-                            Dim TempModuleID As Integer = objAdmin.AddModule(_portalSettings.ActiveTab.TabId, -3, "ContentPane", TempString, Request.Params("mda"), 0, strEditRoles, False, GetLanguage("N"))
-                            ' Put In the default Container
-                            Dim _Settings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
-
-                            objAdmin.UpdateModuleSetting(TempModuleID, "containerTitleHeaderClass", IIf(_Settings("containerTitleHeaderClass") <> "", _Settings("containerTitleHeaderClass"), ""))
-                            objAdmin.UpdateModuleSetting(TempModuleID, "containerTitleCSSClass", IIf(_Settings("containerTitleCSSClass") <> "", _Settings("containerTitleCSSClass"), ""))
-                            objAdmin.UpdateModuleSetting(TempModuleID, "container", IIf(_Settings("container") <> "", _Settings("container"), ""))
-                            objAdmin.UpdateModuleSetting(TempModuleID, "TitleContainer", IIf(_Settings("TitleContainer") <> "", _Settings("TitleContainer"), ""))
-                            objAdmin.UpdateModuleSetting(TempModuleID, "ModuleContainer", IIf(_Settings("ModuleContainer") <> "", _Settings("ModuleContainer"), ""))
-                            objAdmin.UpdateModuleSetting(TempModuleID, "containerAlignment", IIf(_Settings("containerAlignment") <> "", _Settings("containerAlignment"), ""))
-                            objAdmin.UpdateModuleSetting(TempModuleID, "containerColor", IIf(_Settings("containerColor") <> "", _Settings("containerColor"), ""))
-                            objAdmin.UpdateModuleSetting(TempModuleID, "containerBorder", IIf(_Settings("containerBorder") <> "", _Settings("containerBorder"), ""))
-                            objAdmin.UpdateTabModuleOrder(_portalSettings.ActiveTab.TabId)
-                            ' reset the tab cashe also
-                            ClearTabCache(_portalSettings.ActiveTab.TabId)
-                            ' Redirect to edit the module settings
-                            ' http://localhost/fr.accueil.aspx?edit=control&tabid=1&mid=339&def=Module
-                            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control&mid=" & TempModuleID.ToString & "&def=Module"), True)
-
                         End If
 
+                        If Not Request.Params("mda") Is Nothing Then
+                            ' add module
+                            If IsNumeric(Request.Params("mda")) Then
+                                Dim strEditRoles As String = _portalSettings.ActiveTab.AdministratorRoles
+                                If InStr(1, strEditRoles, _portalSettings.AdministratorRoleId.ToString & ";") = 0 Then
+                                    strEditRoles += _portalSettings.AdministratorRoleId.ToString & ";"
+                                End If
+
+                                ' save to database
+                                Dim dra As SqlDataReader = objAdmin.GetSingleModuleDefinition(GetLanguage("N"), Int32.Parse(Request.QueryString("mda")))
+                                Dim TempString As String = ""
+                                If dra.Read Then
+                                    If dra("FriendlyName").ToString <> "" Then
+                                        TempString = dra("FriendlyName").ToString
+                                    End If
+                                End If
+                                dra.Close()
+
+
+                                Dim TempModuleID As Integer = objAdmin.AddModule(_portalSettings.ActiveTab.TabId, -3, "ContentPane", TempString, Request.Params("mda"), 0, strEditRoles, False, GetLanguage("N"))
+                                ' Put In the default Container
+                                Dim _Settings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
+
+                                objAdmin.UpdateModuleSetting(TempModuleID, "containerTitleHeaderClass", IIf(_Settings("containerTitleHeaderClass") <> "", _Settings("containerTitleHeaderClass"), ""))
+                                objAdmin.UpdateModuleSetting(TempModuleID, "containerTitleCSSClass", IIf(_Settings("containerTitleCSSClass") <> "", _Settings("containerTitleCSSClass"), ""))
+                                objAdmin.UpdateModuleSetting(TempModuleID, "container", IIf(_Settings("container") <> "", _Settings("container"), ""))
+                                objAdmin.UpdateModuleSetting(TempModuleID, "TitleContainer", IIf(_Settings("TitleContainer") <> "", _Settings("TitleContainer"), ""))
+                                objAdmin.UpdateModuleSetting(TempModuleID, "ModuleContainer", IIf(_Settings("ModuleContainer") <> "", _Settings("ModuleContainer"), ""))
+                                objAdmin.UpdateModuleSetting(TempModuleID, "containerAlignment", IIf(_Settings("containerAlignment") <> "", _Settings("containerAlignment"), ""))
+                                objAdmin.UpdateModuleSetting(TempModuleID, "containerColor", IIf(_Settings("containerColor") <> "", _Settings("containerColor"), ""))
+                                objAdmin.UpdateModuleSetting(TempModuleID, "containerBorder", IIf(_Settings("containerBorder") <> "", _Settings("containerBorder"), ""))
+                                objAdmin.UpdateTabModuleOrder(_portalSettings.ActiveTab.TabId)
+                                ' reset the tab cashe also
+                                ClearTabCache(_portalSettings.ActiveTab.TabId)
+                                ' Redirect to edit the module settings
+                                ' http://localhost/fr.accueil.aspx?edit=control&tabid=1&mid=339&def=Module
+                            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "mid=" & TempModuleID.ToString & "&def=Module"), True)
+
+                            End If
+
+                        End If
+                        ' only show panel module if not postback
                     End If
-                    ' only show panel module if not postback
+
                 End If
 
-            End If
 
 
 
+                ' Modified by rené boulard, turn off the ID tag
 
-            ' Modified by rené boulard, turn off the ID tag
+                hypLogo.ID = ""
+                hypLogoImage.ID = ""
+                hypBanner.ID = ""
+                hypBannerImage.ID = ""
+                lblDate.ID = ""
+                hypUser.ID = ""
 
-            hypLogo.ID = ""
-            hypLogoImage.ID = ""
-            hypBanner.ID = ""
-            hypBannerImage.ID = ""
-            lblDate.ID = ""
-            hypUser.ID = ""
+                lblSeparator.ID = ""
 
-            lblSeparator.ID = ""
-            hypLogin.ID = ""
 
 
 
@@ -442,27 +453,10 @@ Namespace DotNetZoom
 
         End Sub
 
-			
 
-            Function FormatURL() As String
-
-                Dim ServerPath As String
-
-                ServerPath = IIf(request.ApplicationPath = "/", "", request.ApplicationPath)
-                If Not ServerPath.EndsWith("/") Then
-                    ServerPath += "/"
-                End If
-
-                Return ServerPath & GetLanguage("N") & ".default.aspx"
-
-            End Function
-
-			
 		Function FormatModuleURL(ByVal strKeyName As String, ByVal strKeyValue As String) As String
             Dim _portalSettings As PortalSettings = CType(Context.Items("PortalSettings"), PortalSettings)
             FormatModuleURL = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, strKeyName & "=" & strKeyValue)
-
-
         End Function
 			
 			
@@ -538,6 +532,37 @@ Namespace DotNetZoom
             dr.Close()
             ClearPortalCache(_portalSettings.PortalId)
             Response.Redirect(_portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx", True)
+        End Sub
+
+        Private Sub cmdRegister_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdRegister.Click
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
+        End Sub
+
+        Private Sub cmdLogin_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdLogin.Click
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If Request.Params("def") = "Edit Access Denied" Or Request.Params("def") = "Access Denied" Then
+                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1"), True)
+            Else
+                Dim TempQuerystring As String = Context.Request.QueryString.ToString()
+                If Request.Params("showlogin") Is Nothing Then
+                    If TempQuerystring = "" Then
+                        TempQuerystring = "showlogin=1"
+                    Else
+                        TempQuerystring = TempQuerystring & "&showlogin=1"
+                    End If
+                End If
+                Response.Redirect(GetFullDocument(_portalSettings.SSL) & "?" & TempQuerystring, True)
+            End If
+        End Sub
+
+        Private Sub cmdLogOff_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdLogOff.Click
+            LogOffUser()
+            ' Redirect browser back to portal home page
+
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString), True)
         End Sub
 
 		

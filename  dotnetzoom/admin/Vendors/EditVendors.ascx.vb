@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -115,14 +115,14 @@ Namespace DotNetZoom
 		cmdBack.Text = GetLanguage("return")
 		cmdAddName.Text = GetLanguage("Vendors_AddName")
 		If request.params("options") <> "" then
-		If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = true then
-		pnlOptions.Visible = True
-		pnlContent.Visible = False
-		If PortalSecurity.IsSuperUser Then
-		ClassificationsEdit.Visible = true
-		end if
-		else
-                    Response.Redirect(GetFullDocument() & "?edit=" & _portalSettings.ActiveTab.TabId & "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
+                If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
+                    pnlOptions.Visible = True
+                    pnlContent.Visible = False
+                    If PortalSecurity.IsSuperUser Then
+                        ClassificationsEdit.Visible = True
+                    End If
+                Else
+                    EditDenied()
                 End If
             Else
                 pnlOptions.Visible = False
@@ -186,16 +186,22 @@ Namespace DotNetZoom
             End If
 
             If Page.IsPostBack = False Then
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
                 Address1.ModuleId = -2
                 Address1.StartTabIndex = 4
 
                 Dim objVendor As New VendorsDB()
 
-                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
+                cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
                 ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
+                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
                 Dim FileList As ArrayList
                 If Not (Request.Params("hostpage") Is Nothing) Then
                     FileList = GetFileList(, glbImageFileTypes)
@@ -253,15 +259,15 @@ Namespace DotNetZoom
                 End If
 
 
-                txtInstructions.Text = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(ddlLanguage.SelectedItem.Value & "_instructions"), String)
+                txtInstructions.Text = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(ddlLanguage.SelectedItem.Value & "_instructions"), String)
                 Dim objUser As New UsersDB()
                 cboRoles.DataSource = objUser.GetPortalRoles(_portalSettings.PortalId, GetLanguage("N"))
                 cboRoles.DataBind()
-                cboRoles.Items.Insert(0, New ListItem(getlanguage("list_none"), ""))
-                If CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("roleid"), String) <> "" Then
-                    cboRoles.Items.FindByValue(CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("roleid"), String)).Selected = True
+                cboRoles.Items.Insert(0, New ListItem(GetLanguage("list_none"), ""))
+                If CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("roleid"), String) <> "" Then
+                    cboRoles.Items.FindByValue(CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("roleid"), String)).Selected = True
                 End If
-                txtMessage.Text = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)(ddlLanguage.SelectedItem.Value & "_message"), String)
+                txtMessage.Text = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)(ddlLanguage.SelectedItem.Value & "_message"), String)
 
                 If blnSignup = True Or blnBanner = True Then
                     rowVendor1.Visible = False
@@ -283,11 +289,6 @@ Namespace DotNetZoom
                         cmdUpdate.Text = GetLanguage("banner_register")
                     End If
 
-                    If Not Request.UrlReferrer Is Nothing Then
-                        ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                    Else
-                        ViewState("UrlReferrer") = ""
-                    End If
                 Else
                     ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&filter=" & Request.Params("filter")
                     cmdUpdate.Text = GetLanguage("enregistrer")
@@ -300,6 +301,7 @@ Namespace DotNetZoom
 
             Dim intPortalID As Integer
             Dim strLogoFile As String = ""
+            Page.Validate()
 
             If Page.IsValid Then
 
@@ -405,7 +407,7 @@ Namespace DotNetZoom
 
         Private Sub cmdAddBanner_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdAddBanner.Click
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorID & "&def=Banner", True)
+            Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorID & "&def=Banner", True)
         End Sub
 
         Private Sub cmdBack_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdBack.Click

@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -88,10 +88,19 @@ Namespace DotNetZoom
 			
             ' Verify that the current user has access to edit this module
             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False And PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = False Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
 
+
+
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
 
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
@@ -146,24 +155,22 @@ Namespace DotNetZoom
                     End If
                 End If
 
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
             End If
 
-			If TxtIcone.Text <> ""
-			Dim ImageURL As STring
-    		ImageUrl =  "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory 
-    		If Not ImageUrl.EndsWith("/") Then
-          		ImageUrl += "/"
-   			End If
-		  	myHtmlImage.ImageUrl = ImageUrl & TxtIcone.Text
-		   	myHtmlImage.AlternateText = TxtIcone.Text
-	   		myHtmlImage.ToolTip = TxtIcone.Text
-			MyHtmlImage.Visible = True
-			else
-			MyHtmlImage.Visible = False
-			end if
-            lnkicone.NavigateUrl = "javascript:OpenNewWindow('" + tabID.ToString + "')"
+            If txticone.Text <> "" Then
+                Dim ImageURL As String
+                ImageURL = "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & _portalSettings.UploadDirectory
+                If Not ImageURL.EndsWith("/") Then
+                    ImageURL += "/"
+                End If
+                MyHtmlImage.ImageUrl = ImageURL & txticone.Text
+                MyHtmlImage.AlternateText = txticone.Text
+                MyHtmlImage.ToolTip = txticone.Text
+                MyHtmlImage.Visible = True
+            Else
+                MyHtmlImage.Visible = False
+            End If
+            lnkicone.NavigateUrl = "javascript:OpenNewWindow('" + TabId.ToString + "')"
 
 
         End Sub

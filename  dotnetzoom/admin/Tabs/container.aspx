@@ -17,10 +17,11 @@ StyleSheet.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/port
 
 Annuler.Attributes.Add("Onclick", "JavaScript:window.top.close();window.top.opener.focus();")
 Annuler.Text = GetLanguage("return")
-If Request.IsAuthenticated = false Then
-   Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-End If
-DisplayImages()
+        If Request.IsAuthenticated = False Then
+            
+            EditDenied()
+        End If
+        DisplayImages()
 End Sub 
 
 

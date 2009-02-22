@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -131,6 +131,12 @@ Namespace DotNetZoom
             ' event itemId value is specified, and if so populate page
             ' contents with the event details
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
                 cmdStartCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtStartDate)
@@ -193,12 +199,6 @@ Namespace DotNetZoom
                     pnlAudit.Visible = False
                 End If
 
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
-                End If
                 If InStr(1, ViewState("UrlReferrer"), "VisibleDate=") Then
                     ViewState("UrlReferrer") = Left(ViewState("UrlReferrer"), InStr(1, ViewState("UrlReferrer"), "VisibleDate=") - 2)
                 End If
@@ -246,6 +246,7 @@ Namespace DotNetZoom
         '****************************************************************
 
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
+            Page.Validate()
 
             Dim strDateTime As String
             Dim strIconFile As String

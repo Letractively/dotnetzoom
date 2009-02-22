@@ -28,10 +28,7 @@ function SelectAllCheckboxes(intType)
 }
 //--></script>
 <asp:placeholder id="pnlNotAuthenticated" runat="server" visible="False">
-<div class="Normal">
 <p><b><%= DotNetZoom.GetLanguage("UO_no_connect")%></b></p>
-<p><a href="<%= DotNetZoom.getFulldocument() %>?showlogin=1" title="<%= DotNetZoom.GetLanguage("UO_click_connect")%>"><%= DotNetZoom.GetLanguage("login")%></a></p>
-</div>
 </asp:placeholder>
 <asp:placeholder id="pnlTabs" runat="server" visible="True">
 	<asp:datalist width="100%" id="dlTabs" ItemStyle-Height="30" runat="Server" cssclass="TabHolder" separatorstyle-cssclass="TabSeparator" selecteditemstyle-cssclass="TabSelected" itemstyle-cssclass="TabDefault" itemstyle-wrap="False" cellpadding="0" repeatcolumns="3">

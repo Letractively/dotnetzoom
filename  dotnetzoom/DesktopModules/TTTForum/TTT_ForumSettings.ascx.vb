@@ -38,9 +38,8 @@ Namespace DotNetZoom
         Protected WithEvents txtImageWidth As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtImageExtensions As System.Web.UI.WebControls.TextBox
         Protected WithEvents btnUpdate As System.Web.UI.WebControls.Button
+        Protected WithEvents btnImage As System.Web.UI.WebControls.Button
         Protected WithEvents chkUserOnline As System.Web.UI.WebControls.CheckBox
-        Protected WithEvents cmdUserAdmin As System.Web.UI.WebControls.HyperLink
-        Protected WithEvents lnkUserAdmin As System.Web.UI.WebControls.HyperLink
         Protected WithEvents Regularexpressionvalidator1 As System.Web.UI.WebControls.RegularExpressionValidator
         Protected WithEvents txtStatsUpdateInterval As System.Web.UI.WebControls.TextBox
 
@@ -72,33 +71,7 @@ Namespace DotNetZoom
 			Regularexpressionvalidator7.ErrorMessage = GetLanguage("need_number")
 			Regularexpressionvalidator3.ErrorMessage = GetLanguage("need_number")
 			Regularexpressionvalidator1.ErrorMessage = GetLanguage("need_number")
-			Dim ImageFolder As String = ForumConfig.SkinImageFolder()	
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
-            End If
 
-		
  			
             lnkavatar.Text = GetLanguage("F_AdminAvatar")
 			lblAvatarInfo.Text = GetLanguage("F_AvInfo")
@@ -109,13 +82,19 @@ Namespace DotNetZoom
 			btnUpdate.Text = GetLanguage("enregistrer")
 			btnUpdate.ToolTip = GetLanguage("enregistrer")
 
-           If Not Page.IsPostBack Then
-           txtImageFolder.Text = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("ImageFolder"), String)
-			If txtImageFolder.Text = "" then
-                    txtImageFolder.Text = glbSiteDirectory() & "ttt/"
-			end if
+            btnImage.Text = GetLanguage("visualiser")
+            btnImage.ToolTip = GetLanguage("visualiser")
 
-			
+
+            If Not Page.IsPostBack Then
+
+                txtImageFolder.Text = ForumConfig.DefaultImageFolder()
+                If InStr(1, txtImageFolder.Text.ToLower(), _portalSettings.UploadDirectory.ToLower()) Then
+                    btnImage.Visible = True
+                Else
+                    btnImage.Visible = False
+                End If
+
                 If ModuleId > 0 Then
                     Zconfig = ForumConfig.GetForumConfig(ModuleId)
                     txtAvatarFolder.Text = Zconfig.AvatarFolder
@@ -133,7 +112,7 @@ Namespace DotNetZoom
                     txtImageExtensions.Text = Convert.ToString(Zconfig.ImageExtensions)
                     chkUserOnline.Checked = Zconfig.UserOnlineIntegrate
                     txtStatsUpdateInterval.Text = Zconfig.StatsUpdateInterval.ToString
-                    
+
                 End If
 
                 If Zconfig.AvatarModuleID = 0 Then
@@ -141,19 +120,13 @@ Namespace DotNetZoom
                     lblAvatar.Visible = False
                     cmdavatar.Visible = False
                     lnkavatar.Visible = False
-                    btnAvatarConfig.Attributes.Add("onClick", "javascript:return confirm('" & rtesafe(GetLanguage("request_confirm_avatar")) & "');")
+                    btnAvatarConfig.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm_avatar")) & "');")
                 Else
                     ' Get Tab Id of Module Zconfig.AvatarModuleID
                     PopulateURL(Zconfig.AvatarModuleID)
                 End If
 
-               
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
+
 
             End If
 			
@@ -183,7 +156,39 @@ Namespace DotNetZoom
 
         Private Sub UpdateSettings()
             Dim admin As New AdminDB()
-            admin.UpdatePortalSetting(_portalSettings.PortalId, "ImageFolder", txtImageFolder.Text)
+            ' Check if ImageFolder exist
+            If CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("ImageFolder"), String) <> txtImageFolder.Text Then
+                If Not txtImageFolder.Text.EndsWith("/") Then
+                    txtImageFolder.Text += "/"
+                End If
+
+                If InStr(1, txtImageFolder.Text.ToLower(), _portalSettings.UploadDirectory.ToLower()) Then
+                    btnImage.Visible = True
+                Else
+                    btnImage.Visible = False
+                End If
+
+                If Not System.IO.Directory.Exists(Request.MapPath(txtImageFolder.Text)) And InStr(1, txtImageFolder.Text.ToLower(), _portalSettings.UploadDirectory.ToLower()) Then
+                    'Create the new directory and put in files on if in Portal
+                    Try
+                        System.IO.Directory.CreateDirectory(Request.MapPath(txtImageFolder.Text))
+                        Dim fileEntries As String() = System.IO.Directory.GetFiles(GetAbsoluteServerPath(Request) + "images\ttt\")
+                        Dim TempFileName As String
+                        Dim strFileName As String
+                        For Each strFileName In fileEntries
+                            TempFileName = strFileName.Replace(GetAbsoluteServerPath(Request) + "images\ttt\", Request.MapPath(txtImageFolder.Text))
+                            System.IO.File.Copy(strFileName, TempFileName)
+                        Next strFileName
+                    Catch
+                        SendHttpException("403", "Forbidden", Request, Request.MapPath(txtImageFolder.Text))
+                    End Try
+                End If
+                If System.IO.Directory.Exists(Request.MapPath(txtImageFolder.Text)) Then
+                    admin.UpdatePortalSetting(_portalSettings.PortalId, "ImageFolder", txtImageFolder.Text)
+                End If
+            End If
+
+
             admin.UpdateModuleSetting(ModuleId, "AvatarFolder", txtAvatarFolder.Text)
             admin.UpdateModuleSetting(ModuleId, "UserAvatar", chkUserAvatar.Checked.ToString)
             admin.UpdateModuleSetting(ModuleId, "MailNotification", chkNotify.Checked.ToString)
@@ -206,6 +211,14 @@ Namespace DotNetZoom
         Private Sub btnUpdate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdate.Click
             ' Update settings in the database
             UpdateSettings()
+        End Sub
+
+
+        Private Sub btnImage_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnImage.Click
+            ' redirect do see files
+            Dim TempURL As String = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
+            Session("FCKeditor:UserFilesPath") = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("ImageFolder"), String)
+            Response.Redirect(TempURL, True)
         End Sub
 
 

@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -88,10 +88,11 @@ Namespace DotNetZoom
             EnableControls()
 
             If Page.IsPostBack = False Then
-
+                ' Store URL Referrer to return to portal
+                ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 ' load the list of files found in the upload directory
-                cmdUpload1.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
-                cmdUpload2.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload1.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
+                cmdUpload2.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
 
                 Dim FileList1 As ArrayList = GetFileList(_portalSettings.PortalId, "xml")
                 cboXML.DataSource = FileList1
@@ -134,9 +135,6 @@ Namespace DotNetZoom
                     End If
 
                 End If
-
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
 
 
             End If

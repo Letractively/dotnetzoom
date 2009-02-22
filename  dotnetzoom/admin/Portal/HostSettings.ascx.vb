@@ -94,31 +94,31 @@ Namespace DotNetZoom
 
             ' Verify that the current user has access to access this page
             If not PortalSecurity.IsSuperUser Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+                EditDenied()
             End If
 
-			ddlTimeserver.Text = datetime.Now().ToString()
-			
-		 ' If this is the first visit to the page, populate the site data
-            If Page.IsPostBack = False Then
-			cmdProcessor.Text = GetLanguage("HS_GO_Processor")
-			cmdEmail.Text = GetLanguage("HS_test_email")
-			cmdUpdate.Text = GetLanguage("enregistrer")
-			cmdUpgrade.Text = GetLanguage("go")
-			
-			ddlViewState.Items.Insert(0, New ListItem(GetLanguage("list_none"), "-1"))
-			ddlViewState.Items.FindByValue("S").Text = GetLanguage("ViewState_SQL")
-			ddlViewState.Items.FindByValue("M").Text = GetLanguage("ViewState_memory")
-			
-			
-			ddlWhiteSpace.Items.Insert(0, New ListItem(GetLanguage("list_none"), "-1"))
-			ddlWhiteSpace.Items.FindByValue("E").Text = GetLanguage("WhiteSpace_Only")
-			ddlWhiteSpace.Items.FindByValue("H").Text = GetLanguage("WhiteSpaceHTML")
-			ddlWhiteSpace.Items.FindByValue("T").Text = GetLanguage("WhiteSpace_ALL")
-            
-	
+            ddlTimeserver.Text = DateTime.Now().ToString()
 
-            BindData()
+            ' If this is the first visit to the page, populate the site data
+            If Page.IsPostBack = False Then
+                cmdProcessor.Text = GetLanguage("HS_GO_Processor")
+                cmdEmail.Text = GetLanguage("HS_test_email")
+                cmdUpdate.Text = GetLanguage("enregistrer")
+                cmdUpgrade.Text = GetLanguage("go")
+
+                ddlViewState.Items.Insert(0, New ListItem(GetLanguage("list_none"), "-1"))
+                ddlViewState.Items.FindByValue("S").Text = GetLanguage("ViewState_SQL")
+                ddlViewState.Items.FindByValue("M").Text = GetLanguage("ViewState_memory")
+
+
+                ddlWhiteSpace.Items.Insert(0, New ListItem(GetLanguage("list_none"), "-1"))
+                ddlWhiteSpace.Items.FindByValue("E").Text = GetLanguage("WhiteSpace_Only")
+                ddlWhiteSpace.Items.FindByValue("H").Text = GetLanguage("WhiteSpaceHTML")
+                ddlWhiteSpace.Items.FindByValue("T").Text = GetLanguage("WhiteSpace_ALL")
+
+
+
+                BindData()
             End If
 
         End Sub

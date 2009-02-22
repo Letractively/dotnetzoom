@@ -2,7 +2,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -199,21 +199,23 @@ Namespace DotNetZoom
 
 
             Dim context As HttpContext = HttpContext.Current
-            Dim Trootle As Integer = CType(context.Cache(Request.UserHostAddress), Integer)
 
-            If Trootle = Nothing Then
-                context.Cache.Insert(Request.UserHostAddress, 1, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(5), Caching.CacheItemPriority.Low, Nothing)
-            Else
-                Trootle = Trootle + 1
-                context.Cache.Insert(Request.UserHostAddress, Trootle, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(3), Caching.CacheItemPriority.Low, Nothing)
-                If Trootle > 10 Then
-                    Response.StatusCode = "503"
-                    Response.StatusDescription = "Service Unavailable"
-                    Response.Write("<html><head><title>Service Unavailable</title></head><body bgcolor=white text=black>Wait</body></html>")
-                    Response.End()
+            If Not Application("throttle") Is Nothing Then
+                Dim Trootle As Integer = CType(context.Cache(Request.UserHostAddress), Integer)
+                Dim TSpan As Integer = CType(Application("throttle"), Integer)
+                If Trootle = Nothing Then
+                    context.Cache.Insert(Request.UserHostAddress, 1, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(TSpan), Caching.CacheItemPriority.Low, Nothing)
+                Else
+                    Trootle = Trootle + 1
+                    context.Cache.Insert(Request.UserHostAddress, Trootle, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(TSpan), Caching.CacheItemPriority.Low, Nothing)
+                    If Trootle > 10 Then
+                        Response.StatusCode = "503"
+                        Response.StatusDescription = "Service Unavailable"
+                        Response.Write("<html><head><title>Service Unavailable</title></head><body bgcolor=white text=black>Wait</body></html>")
+                        Response.End()
+                    End If
                 End If
             End If
-
 
 
             If (Request.Path.IndexOf(Chr(92)) >= 0 Or _
@@ -229,7 +231,6 @@ Namespace DotNetZoom
             End If
 
             If StrExtension <> ".axd" Then
-
 
                 If Application("dostartup") = "ok" Then
                     ' Site was not set up yet send Startup
@@ -336,6 +337,14 @@ Namespace DotNetZoom
                 End If
 
 
+                ' check if linkclick
+                If Not (Request.Params("linkclick") Is Nothing) Then
+                    Dim objSecurity As New DotNetZoom.PortalSecurity()
+                    Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("linkclick"))
+                    context.Items.Add("linkclick", Request.Params("linkclick"))
+                    HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
+                End If
+
                 ' get tabId from querystring
                 If Not (Request.Params("tabid") Is Nothing) Then
                     If Request.Params("tabid") <> "" Then
@@ -347,8 +356,13 @@ Namespace DotNetZoom
                     End If
                 End If
 
-                ' parse the Request URL into a Domain Name token
-                DomainName = GetDomainName(Request)
+
+                If Not Request.Params("p") Is Nothing Then
+                    DomainName = Request.Params("p")
+                Else
+                    ' parse the Request URL into a Domain Name token
+                    DomainName = GetDomainName(Request)
+                End If
 
                 ' alias parameter can be used to switch portals
                 If Not (Request.Params("alias") Is Nothing) Then
@@ -381,13 +395,6 @@ Namespace DotNetZoom
                     ' see if file name is not a tab
                     Dim StringFileName As String = Mid(Request.Path, InStrRev(Request.Path, "/") + 1).ToLower
 
-
-                    ' Dim StringFileName As String = Request.Path
-                    'If Request.ApplicationPath.Length > 1 Then
-                    'StringFileName = StringFileName.Remove(0, Request.ApplicationPath.Length + 1).ToString.ToLower
-                    'Else
-                    'StringFileName = StringFileName.Remove(0, Request.ApplicationPath.Length).ToString.ToLower
-                    'End If
 
                     Dim TempLanguageCode As String
                     TempLanguageCode = Replace(StringFileName, ".aspx", "")
@@ -470,7 +477,7 @@ Namespace DotNetZoom
                                         TempQuerystring = "tabid=" & tabId.ToString & "&" & TempQuerystring
                                     End If
                                 End If
-                                HttpContext.Current.RewritePath(IIf(HttpContext.Current.Request.ApplicationPath = "/", "", HttpContext.Current.Request.ApplicationPath) + "/default.aspx", String.Empty, TempQuerystring)
+                                HttpContext.Current.RewritePath(glbPath() + "default.aspx", String.Empty, TempQuerystring)
                             Else
                                 'not a tab in data base
                                 'see if file exist otherwise send 404
@@ -483,7 +490,7 @@ Namespace DotNetZoom
                             result.Close()
                         End If
                     Else
-                        HttpContext.Current.RewritePath(IIf(HttpContext.Current.Request.ApplicationPath = "/", "", HttpContext.Current.Request.ApplicationPath) + "/default.aspx", String.Empty, HttpContext.Current.Request.QueryString.ToString())
+                        HttpContext.Current.RewritePath(glbPath() + "default.aspx", String.Empty, HttpContext.Current.Request.QueryString.ToString())
 
                     End If
                     ' Cashe Portal Setting 
@@ -548,34 +555,10 @@ Namespace DotNetZoom
 
                 If Request.IsAuthenticated = True Then
 
-                    If Not Request.Params("logoff") Is Nothing Then
-
-                        ' expire cookies 
-                        Response.Cookies("portalid").Value = Nothing
-                        Response.Cookies("portalid").Path = "/"
-                        Response.Cookies("portalid").Expires = DateTime.Now.AddYears(-30)
-
-                        Response.Cookies("portalroles").Value = Nothing
-                        Response.Cookies("portalroles").Path = "/"
-                        Response.Cookies("portalroles").Expires = DateTime.Now.AddYears(-30)
-
-                        ' log user out
-
-                        FormsAuthentication.SignOut()
-                        If Request.Params("tabid") Is Nothing Then
-                            Response.Redirect(GetFullDocument(), True)
-                        Else
-                            Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid"), True)
-                        End If
-                        Exit Sub
-                    End If
-
                     If Not Request.Cookies("portalid") Is Nothing Then
                         Dim PortalCookie As FormsAuthenticationTicket = FormsAuthentication.Decrypt(Context.Request.Cookies("portalid").Value)
-
                         ' check if user has switched portals
                         If _portalSettings.PortalId <> Int32.Parse(PortalCookie.UserData) Then
-
                             ' expire cookies if portal has changed
 
                             Response.Cookies("portalid").Value = Nothing
@@ -625,20 +608,8 @@ Namespace DotNetZoom
 
                     ' authenticate user and set last login ( this is necessary for users who have a permanent Auth cookie set )
                     If Not objUser.UpdateUserLogin(intUserId, _portalSettings.PortalId) Then
-
-
                         ' Log User Off from Cookie Authentication System
-                        FormsAuthentication.SignOut()
-
-                        ' expire cookies
-                        Response.Cookies("portalid").Value = Nothing
-                        Response.Cookies("portalid").Path = "/"
-                        Response.Cookies("portalid").Expires = DateTime.Now.AddYears(-30)
-
-                        Response.Cookies("portalroles").Value = Nothing
-                        Response.Cookies("portalroles").Path = "/"
-                        Response.Cookies("portalroles").Expires = DateTime.Now.AddYears(-30)
-
+                        LogOffUser()
                     Else ' valid Auth cookie
 
                         ' create cookies if they do not exist yet for this session.
@@ -696,8 +667,11 @@ Namespace DotNetZoom
 
         Sub Application_Start(ByVal Sender As Object, ByVal E As EventArgs)
 
-
-
+            Application("throttle") = ConfigurationSettings.AppSettings("throttle")
+            Application("cryptokey") = ConfigurationSettings.AppSettings("cryptokey")
+            If Application("cryptokey") Is Nothing Then
+                Application("cryptokey") = Membership.GeneratePassword(16, 7)
+            End If
             If ConfigurationSettings.AppSettings("ConnectionString") = "SERVER=sqlexpress;Database=dotnetzoom;User ID=sa;Password=password;Trusted_Connection=False;" Then
                 ' Site was not set up yet send Startup
                 ' Check if can write to disk
@@ -813,12 +787,35 @@ Namespace DotNetZoom
             Return Success
         End Function
 
-
         Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
+
         End Sub
 
         Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)
         End Sub
+
+        Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
+            If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                Dim URLReferrer As String = ""
+                If Not Request.UrlReferrer Is Nothing Then
+                    URLReferrer = Request.UrlReferrer.ToString()
+                End If
+                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "Application_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Server.GetLastError().ToString, "")
+            End If
+            If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
+                ' read script file for version
+                Dim objStreamReader As StreamReader
+                objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
+                Dim strHTML As String = objStreamReader.ReadToEnd
+                objStreamReader.Close()
+                Response.Write(strHTML)
+            End If
+            Server.ClearError()
+            Response.End()
+            'additional actions...
+        End Sub
+
+
 
     End Class
 End Namespace

@@ -22,7 +22,8 @@
 			</asp:DropDownList>&nbsp;<%= DotNetZoom.GetLanguage("UO_or")%>&nbsp;<asp:DropDownList id=drpSortDirection Runat="server" CssClass="Normal">
 				<asp:ListItem value="ASC"></asp:ListItem>
 				<asp:ListItem value="DESC"></asp:ListItem>
-			</asp:DropDownList><asp:LinkButton id=lnkSearch runat="server"></asp:LinkButton></td></tr></table><br><asp:repeater id=rptUsers Runat="server" EnableViewState="True">
+			</asp:DropDownList>
+			&nbsp;<asp:LinkButton CssClass="CommandButton" id=lnkSearch runat="server"></asp:LinkButton></td></tr></table><br><asp:repeater id=rptUsers Runat="server" EnableViewState="True">
 <headertemplate>
 	<table 
 	style="BORDER-RIGHT: #003366 1px solid; BORDER-TOP: #003366 1px solid; BORDER-LEFT: #003366 1px solid; BORDER-BOTTOM: #003366 1px solid" 

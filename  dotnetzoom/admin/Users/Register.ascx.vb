@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -109,7 +109,7 @@ Namespace DotNetZoom
 			UnregisterBtn.Text = GetLanguage("U_QUIT_site")
             ' Verify that the current user has access to this page
             If _portalSettings.UserRegistration = 0 And Request.IsAuthenticated = False Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
+                AccessDenied()
             End If
 
             If IsNumeric(Request.Params("Services")) Then
@@ -124,7 +124,7 @@ Namespace DotNetZoom
 
                 objUser.UpdateService(CType(Context.User.Identity.Name, Integer), RoleID, IIf(Not Request.Params("cancel") Is Nothing, True, False))
 
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Register", True)
+                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
 
             End If
 
@@ -145,6 +145,15 @@ Namespace DotNetZoom
 
             ' If this is the first visit to the page, bind the role data to the datalist
             If Page.IsPostBack = False Then
+
+
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
                 UnregisterBtn.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm_unsubscribe")) & "');")
 
                 BindData()
@@ -155,12 +164,6 @@ Namespace DotNetZoom
                     'control not there or error setting focus
                 End Try
 
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
             End If
 
             txtPassword.Attributes.Add("value", txtPassword.Text)
@@ -311,7 +314,7 @@ Namespace DotNetZoom
 
             Dim strBody As String
 
-
+            Page.Validate()
             ' Only attempt a save/update if all form fields on the page are valid
             If Page.IsValid = True Then
 
@@ -491,7 +494,7 @@ Namespace DotNetZoom
                                 End If
 
                         End Select
-                        Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Bienvenue", True)
+                        Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, False, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Bienvenue"), True)
                     Else
                         Message.Text = ProcessEMail(GetLanguage("UserName_Already_Used"))
 
@@ -528,23 +531,12 @@ Namespace DotNetZoom
 
 
             users.DeleteUser(_portalSettings.PortalId, CType(Context.User.Identity.Name, Integer))
-
-            Response.Redirect(GetFullDocument() & "?logoff=ok", True)
+            LogOffUser()
+            ' Redirect browser back to portal home page
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString), True)
 
         End Sub
 
-        Function FormatURL() As String
-
-            Dim strServerPath As String
-
-            strServerPath = Request.ApplicationPath
-            If Not strServerPath.EndsWith("/") Then
-                strServerPath += "/"
-            End If
-
-            Return strServerPath & "Register.aspx?tabid=" & TabId
-
-        End Function
 
         Private Sub ReturnButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ReturnButton.Click
             Response.Redirect(ViewState("UrlReferrer"), True)
@@ -573,6 +565,8 @@ Namespace DotNetZoom
 
 
         Public Function ServiceURL(ByVal strKeyName As String, ByVal strKeyValue As String, ByVal objServiceFee As Object, ByVal objSubscribed As Object) As String
+
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim dblServiceFee As Double = 0
             If Not IsDBNull(objServiceFee) Then
                 dblServiceFee = objServiceFee
@@ -582,13 +576,13 @@ Namespace DotNetZoom
                 If dblServiceFee <> 0 Then
                     ServiceURL = "~/admin/Sales/PayPalSubscription.aspx?tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue
                 Else
-                    ServiceURL = GetFullDocument() & "?edit=control&tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&def=Register"
+                    ServiceURL = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, strKeyName & "=" & strKeyValue & "&def=Register")
                 End If
             Else ' cancel
                 If dblServiceFee <> 0 Then
                     ServiceURL = "~/admin/Sales/PayPalSubscription.aspx?tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&cancel=1"
                 Else
-                    ServiceURL = GetFullDocument() & "?edit=control&tabid=" & TabId & "&" & strKeyName & "=" & strKeyValue & "&def=Register&cancel=1"
+                    ServiceURL = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, strKeyName & "=" & strKeyValue & "&def=Register&cancel=1")
                 End If
             End If
         End Function

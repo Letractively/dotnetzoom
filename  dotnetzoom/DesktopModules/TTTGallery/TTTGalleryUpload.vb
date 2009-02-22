@@ -497,19 +497,19 @@ Namespace DotNetZoom
             Else 'Generate icon 
                 If ZgalleryConfig.IsValidFlashType(_extension) Then
                     _type = IGalleryObjectInfo.ItemType.Flash
-                    _icon = glbPath & "images/TTT/TTT_s_flash.gif"
+                    _icon = ForumConfig.DefaultImageFolder() & "TTT_s_flash.gif"
 
                 ElseIf ZgalleryConfig.IsValidImageType(_extension) Then
                     _type = IGalleryObjectInfo.ItemType.Image
-                    _icon = glbPath & "images/TTT/TTT_s_jpg.gif"
+                    _icon = ForumConfig.DefaultImageFolder() & "TTT_s_jpg.gif"
 
                 ElseIf ZgalleryConfig.IsValidMovieType(_extension) Then
                     _type = IGalleryObjectInfo.ItemType.Movie
-                    _icon = glbPath & "images/TTT/TTT_s_MediaPlayer.gif"
+                    _icon = ForumConfig.DefaultImageFolder() & "TTT_s_MediaPlayer.gif"
 
                 ElseIf _extension = ".zip" Then
                     _type = IGalleryObjectInfo.ItemType.Zip
-                    _icon = glbPath & "images/TTT/TTT_s_zip.gif"
+                    _icon = ForumConfig.DefaultImageFolder() & "TTT_s_zip.gif"
 
                 End If
             End If

@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -47,6 +47,7 @@ Namespace DotNetZoom
         Protected WithEvents optParent As System.Web.UI.WebControls.RadioButton
         Protected WithEvents optChild As System.Web.UI.WebControls.RadioButton
         Protected WithEvents txtPortalName As System.Web.UI.WebControls.TextBox
+        Protected WithEvents ValSum As System.Web.UI.WebControls.ValidationSummary
         Protected WithEvents valPortalName As System.Web.UI.WebControls.RequiredFieldValidator
         Protected WithEvents lblMessage As System.Web.UI.WebControls.Label
         Protected WithEvents lblAdminAccount As System.Web.UI.WebControls.Label
@@ -105,7 +106,7 @@ Namespace DotNetZoom
 
             ' ensure portal signup is allowed
             If (not PortalSecurity.IsSuperUser) And portalSettings.GetHostSettings("DemoSignup") <> "Y" Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
+                AccessDenied()
             End If
             lblPortalDef.Text = Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalCreationInfo")
             cmdUpdate.Text = GetLanguage("S_CreatePortal")
@@ -119,15 +120,16 @@ Namespace DotNetZoom
             RvalPassword.ErrorMessage = GetLanguage("need_password_minimum")
             valEmail.ErrorMessage = GetLanguage("need_email")
             RvalEmail.ErrorMessage = GetLanguage("need_valid_email")
+            ValSum.HeaderText = GetLanguage("error")
             If Not Page.IsPostBack Then
 
                 If (Not PortalSecurity.IsSuperUser) And PortalSettings.GetHostSettings("DemoSignup") = "Y" Then
                     ' check if guid passed and the one in session are the same
                     If (Request.Params("guid") Is Nothing) Or (System.Web.HttpContext.Current.Session("GUID") Is Nothing) Then
-                        Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
+                        AccessDenied()
                     Else
                         If Request.Params("guid") <> System.Web.HttpContext.Current.Session("GUID") Then
-                            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
+                            AccessDenied()
                         End If
                     End If
                     System.Web.HttpContext.Current.Session("GUID") = Guid.NewGuid().ToString()
@@ -149,10 +151,7 @@ Namespace DotNetZoom
                     cboTemplate.Items.Insert(0, GetLanguage("list_none"))
                     cboTemplate.SelectedIndex = 0
                 End If
-
-
-
-                cmdUpdate.Attributes.Add("onclick", "toggleBox('attendre',1);toggleBox('main',0);")
+                cmdUpdate.Attributes.Add("onclick", "Page_ClientValidate(); toggleBox('attendre',Page_IsValid);toggleBox('main',!Page_IsValid);")
                 If Not (Request.Params("hostpage") Is Nothing) Then
                     If cboTemplate.Items.FindByText(GetLanguage("list_none")) Is Nothing Then
                         cboTemplate.Items.Insert(0, GetLanguage("list_none"))
@@ -203,366 +202,351 @@ Namespace DotNetZoom
 		End Sub
 		
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-            Response.Redirect(GetFullDocument(), True)
-            Response.Redirect(GetPortalDomainName(PortalAlias, Request), True)
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, ""), True)
         End Sub
 
         Private Sub cmdUpdate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdate.Click
+            Page.Validate()
+            If Page.IsValid Then
+                Dim blnChild As Boolean
+                Dim strMessage As String = ""
+                Dim intCounter As Integer
+                Dim intPortalId As Integer
+                Dim strServerPath As String
+                Dim strBody As String
+                Dim LogoFile As String = ""
+                Dim BkFile As String = ""
+                Dim strExpiryDate As String
+                Dim TempDomainName As String = ""
+                Dim tempGUID As String
+                Dim tempPortalAlias As String
+                Dim strEditRoles As String
+                Dim TempAdministratorID As Integer
+                Dim dr As SqlDataReader
+                Dim objAdmin As New AdminDB()
 
-
-            Dim blnChild As Boolean
-            Dim strMessage As String = ""
-            Dim intCounter As Integer
-            Dim intPortalId As Integer
-            Dim strServerPath As String
-            Dim strBody As String
-            Dim LogoFile As String = ""
-            Dim BkFile As String = ""
-            Dim strExpiryDate As String
-			Dim TempDomainName As String = ""
-            Dim tempGUID As String
-			Dim tempPortalAlias as string
-            Dim strEditRoles As String
-			Dim TempAdministratorID As Integer
-            Dim dr As SqlDataReader
-			Dim objAdmin As New AdminDB()
-
-            ' Obtain PortalSettings from Current Context
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Dim SubDomain As Boolean = False
-			If  portalSettings.GetSiteSettings(_portalSettings.PortalID)("DemoDomain") <> nothing
-				If CType( portalSettings.GetSiteSettings(_portalSettings.PortalID)("DemoDomain"), String) = "Y" Then
-                SubDomain = True
-				end if
-			end if
-
-			
-            txtPortalName.Text = LCase(txtPortalName.Text)
-            txtPortalName.Text = Replace(txtPortalName.Text, "http://", "")
-			tempPortalAlias = GetDomainName(Request).ToLower()
-
-            If (Request.Params("hostpage") Is Nothing) Then
-                blnChild = True
-
-                ' child portal
-                For intCounter = 1 To txtPortalName.Text.Length
-                    If InStr(1, "abcdefghijklmnopqrstuvwxyz0123456789-", Mid(txtPortalName.Text, intCounter, 1)) = 0 Then
-                        strMessage = GetLanguage("No_accent_In_Name")
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                Dim SubDomain As Boolean = False
+                If PortalSettings.GetSiteSettings(_portalSettings.PortalId)("DemoDomain") <> Nothing Then
+                    If CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("DemoDomain"), String) = "Y" Then
+                        SubDomain = True
                     End If
-                Next intCounter
+                End If
 
-                strPortalAlias = txtPortalName.Text
-            Else
-                blnChild = optChild.Checked
 
-                If blnChild Then
-                    strPortalAlias = Mid(txtPortalName.Text, InStrRev(txtPortalName.Text, "/") + 1)
-                Else
+                txtPortalName.Text = LCase(txtPortalName.Text)
+                txtPortalName.Text = Replace(txtPortalName.Text, "http://", "")
+                tempPortalAlias = GetDomainName(Request).ToLower()
+
+                If (Request.Params("hostpage") Is Nothing) Then
+                    blnChild = True
+
+                    ' child portal
+                    For intCounter = 1 To txtPortalName.Text.Length
+                        If InStr(1, "abcdefghijklmnopqrstuvwxyz0123456789-", Mid(txtPortalName.Text, intCounter, 1)) = 0 Then
+                            strMessage = GetLanguage("No_accent_In_Name")
+                        End If
+                    Next intCounter
+
                     strPortalAlias = txtPortalName.Text
-					tempPortalAlias = txtPortalName.Text
-                End If
+                Else
+                    blnChild = optChild.Checked
 
-                Dim strValidChars As String = "abcdefghijklmnopqrstuvwxyz0123456789-"
-                If Not blnChild Then
-                    strValidChars += "./:,"
-                End If
-
-                For intCounter = 1 To strPortalAlias.Length
-                    If InStr(1, strValidChars, Mid(strPortalAlias, intCounter, 1)) = 0 Then
-                        strMessage = GetLanguage("No_accent_In_Name")
+                    If blnChild Then
+                        strPortalAlias = Mid(txtPortalName.Text, InStrRev(txtPortalName.Text, "/") + 1)
+                    Else
+                        strPortalAlias = txtPortalName.Text
+                        tempPortalAlias = txtPortalName.Text
                     End If
-                Next intCounter
 
-            End If
+                    Dim strValidChars As String = "abcdefghijklmnopqrstuvwxyz0123456789-"
+                    If Not blnChild Then
+                        strValidChars += "./:,"
+                    End If
 
-			' Validate to make sur all is well
-			
-			If strPortalAlias = "" then 
-			strMessage = strMessage & GetLanguage("S_Need_Portal_Name") 
-			End If
-			If txtFirstName.Text = "" or txtLastName.Text = "" then 
-			strMessage = strMessage & GetLanguage("S_Need_Names") 
-			End If
-			If txtUsername.Text.Length < 7 then 
-			strMessage = strMessage & GetLanguage("S_User_Name") 
-		
-			Dim r As New Random()
-			Dim i As Integer
-                Dim strTemp As String = ""
-			For i = 0 To (7 - txtUsername.Text.Length)
-			strTemp = strTemp & Chr(Int((26 * r.NextDouble()) + 65))
-			Next
-			txtUsername.Text =  txtUsername.Text & strTemp
-			End If
-			if txtPassword.Text.Length < 7 then 
-			strMessage = strMessage & GetLanguage("S_Password")
-			End if
+                    For intCounter = 1 To strPortalAlias.Length
+                        If InStr(1, strValidChars, Mid(strPortalAlias, intCounter, 1)) = 0 Then
+                            strMessage = GetLanguage("No_accent_In_Name")
+                        End If
+                    Next intCounter
 
-       		'Check to make sure it is a valid E-Mail
-			
-			If instr(txtEmail.Text, "@") = 0 OR _
-        	instr(txtEmail.Text, ".") = 0 OR _
-	        txtEmail.Text.Length < 7 Then
-			strMessage = strMessage & GetLanguage("S_EMail") 
-			End IF
-
-            strServerPath = GetAbsoluteServerPath(Request)
-
-            If strMessage = "" Then
-                If Not FolderPermissions(strServerPath & "Portals\") Then
-                    SendHttpException("403", "Forbidden", Request, strServerPath & "Portals\")
-                    ' Response.Redirect("403-3.htm", True)
                 End If
-                If blnChild Then
-                    If Not (Request.Params("hostpage") Is Nothing) Or ((Request.Params("hostpage") Is Nothing) And Not SubDomain) Then
-                        If Not FolderPermissions(strServerPath) Then
-                            SendHttpException("403", "Forbidden", Request, strServerPath)
-                            ' Response.Redirect("/403-3.htm", True)
+
+                ' Validate to make sur all is well
+
+                If strPortalAlias = "" Then
+                    strMessage = strMessage & GetLanguage("S_Need_Portal_Name")
+                End If
+                If txtFirstName.Text = "" Or txtLastName.Text = "" Then
+                    strMessage = strMessage & GetLanguage("S_Need_Names")
+                End If
+                If txtUsername.Text.Length < 7 Then
+                    strMessage = strMessage & GetLanguage("S_User_Name")
+
+                    Dim r As New Random()
+                    Dim i As Integer
+                    Dim strTemp As String = ""
+                    For i = 0 To (7 - txtUsername.Text.Length)
+                        strTemp = strTemp & Chr(Int((26 * r.NextDouble()) + 65))
+                    Next
+                    txtUsername.Text = txtUsername.Text & strTemp
+                End If
+                If txtPassword.Text.Length < 7 Then
+                    strMessage = strMessage & GetLanguage("S_Password")
+                End If
+
+                'Check to make sure it is a valid E-Mail
+
+                If InStr(txtEmail.Text, "@") = 0 Or _
+                      InStr(txtEmail.Text, ".") = 0 Or _
+                      txtEmail.Text.Length < 7 Then
+                    strMessage = strMessage & GetLanguage("S_EMail")
+                End If
+
+                strServerPath = GetAbsoluteServerPath(Request)
+
+                If strMessage = "" Then
+                    If Not FolderPermissions(strServerPath & "Portals\") Then
+                        SendHttpException("403", "Forbidden", Request, strServerPath & "Portals\")
+                        ' Response.Redirect("403-3.htm", True)
+                    End If
+                    If blnChild Then
+                        If Not (Request.Params("hostpage") Is Nothing) Or ((Request.Params("hostpage") Is Nothing) And Not SubDomain) Then
+                            If Not FolderPermissions(strServerPath) Then
+                                SendHttpException("403", "Forbidden", Request, strServerPath)
+                                ' Response.Redirect("/403-3.htm", True)
+                            End If
                         End If
                     End If
                 End If
-            End If
 
 
-            If strMessage = "" Then
-                If blnChild Then
-                    If Not System.IO.Directory.Exists(strServerPath & strPortalAlias) Then
-                        ' create the subdirectory for the new portal
-                        If Not SubDomain Or Not (Request.Params("hostpage") Is Nothing) Then
-                            System.IO.Directory.CreateDirectory(strServerPath & strPortalAlias)
-                            ' create the subhost default.aspx file
+                If strMessage = "" Then
+                    If blnChild Then
+                        If Not System.IO.Directory.Exists(strServerPath & strPortalAlias) Then
+                            ' create the subdirectory for the new portal
+                            If Not SubDomain Or Not (Request.Params("hostpage") Is Nothing) Then
+                                System.IO.Directory.CreateDirectory(strServerPath & strPortalAlias)
+                                ' create the subhost default.aspx file
 
-                            Dim objStreamReader As StreamReader
-                            objStreamReader = File.OpenText(strServerPath + "subhost.html")
-                            Dim strHTML As String = objStreamReader.ReadToEnd
-                            objStreamReader.Close()
-                            strHTML = Replace(strHTML, "window.location =", "window.location = ""http://" + GetDomainName(Request).ToLower() + "/" + strPortalAlias + "/default.aspx""")
-                            Dim objStream As StreamWriter
-                            objStream = File.CreateText(strServerPath & strPortalAlias & "\index.html")
-                            objStream.WriteLine(strHTML)
-                            objStream.Close()
-                        End If
-                        If (Request.Params("hostpage") Is Nothing) Then
-                            TempDomainName = GetDomainName(Request).ToLower()
-                            If SubDomain Then
-                                If TempDomainName.IndexOf("www.") = 0 Then
-                                    strPortalAlias = Replace(TempDomainName, "www", strPortalAlias)
+                                Dim objStreamReader As StreamReader
+                                objStreamReader = File.OpenText(strServerPath + "subhost.html")
+                                Dim strHTML As String = objStreamReader.ReadToEnd
+                                objStreamReader.Close()
+                                strHTML = Replace(strHTML, "window.location =", "window.location = ""http://" + GetDomainName(Request).ToLower() + "/" + strPortalAlias + "/default.aspx""")
+                                Dim objStream As StreamWriter
+                                objStream = File.CreateText(strServerPath & strPortalAlias & "\index.html")
+                                objStream.WriteLine(strHTML)
+                                objStream.Close()
+                            End If
+                            If (Request.Params("hostpage") Is Nothing) Then
+                                TempDomainName = GetDomainName(Request).ToLower()
+                                If SubDomain Then
+                                    If TempDomainName.IndexOf("www.") = 0 Then
+                                        strPortalAlias = Replace(TempDomainName, "www", strPortalAlias)
+                                    Else
+                                        strPortalAlias = strPortalAlias & "." & TempDomainName
+                                    End If
+                                    tempPortalAlias = strPortalAlias
+                                    If PortalSettings.GetPortalByAlias(strPortalAlias) <> -1 Then
+                                        strMessage = GetLanguage("S_NameAlreadyUsed")
+                                        strMessage = Replace(strMessage, "{PortalAlias}", strPortalAlias)
+                                    End If
                                 Else
-                                    strPortalAlias = strPortalAlias & "." & TempDomainName
-                                End If
-                                tempPortalAlias = strPortalAlias
-                                If PortalSettings.GetPortalByAlias(strPortalAlias) <> -1 Then
-                                    strMessage = GetLanguage("S_NameAlreadyUsed")
-                                    strMessage = Replace(strMessage, "{PortalAlias}", strPortalAlias)
+                                    strPortalAlias = GetDomainName(Request) & "/" & strPortalAlias
                                 End If
                             Else
-                                strPortalAlias = GetDomainName(Request) & "/" & strPortalAlias
+                                strPortalAlias = txtPortalName.Text
                             End If
                         Else
-                            strPortalAlias = txtPortalName.Text
+                            strMessage = GetLanguage("S_NameAlreadyUsed1")
                         End If
-                    Else
-                        strMessage = GetLanguage("S_NameAlreadyUsed1")
                     End If
                 End If
-            End If
 
-            If strMessage = "" Then
+                If strMessage = "" Then
 
-                If portalSettings.GetHostSettings("DemoPeriod") <> "" Then
-                    strExpiryDate = FormatAnsiDate(DateAdd(DateInterval.Day, Int32.Parse(portalSettings.GetHostSettings("DemoPeriod")), Now()).ToString("yyyy-MM-dd"))
-                Else
-                    strExpiryDate = ""
-                End If
-
-
-                Dim objSecurity As New PortalSecurity()
-
-                Dim dblHostFee As Double = 0
-                If portalSettings.GetHostSettings("HostFee") <> "" Then
-				 Try
-                  dblHostFee = Double.Parse(portalSettings.GetHostSettings("HostFee"))
-				  Catch objException As Exception
-				  If InStr(1, portalSettings.GetHostSettings("HostFee"), ".") then
-				  portalSettings.GetHostSettings("HostFee") = replace(portalSettings.GetHostSettings("HostFee"), "." , ",")
-				  else
-				  portalSettings.GetHostSettings("HostFee") = replace(portalSettings.GetHostSettings("HostFee"), "," , ".")
-				  end if
-				  dblHostFee = Double.Parse(portalSettings.GetHostSettings("HostFee"))
-				  end try
-                End If
-
-                Dim dblHostSpace As Double = 0
-				If (Request.Params("hostpage") Is Nothing) Then
-				DblHostSpace = 20
-				else
-                If portalSettings.GetHostSettings("HostSpace") <> "" Then
-                    dblHostSpace = Double.Parse(portalSettings.GetHostSettings("HostSpace"))
-                End If
-				End If
-
-                Dim intSiteLogHistory As Integer = -1
-				If (Request.Params("hostpage") Is Nothing) Then
-				intSiteLogHistory = 7
-				else
-                If portalSettings.GetHostSettings("SiteLogHistory") <> "" Then
-                    intSiteLogHistory = Integer.Parse(portalSettings.GetHostSettings("SiteLogHistory"))
-                End If
-				End If
-
-                ' add new portal to database
-                intPortalId = objAdmin.AddPortalInfo(GetLanguage("N"), cboTemplate.SelectedItem.Text = GetLanguage("list_none"), txtPortalName.Text, strPortalAlias.ToLower, PortalSettings.GetHostSettings("HostCurrency"), txtFirstName.Text, txtLastName.Text, txtUsername.Text, objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), txtEmail.Text, CheckDateSqL(strExpiryDate), dblHostFee, dblHostSpace, intSiteLogHistory, intPortalId)
-                ' AddPortalInfo(ByVal Language As String, ByVal HomePage As Boolean, ByVal PortalName As String, ByVal PortalAlias As String, Optional ByVal Currency As String = "", Optional ByVal FirstName As String = "", Optional ByVal LastName As String = "", Optional ByVal Username As String = "", Optional ByVal Password As String = "", Optional ByVal Email As String = "", Optional ByVal ExpiryDate As String = "", Optional ByVal HostFee As Double = 0, Optional ByVal HostSpace As Double = 0, Optional ByVal SiteLogHistory As Integer = -1, <SqlParameter(, , , , , ParameterDirection.Output)> Optional ByVal PortalId As Integer = -1) As Integer
+                    If PortalSettings.GetHostSettings("DemoPeriod") <> "" Then
+                        strExpiryDate = formatansidate(DateAdd(DateInterval.Day, Int32.Parse(PortalSettings.GetHostSettings("DemoPeriod")), Now()).ToString("yyyy-MM-dd"))
+                    Else
+                        strExpiryDate = ""
+                    End If
 
 
-                Dim TempTemplateDir As String
+                    Dim objSecurity As New PortalSecurity()
 
-                TempTemplateDir = strServerPath
-                If cboTemplate.SelectedItem.Text <> GetLanguage("list_none") Then
-                    TempTemplateDir = strServerPath & "templates\" & cboTemplate.SelectedItem.Text & "\"
-                End If
+                    Dim dblHostFee As Double = 0
+                    If PortalSettings.GetHostSettings("HostFee") <> "" Then
+                        Try
+                            dblHostFee = Double.Parse(PortalSettings.GetHostSettings("HostFee"))
+                        Catch objException As Exception
+                            If InStr(1, PortalSettings.GetHostSettings("HostFee"), ".") Then
+                                PortalSettings.GetHostSettings("HostFee") = Replace(PortalSettings.GetHostSettings("HostFee"), ".", ",")
+                            Else
+                                PortalSettings.GetHostSettings("HostFee") = Replace(PortalSettings.GetHostSettings("HostFee"), ",", ".")
+                            End If
+                            dblHostFee = Double.Parse(PortalSettings.GetHostSettings("HostFee"))
+                        End Try
+                    End If
 
-                dr = objAdmin.GetSinglePortal(intPortalId)
-                If dr.Read Then
-                    strEditRoles = dr("AdministratorRoleId").ToString & ";"
-                    TempAdministratorID = dr("AdministratorID")
-                    objAdmin.UpdatePortalSetting(intPortalId, "uploadroles", strEditRoles)
-                    ' Add user to Forum Dbase
-                    Dim dbForumUser As New ForumUserDB()
-                    dbForumUser.TTTForum_UserCreateUpdateDelete(TempAdministratorID, txtUsername.Text, True, False, "", "", "", _portalSettings.TimeZone, "", "", "", "", "", "", "", False, True, False, True, True, True, 0)
+                    Dim dblHostSpace As Double = 0
+                    If (Request.Params("hostpage") Is Nothing) Then
+                        dblHostSpace = 20
+                    Else
+                        If PortalSettings.GetHostSettings("HostSpace") <> "" Then
+                            dblHostSpace = Double.Parse(PortalSettings.GetHostSettings("HostSpace"))
+                        End If
+                    End If
 
-                    ' create the upload directory for the new portal
-                    ' need to copy all file in the template dir glbTemplatesDirectory to the portal dir
-                    System.IO.Directory.CreateDirectory(strServerPath & "Portals\" & dr("GUID").ToString)
-                    Dim TempPortalDir As String
-                    tempGUID = dr("GUID").ToString
-                    TempPortalDir = strServerPath & "Portals\" & dr("GUID").ToString & "\"
-                    Dim TempFileName As String
+                    Dim intSiteLogHistory As Integer = -1
+                    If (Request.Params("hostpage") Is Nothing) Then
+                        intSiteLogHistory = 7
+                    Else
+                        If PortalSettings.GetHostSettings("SiteLogHistory") <> "" Then
+                            intSiteLogHistory = Integer.Parse(PortalSettings.GetHostSettings("SiteLogHistory"))
+                        End If
+                    End If
 
-                    ' copy all in the template dir to the new portal except template.txt and template.jpg
-                    If TempTemplateDir <> strServerPath Then
-                        If System.IO.Directory.Exists(TempTemplateDir) Then
+                    ' add new portal to database
+                    intPortalId = objAdmin.AddPortalInfo(GetLanguage("N"), cboTemplate.SelectedItem.Text = GetLanguage("list_none"), txtPortalName.Text, strPortalAlias.ToLower, PortalSettings.GetHostSettings("HostCurrency"), txtFirstName.Text, txtLastName.Text, txtUsername.Text, objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), txtEmail.Text, CheckDateSqL(strExpiryDate), dblHostFee, dblHostSpace, intSiteLogHistory, intPortalId)
+                    ' AddPortalInfo(ByVal Language As String, ByVal HomePage As Boolean, ByVal PortalName As String, ByVal PortalAlias As String, Optional ByVal Currency As String = "", Optional ByVal FirstName As String = "", Optional ByVal LastName As String = "", Optional ByVal Username As String = "", Optional ByVal Password As String = "", Optional ByVal Email As String = "", Optional ByVal ExpiryDate As String = "", Optional ByVal HostFee As Double = 0, Optional ByVal HostSpace As Double = 0, Optional ByVal SiteLogHistory As Integer = -1, <SqlParameter(, , , , , ParameterDirection.Output)> Optional ByVal PortalId As Integer = -1) As Integer
+
+
+                    Dim TempTemplateDir As String
+
+                    TempTemplateDir = strServerPath
+                    If cboTemplate.SelectedItem.Text <> GetLanguage("list_none") Then
+                        TempTemplateDir = strServerPath & "templates\" & cboTemplate.SelectedItem.Text & "\"
+                    End If
+
+                    dr = objAdmin.GetSinglePortal(intPortalId)
+                    If dr.Read Then
+                        strEditRoles = dr("AdministratorRoleId").ToString & ";"
+                        TempAdministratorID = dr("AdministratorID")
+                        objAdmin.UpdatePortalSetting(intPortalId, "uploadroles", strEditRoles)
+                        ' Add user to Forum Dbase
+                        Dim dbForumUser As New ForumUserDB()
+                        dbForumUser.TTTForum_UserCreateUpdateDelete(TempAdministratorID, txtUsername.Text, True, False, "", "", "", _portalSettings.TimeZone, "", "", "", "", "", "", "", False, True, False, True, True, True, 0)
+
+                        ' create the upload directory for the new portal
+                        ' need to copy all file in the template dir glbTemplatesDirectory to the portal dir
+                        System.IO.Directory.CreateDirectory(strServerPath & "Portals\" & dr("GUID").ToString)
+                        Dim TempPortalDir As String
+                        tempGUID = dr("GUID").ToString
+                        TempPortalDir = strServerPath & "Portals\" & dr("GUID").ToString & "\"
+                        Dim TempFileName As String
+
+                        ' copy all in the template dir to the new portal except template.txt and template.jpg
+                        If TempTemplateDir <> strServerPath Then
+                            If System.IO.Directory.Exists(TempTemplateDir) Then
+                                Dim fileEntries As String() = System.IO.Directory.GetFiles(TempTemplateDir)
+                                Dim strFileName As String
+                                For Each strFileName In fileEntries
+                                    If InStr(1, strFileName.ToLower, "template.") = 0 Then
+                                        Select Case strFileName.ToLower
+                                            Case "logo.gif", "logo.jpg" : LogoFile = strFileName.ToLower
+                                            Case "bk.gif", "bk.jpg" : BkFile = strFileName.ToLower
+                                        End Select
+                                        TempFileName = strFileName.Replace(TempTemplateDir, TempPortalDir)
+                                        System.IO.File.Copy(strFileName, TempFileName)
+                                    End If
+                                Next strFileName
+                                Dim StrFolder As String
+                                For Each StrFolder In System.IO.Directory.GetDirectories(TempTemplateDir)
+                                    CopyFileRecursively(StrFolder, StrFolder.Replace(TempTemplateDir, TempPortalDir))
+                                Next
+                            End If
+                        Else
+                            ' only copy the logo file and the css file if the main directory
+                            If Not System.IO.Directory.Exists(TempPortalDir & "\skin") Then
+                                System.IO.Directory.CreateDirectory(TempPortalDir & "\skin")
+                            End If
                             Dim fileEntries As String() = System.IO.Directory.GetFiles(TempTemplateDir)
                             Dim strFileName As String
                             For Each strFileName In fileEntries
-                                If InStr(1, strFileName.ToLower, "template.") = 0 Then
-                                    Select Case strFileName.ToLower
-                                        Case "logo.gif", "logo.jpg" : LogoFile = strFileName.ToLower
-                                        Case "bk.gif", "bk.jpg" : BkFile = strFileName.ToLower
-                                    End Select
-                                    TempFileName = strFileName.replace(TempTemplateDir, TempPortalDir)
+                                If (InStr(1, strFileName.ToLower, ".css") <> 0) _
+                                 Or (InStr(1, strFileName.ToLower, ".jpg") <> 0) _
+                                 Or (InStr(1, strFileName.ToLower, ".gif") <> 0) _
+                                 Or (InStr(1, strFileName.ToLower, "menu_tpl1.js") <> 0) Then
+                                    If (InStr(1, strFileName.ToLower, ".jpg") <> 0) Or (InStr(1, strFileName.ToLower, ".gif") <> 0) Then
+                                        TempFileName = strFileName.Replace(TempTemplateDir, TempPortalDir)
+                                        Select Case strFileName.ToLower
+                                            Case "logo.gif", "logo.jpg" : LogoFile = strFileName.ToLower
+                                            Case "bk.gif", "bk.jpg" : BkFile = strFileName.ToLower
+                                        End Select
+                                    Else
+                                        TempFileName = strFileName.Replace(TempTemplateDir, TempPortalDir & "\skin\")
+                                    End If
                                     System.IO.File.Copy(strFileName, TempFileName)
                                 End If
                             Next strFileName
-                            Dim StrFolder As String
-                            For Each StrFolder In System.IO.Directory.GetDirectories(TempTemplateDir)
-                                CopyFileRecursively(StrFolder, StrFolder.Replace(TempTemplateDir, TempPortalDir))
-                            Next
+
                         End If
+                        ' SynchronizeFile in DB
+                        objAdmin.SynchronizeFiles(intPortalId, TempPortalDir)
+
+                        If cboTemplate.SelectedItem.Text <> GetLanguage("list_none") Then
+                            'Parse the template for the new portal
+                            Dim objStreamReader As StreamReader
+                            objStreamReader = File.OpenText(TempTemplateDir & "template.txt")
+                            Dim xmlData As String = objStreamReader.ReadToEnd
+                            objStreamReader.Close()
+
+                            xmlData = Replace(xmlData, "[GUID]", "http://" & tempPortalAlias & "/portals/" & tempGUID & "/")
+
+                            ' Parse XML to build Site	
+                            PopulateSiteModule(xmlData, intPortalId, GetLanguage("N"), strEditRoles, TempAdministratorID)
+
+                        End If
+                        ' Update Language
+                        ' mettre a jour les infos du portail
+                        ' just need to put in the Logo
+                        objAdmin.UpdatePortalInfo(intPortalId, txtPortalName.Text, "", LogoFile, "", 0, 0, PortalSettings.GetHostSettings("HostCurrency"), TempAdministratorID, CheckDateSqL(strExpiryDate), dblHostFee, dblHostSpace, "", "", "", "", "", BkFile, intSiteLogHistory, _portalSettings.TimeZone)
+                        If LogoFile = "" Then
+                            objAdmin.UpdatePortalSetting(intPortalId, "flash", "<span style=""font-size: 22pt"">" & strPortalAlias & "</span>")
+                        End If
+                        objAdmin.UpdatePortalSetting(intPortalId, "language", GetLanguage("N"))
+                        objAdmin.UpdatePortalSetting(intPortalId, "languageauth", GetLanguage("N") & ";")
+
+                    End If
+                    dr.Close()
+                    If (Request.Params("hostpage") Is Nothing) Then
+                        strBody = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_new_demo_portal")
                     Else
-                        ' only copy the logo file and the css file if the main directory
-                        If Not System.IO.Directory.Exists(TempPortalDir & "\skin") Then
-                            System.IO.Directory.CreateDirectory(TempPortalDir & "\skin")
-                        End If
-                        Dim fileEntries As String() = System.IO.Directory.GetFiles(TempTemplateDir)
-                        Dim strFileName As String
-                        For Each strFileName In fileEntries
-                            If (InStr(1, strFileName.ToLower, ".css") <> 0) _
-                             Or (InStr(1, strFileName.ToLower, ".jpg") <> 0) _
-                             Or (InStr(1, strFileName.ToLower, ".gif") <> 0) _
-                             Or (InStr(1, strFileName.ToLower, "menu_tpl1.js") <> 0) Then
-                                If (InStr(1, strFileName.ToLower, ".jpg") <> 0) Or (InStr(1, strFileName.ToLower, ".gif") <> 0) Then
-                                    TempFileName = strFileName.replace(TempTemplateDir, TempPortalDir)
-                                    Select Case strFileName.ToLower
-                                        Case "logo.gif", "logo.jpg" : LogoFile = strFileName.ToLower
-                                        Case "bk.gif", "bk.jpg" : BkFile = strFileName.ToLower
-                                    End Select
-                                Else
-                                    TempFileName = strFileName.replace(TempTemplateDir, TempPortalDir & "\skin\")
-                                End If
-                                System.IO.File.Copy(strFileName, TempFileName)
-                            End If
-                        Next strFileName
-
+                        strBody = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_new_portal")
                     End If
-                    ' SynchronizeFile in DB
-                    objAdmin.SynchronizeFiles(intPortalId, TempPortalDir)
+                    tempGUID = Guid.NewGuid().ToString()
+                    Dim objUser As New UsersDB()
+                    objUser.UpdateCheckUserSecurity(TempAdministratorID, tempGUID, DateTime.Now.AddHours(24), 0)
+                    Dim ValidationURL As String
 
-                    If cboTemplate.SelectedItem.Text <> GetLanguage("list_none") Then
-                        'Parse the template for the new portal
-                        Dim objStreamReader As StreamReader
-                        objStreamReader = File.OpenText(TempTemplateDir & "template.txt")
-                        Dim xmlData As String = objStreamReader.ReadToEnd
-                        objStreamReader.Close()
+                    ValidationURL = "http://" & strPortalAlias.ToLower() & "/default.aspx?showlogin=1&validate=" & tempGUID
 
-                        xmlData = Replace(xmlData, "[GUID]", "http://" & tempPortalAlias & "/portals/" & tempGUID & "/")
-
-                        ' Parse XML to build Site	
-                        PopulateSiteModule(xmlData, intPortalId, GetLanguage("N"), strEditRoles, TempAdministratorID)
-
+                    strBody = Regex.Replace(strBody, "{FullName}", txtFirstName.Text & " " & txtLastName.Text, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{PortalName}", _portalSettings.PortalName, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{PortalURL}", "http://" & strPortalAlias, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{Username}", txtUsername.Text, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{Password}", txtPassword.Text, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{validationcode}", ValidationURL, RegexOptions.IgnoreCase)
+                    strBody = Regex.Replace(strBody, "{HostEmail}", PortalSettings.GetHostSettings("HostEmail"), RegexOptions.IgnoreCase)
+                    ' notification
+                    If (Request.Params("hostpage") Is Nothing) Then
+                        SendNotification(PortalSettings.GetHostSettings("HostEmail"), txtEmail.Text, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("Demo_Portal"), strBody, "", "html")
+                    Else
+                        SendNotification(PortalSettings.GetHostSettings("HostEmail"), txtEmail.Text, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("New_Portal"), strBody, "", "html")
                     End If
-                    ' Update Language
-                    ' mettre a jour les infos du portail
-                    ' just need to put in the Logo
-                    objAdmin.UpdatePortalInfo(intPortalId, txtPortalName.Text, "", LogoFile, "", 0, 0, PortalSettings.GetHostSettings("HostCurrency"), TempAdministratorID, CheckDateSqL(strExpiryDate), dblHostFee, dblHostSpace, "", "", "", "", "", BkFile, intSiteLogHistory, _portalSettings.TimeZone)
-                    If LogoFile = "" Then
-                        objAdmin.UpdatePortalSetting(intPortalId, "flash", "<span style=""font-size: 22pt"">" & strPortalAlias & "</span>")
-                    End If
-                    objAdmin.UpdatePortalSetting(intPortalId, "language", GetLanguage("N"))
-                    objAdmin.UpdatePortalSetting(intPortalId, "languageauth", GetLanguage("N") & ";")
 
-                End If
-                dr.Close()
-                If (Request.Params("hostpage") Is Nothing) Then
-                    strBody = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_new_demo_portal")
+
+
+                    ' Redirect to this new site
+                    Response.Redirect(GetPortalDomainName(strPortalAlias, Request) + "/default.aspx", True)
                 Else
-                    strBody = objAdmin.GetSinglelonglanguageSettings(GetLanguage("N"), "email_new_portal")
+                    lblMessage.Text = strMessage & "<br>"
                 End If
-                tempGUID = Guid.NewGuid().ToString()
-                Dim objUser As New UsersDB()
-                objUser.UpdateCheckUserSecurity(TempAdministratorID, tempGUID, DateTime.Now.AddHours(24), 0)
-                Dim ValidationURL As String
-
-                ValidationURL = "http://" & strPortalAlias.ToLower() & "/default.aspx?showlogin=1&validate=" & tempGUID
-
-
-                ' If (Request.Params("hostpage") Is Nothing) Then
-                'demo portal
-                ' If Not SubDomain Then
-                ' ValidationURL = "http://" & GetDomainName(Request).ToLower() & "/" & strPortalAlias & "/default.aspx?showlogin=1&validate=" & tempGUID
-                ' Else
-                '   ValidationURL = "http://" & strPortalAlias.ToLower() & "/default.aspx?showlogin=1&validate=" & tempGUID
-                ' End If
-                ' Else
-                'If blnChild Then
-                'Host blind child
-                'ValidationURL = "http://" & GetDomainName(Request).ToLower() & "/" & strPortalAlias & "/default.aspx?showlogin=1&validate=" & tempGUID
-                'Else
-                'ValidationURL = "http://" & strPortalAlias.ToLower() & "/default.aspx?showlogin=1&validate=" & tempGUID
-                'End If
-                'End If
-                strBody = Regex.Replace(strBody, "{FullName}", txtFirstName.Text & " " & txtLastName.Text, RegexOptions.IgnoreCase)
-                strBody = Regex.Replace(strBody, "{PortalName}", _portalSettings.PortalName, RegexOptions.IgnoreCase)
-                strBody = Regex.Replace(strBody, "{PortalURL}", "http://" & strPortalAlias, RegexOptions.IgnoreCase)
-                strBody = Regex.Replace(strBody, "{Username}", txtUsername.Text, RegexOptions.IgnoreCase)
-                strBody = Regex.Replace(strBody, "{Password}", txtPassword.Text, RegexOptions.IgnoreCase)
-                strBody = Regex.Replace(strBody, "{validationcode}", ValidationURL, RegexOptions.IgnoreCase)
-                strBody = Regex.Replace(strBody, "{HostEmail}", PortalSettings.GetHostSettings("HostEmail"), RegexOptions.IgnoreCase)
-                ' notification
-                If (Request.Params("hostpage") Is Nothing) Then
-                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), txtEmail.Text, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("Demo_Portal"), strBody, "", "html")
-                Else
-                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), txtEmail.Text, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("New_Portal"), strBody, "", "html")
-                End If
-
-
-
-                ' Redirect to this new site
-                Response.Redirect(GetPortalDomainName(strPortalAlias, Request) + "/default.aspx", True)
-            Else
-                lblMessage.Text = strMessage & "<br>"
             End If
-
         End Sub
 
 

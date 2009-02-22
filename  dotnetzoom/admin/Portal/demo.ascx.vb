@@ -53,7 +53,7 @@ Namespace DotNetZoom
             ' ensure portal signup is allowed
 
             If  (portalSettings.GetHostSettings("DemoSignup") <> "Y") or (AllowDemo = "N") or ( not PortalSecurity.IsInRoles(strAuthorizedRoles))Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
+                AccessDenied()
             End If
 				lblGUID = Guid.NewGuid().ToString()
 			    System.Web.HttpContext.Current.Session("GUID") = lblGUID

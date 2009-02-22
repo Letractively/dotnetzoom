@@ -36,6 +36,7 @@
                                     &nbsp;<%= DotNetZoom.getlanguage("F_ImgDir") %>:</td>
                                 <td class="TTTRow" align="left">
                                     <asp:textbox id="txtImageFolder" runat="server" Enabled="true" Columns="26" width="380" cssclass="NormalTextBox"></asp:textbox>
+                                    &nbsp;<asp:button cssclass="button" id="btnImage" runat="server" Visible="False" CommandName="go" ></asp:button>&nbsp;
                                 </td>
                             </tr>
                             <tr>
@@ -51,7 +52,7 @@
                                 <td class="TTTRow" style="white-space: nowrap;" align="left">
                                  
                                 <asp:label id="lblAvatar" runat="server" EnableViewState="false" Visible="False" CssClass="CommandButton">
-				                <asp:hyperlink id="cmdavatar" runat="server"  Visible="False"><img src="/images/TTT/TTT_s_jpg.gif" AlT="*" Border="0"></asp:hyperlink>
+				                <asp:hyperlink id="cmdavatar" runat="server"  Visible="False"><img src="<%= DotNetZoom.ForumConfig.DefaultImageFolder() & "TTT_s_jpg.gif"%>" AlT="*" Border="0"></asp:hyperlink>
                                 <asp:hyperlink id="lnkavatar" runat="server" Visible="False"></asp:hyperlink>
 				                </asp:label>
 

@@ -119,8 +119,11 @@ Namespace DotNetZoom
 
 		Private Sub FileExp_FileClicked(ByVal sender As Object, ByVal e As DotNetZoom.FileClickedEventArgs) Handles FileExp.FileClicked
             
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Response.Redirect(ResolveUrl("TAGFileDownload.aspx") & "?File=" & e.FullFileName &"&tabid=" & CStr(_portalSettings.ActiveTab.TabID))
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim objSecurity As New PortalSecurity()
+            Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), e.FullFileName))
+
+            Response.Redirect(ResolveUrl("TAGFileDownload.aspx") & "?File=" & crypto & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId))
 		    
 		End Sub
 

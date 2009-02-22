@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -232,7 +232,7 @@ Namespace DotNetZoom
                 Try
                     byteData = Convert.FromBase64String(strData)
                 Catch ' invalid length
-                    strValue = strData
+                    strValue = strData + " invalid length"
                 End Try
 
                 If strValue = "" Then
@@ -342,7 +342,7 @@ Namespace DotNetZoom
             TempInput = Regex.Replace(TempInput, "<iframe[^>]*>.*?</iframe[^><]*>", strReplacement, options)
             TempInput = Regex.Replace(TempInput, "<form[^>]*>", strReplacement, options)
             TempInput = Regex.Replace(TempInput, "</form[^><]*>", strReplacement, options)
-
+            Return TempInput
         End Function 'FormatDisableScripting
 
         '''-----------------------------------------------------------------------------

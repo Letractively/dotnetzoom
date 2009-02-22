@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -222,61 +222,75 @@ Namespace DotNetZoom
                     Me.SSL = False
                 End If
 
-                Me.HTTP = GetPortalDomainName(PortalAlias, Nothing, True)
-                Me.HTTPS = AddHTTPS(GetPortalDomainName(PortalAlias, Nothing, False))
-                Me.PortalId = Int32.Parse(result("PortalID").ToString)
-                Me.GUID = result("GUID").ToString
-                Me.PortalAlias = result("PortalAlias").ToString
-                If InStr(1, Me.PortalAlias, "/") <> 0 Then
-                    Me.PortalChild = True
+                If HttpContext.Current.Request.IsSecureConnection Then
+                    If Not IsDBNull(result("NOSSLAlias")) Then
+                        Me.HTTP = AddHTTP(result("NOSSLAlias"))
+                    Else
+                        Me.HTTP = AddHTTP(PortalAlias)
+                    End If
+                    Me.HTTPS = AddHTTPS(PortalAlias)
                 Else
-                    Me.PortalChild = False
+                    Me.HTTP = AddHTTP(PortalAlias)
+                    If Not IsDBNull(result("SSLAlias")) Then
+                        Me.HTTPS = AddHTTPS(result("SSLAlias"))
+                    Else
+                        Me.HTTPS = Me.HTTP
+                    End If
                 End If
-                Me.PortalName = result("PortalName").ToString
-                Me.LogoFile = result("LogoFile").ToString
-                Me.FooterText = result("FooterText").ToString
-                Me.ExpiryDate = result("ExpiryDate").ToString
-                Me.UserRegistration = result("UserRegistration").ToString
-                Me.BannerAdvertising = result("BannerAdvertising").ToString
-                Me.Currency = result("Currency").ToString
-                Me.AdministratorId = result("AdministratorId").ToString
-                Me.Email = result("Email").ToString
-                Me.HostFee = result("HostFee").ToString
-                Me.HostSpace = IIf(IsDBNull(result("HostSpace")), 0, result("HostSpace"))
-                Me.AdministratorRoleId = result("AdministratorRoleId").ToString
-                Me.RegisteredRoleId = result("RegisteredRoleId").ToString
-                Me.Description = result("Description").ToString
-                Me.KeyWords = result("KeyWords").ToString
-                Me.BackgroundFile = result("BackgroundFile").ToString
-                Me.SiteLogHistory = IIf(IsDBNull(result("SiteLogHistory")), -1, result("SiteLogHistory"))
-                Me.TimeZone = IIf(IsDBNull(result("TimeZone")), -99, result("TimeZone"))
-                Me.SuperUserId = result("SuperUserId").ToString
+
+                    Me.PortalId = Int32.Parse(result("PortalID").ToString)
+                    Me.GUID = result("GUID").ToString
+                    Me.PortalAlias = result("PortalAlias").ToString
+                    If InStr(1, Me.PortalAlias, "/") <> 0 Then
+                        Me.PortalChild = True
+                    Else
+                        Me.PortalChild = False
+                    End If
+                    Me.PortalName = result("PortalName").ToString
+                    Me.LogoFile = result("LogoFile").ToString
+                    Me.FooterText = result("FooterText").ToString
+                    Me.ExpiryDate = result("ExpiryDate").ToString
+                    Me.UserRegistration = result("UserRegistration").ToString
+                    Me.BannerAdvertising = result("BannerAdvertising").ToString
+                    Me.Currency = result("Currency").ToString
+                    Me.AdministratorId = result("AdministratorId").ToString
+                    Me.Email = result("Email").ToString
+                    Me.HostFee = result("HostFee").ToString
+                    Me.HostSpace = IIf(IsDBNull(result("HostSpace")), 0, result("HostSpace"))
+                    Me.AdministratorRoleId = result("AdministratorRoleId").ToString
+                    Me.RegisteredRoleId = result("RegisteredRoleId").ToString
+                    Me.Description = result("Description").ToString
+                    Me.KeyWords = result("KeyWords").ToString
+                    Me.BackgroundFile = result("BackgroundFile").ToString
+                    Me.SiteLogHistory = IIf(IsDBNull(result("SiteLogHistory")), -1, result("SiteLogHistory"))
+                    Me.TimeZone = IIf(IsDBNull(result("TimeZone")), -99, result("TimeZone"))
+                    Me.SuperUserId = result("SuperUserId").ToString
 
 
-                '  tab settings
-                Me.ActiveTab.TabId = Int32.Parse(result("TabId").ToString)
-                Me.ActiveTab.TabOrder = IIf(IsDBNull(result("TabOrder")), -1, result("TabOrder"))
-                Me.ActiveTab.FriendlyTabName = IIf(IsDBNull(result("FriendlyTabName")), "", result("FriendlyTabName"))
-                Me.ActiveTab.css = IIf(IsDBNull(result("css")), "", result("css"))
-                Me.ActiveTab.skin = IIf(IsDBNull(result("skin")), "", result("skin"))
-                If Me.SSL Then
-                    Me.ActiveTab.ssl = Boolean.Parse(result("tabssl").ToString)
-                Else
-                    Me.ActiveTab.ssl = False
+                    '  tab settings
+                    Me.ActiveTab.TabId = Int32.Parse(result("TabId").ToString)
+                    Me.ActiveTab.TabOrder = IIf(IsDBNull(result("TabOrder")), -1, result("TabOrder"))
+                    Me.ActiveTab.FriendlyTabName = IIf(IsDBNull(result("FriendlyTabName")), "", result("FriendlyTabName"))
+                    Me.ActiveTab.css = IIf(IsDBNull(result("css")), "", result("css"))
+                    Me.ActiveTab.skin = IIf(IsDBNull(result("skin")), "", result("skin"))
+                    If Me.SSL Then
+                        Me.ActiveTab.ssl = Boolean.Parse(result("tabssl").ToString)
+                    Else
+                        Me.ActiveTab.ssl = False
+                    End If
+                    Me.ActiveTab.AuthorizedRoles = result("AuthorizedRoles").ToString
+                    Me.ActiveTab.AdministratorRoles = result("AdministratorRoles").ToString
+                    Me.ActiveTab.TabName = result("TabName").ToString
+                    Me.ActiveTab.ShowFriendly = Boolean.Parse(result("ShowFriendly").ToString)
+                    Me.ActiveTab.LeftPaneWidth = result("LeftPaneWidth").ToString
+                    Me.ActiveTab.RightPaneWidth = result("RightPaneWidth").ToString
+                    Me.ActiveTab.IsVisible = Boolean.Parse(result("IsVisible").ToString)
+                    Me.ActiveTab.DisableLink = Boolean.Parse(result("DisableLink").ToString)
+                    Me.ActiveTab.ParentId = result("ParentId")
+                    Me.ActiveTab.Level = result("Level")
+                    Me.ActiveTab.IconFile = result("IconFile").ToString
+                    Me.ActiveTab.HasChildren = Boolean.Parse(result("HasChildren").ToString)
                 End If
-                Me.ActiveTab.AuthorizedRoles = result("AuthorizedRoles").ToString
-                Me.ActiveTab.AdministratorRoles = result("AdministratorRoles").ToString
-                Me.ActiveTab.TabName = result("TabName").ToString
-                Me.ActiveTab.ShowFriendly = Boolean.Parse(result("ShowFriendly").ToString)
-                Me.ActiveTab.LeftPaneWidth = result("LeftPaneWidth").ToString
-                Me.ActiveTab.RightPaneWidth = result("RightPaneWidth").ToString
-                Me.ActiveTab.IsVisible = Boolean.Parse(result("IsVisible").ToString)
-                Me.ActiveTab.DisableLink = Boolean.Parse(result("DisableLink").ToString)
-                Me.ActiveTab.ParentId = result("ParentId")
-                Me.ActiveTab.Level = result("Level")
-                Me.ActiveTab.IconFile = result("IconFile").ToString
-                Me.ActiveTab.HasChildren = Boolean.Parse(result("HasChildren").ToString)
-            End If
 
 
 

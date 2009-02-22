@@ -45,7 +45,12 @@ Public Class TTT_EditGallery
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-        
+        ' check security make sur have access to admin page
+        If Not Request.IsAuthenticated Then
+            EditDenied()
+        End If
+
+
         If IsNumeric(Request.Params("editpage")) Then
             Dim editType As Integer = CInt(Request.Params("editpage"))
             Select Case editType
@@ -61,19 +66,8 @@ Public Class TTT_EditGallery
             End Select
         End If
 
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            If (Not objCSS Is Nothing) and (objTTTCSS Is Nothing) Then
-                    ' put in the ttt.css
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    objCSS.Controls.Add(objLink)
-            End If
-
-		
-        	Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule(_editPage), PortalModuleControl)
+        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+        Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule(_editPage), PortalModuleControl)
             If Not objModule Is Nothing Then
             	objModule.ModuleConfiguration = Me.ModuleConfiguration
 				 Dim _Setting as Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalID)
@@ -90,7 +84,8 @@ Public Class TTT_EditGallery
 				Controls.Add(objModule)
 				end if
 				
-            End If
+        End If
+        GalleryConfig.SetSkinCSS(Me.Page)
     End Sub
 
 End Class

@@ -104,7 +104,14 @@
                 <asp:DropDownList id="cboTemplate1" width="300" CssClass="NormalTextBox" Runat="server"></asp:DropDownList>
             </td>
         </tr>
-        
+        <tr id="sllline" runat="server" visible="false">
+            <td class="SubHead" style="white-space: nowrap;">
+                <label for="<%=chkssl.ClientID%>"><%= DotNetZoom.GetLanguage("SS_Use_SSL") %>:</label> 
+            </td>
+            <td>
+                <asp:checkbox id="Chkssl" runat="server" Font-Size="8pt" Font-Names="Verdana,Arial"></asp:checkbox>
+            </td>
+        </tr>        
         <tr>
             <td class="SubHead" style="white-space: nowrap;">
                 <label title="<%= DotNetZoom.GetLanguage("ts_visibleinfo")%>" for="<%=IsVisible.ClientID%>"><%= DotNetZoom.GetLanguage("ts_visible")%></label></td>

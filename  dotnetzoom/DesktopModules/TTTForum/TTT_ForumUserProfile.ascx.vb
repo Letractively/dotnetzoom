@@ -93,37 +93,8 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 			
-			Dim objCSS As Control = page.FindControl("CSS")
-			Dim objTTTCSS As Control = page.FindControl("TTTCSS")
-            Dim objLink As System.Web.UI.LiteralControl
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
   			Dim ImageFolder As String = ForumConfig.SkinImageFolder()
-            If (Not objCSS Is Nothing) Then
-                    ' put in the ttt.css
-					If Not ObjTTTCSS Is Nothing then
-					objCSS.Controls.Remove(objTTTCSS)
-					End If
-					objLink = New System.Web.UI.LiteralControl("TTTCSS")
-					objLink.EnableViewState = False
-					If Request.IsAuthenticated Then
-					Dim UserCSS as ForumUser
-					UserCSS = ForumUser.GetForumUser(Int16.Parse(Context.User.Identity.Name))
-					Select Case UserCSS.Skin
-					case "Jardin Floral"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Stibnite"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                        Case "Algues bleues"
-                            objLink.Text = "<link href=""" & glbPath & "images/TTT/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					Case Else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-					End Select
-					else
-					objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
-                    End If
-					objCSS.Controls.Add(objLink)
-            End If
-
 
             If IsNumeric(Request.Params("userid")) Then
                 ZuserID = Int32.Parse(Request.Params("userid"))
@@ -146,72 +117,73 @@ Namespace DotNetZoom
 
 
             If Not Page.IsPostBack Then
-				btnUploadAvatar.Text = GetLanguage("upload")
-				btnUploadAvatar.Tooltip = GetLanguage("upload")
-				UpdateButton.Text = GetLanguage("enregistrer")
-				UpdateButton.ToolTip = GetLanguage("enregistrer")
-				CancelButton.Text = GetLanguage("annuler")	
-				CancelButton.Tooltip = GetLanguage("annuler")
-                'Dim dbUser As New ForumUserDB()
-                ' Clear cache to make sure that new info will be displayed
-                ForumUser.ResetForumUser(ZuserID)
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
-                    ViewState("UrlReferrer") = ""
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 End If
+
+                btnUploadAvatar.Text = GetLanguage("upload")
+                btnUploadAvatar.ToolTip = GetLanguage("upload")
+                UpdateButton.Text = GetLanguage("enregistrer")
+                UpdateButton.ToolTip = GetLanguage("enregistrer")
+                CancelButton.Text = GetLanguage("annuler")
+                CancelButton.ToolTip = GetLanguage("annuler")
+                'Dim dbUser As New ForumUserDB()
+                ' Clear cache to make sure that new info will be displayed
+                ForumUser.ResetForumUser(ZuserID)
                 'Add to check duplicated alias
                 ZoldAlias = Zuser.Alias
 
                 txtAlias.Text = Zuser.Alias
                 lnkPMS.Visible = (_isAuthenticated)
                 lnkPMS.NavigateUrl = ForumPMSComposeLink(_portalSettings.ActiveTab.TabId, Zuser.UserID)
-				lnkPMS.Tooltip = GetLanguage("F_SendEMailTo") + " " + Zuser.Alias
-				lnkPMS.Text = GetLanguage("F_SendPMS")
+                lnkPMS.ToolTip = GetLanguage("F_SendEMailTo") + " " + Zuser.Alias
+                lnkPMS.Text = GetLanguage("F_SendPMS")
                 '<tam:note value=public Info>
                 txtURL.Text = Zuser.URL
                 lnkWWW.Visible = (Len(Zuser.URL) > 0)
                 lnkWWW.NavigateUrl = AddHTTP(Zuser.URL)
-				lnkWWW.Tooltip = GetLanguage("F_VisitUserSite") + " " + Zuser.URL
-				lnkWWW.Text = GetLanguage("F_VisitWWW")
+                lnkWWW.ToolTip = GetLanguage("F_VisitUserSite") + " " + Zuser.URL
+                lnkWWW.Text = GetLanguage("F_VisitWWW")
                 txtEmail.Text = Zuser.Email
                 lnkEmail.Visible = (Len(Zuser.Email) > 0 AndAlso _isAuthenticated)
                 lnkEmail.NavigateUrl = "mailto:" & Zuser.Email
-				lnkEmail.Tooltip = GetLanguage("F_SendEMailToUser") + " "  + Zuser.Alias
-                lnkEmail.Text = GetLanguage("F_SendEMail") 
-				txtMSN.Text = Zuser.MSN
+                lnkEmail.ToolTip = GetLanguage("F_SendEMailToUser") + " " + Zuser.Alias
+                lnkEmail.Text = GetLanguage("F_SendEMail")
+                txtMSN.Text = Zuser.MSN
                 lnkMSN.Visible = (Len(Zuser.MSN) > 0 AndAlso _isAuthenticated)
                 lnkMSN.NavigateUrl = MSNLink(Zuser.MSN)
-				lnkMSN.Text = getlanguage("FZuserMSN")
+                lnkMSN.Text = GetLanguage("FZuserMSN")
 
                 txtYahoo.Text = Zuser.Yahoo
                 lnkYahoo.Visible = (Len(Zuser.Yahoo) > 0 AndAlso _isAuthenticated)
                 lnkYahoo.NavigateUrl = YahooLink(Zuser.Yahoo)
-				lnkYahoo.Text = getlanguage("FZuserYAHOO")
+                lnkYahoo.Text = GetLanguage("FZuserYAHOO")
                 txtAIM.Text = Zuser.AIM
                 lnkAIM.Visible = (Len(Zuser.AIM) > 0 AndAlso _isAuthenticated)
                 lnkAIM.NavigateUrl = AIMLink(Zuser.AIM)
-				lnkAIM.Text = getlanguage("FZuserAIM")
+                lnkAIM.Text = GetLanguage("FZuserAIM")
                 txtICQ.Text = Zuser.ICQ
                 lnkICQ.Visible = (Len(Zuser.ICQ) > 0 AndAlso _isAuthenticated)
                 lnkICQ.NavigateUrl = ICQLink(Zuser.ICQ)
-				lnkICQ.Text = getlanguage("FZuserICQ")
-				lblStatistic.Text = replace(GetLanguage("F_Contributed"), "{username}", Zuser.Alias) 
-				lblStatistic.Text = replace(lblStatistic.Text, "{numpost}", Zuser.PostCount.ToString) 
-			
-				
+                lnkICQ.Text = GetLanguage("FZuserICQ")
+                lblStatistic.Text = Replace(GetLanguage("F_Contributed"), "{username}", Zuser.Alias)
+                lblStatistic.Text = Replace(lblStatistic.Text, "{numpost}", Zuser.PostCount.ToString)
+
+
                 Dim LoggonedUserID As Integer
                 If _isAuthenticated Then
                     LoggonedUserID = ConvertInteger(Context.User.Identity.Name)
-					Dim Currentuser As ForumUser = ForumUser.GetForumUser(LoggonedUserID)
-					Dim TempDateTime as DateTime
-					TempDateTime = Zuser.LastActivity.AddMinutes(GetTimeDiff(Currentuser.TimeZone))
-					lblStatistic.Text = replace(lblStatistic.Text, "{datelast}", TempDateTime.ToString()) 
+                    Dim Currentuser As ForumUser = ForumUser.GetForumUser(LoggonedUserID)
+                    Dim TempDateTime As DateTime
+                    TempDateTime = Zuser.LastActivity.AddMinutes(GetTimeDiff(Currentuser.TimeZone))
+                    lblStatistic.Text = Replace(lblStatistic.Text, "{datelast}", TempDateTime.ToString())
                 Else
                     LoggonedUserID = -1
-					lblStatistic.Text = replace(lblStatistic.Text, "{datelast}", Zuser.LastActivity.ToLongDateString) 
-	            End If
+                    lblStatistic.Text = Replace(lblStatistic.Text, "{datelast}", Zuser.LastActivity.ToLongDateString)
+                End If
 
                 '<tam:note value=User Profile>
                 If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
@@ -219,23 +191,23 @@ Namespace DotNetZoom
                 OrElse ZuserID = LoggonedUserID Then
                     pnlUserProfile.Visible = True
                     UpdateButton.Visible = True
-					ddlSkin.Items.Clear()
-					Dim TempDomainName As String = HttpContext.Current.Request.Url.Host.ToLower()
-						If TempDomainName.indexof("www.") = 0 then
-						TempDomainName = Replace(TempDomainName, "www.", "")
-						end if
-					ddlSkin.Items.Add(TempDomainName)
-					ddlSkin.Items.Add("Portail")
-					ddlSkin.Items.Add("Jardin Floral")
-					ddlSkin.Items.Add("Stibnite")
-					ddlSkin.Items.Add("Algues bleues")
-					Dim objAdmin As New AdminDB()
-					ddlTimeZone.DataSource =  objAdmin.GetTimeZoneCodes(GetLanguage("N"))
-					ddlTimeZone.DataBind()
-					txtUserID.Text = ConvertString(Zuser.UserID)
+                    ddlSkin.Items.Clear()
+                    Dim TempDomainName As String = HttpContext.Current.Request.Url.Host.ToLower()
+                    If TempDomainName.IndexOf("www.") = 0 Then
+                        TempDomainName = Replace(TempDomainName, "www.", "")
+                    End If
+                    ddlSkin.Items.Add(TempDomainName)
+                    ddlSkin.Items.Add("Portail")
+                    ddlSkin.Items.Add("Jardin Floral")
+                    ddlSkin.Items.Add("Stibnite")
+                    ddlSkin.Items.Add("Algues bleues")
+                    Dim objAdmin As New AdminDB()
+                    ddlTimeZone.DataSource = objAdmin.GetTimeZoneCodes(GetLanguage("N"))
+                    ddlTimeZone.DataBind()
+                    txtUserID.Text = ConvertString(Zuser.UserID)
                     txtUserName.Text = Zuser.Name
                     txtFullName.Text = Zuser.FullName
-					If Zconfig.UserAvatar Then
+                    If Zconfig.UserAvatar Then
                         pnlUserAvatar.Visible = True
                         chkAvatar.Checked = Zuser.UserAvatar
                         pnlAvatarUpload.Visible = chkAvatar.Checked
@@ -248,45 +220,45 @@ Namespace DotNetZoom
                     End If
                     chkMemberList.Checked = Zuser.EnableDisplayInMemberList
                     chkOnlineStatus.Checked = Zuser.EnableOnlineStatus
-					Try
- 		       		ddlTimeZone.SelectedValue = Zuser.TimeZone
-			        Catch ex As Exception
-       			    ddlTimeZone.SelectedValue = 0     
-			        End Try
-					Try
-					If Len(Zuser.Skin) > 0 then
-					ddlSkin.Items.FindByText(Zuser.Skin).Selected = True
-					else
-					ddlSkin.selectedindex = 0		
-					end If
-					lblTimeZone.Text = " " & GetLanguage("F_LocalTime") & " : " & DateTime.Now.AddMinutes(GetTimeDiff(Zuser.TimeZone)).ToString("t") 
-					Catch Exc As System.Exception
+                    Try
+                        ddlTimeZone.SelectedValue = Zuser.TimeZone
+                    Catch ex As Exception
+                        ddlTimeZone.SelectedValue = 0
+                    End Try
+                    Try
+                        If Len(Zuser.Skin) > 0 Then
+                            ddlSkin.Items.FindByText(Zuser.Skin).Selected = True
+                        Else
+                            ddlSkin.SelectedIndex = 0
+                        End If
+                        lblTimeZone.Text = " " & GetLanguage("F_LocalTime") & " : " & DateTime.Now.AddMinutes(GetTimeDiff(Zuser.TimeZone)).ToString("t")
+                    Catch Exc As System.Exception
                     End Try
 
-					
-					
+
+
                     txtSignature.Text = Zuser.Signature
                     txtOccupation.Text = Zuser.Occupation
                     txtInterests.Text = Zuser.Interests
                 Else
-				
-					If _isAuthenticated then
-                    Me.pnlEmail.Visible = Zuser.EnableDisplayInMemberList
-					else
-					Me.pnlEmail.Visible = false
-					end If
+
+                    If _isAuthenticated Then
+                        Me.pnlEmail.Visible = Zuser.EnableDisplayInMemberList
+                    Else
+                        Me.pnlEmail.Visible = False
+                    End If
                     txtAlias.Enabled = False
                     txtEmail.Enabled = False
                     txtURL.Enabled = False
-					If TxtURL.Text = "" then RowURL.Visible = False
+                    If txtURL.Text = "" Then RowURL.Visible = False
                     txtMSN.Enabled = False
-					If TxtMSN.Text = "" then RowMSN.Visible = False
+                    If txtMSN.Text = "" Then RowMSN.Visible = False
                     txtYahoo.Enabled = False
-					If TxtYahoo.Text = "" then RowYahoo.Visible = False
+                    If txtYahoo.Text = "" Then RowYahoo.Visible = False
                     txtAIM.Enabled = False
-					If TxtAIM.Text = "" then RowAIM.Visible = False
+                    If txtAIM.Text = "" Then RowAIM.Visible = False
                     txtICQ.Enabled = False
-					If TxtICQ.Text = "" then RowICQ.Visible = False
+                    If txtICQ.Text = "" Then RowICQ.Visible = False
 
                     pnlUserProfile.Visible = False
                     UpdateButton.Visible = False

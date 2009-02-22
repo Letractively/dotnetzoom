@@ -52,37 +52,37 @@ Public Class TTT_EditForum
             Dim editType As Integer = CInt(Request.Params("editpage"))
             Select Case editType
                 Case ForumEditType.ForumPost
-				If context.Request.IsAuthenticated Then
+                    If Context.Request.IsAuthenticated Then
                         _editPage = glbPath & "DeskTopModules/TTTForum/TTT_EditForumPost.ascx"
-				Title1.DisplayHelp = "DisplayHelp_EditForumPost"
-				else
-                        Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
-				end if
-			end Select
-		If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = true then
-			Select Case editType	
-                Case ForumEditType.ForumAdmin
-                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumAdmin.ascx"
-					Title1.DisplayHelp = "DisplayHelp_ForumAdmin"
-                Case ForumEditType.GlobalSettings
-                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumSettings.ascx"
-					Title1.DisplayHelp = "DisplayHelp_ForumSettings"
-                Case ForumEditType.ForumModerate
-                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumModerate.ascx"
-					Title1.DisplayHelp = "DisplayHelp_ForumModerate"
-                Case ForumEditType.ForumModerateAdmin
-                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ModerateAdmin.ascx"
-					Title1.DisplayHelp = "DisplayHelp_ModerateAdmin"
-                Case ForumEditType.ForumPrivateMessage
-                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
-					Title1.DisplayHelp = "DisplayHelp_ForumPMS"
-                Case ForumEditType.ForumUserAdmin
-                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumUserAdmin.ascx"
-					Title1.DisplayHelp = "DisplayHelp_ForumUserAdmin"
+                        Title1.DisplayHelp = "DisplayHelp_EditForumPost"
+                    Else
+                        Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
+                    End If
             End Select
-		 else
-                Response.Redirect(GetFullDocument() & "?edit=" & _portalSettings.ActiveTab.TabId & "&tabid=" & _portalSettings.ActiveTab.TabId & "&def=Edit Access Denied", True)
-		 end if
+            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
+                Select Case editType
+                    Case ForumEditType.ForumAdmin
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumAdmin.ascx"
+                        Title1.DisplayHelp = "DisplayHelp_ForumAdmin"
+                    Case ForumEditType.GlobalSettings
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumSettings.ascx"
+                        Title1.DisplayHelp = "DisplayHelp_ForumSettings"
+                    Case ForumEditType.ForumModerate
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumModerate.ascx"
+                        Title1.DisplayHelp = "DisplayHelp_ForumModerate"
+                    Case ForumEditType.ForumModerateAdmin
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ModerateAdmin.ascx"
+                        Title1.DisplayHelp = "DisplayHelp_ModerateAdmin"
+                    Case ForumEditType.ForumPrivateMessage
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
+                        Title1.DisplayHelp = "DisplayHelp_ForumPMS"
+                    Case ForumEditType.ForumUserAdmin
+                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumUserAdmin.ascx"
+                        Title1.DisplayHelp = "DisplayHelp_ForumUserAdmin"
+                End Select
+            Else
+                EditDenied()
+            End If
         End If
         Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule(_editPage), PortalModuleControl)
             If Not objModule Is Nothing Then
@@ -100,7 +100,8 @@ Public Class TTT_EditForum
 				else
 				Controls.Add(objModule)
 				end if
-            End If
+        End If
+        ForumConfig.SetSkinCSS(Me.Page)
     End Sub
 
 End Class

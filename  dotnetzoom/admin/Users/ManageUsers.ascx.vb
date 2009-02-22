@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -86,9 +86,16 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
+
+            ' get userid
+            If IsNumeric(Request.Params("userid")) Then
+                userId = Int32.Parse(Request.Params("userid"))
             End If
+
+            If Not PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Or (userId = _portalSettings.SuperUserId And userId <> Int32.Parse(Context.User.Identity.Name)) Then
+                EditDenied()
+            End If
+
             Title1.DisplayHelp = "DisplayHelp_ManageUsers"
             valFirstName.ErrorMessage = "<br>" + GetLanguage("need_firstname")
             valLastName.ErrorMessage = "<br>" + GetLanguage("need_lastname")
@@ -103,20 +110,11 @@ Namespace DotNetZoom
             cmdDelete.Text = GetLanguage("delete")
             cmdManage.Text = GetLanguage("ManageUserRoles")
 
-            ' get userid
-            If IsNumeric(Request.Params("userid")) Then
-                userId = Int32.Parse(Request.Params("userid"))
-            End If
 
-            ' security check for super user
-            If userId = _portalSettings.SuperUserId And userId <> Int32.Parse(Context.User.Identity.Name) Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Edit Access Denied", True)
-            End If
 
             ' If this is the first visit to the page, bind the role data to the datalist
             If Page.IsPostBack = False Then
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
-
                 BindData()
 
                 pnlSecurite.Visible = True
@@ -125,14 +123,14 @@ Namespace DotNetZoom
                     rowAuthorized.Visible = False
                     cmdDelete.Visible = False
                     cmdManage.Visible = False
+                Else
+                    ' Store URL Referrer to return to portal
 
-                    If Not Request.UrlReferrer Is Nothing Then
+                    If Not Request.UrlReferrer Is Nothing And Request.Params("filter") Is Nothing Then
                         ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                     Else
-                        ViewState("UrlReferrer") = ""
+                        ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, GetAdminPage() & "&filter=" & Request.Params("filter"))
                     End If
-                Else
-                    ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId & "&" & GetAdminPage() & "&filter=" & Request.Params("filter")
                 End If
             End If
 
@@ -401,7 +399,9 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdManage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdManage.Click
-            Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&UserId=" & userId & "&def=User Roles", True)
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "UserId=" & userId & "&def=User Roles"), True)
         End Sub
 
     End Class

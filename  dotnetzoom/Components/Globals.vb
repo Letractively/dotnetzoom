@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -28,6 +28,7 @@ Imports System.Web.Mail
 Imports System.Web
 Imports System.web.caching
 Imports System.Web.HttpUtility
+Imports System.Web.Security
 Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Xml
@@ -61,6 +62,12 @@ Namespace DotNetZoom
         Public ReadOnly Property glbPath() As String
             Get
                 Return IIf(HttpContext.Current.Request.ApplicationPath = "/", "", HttpContext.Current.Request.ApplicationPath) & "/"
+            End Get
+        End Property
+
+        Public ReadOnly Property glbHTTP() As String
+            Get
+                Return "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & glbPath()
             End Get
         End Property
 
@@ -112,7 +119,31 @@ Namespace DotNetZoom
 		end if
 		end sub
 		
-		
+        Public Sub EditDenied()
+            HttpContext.Current.Response.Redirect(GetDocument() & "&def=Edit Access Denied", True)
+        End Sub
+
+        Public Sub AccessDenied()
+            HttpContext.Current.Response.Redirect(GetDocument() & "&def=Access Denied", True)
+        End Sub
+
+        Public Sub LogOffUser()
+            ' Log User Off from Cookie Authentication System
+            ' Reset Session variable
+
+            FormsAuthentication.SignOut()
+
+            ' expire cookies
+            HttpContext.Current.Response.Cookies("portalid").Value = Nothing
+            HttpContext.Current.Response.Cookies("portalid").Path = "/"
+            HttpContext.Current.Response.Cookies("portalid").Expires = DateTime.Now.AddYears(-30)
+
+            HttpContext.Current.Response.Cookies("portalroles").Value = Nothing
+            HttpContext.Current.Response.Cookies("portalroles").Path = "/"
+            HttpContext.Current.Response.Cookies("portalroles").Expires = DateTime.Now.AddYears(-30)
+
+        End Sub
+
 		Public Sub ClearHostCache()
 		HttpContext.Current.Cache.Remove(GetDBName)
 		end sub
@@ -129,7 +160,21 @@ Namespace DotNetZoom
 		HttpContext.Current.Cache.Remove(GetDBname & "M_" & ModuleID.ToString)
 		end sub
 		
-		
+
+        Public Sub SetEditor(ByVal FCKeditor1 As FredCK.FCKeditorV2.FCKeditor)
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If GetLanguage("fckeditor_language") <> "auto" Then
+                FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
+                FCKeditor1.AutoDetectLanguage = False
+            End If
+            If Directory.Exists(HttpContext.Current.Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) Then
+                FCKeditor1.SkinPath = _portalSettings.UploadDirectory & "skin/fckeditor/"
+                FCKeditor1.EditorAreaCSS = _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
+                FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
+            End If
+        End Sub
+
 		Public Function CDp( ByVal PortalId As Integer, Optional ByVal TabId As Integer = 0,Optional ByVal ModuleId As Integer = 0) as CacheDependency
 	    Dim dependencyKey(3) As String
 		Dim context As HttpContext = HttpContext.Current
@@ -170,8 +215,26 @@ Namespace DotNetZoom
 
         Public Sub CheckSecureSSL(ByVal Request As HttpRequest, ByVal ToSecure As Boolean)
             If Not Request.IsSecureConnection And ToSecure Then
+                'If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                'Dim URLReferrer As String = ""
+                'If Not Request.UrlReferrer Is Nothing Then
+                'URLReferrer = Request.UrlReferrer.ToString()
+                'End If
+                'If Not Request.Browser.Crawler Then
+                'SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "HTTP to HTTPS", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Request.UserHostName, "")
+                'End If
+                'End If
                 HttpContext.Current.Response.Redirect(Replace(HttpContext.Current.Items("RequestURL"), "http://", "https://"), True)
             ElseIf Request.IsSecureConnection And Not ToSecure Then
+                'If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                'Dim URLReferrer As String = ""
+                'If Not Request.UrlReferrer Is Nothing Then
+                'URLReferrer = Request.UrlReferrer.ToString()
+                'End If
+                'If Not Request.Browser.Crawler Then
+                'SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "HTTPS to HTTP", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Request.UserHostName, "")
+                'End If
+                'End If
                 HttpContext.Current.Response.Redirect(Replace(HttpContext.Current.Items("RequestURL"), "https://", "http://"), True)
             End If
         End Sub
@@ -206,7 +269,7 @@ Namespace DotNetZoom
 
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
+            SendNotification = ""
             Dim mail As New MailMessage()
 			
 			strBody = Replace(strBody, "src=""/", "src=""http://" + HttpContext.Current.Request.ServerVariables("HTTP_HOST") + "/")
@@ -251,9 +314,12 @@ Namespace DotNetZoom
                 SmtpMail.Send(mail)
             Catch objException As Exception
                 ' mail configuration problem
+
+                Dim objMessages As MessagesDB = New MessagesDB
+                objMessages.AddPrivateMessage(_portalSettings.SuperUserId, _portalSettings.SuperUserId, strSubject, strFrom + "<br>" + strTo + "<br>" + strBcc + "<br>" + strBody + "<br>" + objException.Message)
                 SendNotification = objException.Message
             End Try
-
+            'Mail LOG 
         End Function
 
         ' encodes a URL for posting to an external site
@@ -1235,20 +1301,25 @@ Namespace DotNetZoom
 		
         Function GetDocument() As String
 		    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Dim TempURL As String = "/"
-            If _portalSettings.activetab.ShowFriendly And _portalSettings.activetab.FriendlyTabName <> "" Then
-                TempURL += GetLanguage("N") & "." & _portalSettings.activetab.FriendlyTabName & ".aspx"
+            Dim TempURL As String = _portalSettings.HTTP
+            If Not TempURL.EndsWith("/") Then
+                TempURL += "/"
+            End If
+
+            If _portalSettings.ActiveTab.ShowFriendly And _portalSettings.ActiveTab.FriendlyTabName <> "" Then
+                TempURL += GetLanguage("N") & "." & _portalSettings.ActiveTab.FriendlyTabName & ".aspx?tabid=" & _portalSettings.ActiveTab.TabId.ToString
             Else
-                TempURL += GetLanguage("N") & ".default.aspx"
+                TempURL += GetLanguage("N") & ".default.aspx?tabid=" & _portalSettings.ActiveTab.TabId.ToString
             End If
 	
             Return TempURL
         End Function 
 
-        Function GetFullDocument() As String
+        Function GetFullDocument(Optional ByVal SSL As Boolean = False) As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim TempURL As String
-            If _portalSettings.SSL And _portalSettings.ActiveTab.ssl Then
+            ' Or HttpContext.Current.Request.IsSecureConnection
+            If (_portalSettings.SSL And _portalSettings.ActiveTab.ssl) Or SSL Then
                 TempURL = _portalSettings.HTTPS
             Else
                 TempURL = _portalSettings.HTTP
@@ -1476,8 +1547,8 @@ Namespace DotNetZoom
 	Dim myDTFI As System.Globalization.DateTimeFormatInfo = New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.Name, False).DateTimeFormat
 	item = Regex.Replace(item, "{Date}" , Format(Now().AddMinutes(GetTimeDiff(_portalSettings.TimeZone)),  myDTFI.LongDatePattern), RegexOptions.IgnoreCase)
     End if
-                Item = Regex.Replace(Item, "{httplogin}", GetFullDocument() & "?tabid=" & TabId & "&showlogin=1", RegexOptions.IgnoreCase)
-                Item = Regex.Replace(Item, "{httpregister}", GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Register", RegexOptions.IgnoreCase)
+                Item = Regex.Replace(Item, "{httplogin}", FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1"), RegexOptions.IgnoreCase)
+                Item = Regex.Replace(Item, "{httpregister}", FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), RegexOptions.IgnoreCase)
 	end if
 	Return item
 	end function
@@ -1492,19 +1563,21 @@ Namespace DotNetZoom
 		    if Item = "culturecode" then
 			TempString = "fr-ca"
 			else
-           	TempString = "-" + Item + "-"
-			Dim Admin as new AdminDB()
-			Admin.UpdatelanguageContext(GetLanguage("N"), Item, Item, "New")
-			if portalSettings.GetHostSettings("EnableErrorReporting") <> "N" and _language.ContainsKey("N") then
-			Dim TempMessage As String
-			If _language.ContainsKey("LanguageERROR") then
-			TempMessage = String.Format(_language("LanguageERROR"), Item, _language("N"))
-			else 
-			TempMessage = "The following word - " & Item & " - is missing from the language table " & _language("N")
-			end if
-			SendNotification(portalSettings.GetHostSettings("HostEmail"), portalSettings.GetHostSettings("HostEmail"), "", Item, TempMessage , "")
-			end if
-			end if
+                    TempString = "-" + Item + "-"
+                    If _language.ContainsKey("N") Then
+                        Dim Admin As New AdminDB()
+                        Admin.UpdatelanguageContext(_language("N"), Item, Item, "New")
+                    End If
+                    If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" And _language.ContainsKey("N") Then
+                        Dim TempMessage As String
+                        If _language.ContainsKey("LanguageERROR") Then
+                            TempMessage = String.Format(_language("LanguageERROR"), Item, _language("N"))
+                        Else
+                            TempMessage = "The following word - " & Item & " - is missing from the language table " & _language("N")
+                        End If
+                        SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", Item, TempMessage, "")
+                    End If
+                    End If
         End If
 
 	try	 

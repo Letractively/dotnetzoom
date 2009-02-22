@@ -1,6 +1,6 @@
 <%@ Control Inherits="DotNetZoom.Roles" codebehind="Roles.ascx.vb" Language="vb" autoeventwireup="false" Explicit="True" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
-<portal:title id="Title1" runat="server" cssclass="ScrollTable"></portal:title>
+<portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <asp:datagrid id="grdRoles" runat="server" gridlines="none" BorderStyle="None" CellPadding="4" CellSpacing="0" Width="100%" AutoGenerateColumns="false" EnableViewState="false">
     <Columns>
@@ -13,7 +13,7 @@
         </asp:TemplateColumn>
         <asp:TemplateColumn ItemStyle-Width="20">
             <ItemTemplate>
-                <asp:HyperLink ToolTip='<%# DotNetZoom.GetLanguage("modifier")%>' NavigateUrl='<%# EditURL("RoleID",DataBinder.Eval(Container.DataItem,"RoleID")) & "&def=User Roles" %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink2">
+                <asp:HyperLink ToolTip='<%# DotNetZoom.GetLanguage("modifier")%>' NavigateUrl='<%# FormatURL(DataBinder.Eval(Container.DataItem,"RoleID")) %>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink2">
                     <asp:Image ImageURL="~/images/icon_users_16px.gif" AlternateText='<%# DotNetZoom.GetLanguage("modifier")%>' Visible="<%# IsEditable %>" runat="server" ID="Hyperlink1Image2" />
                 </asp:HyperLink>
             </ItemTemplate>

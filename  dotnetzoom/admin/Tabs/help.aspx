@@ -22,42 +22,16 @@ end if
 	end if
 end if
 end sub
-		Private Sub SetFckEditor()
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-        ' FCKeditor1.LinkBrowser = true
-			FCKeditor1.width = unit.pixel(650)
-			FCKeditor1.Height = unit.pixel(350)
-			if GetLanguage("fckeditor_language") <> "auto"
-			FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
-			FCKeditor1.AutoDetectLanguage = False
-			end if
+    Private Sub SetFckEditor()
+        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+        FCKeditor1.Width = Unit.Pixel(650)
+        FCKeditor1.Height = Unit.Pixel(350)
+        SetEditor(FCKeditor1)
         FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
         FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-			Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
-			' set the css for the editor if it exist
-			Dim CSSFileName As String = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css")
-			If System.IO.File.Exists(CSSFileName) then
-            FCKeditor1.EditorAreaCSS= _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
-			end if
-			CSSFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/htmlstyles.xml")
-			If System.IO.File.Exists(CSSFileName) then
-            FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/htmlstyles.xml"
-			else
-			CSSFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml")
-			If System.IO.File.Exists(CSSFileName) then
-			FCKeditor1.StylesXmlPath =  _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
-    		End If
-			End If
-			CSSFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditorhtml/")
-			If System.IO.Directory.Exists(CSSFileName) then
-			FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditorhtml/"
-			else
-			CSSFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")
-			If System.IO.Directory.Exists(CSSFileName) then
-			FCKeditor1.SkinPath =  _portalSettings.UploadDirectory & "skin/fckeditor/"
-    		End If
-			End If
-		end sub
+        Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
+        ' set the css for the editor if it exist
+    End Sub
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) 
             pnlRichTextBox.Visible = False
@@ -99,9 +73,9 @@ end sub
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 	<meta name="robots" content="noindex, nofollow" />
 	<asp:literal id="StyleSheet" enableviewstate="false" runat="server" />
-    <style type="text/css">.scroll {overflow: auto; height : 79%}</style>
+    <style type="text/css">.scroll {overflow: auto; height : 87%}</style>
 <!--[if IE]>
-<style type="text/css">.scroll {overflow: auto; height : 328px}</style>
+<style type="text/css">.scroll {overflow: auto; height : 338px}</style>
 <![endif]-->
 	
 <script type="text/javascript">
@@ -127,13 +101,6 @@ function Cancel()
 </p>
 </asp:placeholder>	
 <asp:placeholder id="pnlhelp" Runat="server" Visible="True">
-<table  class="OtherCellTop" cellpadding="0" cellspacing="0" border="0" width="100%">
- 	<tr>
-		<td align="center"  height="10%" valign="middle" width="100%">
-		<span class="Head"><%= DotNetZoom.GetLanguage("HelpInfo") %></span>
-		</td>
-	</tr>
-</table>
 <div align="center" class="scroll">
 <table class="MainBorder" cellpadding="0" cellspacing="0" border="0" width="100%">
 	<tr>

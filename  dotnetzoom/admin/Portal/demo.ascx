@@ -25,7 +25,7 @@
 </span>
 <p align="left">
 Vous ne pouvez utiliser le site web {PortalName} qu'à condition de garantir que vous ne l'utiliserez pas à  des fins illicites ou interdites par ces termes, conditions d'utilisation et mentions d'avertissement.<br>
-<a href="http://{DomainName}/{language}.default.aspx?edit=control&def=Signup&guid={lblGUID}" title="Acceptation des conditions générales d'utilisation et après l'acceptation de ces termes vous pourrez créer un site d'essais">&nbsp;<b><font color="#ff0000">j'accepte</font></b></a>
+<a href="http://{DomainName}/{language}.default.aspx?def=Signup&guid={lblGUID}" title="Acceptation des conditions générales d'utilisation et après l'acceptation de ces termes vous pourrez créer un site d'essais">&nbsp;<b><font color="#ff0000">j'accepte</font></b></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://{DomainName}/" title="Retour">&nbsp;<b><font color="#669900">je refuse</font></b></a>
 </p>
 </div>

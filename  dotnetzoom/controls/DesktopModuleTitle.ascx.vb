@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -207,9 +207,8 @@ Namespace DotNetZoom
                             cmdEditContent.ToolTip = EditText
                             If Not IsNothing(EditURL) Then
                                 cmdEditContent.NavigateUrl = EditURL & IIf(InStr(1, EditURL, "?") <> 0, "&", "?") & "tabid=" & tabId & "&mid=" + portalModule.ModuleId.ToString()
-                                cmdEditContent.NavigateUrl = Replace(cmdEditContent.NavigateUrl.ToLower, "/default.aspx", GetFullDocument())
                             Else
-                                cmdEditContent.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & tabId & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & portalModule.ModuleId.ToString, "&adminpage=" & Request.Params("adminpage"))
+                                cmdEditContent.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, HttpContext.Current.Request.IsSecureConnection, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control" & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & portalModule.ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")))
                             End If
 
                             If DisplayOptions Then
@@ -234,7 +233,7 @@ Namespace DotNetZoom
                         If blnPreview = False Then
                             pnlModuleTitle.Visible = True
                             rowAdmin1.Visible = True
-                            cmdEditModule.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & tabId & "&mid=" & portalModule.ModuleId.ToString() & "&def=Module"
+                            cmdEditModule.NavigateUrl = GetFullDocument() & "?tabid=" & tabId & "&mid=" & portalModule.ModuleId.ToString() & "&def=Module"
                             cmdEditModule.ToolTip = GetLanguage("title_ParamModif")
                             cmdEditModule.Visible = True
                             cmdEditModule.Text = cmdEditModule.Text & GetLanguage("modifier")
@@ -370,7 +369,7 @@ Namespace DotNetZoom
                         ctlMenu.IconImagesPath = glbSiteDirectory()
                         ctlMenu.RootArrow = True
                         ctlMenu.RootArrowImage = "action.gif"
-                        ctlMenu.SystemScriptPath = IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/controls/SolpartMenu/"
+                        ctlMenu.SystemScriptPath = glbPath() & "controls/SolpartMenu/"
                         Dim objMenuItem As Solpart.WebControls.SPMenuItemNode
                         objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(0, "", ""))
                         objMenuItem.ItemStyle = "background:transparent; height: 20px;"
@@ -454,7 +453,7 @@ Namespace DotNetZoom
                     End If
                 Else
 
-                    If IsAdminTab() Or (Not Request.Params("edit") Is Nothing) Then
+                    If IsAdminTab() Or (Not Request.Params("def") Is Nothing) Or (Not Request.Params("edit") Is Nothing) Then
                         ' Edit or AdminModule
                         pnlAdminTitle.Visible = True
                         pnlModuleTitle.Visible = False
@@ -491,14 +490,11 @@ Namespace DotNetZoom
                                 If Not IsNothing(EditURL) Then
                                     If portalModule.ModuleId > -1 Then
                                         cmdEditContent1.NavigateUrl = EditURL & IIf(InStr(1, EditURL, "?") <> 0, "&", "?") & "tabid=" & tabId & "&mid=" + portalModule.ModuleId.ToString()
-                                        cmdEditContent1.NavigateUrl = Replace(cmdEditContent1.NavigateUrl.ToLower, "/default.aspx", GetFullDocument())
                                     Else
                                         cmdEditContent1.NavigateUrl = EditURL
                                     End If
                                 Else
-
-                                    cmdEditContent1.NavigateUrl = GetFullDocument() & "?edit=control&tabid=" & tabId & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & portalModule.ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
-
+                                    cmdEditContent1.NavigateUrl = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, HttpContext.Current.Request.IsSecureConnection, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "edit=control" & IIf(Request.Params("adminpage") Is Nothing, "&mid=" & portalModule.ModuleId.ToString, "&adminpage=" & Request.Params("adminpage")) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""))
                                 End If
                                 If DisplayOptions Then
                                     cmdEditOptions1.NavigateUrl = cmdEditContent1.NavigateUrl & "&options=1"
@@ -786,15 +782,15 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If Not IsNothing(DisplayHelp) Then
-                If IsAdminTab() Or (Not Request.Params("edit") Is Nothing) Then
+                If IsAdminTab() Or (Not Request.Params("def") Is Nothing) Or (Not Request.Params("edit") Is Nothing) Then
                     help1.ToolTip = GetLanguage("title_ShowInfo")
                     help1.Visible = True
-                    help1.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/help.aspx?help=" & DisplayHelp & "&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
+                    help1.NavigateUrl = "javascript:var m = window.open('" + glbHTTP() + "admin/tabs/help.aspx?help=" & DisplayHelp & "&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
                     cellhelp.Visible = True
                 Else
                     help.ToolTip = GetLanguage("title_ShowInfo")
                     help.Visible = True
-                    help.NavigateUrl = "javascript:var m = window.open('" + glbPath + "admin/tabs/help.aspx?help=" & DisplayHelp & "&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
+                    help.NavigateUrl = "javascript:var m = window.open('" + glbHTTP() + "admin/tabs/help.aspx?help=" & DisplayHelp & "&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
                     pnlHelp.Visible = True
                     pnlModuleTitle.Visible = True
                 End If
@@ -901,9 +897,6 @@ Namespace DotNetZoom
                 cmdAdmin.Text = ""
                 cAdmin.Visible = False
             End If
-
-
-
         End Sub
         Private Function BuildAdminMenu(ByVal Host As Boolean) As String
             ' put admin menu in
@@ -913,13 +906,15 @@ Namespace DotNetZoom
             Dim TempAdmin As StringBuilder = New System.Text.StringBuilder()
 
             Dim objAdmin As New AdminDB()
+            Dim IsSSL As Boolean
 
             Dim result As SqlDataReader
             result = objAdmin.GetAdminModuleDefinitions(GetLanguage("N"))
             While result.Read
                 ' idadmin or ishost
+                IsSSL = Boolean.Parse(result("ssl").ToString) And _portalSettings.SSL
                 If result("isadmin") Then
-                    TempAdmin.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString, "", "&amp;") & """ onmouseover=""this.T_WIDTH=210;return escape('" & RTESafe(result("Description").ToString) & "')"">")
+                    TempAdmin.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, IsSSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString, "", "&amp;") & """ onmouseover=""this.T_WIDTH=210;return escape('" & RTESafe(result("Description").ToString) & "')"">")
                     TempAdmin.Append("<img  src=""" & glbPath & "images/")
                     TempAdmin.Append(result("AdminTabIcon").ToString)
                     TempAdmin.Append(""" alt=""" & result("FriendlyName") & """ style=""border-width:0px;"" /></a>")
@@ -927,7 +922,7 @@ Namespace DotNetZoom
                 End If
                 If Host Then
                     If result("ishost") Then
-                        TempHost.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString, "", "&amp;") & IIf(result("isadmin"), "&amp;hostpage=" & result("ModuleDefID"), "") & """ onmouseover=""this.T_WIDTH=210;return escape('" & RTESafe(result("Description").ToString) & "')"">")
+                        TempHost.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, IsSSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString, "", "&amp;") & IIf(result("isadmin"), "&amp;hostpage=" & result("ModuleDefID"), "") & """ onmouseover=""this.T_WIDTH=210;return escape('" & RTESafe(result("Description").ToString) & "')"">")
                         TempHost.Append("<img  src=""" & glbPath & "images/")
                         TempHost.Append(result("AdminTabIcon").ToString)
                         TempHost.Append(""" alt=""" & result("FriendlyName") & """ style=""border-width:0px;"" /></a>")

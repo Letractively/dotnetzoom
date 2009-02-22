@@ -73,7 +73,7 @@
         </tr>
         <tr valign="top">
             <td class="SubHead">
-                <label for="<%=cboTrialFrequency.ClientID%>"><%= DotNetZoom.GetLanguage("Demo_Trial_Fee") %>:</label></td>
+                <label for="<%=cboTrialFrequency.ClientID%>"><%=DotNetZoom.GetLanguage("Billing_Frequency")%>:</label></td>
             <td>
                 <asp:DropDownList id="cboTrialFrequency" runat="server" CssClass="NormalTextBox" DataTextField="Description" DataValueField="Code" Width="388px"></asp:DropDownList>
             </td>

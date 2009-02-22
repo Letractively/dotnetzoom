@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -82,14 +82,22 @@ Namespace DotNetZoom
 			cmdFeedback.Text = getlanguage("lnkFeedback")
 			cmdBack.Text = getlanguage("return")
             If Not Page.IsPostBack Then
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
                 If Not Request.IsAuthenticated Then
-                    lblMessage.Text = processLanguage(getlanguage("vendors_message_feedback1") + getlanguage("vendors_message_feedback2"), page)
+                    lblMessage.Text = ProcessLanguage(GetLanguage("vendors_message_feedback1") + GetLanguage("vendors_message_feedback2"), Page)
                     cmdFeedback.Visible = False
                 Else
                     lblMessage.Text = ""
                     cmdFeedback.Visible = True
-					Title1.DisplayHelp = "DisplayHelp_VendorFeedBack"
+                    Title1.DisplayHelp = "DisplayHelp_VendorFeedBack"
                 End If
 
                 Dim objVendor As New VendorsDB()
@@ -146,9 +154,9 @@ Namespace DotNetZoom
                 Case ListItemType.Item, ListItemType.AlternatingItem
                     Select Case Int32.Parse(e.Item.DataItem("Value").ToString)
                         Case "1"
-                            CType(e.Item.FindControl("lblValue"), Label).Text += "<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/ratingplus.gif"" border=""0"" alt=""" & GetLanguage("Positive_Feedback") & """>"
+                            CType(e.Item.FindControl("lblValue"), Label).Text += "<img src=""" & glbPath() & "images/ratingplus.gif"" border=""0"" alt=""" & GetLanguage("Positive_Feedback") & """>"
                         Case "-1"
-                            CType(e.Item.FindControl("lblValue"), Label).Text += "<img src=""" & IIf(Request.ApplicationPath = "/", "", Request.ApplicationPath) & "/images/ratingminus.gif"" border=""0"" alt=""" & GetLanguage("Negative_Feedback") & """>"
+                            CType(e.Item.FindControl("lblValue"), Label).Text += "<img src=""" & glbPath() & "images/ratingminus.gif"" border=""0"" alt=""" & GetLanguage("Negative_Feedback") & """>"
                     End Select
                     CType(e.Item.FindControl("lblDate"), Label).Text = "&nbsp;&nbsp;<b>" & getlanguage("vendors_date") & ":</b>&nbsp;" & e.Item.DataItem("Date").ToString
                     CType(e.Item.FindControl("lblUser"), Label).Text = "&nbsp;&nbsp;<b>" & getlanguage("vendors_user") & ":</b>&nbsp;" & FormatEmail(e.Item.DataItem("Email"), page, e.Item.DataItem("FullName").ToString) 

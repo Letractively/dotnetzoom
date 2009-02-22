@@ -3,7 +3,7 @@
 ' Copyright (c) 2002-2003
 ' by Shaun Walker ( sales@perpetualmotion.ca ) of Perpetual Motion Interactive Systems Inc. ( http://www.perpetualmotion.ca )
 ' DotNetZoom - http://www.DotNetZoom.com
-' Copyright (c) 2004-2008
+' Copyright (c) 2004-2009
 ' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 ' documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
@@ -66,6 +66,15 @@ Namespace DotNetZoom
 			
 			
             If Page.IsPostBack = False Then
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
                 If ModuleId > 0 Then
 
@@ -78,21 +87,17 @@ Namespace DotNetZoom
                     txtTitle.Text = CType(settings("title"), String)
 
                     If CType(settings("scrolling"), String) <> "" Then
-                        cboScrolling.Items.FindByvalue(CType(settings("scrolling"), String)).Selected = True
+                        cboScrolling.Items.FindByValue(CType(settings("scrolling"), String)).Selected = True
                     Else
                         cboScrolling.SelectedIndex = 0 ' auto
                     End If
-                    If (CType(settings("border"), String) <> "") and not cboBorder.Items.FindByvalue(CType(settings("border"), String)) Is Nothing Then
-                        cboBorder.Items.FindByvalue(CType(settings("border"), String)).Selected = True
+                    If (CType(settings("border"), String) <> "") And Not cboBorder.Items.FindByValue(CType(settings("border"), String)) Is Nothing Then
+                        cboBorder.Items.FindByValue(CType(settings("border"), String)).Selected = True
                     Else
                         cboBorder.SelectedIndex = 0 ' non
                     End If
 
                 End If
-
-                ' Store URL Referrer to return to portal
-                ViewState("UrlReferrer") = GetFullDocument() & "?tabid=" & TabId
-
 
             End If
 

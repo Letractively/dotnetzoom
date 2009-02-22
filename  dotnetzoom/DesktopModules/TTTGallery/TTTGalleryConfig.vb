@@ -108,20 +108,25 @@ Namespace DotNetZoom
 
 #Region "Shared Methods"
 
-        ' v1.1.5 - Added to track version changes
-        Public Shared ReadOnly Property Version() As String
-            Get
-                Return "1.0.10"
-            End Get
-        End Property
 
-        ' v1.1.4 - Added to eliminate manual editing of code
-        Public Shared ReadOnly Property PortalCssURL() As String
-            Get
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Return _portalSettings.UploadDirectory & "skin/ttt.css"
-            End Get
-        End Property
+        Public Shared Sub SetSkinCSS(ByVal Page As Page)
+
+            ' Obtain PortalSettings from Current Context
+            Dim objCSS As Control = Page.FindControl("CSS")
+            Dim objTTTCSS As Control = Page.FindControl("TTTCSS")
+            Dim objLink As System.Web.UI.LiteralControl
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If (Not objCSS Is Nothing) And (objTTTCSS Is Nothing) Then
+                ' put in the ttt.css
+                objLink = New System.Web.UI.LiteralControl("TTTCSS")
+                objLink.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                objCSS.Controls.Add(objLink)
+            End If
+
+        End Sub
+
+
+
 
         ' These are all default values
         ' Changes are not necessary

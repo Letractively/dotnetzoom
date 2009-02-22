@@ -86,6 +86,7 @@
                 <asp:checkbox id="chkAllTabs" runat="server" Font-Size="8pt" Font-Names="Verdana,Arial"></asp:checkbox>
             </td>
         </tr>
+
         <tr>
             <td colspan="2">
                 &nbsp; 

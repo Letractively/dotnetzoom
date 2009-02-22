@@ -69,13 +69,13 @@
     </tbody>
 </table>
 <p align="left">
-    <asp:linkbutton class="CommandButton" id="cmdUpdate" runat="server"></asp:linkbutton>
+    <asp:linkbutton cssclass="CommandButton" id="cmdUpdate" runat="server"></asp:linkbutton>
     &nbsp; 
-    <asp:linkbutton class="CommandButton" id="cmdCancel" runat="server"  CausesValidation="False"></asp:linkbutton>
+    <asp:linkbutton cssclass="CommandButton" id="cmdCancel" runat="server"  CausesValidation="False"></asp:linkbutton>
     &nbsp; 
-    <asp:linkbutton class="CommandButton" id="cmdDelete" runat="server" CausesValidation="False"></asp:linkbutton>
+    <asp:linkbutton cssclass="CommandButton" id="cmdDelete" runat="server" CausesValidation="False"></asp:linkbutton>
     &nbsp; 
-    <asp:linkbutton class="CommandButton" id="cmdManage" runat="server" CausesValidation="False"></asp:linkbutton>
+    <asp:linkbutton cssclass="CommandButton" id="cmdManage" runat="server" CausesValidation="False"></asp:linkbutton>
 </p>
 <asp:placeholder id="pnlSecurite" Runat="server">
 <hr>

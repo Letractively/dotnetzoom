@@ -53,66 +53,75 @@ Namespace DotNetZoom
         ' These are all default values
         Public Shared ReadOnly Property DefaultImageFolder() As String
             Get
-                Dim AppPath As String = HttpContext.Current.Request.ApplicationPath
-                Dim imageURL As String = Replace(AppPath & "/images/TTT/", "//", "/")
-                Return imageURL
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                If CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("ImageFolder"), String) = "" Then
+                    Return glbPath() & "images/ttt/"
+                Else
+                    Return CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("ImageFolder"), String)
+                End If
             End Get
         End Property
 
         Public Shared ReadOnly Property SkinImageFolder() As String
             Get
-                Dim TempString As String
-                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                TempString = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("ImageFolder"), String)
-                If TempString = "" Then
-                    TempString = glbPath & "images/ttt/"
-                End If
-
                 Dim context As HttpContext = HttpContext.Current
                 If context.Request.IsAuthenticated Then
                     Dim UserCSS As ForumUser
                     UserCSS = ForumUser.GetForumUser(Int16.Parse(context.User.Identity.Name))
                     Select Case UserCSS.Skin
                         Case "Jardin Floral"
-                            TempString = glbPath & "images/TTT/skin1/"
+                            Return glbPath() & "images/ttt/skin1/"
                         Case "Stibnite"
-                            TempString = glbPath & "images/TTT/skin2/"
+                            Return glbPath() & "images/ttt/skin2/"
                         Case "Algues bleues"
-                            TempString = glbPath & "images/TTT/skin3/"
+                            Return glbPath() & "images/ttt/skin3/"
                     End Select
                 End If
-                Return TempString
+                Return DefaultImageFolder()
             End Get
         End Property
 
-        Public Shared ReadOnly Property SkinFolder() As String
+        Public Shared ReadOnly Property DefaultSkinFolder() As String
             Get
-                Dim TempString As String
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                TempString = CType(portalSettings.GetSiteSettings(_portalSettings.PortalID)("ImageFolder"), String)
-                If TempString = "" Then
-                    TempString = glbSiteDirectory() & "ttt/"
-                End If
-
-                Dim context As HttpContext = HttpContext.Current
-                If context.Request.IsAuthenticated Then
-                    Dim UserCSS As ForumUser
-                    UserCSS = ForumUser.GetForumUser(Int16.Parse(context.User.Identity.Name))
-                    Select Case UserCSS.Skin
-                        Case "Jardin Floral"
-                            TempString = glbPath & "images/TTT/skin1/"
-                        Case "Stibnite"
-                            TempString = glbPath & "images/TTT/skin2/"
-                        Case "Algues bleues"
-                            TempString = glbPath & "images/TTT/skin3/"
-                    End Select
-                End If
-                Return TempString
+                Return _portalSettings.UploadDirectory & "skin/ttt.css"
             End Get
         End Property
 
-		
-		
+
+
+        Public Shared Sub SetSkinCSS(ByVal Page As Page)
+
+            Dim objCSS As Control = Page.FindControl("CSS")
+            Dim objTTTCSS As Control = Page.FindControl("TTTCSS")
+            Dim objLink As System.Web.UI.LiteralControl
+
+
+            If (Not objCSS Is Nothing) And (objTTTCSS Is Nothing) Then
+                ' put in the ttt.css
+                objLink = New System.Web.UI.LiteralControl("TTTCSS")
+                If HttpContext.Current.Request.IsAuthenticated Then
+                    Dim UserCSS As ForumUser
+                    UserCSS = ForumUser.GetForumUser(Int16.Parse(HttpContext.Current.User.Identity.Name))
+                    Select Case UserCSS.Skin
+                        Case "Jardin Floral"
+                            objLink.Text = "<link href=""" & glbPath() & "images/ttt/skin1/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case "Stibnite"
+                            objLink.Text = "<link href=""" & glbPath() & "images/ttt/skin2/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case "Algues bleues"
+                            objLink.Text = "<link href=""" & glbPath() & "images/ttt/skin3/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                        Case Else
+                            objLink.Text = "<link href=""" & DefaultSkinFolder() & """ type=""text/css"" rel=""stylesheet"">"
+                    End Select
+                Else
+                    objLink.Text = "<link href=""" & DefaultSkinFolder() & """ type=""text/css"" rel=""stylesheet"">"
+                End If
+                objCSS.Controls.Add(objLink)
+            End If
+
+        End Sub
+
+
         Public Shared ReadOnly Property DefaultAvatarFolder() As String
             Get
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -123,20 +132,20 @@ Namespace DotNetZoom
 
         Public Shared ReadOnly Property DefaultEmailAddress() As String
             Get
-			    Dim DomainName As String = HttpContext.Current.Request.Url.Host.ToLower()
-				If DomainName.indexof("www.") = 0 then
-				DomainName = Replace(DomainName, "www.", "")
-				end if
+                Dim DomainName As String = HttpContext.Current.Request.Url.Host.ToLower()
+                If DomainName.IndexOf("www.") = 0 Then
+                    DomainName = Replace(DomainName, "www.", "")
+                End If
                 Return "Babillard@" & DomainName
             End Get
         End Property
 
         Public Shared ReadOnly Property DefaultEmailDomain() As String
             Get
-			    Dim DomainName As String = HttpContext.Current.Request.Url.Host.ToLower()
-				If DomainName.indexof("www.") = 0 then
-				DomainName = Replace(DomainName, "www.", "")
-				end if
+                Dim DomainName As String = HttpContext.Current.Request.Url.Host.ToLower()
+                If DomainName.IndexOf("www.") = 0 Then
+                    DomainName = Replace(DomainName, "www.", "")
+                End If
                 Return DomainName
             End Get
         End Property
@@ -186,29 +195,29 @@ Namespace DotNetZoom
         Public Shared Function GetForumConfig(ByVal ModuleID As Integer) As ForumConfig
 
             ' Grab reference to the applicationstate object
-			' Need to change Forum Cashing
-            
-			Dim TempKey as String = GetDBName & ForumConfigCacheKeyPrefix & CStr(ModuleID)
-			Dim context As HttpContext = HttpContext.Current
-			Dim config As ForumConfig 
-			
-            If Context.Cache(TempKey) Is Nothing Then
-            ' If this object has not been instantiated yet, we need to grab it
-			' Obtain PortalSettings from Current Context
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            config = New ForumConfig(ModuleID)
-            Context.Cache.Insert(TempKey, config, DotNetZoom.CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.Tabid, ModuleId), Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-			Else
-			config = CType(Context.Cache(TempKey), ForumConfig)
+            ' Need to change Forum Cashing
+
+            Dim TempKey As String = GetDBname() & ForumConfigCacheKeyPrefix & CStr(ModuleID)
+            Dim context As HttpContext = HttpContext.Current
+            Dim config As ForumConfig
+
+            If context.Cache(TempKey) Is Nothing Then
+                ' If this object has not been instantiated yet, we need to grab it
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                config = New ForumConfig(ModuleID)
+                context.Cache.Insert(TempKey, config, DotNetZoom.CDp(_portalSettings.PortalId, _portalSettings.ActiveTab.TabId, ModuleID), Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
+            Else
+                config = CType(context.Cache(TempKey), ForumConfig)
             End If
             Return config
 
         End Function
 
         Public Shared Sub ResetForumConfig(ByVal ModuleID As Integer)
-			Dim TempKey as String = GetDBName & ForumConfigCacheKeyPrefix & CStr(ModuleID)
-			Dim context As HttpContext = HttpContext.Current
-				context.Cache.Remove(TempKey)
+            Dim TempKey As String = GetDBname() & ForumConfigCacheKeyPrefix & CStr(ModuleID)
+            Dim context As HttpContext = HttpContext.Current
+            context.Cache.Remove(TempKey)
         End Sub
 
 #End Region
@@ -369,13 +378,13 @@ Namespace DotNetZoom
             mMaxAvatarSize = CInt(GetValue(settings("MaxAvatarSize"), CStr(mMaxAvatarSize)))
             mImageExtensions = CStr(GetValue(settings("ImageExtensions"), CStr(mImageExtensions)))
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			If portalSettings.GetSiteSettings(_portalSettings.PortalID)("PortalUserOnline") <> "NO" then
-			mUserOnlineIntegrate = CBool(GetValue(settings("UserOnlineIntegrate"), CStr(mUserOnlineIntegrate)))
-			else
-			' turn it off if not On the Portal
-			mUserOnlineIntegrate = False
-			end if
-	
+            If PortalSettings.GetSiteSettings(_portalSettings.PortalId)("PortalUserOnline") <> "NO" Then
+                mUserOnlineIntegrate = CBool(GetValue(settings("UserOnlineIntegrate"), CStr(mUserOnlineIntegrate)))
+            Else
+                ' turn it off if not On the Portal
+                mUserOnlineIntegrate = False
+            End If
+
             mStatsUpdateInterval = CInt(GetValue(settings("StatsUpdateInterval"), CStr(mStatsUpdateInterval)))
 
             Dim imageExtension As String

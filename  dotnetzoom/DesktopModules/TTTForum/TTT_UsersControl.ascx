@@ -10,7 +10,7 @@
                             <HeaderStyle horizontalalign="Center" height="28px" width="20px" cssclass="TTTAltHeader"></HeaderStyle>
                             <ItemStyle horizontalalign="Center" height="25px" width="20px" cssclass="TTTRow"></ItemStyle>
                             <ItemTemplate>
-                                <asp:ImageButton ImageURL="~/images/TTT/TTT_Add.gif" Visible='<%# CanEdit() %>' OnClick="UserSelect_Click" AlternateText='<%# DotNetZoom.getlanguage("F_UserSelect") %>' CommandName="Select" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "UserID") %>' Runat="server" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
+                                <asp:ImageButton ImageURL="~/images/1x1.gif" Style='<%# "border-width: 0px; background: transparent url(" & DotNetZoom.ForumConfig.DefaultImageFolder() & "forum.gif" & ") no-repeat; background-position: 0px -16px; height: 16px; width: 16px;"%>' Visible='<%# CanEdit() %>' OnClick="UserSelect_Click" AlternateText='<%# DotNetZoom.getlanguage("F_UserSelect") %>' CommandName="Select" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "UserID") %>' Runat="server" BorderWidth="0" BorderStyle="none"></asp:ImageButton>
                             </ItemTemplate>
                         </asp:TemplateColumn>
                         <asp:BoundColumn DataField="UserName">

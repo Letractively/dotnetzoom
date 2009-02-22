@@ -121,18 +121,25 @@ Namespace DotNetZoom
 			btnCancel.ToolTip = GetLanguage("annuler")
 			btnUpdate.Text = GetLanguage("enregistrer")
 			btnUpdate.ToolTip = GetLanguage("Gal_UpdateConf")
-			
+
+ 
             If Not Page.IsPostBack Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
 
                 GalleryTitle.Text = config.GalleryTitle
                 Description.Text = config.GalleryDescription
                 RootURL.Text = config.RootURL
-				If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = true) Then
-				' Super User or Admin can modify galery root directory and Quota
-				RootURL.Enabled = True
-				txtQuota.Enabled = True
-				end if
-				
+                If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) Then
+                    ' Super User or Admin can modify galery root directory and Quota
+                    RootURL.Enabled = True
+                    txtQuota.Enabled = True
+                End If
+
                 FileExtensions.Text = config.FileExtensions
                 MovieExtensions.Text = config.MovieExtensions
                 CategoryValues.Text = config.CategoryValues
@@ -140,33 +147,33 @@ Namespace DotNetZoom
                 StripHeight.Text = config.StripHeight.ToString
                 txtMaxFileSize.Text = config.MaxFileSize.ToString
                 txtQuota.Text = config.Quota.ToString
-				' info about quota
+                ' info about quota
 
-			Dim StrFolder as String
-			Dim SpaceUsed as Double			
-            Dim objAdmin As New AdminDB()
-			strFolder = Request.MapPath(config.RootURL)
-			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory(strFolder, SpaceUsed.ToString() )
-			End If
+                Dim StrFolder As String
+                Dim SpaceUsed As Double
+                Dim objAdmin As New AdminDB()
+                StrFolder = Request.MapPath(config.RootURL)
+                SpaceUsed = objAdmin.GetdirectorySpaceUsed(StrFolder)
+                If SpaceUsed = 0 Then
+                    SpaceUsed = objAdmin.GetFolderSizeRecursive(StrFolder)
+                    objAdmin.AddDirectory(StrFolder, SpaceUsed.ToString())
+                End If
 
-			SpaceUsed = SpaceUsed / 1048576
-            If Config.Quota = 0 Then
-			
-            lblQuota.Text = Replace(GetLanguage("Gal_QuotaInfo"), "{SpaceUsed}", Format(SpaceUsed, "#,##0.00"))
-            Else
-			lblQuota.Text = Replace(GetLanguage("Gal_QuotaInfo1"), "{SpaceUsed}", Format(SpaceUsed, "#,##0.00"))
-			lblQuota.Text = Replace(lblQuota.Text, "{Quota}", Format(Config.Quota, "#,##0.00"))
-			lblQuota.Text = Replace(lblQuota.Text, "{SpaceLeft}", Format(Config.Quota - SpaceUsed, "#,##0.00"))
-            End If
-			
-			lblQuota.ToolTip = getlanguage("Gal_QuotaTip")
-				
-				
-				
-				
+                SpaceUsed = SpaceUsed / 1048576
+                If config.Quota = 0 Then
+
+                    lblQuota.Text = Replace(GetLanguage("Gal_QuotaInfo"), "{SpaceUsed}", Format(SpaceUsed, "#,##0.00"))
+                Else
+                    lblQuota.Text = Replace(GetLanguage("Gal_QuotaInfo1"), "{SpaceUsed}", Format(SpaceUsed, "#,##0.00"))
+                    lblQuota.Text = Replace(lblQuota.Text, "{Quota}", Format(config.Quota, "#,##0.00"))
+                    lblQuota.Text = Replace(lblQuota.Text, "{SpaceLeft}", Format(config.Quota - SpaceUsed, "#,##0.00"))
+                End If
+
+                lblQuota.ToolTip = GetLanguage("Gal_QuotaTip")
+
+
+
+
                 MaxThumbWidth.Text = config.MaximumThumbWidth.ToString
                 MaxThumbHeight.Text = config.MaximumThumbHeight.ToString
                 BuildCacheOnStart.Checked = (config.BuildCacheonStart = True)
@@ -174,7 +181,7 @@ Namespace DotNetZoom
                 chkFixedSize.Checked = config.IsFixedSize
                 FixedWidth.Text = config.FixedWidth.ToString
                 Quality.Text = config.Quality.ToString
-	            FixedHeight.Text = config.FixedHeight.ToString
+                FixedHeight.Text = config.FixedHeight.ToString
                 chkKeepSource.Checked = config.IsKeepSource
                 SlideshowSpeed.Text = config.SlideshowSpeed.ToString
                 chkPrivate.Checked = config.IsPrivate
@@ -201,18 +208,15 @@ Namespace DotNetZoom
                 ' Display admin panel if user id admin
                 If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
                 OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
-				OrElse (PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ModuleId), ModuleSettings).AuthorizedEditRoles.ToString) = True) then
+                OrElse (PortalSecurity.IsInRoles(CType(PortalSettings.GetEditModuleSettings(ModuleId), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                     pnlAdmin.Visible = True
                 Else
                     pnlAdmin.Visible = False
+                    If txtOwnerID.Text <> Context.User.Identity.Name.ToString Then
+                        btnUpdate.Visible = False
+                    End If
                 End If
 
-                ' Store URL Referrer to return to portal
-                If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                Else
-                    ViewState("UrlReferrer") = ""
-                End If
             End If
 
             ddlDisplayOption.DataSource = [Enum].GetValues(GetType(GalleryConfig.GalleryDisplayOption))

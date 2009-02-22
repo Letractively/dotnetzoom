@@ -38,7 +38,7 @@ Namespace DotNetZoom
 
             ' Verify that the current user has access to edit this module
             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = False Then
-                Response.Redirect(GetFullDocument() & "?edit=control&tabid=" & TabId & "&def=Access Denied", True)
+                AccessDenied()
             End If
 		   lblAdminMenu.text = GetMenu(PortalSecurity.IsSuperUser, TabID)
 		   lblAdminMenu.visible = true
@@ -72,28 +72,29 @@ Namespace DotNetZoom
 			end if
 
 			Dim objAdmin As New DotNetZoom.AdminDB()
-
+            Dim IsSSL As Boolean
 			Dim result As SqlDataReader
 			result = objAdmin.GetAdminModuleDefinitions(GetLanguage("N"))
 			While Result.Read
-			' idadmin or ishost
-			if result("isadmin") and result("AdminOrder") <> 1 then
-			TempAdmin.append("<tr><td>")
-                    TempAdmin.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & """ title=""" & result("FriendlyName").ToString & """>")
+                ' idadmin or ishost
+                IsSSL = Boolean.Parse(result("ssl").ToString) And _portalSettings.SSL
+                If result("isadmin") And result("AdminOrder") <> 1 Then
+                    TempAdmin.Append("<tr><td>")
+                    TempAdmin.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, IsSSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & """ title=""" & result("FriendlyName").ToString & """>")
                     TempAdmin.Append("<img  src=""" & glbPath & "images/")
                     TempAdmin.Append(result("EditModuleIcon").ToString)
                     TempAdmin.Append(""" alt=""" & result("FriendlyName") & """ title=""" & result("FriendlyName") & """ style=""border-width:0px;"" /></a></td><td style=""white-space: nowrap;"">")
-                    TempAdmin.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & """ title=""" & result("FriendlyName") & """>" & result("FriendlyName") & "</a>")
+                    TempAdmin.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, IsSSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & """ title=""" & result("FriendlyName") & """>" & result("FriendlyName") & "</a>")
                     TempAdmin.Append("</td><td><p class=""normal"">" & result("Description") & "</p></td></tr>")
                 End If
                 If Host Then
                     If result("ishost") Then
                         TempHost.Append("<tr><td>")
-                        TempHost.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & IIf(result("isadmin"), "&hostpage=" & result("ModuleDefID"), "") & """ title=""" & result("FriendlyName").ToString & """>")
+                        TempHost.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, IsSSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & IIf(result("isadmin"), "&hostpage=" & result("ModuleDefID"), "") & """ title=""" & result("FriendlyName").ToString & """>")
                         TempHost.Append("<img  src=""" & glbPath & "images/")
                         TempHost.Append(result("EditModuleIcon").ToString)
                         TempHost.Append(""" alt=""" & result("FriendlyName") & """ title=""" & result("FriendlyName") & """ style=""border-width:0px;"" /></a></td><td style=""white-space: nowrap;"">")
-                        TempHost.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & IIf(result("isadmin"), "&hostpage=" & result("ModuleDefID"), "") & """ title=""" & result("FriendlyName") & """>" & result("FriendlyName") & "</a>")
+                        TempHost.Append("<a href=""" & FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, IsSSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "adminpage=" & result("ModuleDefID").ToString) & IIf(result("isadmin"), "&hostpage=" & result("ModuleDefID"), "") & """ title=""" & result("FriendlyName") & """>" & result("FriendlyName") & "</a>")
                         TempHost.Append("</td><td><p class=""normal"">" & result("Description") & "</p></td></tr>")
                     End If
                 End If
