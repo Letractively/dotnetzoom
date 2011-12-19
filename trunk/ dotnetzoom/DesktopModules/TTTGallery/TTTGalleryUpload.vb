@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -122,18 +125,21 @@ Namespace DotNetZoom
         Public Function Upload(ByVal StrFolder As String) as Double
             Dim uploadFile As GalleryUploadFile
             Dim uploadPath As String
+			Dim ZipKeepSource As String = BuildPath(New String(1) {_album.Path, ZgalleryConfig.SourceFolder}, "\", False, False)
+			Dim ZipKeepSourcePath As String
             Dim UploadFilePath As String = ""
             Dim albumFilePath As String
 			Dim ThumbFilePath As String
             Dim IStobeResized As Boolean
             Dim i As Integer
+			Dim NumberOfFile As Integer = 0
 			
-			Dim TmpStrFolder As String
 			Dim lWidth As Integer = 0
             Dim lHeight As Integer = 0
             Dim mImage As System.Drawing.Image
             Dim MaxWidth As Integer = ZgalleryConfig.MaximumThumbHeight
             Dim MaxHeight As Integer = ZgalleryConfig.MaximumThumbHeight
+			
             _errMessage = ""
             _SpaceUsed = 0
 
@@ -144,147 +150,300 @@ Namespace DotNetZoom
             End If
 
 
+            Dim selItem As IGalleryObjectInfo = CType(_Album.List.Item(CType(_Album.Size, integer)-1), IGalleryObjectInfo)
+            If (Not selItem Is Nothing) AndAlso (Not selItem.IsFolder) AndAlso IsNumeric(SelItem.Sort) Then
+                 NumberOfFile = Cint(selItem.sort)
+            End If
+			
+			
+			
+			
             Dim objAdmin As New AdminDB()
-            TmpStrFolder = HttpContext.Current.Request.MapPath(ZgalleryConfig.RootURL)
-
+ 
             For i = Count To 1 Step -1 ' Go backward to make sure correct item will be remove after uploading
 
                 uploadFile = CType(Item(i - 1), GalleryUploadFile)
-                If File.Exists(uploadFile.uploadFilePath) Then
-
-
-                    If uploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
-                        uploadPath = BuildPath(New String(1) {_album.Path, ZgalleryConfig.TempFolder}, "\", False, False)
-                    Else
-                        If Not IStobeResized Or uploadFile.Type = IGalleryObjectInfo.ItemType.Flash Or uploadFile.Type = IGalleryObjectInfo.ItemType.Movie Then
-                            uploadPath = _album.Path
+                If (uploadFile.uploadFilePath = StrFolder) Or StrFolder = "" Then
+                    If File.Exists(uploadFile.uploadFilePath) Then
+                        If uploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
+                            uploadPath = BuildPath(New String(1) {_album.Path, ZgalleryConfig.TempFolder}, "\", False, False)
                         Else
-                            uploadPath = BuildPath(New String(1) {_album.Path, ZgalleryConfig.SourceFolder}, "\", False, False)
+                            If Not IStobeResized Or uploadFile.Type = IGalleryObjectInfo.ItemType.Flash Or uploadFile.Type = IGalleryObjectInfo.ItemType.Movie Then
+                                uploadPath = _album.Path
+                            Else
+                                uploadPath = BuildPath(New String(1) {_album.Path, ZgalleryConfig.SourceFolder}, "\", False, False)
+                            End If
                         End If
-                    End If
-
-
-                    albumFilePath = Path.Combine(_album.Path, uploadFile.Name.ToLower())
-                    ThumbFilePath = Path.Combine(_album.Path, ZgalleryConfig.ThumbFolder & "\" & uploadFile.Name.ToLower())
-                    ' Do upload - create folder if not exists then upload file
-                    Try
-                        If Not Directory.Exists(uploadPath) Then
-                            Directory.CreateDirectory(uploadPath)
-                        End If
-
-                    Catch Exc As System.Exception
-                        _errMessage += "<br> 1) " + Exc.Message
-                    End Try
-
-                    ' Do Resize
-                    If IStobeResized AndAlso ZgalleryConfig.IsValidImageType(uploadFile.Extension) Then
-
-                        Try 'Save it to album folder for display
-                            ResizeImage(uploadFile.uploadFilePath, albumFilePath, ZgalleryConfig.FixedWidth, ZgalleryConfig.FixedHeight, uploadFile.Extension, ZgalleryConfig.Quality)
-                            _SpaceUsed += FileLen(albumFilePath)
-                            ' Add File Size
-                            'Delete original source file to save disk space
-                            If Not ZgalleryConfig.IsKeepSource Then
-                                ' Delete File Size
-                                _SpaceUsed -= FileLen(uploadFile.uploadFilePath)
-                                File.Delete(uploadFile.uploadFilePath)
+                        albumFilePath = Path.Combine(_album.Path, uploadFile.Name.ToLower())
+                        ThumbFilePath = Path.Combine(_album.Path, ZgalleryConfig.ThumbFolder & "\" & uploadFile.Name.ToLower())
+                        ' Do upload - create folder if not exists then upload file
+                        Try
+                            If Not Directory.Exists(uploadPath) Then
+                                Directory.CreateDirectory(uploadPath)
                             End If
 
                         Catch Exc As System.Exception
-                            _errMessage += "<br> 2)" + Exc.Message
+                            _errMessage += "<br>" + Exc.Message
                         End Try
 
-                    End If ' Resize
+                        ' Do Resize
+                        If IStobeResized AndAlso ZgalleryConfig.IsValidImageType(uploadFile.Extension) Then
 
-                    ' Update XMLData - except Zip file
-                    ' If uploaded file is not Zip then update XML data - If it's a Zip then do Unzip
-                    If Not uploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
-
-
-                        If ZgalleryConfig.IsValidImageType(uploadFile.Extension) Then
-                            Try
-                                mImage = System.Drawing.Image.FromFile(albumFilePath)
-                                lWidth = mImage.Width
-                                lHeight = mImage.Height
-                                ResizeImage(albumFilePath, ThumbFilePath, MaxWidth, MaxHeight, uploadFile.Extension, ZgalleryConfig.Quality)
-                                _SpaceUsed += FileLen(ThumbFilePath)
-                            Catch Exc As System.Exception
-                                _errMessage += "<br> upload 3" + Exc.Message + "<br>" + albumFilePath + "<br>" + ThumbFilePath + "<br>"
-                            End Try
-
-                        Else
-                            lWidth = 0
-                            lHeight = 0
-                        End If
-                        ' Dim metaData As New GalleryXML(_album.Path)
-                        GalleryXML.SaveMetaData(_album.Path, uploadFile.Name, uploadFile.Title, uploadFile.Description, uploadFile.Categories, uploadFile.OwnerID, lWidth.ToString(), lHeight.ToString())
-
-                    Else
-                        Dim objZipInputStream As New ZipInputStream(File.OpenRead(uploadFile.uploadFilePath))
-                        Dim objZipEntry As ZipEntry
-                        objZipEntry = objZipInputStream.GetNextEntry
-                        While Not objZipEntry Is Nothing
-
-                            Dim unzipFile As String = Unzip(objZipEntry, objZipInputStream, uploadPath).ToLower()
-
-                            Dim strExtension As String = ""
-                            If InStr(1, unzipFile, ".") > 0 Then
-                                strExtension = Path.GetExtension(unzipFile)
-                                UploadFilePath = Path.Combine(uploadPath, unzipFile)
-                                albumFilePath = Path.Combine(_album.Path, unzipFile)
-                                ThumbFilePath = Path.Combine(_album.Path, ZgalleryConfig.ThumbFolder & "\" & unzipFile)
-                            End If
-                            Try 'Save unzip file
-                                If IStobeResized And ZgalleryConfig.IsValidImageType(strExtension) Then
-                                    ResizeImage(UploadFilePath, albumFilePath, ZgalleryConfig.FixedWidth, ZgalleryConfig.FixedHeight, strExtension, ZgalleryConfig.Quality)
-                                    _SpaceUsed += FileLen(albumFilePath)
-                                    ' Add File Size  filelen(uploadFilePath)
-                                ElseIf ZgalleryConfig.IsValidMovieType(strExtension) _
-                                OrElse ZgalleryConfig.IsValidFlashType(strExtension) _
-                                OrElse (Not IStobeResized And ZgalleryConfig.IsValidImageType(strExtension)) Then
-                                    File.Copy(UploadFilePath, albumFilePath)
-                                    _SpaceUsed += FileLen(albumFilePath)
-
-
+                            Try 'Save it to album folder for display
+                                ResizeImage(uploadFile.uploadFilePath, albumFilePath, ZgalleryConfig.FixedWidth, ZgalleryConfig.FixedHeight, uploadFile.Extension, ZgalleryConfig.Quality, uploadFile.WaterMark)
+                                _SpaceUsed += New FileInfo(albumFilePath).Length
+                                ' Add File Size
+                                'Delete original source file to save disk space
+                                If Not ZgalleryConfig.IsKeepSource Then
+                                    ' Delete File Size
+                                    _SpaceUsed -= New FileInfo(uploadFile.uploadFilePath).Length
+                                    File.Delete(uploadFile.uploadFilePath)
                                 End If
 
-                                Dim metaData As New GalleryXML(_album.Path)
+                            Catch Exc As System.Exception
+                                _errMessage += "<br>" + Exc.Message
+                            End Try
 
-                                If ZgalleryConfig.IsValidImageType(strExtension) Then
+                        End If ' Resize
+
+                        ' Update XMLData - except Zip file
+                        ' If uploaded file is not Zip then update XML data - If it's a Zip then do Unzip
+                        If Not uploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
+
+
+                            If ZgalleryConfig.IsValidImageType(uploadFile.Extension) Then
+                                Try
                                     mImage = System.Drawing.Image.FromFile(albumFilePath)
                                     lWidth = mImage.Width
                                     lHeight = mImage.Height
-                                    Try
-                                        ResizeImage(albumFilePath, ThumbFilePath, MaxWidth, MaxHeight, strExtension, ZgalleryConfig.Quality)
-                                        _SpaceUsed += FileLen(ThumbFilePath)
-                                    Catch Exc As System.Exception
-                                        _errMessage += "<br> Resize Image " + Exc.Message + "<br>" + albumFilePath + "<br>" + ThumbFilePath + "<br>"
-                                    End Try
-                                Else
-                                    lWidth = 0
-                                    lHeight = 0
+                                    mImage.Dispose()
+                                    ResizeImage(albumFilePath, ThumbFilePath, MaxWidth, MaxHeight, uploadFile.Extension, ZgalleryConfig.Quality)
+                                    _SpaceUsed += New FileInfo(ThumbFilePath).Length
+                                Catch Exc As System.Exception
+                                    _errMessage += "<br>" + Exc.Message + "<br>" + albumFilePath + "<br>" + ThumbFilePath + "<br>"
+                                End Try
+
+                            Else
+                                lWidth = 0
+                                lHeight = 0
+                            End If
+                            ' Dim metaData As New GalleryXML(_album.Path)
+                            ' Put Sort in the XML
+
+                            NumberOfFile += 1
+
+                            Dim Latitude As String = "0"
+                            Dim Longitude As String = "0"
+                            Dim TempSort As String = uploadFile.Name
+                            Select Case uploadFile.Extension.ToLower()
+                                Case ".jpg", ".jpeg", ".tif", ".png"
+                                    Dim Exif As New ExifWorks(albumFilePath)
+                                    Latitude = Exif.Latitude(CType(3, ExifWorks.LatLongFormat))
+                                    Longitude = Exif.Longitude(CType(3, ExifWorks.LatLongFormat))
+                                    If ZgalleryConfig.CheckboxGPS Then
+                                        If TempSort = "0001-01-01 00:00:00" Then
+                                            TempSort = Exif.DateTimeLastModified.ToString("yyyy\-MM\-dd HH\:mm\:ss")
+                                            If TempSort = "0001-01-01 00:00:00" Then
+                                                Dim fi As FileInfo = New FileInfo(albumFilePath)
+                                                TempSort = fi.CreationTimeUtc.ToString("yyyy\-MM\-dd HH\:mm\:ss")
+                                            End If
+                                        End If
+                                        TempSort = Exif.DateTimeOriginal.ToString("yyyy\-MM\-dd HH\:mm\:ss")
+                                    End If
+
+                                    Dim TGalleryUser As GalleryUser = New GalleryUser(uploadFile.OwnerID)
+                                    Exif.Artist = TGalleryUser.UserName
+                                    Exif.Copyright = GetDomainName(HttpContext.Current.Request)
+                                    Exif.Description = uploadFile.Description
+                                    Exif.Title = uploadFile.Title
+
+                                    Exif.UserComment = uploadFile.WaterMark
+                                   
+                        Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
+                        BMP.Save(albumFilePath & ".tmp")
+                        BMP.Dispose()
+                        Exif.Dispose()
+                        System.IO.File.Delete(albumFilePath)
+                        System.IO.File.Move(albumFilePath & ".tmp", albumFilePath)
+
+                            End Select
+
+                            If Latitude = "" Then
+                                Latitude = "0"
+                                Longitude = "0"
+                            End If
+                            Dim What As New DataInfo
+                            ' IGalleryObjectInfo()
+                            What.Name = uploadFile.Name
+                            What.Title = uploadFile.Title
+                            What.Description = uploadFile.Description
+                            What.Categories = uploadFile.Categories
+                            What.OwnerID = uploadFile.OwnerID
+                            What.Width = lWidth.ToString()
+                            What.Height = lHeight.ToString()
+                            What.Sort = TempSort
+                            What.Latitude = Latitude
+                            What.Longitude = Longitude
+                            What.Gpsicon = "/images/gps/24camera.png"
+                            What.Gpsiconsize = "[24,24]"
+                            What.Link = ""
+                            What.IsFolder = False
+                            What.Size = uploadFile.ContentLength
+
+                            GalleryXML.SaveGalleryData(_album.Path, What)
+
+                        Else
+                            Dim objZipInputStream As New ZipInputStream(File.OpenRead(uploadFile.uploadFilePath))
+                            Dim objZipEntry As ZipEntry
+                            objZipEntry = objZipInputStream.GetNextEntry
+                            If ZgalleryConfig.IsKeepSource Then
+                                ZipKeepSource = BuildPath(New String(1) {_album.Path, ZgalleryConfig.SourceFolder}, "\", False, False)
+                            End If
+
+                            Try
+                                If Not Directory.Exists(ZipKeepSource) Then
+                                    Directory.CreateDirectory(ZipKeepSource)
                                 End If
-
-
-                                GalleryXML.SaveMetaData(_album.Path, unzipFile, "", "", uploadFile.Categories, uploadFile.OwnerID, lWidth.ToString(), lHeight.ToString())
-
                             Catch Exc As System.Exception
-                                _errMessage += "<br> upload 5 " + Exc.Message
+                                _errMessage += "<br>" + Exc.Message
                             End Try
 
-                            objZipEntry = objZipInputStream.GetNextEntry
+                            While Not objZipEntry Is Nothing
 
-                        End While
+                                Dim unzipFile As String = Unzip(objZipEntry, objZipInputStream, uploadPath).ToLower()
 
-                        'Delete temp files & folder
-                        _SpaceUsed -= objAdmin.GetFolderSizeRecursive(uploadPath)
-                        IO.Directory.Delete(uploadPath, True)
+                                Dim strExtension As String = ""
+                                If InStr(1, unzipFile, ".") > 0 Then
+                                    strExtension = Path.GetExtension(unzipFile)
+                                    UploadFilePath = Path.Combine(uploadPath, unzipFile)
+                                    albumFilePath = Path.Combine(_album.Path, unzipFile)
+                                    ThumbFilePath = Path.Combine(_album.Path, ZgalleryConfig.ThumbFolder & "\" & unzipFile)
+                                    If ZgalleryConfig.IsKeepSource Then
+                                        ZipKeepSourcePath = Path.Combine(ZipKeepSource, unzipFile)
+                                    End If
+                                End If
+                                Try 'Save unzip file
+                                    If IStobeResized And ZgalleryConfig.IsValidImageType(strExtension) Then
+                                        ResizeImage(UploadFilePath, albumFilePath, ZgalleryConfig.FixedWidth, ZgalleryConfig.FixedHeight, strExtension, ZgalleryConfig.Quality, uploadFile.WaterMark)
+                                        _SpaceUsed += New FileInfo(albumFilePath).Length
+                                        ' Add File Size  New FileInfo(uploadFilePath).Length
+                                    ElseIf ZgalleryConfig.IsValidMovieType(strExtension) _
+                                    OrElse ZgalleryConfig.IsValidFlashType(strExtension) _
+                                    OrElse (Not IStobeResized And ZgalleryConfig.IsValidImageType(strExtension)) Then
+                                        File.Copy(UploadFilePath, albumFilePath)
+                                        _SpaceUsed += New FileInfo(albumFilePath).Length
 
-                    End If 'Upzip
 
-                    ' Remove uploaded file off the collection
-                    Me.RemoveAt(i - 1)
+                                    End If
+
+                                    If ZgalleryConfig.IsKeepSource And ZgalleryConfig.IsValidImageType(strExtension) Then
+                                        File.Copy(UploadFilePath, ZipKeepSourcePath)
+                                        _SpaceUsed += New FileInfo(ZipKeepSourcePath).Length
+                                    End If
+
+                                    ' Dim metaData As New GalleryXML(_album.Path)
+
+                                    If ZgalleryConfig.IsValidImageType(strExtension) Then
+                                        mImage = System.Drawing.Image.FromFile(albumFilePath)
+                                        lWidth = mImage.Width
+                                        lHeight = mImage.Height
+                                        mImage.Dispose()
+                                        Try
+                                            ResizeImage(albumFilePath, ThumbFilePath, MaxWidth, MaxHeight, strExtension, ZgalleryConfig.Quality)
+                                            _SpaceUsed += New FileInfo(ThumbFilePath).Length
+                                        Catch Exc As System.Exception
+                                            _errMessage += "<br>" + Exc.Message + "<br>" + albumFilePath + "<br>" + ThumbFilePath + "<br>"
+                                        End Try
+                                    Else
+                                        lWidth = 0
+                                        lHeight = 0
+                                    End If
+
+                                    ' Put Sort in the XML
+
+                                    NumberOfFile += 1
+
+                                    Dim Latitude As String = ""
+                                    Dim Longitude As String = ""
+                                    Dim TempSort As String = unzipFile
+                                    Select Case strExtension.ToLower()
+                                        Case ".jpg", ".jpeg", ".tif", ".png"
+                                            Dim Exif As New ExifWorks(albumFilePath)
+                                            Latitude = Exif.Latitude(CType(3, ExifWorks.LatLongFormat))
+                                            Longitude = Exif.Longitude(CType(3, ExifWorks.LatLongFormat))
+                                            If ZgalleryConfig.CheckboxGPS Then
+                                                TempSort = Exif.DateTimeOriginal.ToString("yyyy\-MM\-dd HH\:mm\:ss")
+                                                If TempSort = "0001-01-01 00:00:00" Then
+                                                    TempSort = Exif.DateTimeLastModified.ToString("yyyy\-MM\-dd HH\:mm\:ss")
+                                                    If TempSort = "0001-01-01 00:00:00" Then
+                                                        Dim fi As FileInfo = New FileInfo(albumFilePath)
+                                                        TempSort = fi.CreationTimeUtc.ToString("yyyy\-MM\-dd HH\:mm\:ss")
+                                                    End If
+                                                End If
+                                            End If
+
+
+                                            Dim TGalleryUser As GalleryUser = New GalleryUser(uploadFile.OwnerID)
+                                            Exif.Artist = TGalleryUser.UserName
+                                            Exif.Copyright = GetDomainName(HttpContext.Current.Request)
+                                            Exif.Description = uploadFile.Description
+                                            Exif.Title = uploadFile.Title
+                                            Exif.UserComment = uploadFile.WaterMark
+
+                                            Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
+                                            BMP.Save(albumFilePath & ".tmp")
+                                            BMP.Dispose()
+                                            Exif.Dispose()
+                                            System.IO.File.Delete(albumFilePath)
+                                            System.IO.File.Move(albumFilePath & ".tmp", albumFilePath)
+
+
+                                    End Select
+
+                                    If Latitude = "" Then
+                                        Latitude = "0"
+                                        Longitude = "0"
+                                    End If
+                                    'Dim What As IGalleryObjectInfo
+                                    Dim What As New DataInfo
+                                    What.Name = unzipFile
+                                    What.Title = ""
+                                    What.Description = ""
+                                    What.Categories = uploadFile.Categories
+                                    What.OwnerID = uploadFile.OwnerID
+                                    What.Width = lWidth.ToString()
+                                    What.Height = lHeight.ToString()
+                                    What.Sort = TempSort
+                                    What.Latitude = Latitude
+                                    What.Longitude = Longitude
+                                    What.GPSIcon = "/images/gps/24camera.png"
+                                    What.GPSIconsize = "[24,24]"
+                                    What.Link = ""
+                                    What.IsFolder = False
+                                    What.Size = uploadFile.ContentLength
+
+                                    GalleryXML.SaveGalleryData(_album.Path, What)
+
+
+                                Catch Exc As System.Exception
+                                    _errMessage += "<br>" + Exc.Message
+                                End Try
+
+                                objZipEntry = objZipInputStream.GetNextEntry
+
+                            End While
+
+                            'Delete temp files & folder
+                            _SpaceUsed -= objAdmin.GetFolderSizeRecursive(uploadPath)
+                            IO.Directory.Delete(uploadPath, True)
+
+                        End If 'Upzip
+
+                        ' Remove uploaded file off the collection
+                        Me.RemoveAt(i - 1)
+                    End If
                 End If
+
             Next
 
             Return _SpaceUsed
@@ -301,7 +460,7 @@ Namespace DotNetZoom
                     strFileNamePath = Path.Combine(TempDir, strFileName)
 
                     If File.Exists(strFileNamePath) Then
-					    _SpaceUsed -= Filelen(strFileNamePath)
+					    _SpaceUsed -= New FileInfo(strFileNamePath).Length
                         File.Delete(strFileNamePath)
                     End If
 
@@ -316,13 +475,13 @@ Namespace DotNetZoom
                     End While
 
                     objFileStream.Close()
-					_SpaceUsed += Filelen(strFileNamePath)
+					_SpaceUsed += New FileInfo(strFileNamePath).Length
                     Return strFileName
 
                 End If
 
             Catch Exc As System.Exception
-                _errMessage += "<br> unzip error " + Exc.Message
+                _errMessage += "<br>" + Exc.Message
             End Try
 
         End Function
@@ -337,7 +496,6 @@ Namespace DotNetZoom
         Private _title As String
         Private _description As String
         Private _categories As String
-        Private _owner As String = ""
         Private _ownerID As Integer = 0
         Private _type As IGalleryObjectInfo.ItemType
         Private _icon As String
@@ -346,7 +504,8 @@ Namespace DotNetZoom
 		Private _FileName As String
         Private _ContentType As String
         Private _uploadFilePath As String
-		Private _ContentLength As Integer
+        Private _ContentLength As Integer
+        Private _WaterMark As String = ""
 
         Public Property ModuleID() As Integer
             Get
@@ -440,17 +599,14 @@ Namespace DotNetZoom
             End Set
         End Property
 
-        Public ReadOnly Property Owner() As String
-            Get
-                Dim dbUser As New UsersDB()
-                Dim dr As SqlDataReader = dbUser.GetSingleUser(_portalSettings.PortalId, _ownerID)
-                If dr.Read Then
-                    _owner = ConvertString(dr("UserName"))
-                End If
-                dr.Close()
 
-                Return _owner
+        Public Property WaterMark() As String
+            Get
+                Return _WaterMark
             End Get
+            Set(ByVal Value As String)
+                _WaterMark = Value
+            End Set
         End Property
 
         Public ReadOnly Property Icon() As String

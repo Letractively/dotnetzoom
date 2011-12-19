@@ -27,6 +27,13 @@
         </tr>
         <tr>
             <td width="300" class="SubHead">
+                <label for="<%=txtHostEmail2.ClientID%>"><%=DotNetZoom.GetLanguage("HS_EmailHost2")%>:</label></td>
+            <td>
+                <asp:textbox id="txtHostEmail2" runat="server" width="300" MaxLength="256" CssClass="NormalTextBox"></asp:textbox>
+            </td>
+        </tr>
+        <tr>
+            <td width="300" class="SubHead">
                 <%=DotNetZoom.GetLanguage("HS_TimeHost") %>:</td>
             <td>
 			<asp:Label id="ddlTimeserver" runat="server" CssClass="NormalTextBox" ></asp:Label>

@@ -6,6 +6,9 @@
 ' With ideas & code contributed by:
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' =======================================================================================
 
 Imports DotNetZoom
@@ -37,7 +40,7 @@ Namespace DotNetZoom
 		Protected WithEvents pnlUser As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents txtSubject As System.Web.UI.WebControls.TextBox
         Protected WithEvents rfvSubject As System.Web.UI.WebControls.RequiredFieldValidator
-        Protected WithEvents FCKeditor1 As FredCK.FCKeditorV2.FCKEditor
+        Protected WithEvents FCKeditor1 As DotNetZoom.FCKEditor
 		
         Protected WithEvents rfvMessage As System.Web.UI.WebControls.RequiredFieldValidator
         Protected WithEvents pnlCompose As System.Web.UI.WebControls.PlaceHolder

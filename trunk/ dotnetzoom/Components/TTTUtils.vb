@@ -232,6 +232,11 @@ Namespace DotNetZoom
 
             Dim currentQueries As Hashtable = CreateHashtableFromQueryString(page)
             Dim addQueries As Hashtable = CreateHashtableFromQueryString(add)
+            If remove = "" Then
+                remove = "showlogin="
+            Else
+                remove += "&showlogin="
+            End If
             Dim removeQueries As Hashtable = CreateHashtableFromQueryString(remove)
 
             Dim newQueryString As String = CreateQueryString(currentQueries, addQueries, removeQueries)
@@ -543,6 +548,7 @@ Namespace DotNetZoom
                         Try
                             Dim image As System.Drawing.Image = System.Drawing.Image.FromStream(_inputFile.PostedFile.InputStream)
                             dimensionsCorrect = image.Width > 0 AndAlso image.Width <= _maxWidth AndAlso (image.Height > 0 AndAlso image.Height <= _maxHeight)
+                            image.Dispose()
                         Catch
                         End Try
 

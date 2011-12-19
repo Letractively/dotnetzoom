@@ -76,7 +76,7 @@ Namespace DotNetZoom
         '*******************************************************
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
- 			 Title1.DisplayHelp = "DisplayHelp_ModuleDefinitions"
+
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 			lnkicone.Tooltip = GetLanguage("select_icone_tooltip")	
@@ -97,6 +97,7 @@ Namespace DotNetZoom
             If IsAdminTab() And Not (HttpContext.Current.Request.Params("defid") Is Nothing) Then
                 If IsNumeric(Request.Params("defId")) Then
                     defId = Int32.Parse(Request.Params("defId"))
+                    Title1.DisplayHelp = "DisplayHelp_ModuleDefinitions"
                 End If
             End If
             valFriendlyName.ErrorMessage = GetLanguage("need_module_def")
@@ -109,7 +110,7 @@ Namespace DotNetZoom
                 cmdUpload.NavigateUrl = GetFullDocument() & "?hostpage=&tabid=" & TabId & "&def=Gestion fichiers"
 
                 If defId = -1 Then
-
+                    Title1.DisplayHelp = "DisplayHelp_AddModuleDef"
                     tabAddModule.Visible = True
                     tabEditModule.Visible = False
                     cmdUpdate.Text = GetLanguage("install")
@@ -132,7 +133,7 @@ Namespace DotNetZoom
 
                     tabAddModule.Visible = False
                     tabEditModule.Visible = True
-
+                    Title1.DisplayHelp = "DisplayHelp_ModuleDefinitions"
                     ' Obtain the module definition to edit from the database
                     Dim objAdmin As New AdminDB()
 
@@ -296,6 +297,14 @@ Namespace DotNetZoom
                         End If
                         dr.Close()
 
+                        dr = objAdmin.GetSingleModuleDefinitionByName(GetLanguage("N"), nodeModule.Item("friendlyname").InnerText)
+
+                        If dr.Read Then
+                            defId = Int32.Parse(dr("ModuleDefID"))
+
+                        End If
+                        dr.Close()
+
                         ' move installation file to module folder ( for uninstall )
                         If cboModule.SelectedItem.Text <> "Template" Then
                             If File.Exists(strAbsolutePath & cboModule.SelectedItem.Text & ".xml") Then
@@ -308,11 +317,7 @@ Namespace DotNetZoom
 
                 End If
 
-                If Request.Params("tabid") Is Nothing Then
-                    Response.Redirect(GetFullDocument() & "?" & GetAdminPage(), True)
-                Else
-                    Response.Redirect(GetFullDocument() & "?tabid=" & Request.Params("tabid") & "&" & GetAdminPage(), True)
-                End If
+                Response.Redirect(Request.RawUrl & "&defId=" & defId.ToString, True)
 
 
 

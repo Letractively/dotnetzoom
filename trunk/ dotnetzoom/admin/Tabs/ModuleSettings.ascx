@@ -167,11 +167,11 @@
         </tr>
         <tr>
             <td valign="bottom" colspan="2">
-                <asp:linkbutton class="CommandButton" id="cmdUpdate" runat="server" Text="Update"></asp:linkbutton>
+                <asp:linkbutton cssclass="CommandButton" id="cmdUpdate" runat="server" Text="Update"></asp:linkbutton>
                 &nbsp;&nbsp; 
-                <asp:linkbutton class="CommandButton" id="cmdCancel" runat="server" Text="Cancel"></asp:linkbutton>
+                <asp:linkbutton cssclass="CommandButton" id="cmdCancel" runat="server" Text="Cancel"></asp:linkbutton>
                 &nbsp;&nbsp; 
-                <asp:linkbutton class="CommandButton" id="cmdDelete" runat="server" Text="Delete"></asp:linkbutton>
+                <asp:linkbutton cssclass="CommandButton" id="cmdDelete" runat="server" Text="Delete"></asp:linkbutton>
             </td>
         </tr>
         <tr>

@@ -1,6 +1,6 @@
 <%@ Control Language="vb" AutoEventWireup="false" Codebehind="PrivateMessagesModule.ascx.vb" Inherits="DotNetZoom.PrivateMessagesModule" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx"%>
-<%@ Register TagPrefix="FCKeditorV2" Namespace="FredCK.FCKeditorV2" Assembly="FredCK.FCKeditorV2" %>
+<%@ Register TagPrefix="Editor"  Namespace="dotnetzoom" Assembly="DotNetZoom" %>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:PlaceHolder id="pnlModuleContent" Runat="server">
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
@@ -231,7 +231,7 @@ function SelectAllCheckboxes(intType)
 		<tr>
 			<td class="Cell" valign="top"><%= DotNetZoom.GetLanguage("UO_Message") %></td>
 			<td class="Cell" width="100%">
-			<FCKeditorV2:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></FCKeditorV2:FCKeditor>
+			<editor:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></editor:FCKeditor>
 			</td>
 		</tr>
 		<tr>

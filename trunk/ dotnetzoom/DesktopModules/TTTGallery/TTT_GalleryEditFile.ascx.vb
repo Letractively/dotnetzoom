@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -38,12 +41,18 @@ Namespace DotNetZoom
         Protected WithEvents lblInfo As System.Web.UI.WebControls.Label
         Protected WithEvents txtPath As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtName As System.Web.UI.WebControls.TextBox
+		Protected WithEvents txtSortOrder As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtOwner As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtTitle As System.Web.UI.WebControls.TextBox
+        Protected WithEvents txtWaterMark As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtDescription As System.Web.UI.WebControls.TextBox
-        Protected WithEvents lstCategories As System.Web.UI.WebControls.CheckBoxList
+        Protected WithEvents ddCategories As System.Web.UI.WebControls.DropDownList
         Protected WithEvents CancelButton As System.Web.UI.WebControls.Button
         Protected WithEvents imgFile As System.Web.UI.WebControls.Image
+        Protected WithEvents imgFileIcon As System.Web.UI.WebControls.Image
+        Protected WithEvents gpsIconImage As System.Web.UI.WebControls.DataList
+        Protected WithEvents div1 As System.Web.UI.HtmlControls.HtmlGenericControl
+
         Protected WithEvents txtOwnerID As System.Web.UI.WebControls.TextBox
         Protected WithEvents dlFolders As System.Web.UI.WebControls.DataList
         Protected WithEvents UpdateButton As System.Web.UI.WebControls.Button
@@ -85,8 +94,10 @@ Namespace DotNetZoom
             ZFile = CType(Zrequest.Folder.List.Item(Zeditindex), GalleryFile)
 
             If Not Zfolder.IsPopulated Then
-                Zrequest.Folder.Populate()
+                Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
+                'Response.Redirect(glbPath & "DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query)
             End If
+
             If Not Page.IsPostBack Then
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
@@ -105,9 +116,6 @@ Namespace DotNetZoom
                     btnEditOwner.Visible = False
                 End If
 
-                If Not Zfolder.IsPopulated Then
-                    Response.Redirect(glbPath & "DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query & "&mid=" & ZmoduleID & "&tabid=" & TabId)
-                End If
 
                 'BindData(Zrequest)
                 BindData()
@@ -126,15 +134,59 @@ Namespace DotNetZoom
             With ZFile
                 txtPath.Text = .URL
                 txtName.Text = .Name
-                txtOwner.Text = .Owner.UserName
+                Dim TGalleryUser As GalleryUser = New GalleryUser(.OwnerID)
+                txtOwner.Text = TGalleryUser.UserName
                 txtOwnerID.Text = .OwnerID.ToString
                 txtTitle.Text = .Title
+				txtSortOrder.Text = .Sort
                 txtDescription.Text = .Description
                 imgFile.ImageUrl = .ThumbNail
             End With
 
             BindCategories()
 
+            ' GPS ICON gpsIconImage
+            Dim items() As String
+            Dim item As String
+            Dim slImage As FolderDetail
+            items = System.IO.Directory.GetFiles(Request.MapPath("/images/gps/"))
+            Dim slImages As New ArrayList()
+            Dim strExtension As String
+
+            For Each item In items
+                strExtension = IO.Path.GetExtension(item)
+                'Check Valid Type here
+                If Zconfig.IsValidImageType(strExtension) Then
+                    slImage = New FolderDetail()
+                    slImage.Name = IO.Path.GetFileName(item)
+                    slImage.URL = "/images/gps/" + IO.Path.GetFileName(item)
+                    slImages.Add(slImage)
+                End If
+            Next
+            gpsIconImage.DataSource = slImages
+            gpsIconImage.DataBind()
+            gpsIconImage.Visible = Zconfig.CheckboxGPS
+
+            imgFileIcon.ImageUrl = ZFile.GPSIcon
+            imgFileIcon.Visible = Zconfig.CheckboxGPS
+            div1.Visible = Zconfig.CheckboxGPS
+            strExtension = ""
+            If InStr(1, ZFile.Name, ".") <> 0 Then
+                strExtension = Mid(ZFile.Name, InStrRev(ZFile.Name, ".") + 1)
+            End If
+
+
+            Select strExtension.ToLower()
+                Case "jpg", "jpeg", "tif", "png"
+                    Dim Exif As New ExifWorks(Server.MapPath(ZFile.URL))
+                    txtWaterMark.Text = Exif.UserComment
+                    If txtWaterMark.Text <> "" Then
+                        txtWaterMark.Enabled = False
+                    End If
+                    Exif.Dispose()
+                Case Else
+                    txtWaterMark.Enabled = False
+            End Select
         End Sub
 
         Private Sub BindCategories()
@@ -143,8 +195,11 @@ Namespace DotNetZoom
             Dim catString As String
 
             ' Clear existing items in checkboxlist
-            lstCategories.Items.Clear()
 
+            ddCategories.Items.Clear()
+            Dim EmptyItem As New ListItem
+            EmptyItem.Value = ""
+            ddCategories.Items.Add(EmptyItem)
             For Each catString In catList
 
                 Dim catItem As New ListItem()
@@ -155,70 +210,91 @@ Namespace DotNetZoom
                     catItem.Selected = True
                 End If
                 'list category for current item
-                lstCategories.Items.Add(catItem)
-
+                ddCategories.Items.Add(catItem)
             Next
+
+            If Not ddCategories.Items.FindByValue(ZFile.Categories) Is Nothing Then
+                ddCategories.Items.FindByValue(ZFile.Categories).Selected = True
+            End If
 
         End Sub
 
         Private Sub UpdateButton_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles UpdateButton.Click
 
             Dim directory As String = Zrequest.Folder.Path
-            Dim name As String = ZFile.Name
-            Dim ownerID As Integer = Int16.Parse(Me.txtOwnerID.Text)
-            Dim title As String = txtTitle.Text
-            Dim description As String = txtDescription.Text
-            Dim categories As String = GetCategories(lstCategories)
-            Dim lWidth As String = ZFile.Width
-            Dim lHeight As String = ZFile.Height
+            Dim metaData As New GalleryXML(directory)
+            Dim What As IGalleryObjectInfo = metaData.CompleteInfo(ZFile.name)
+
+
+            What.Title = txtTitle.Text
+            What.Description = txtDescription.Text
+            What.Categories = ddCategories.SelectedItem.Value
+            What.OwnerID = Int16.Parse(Me.txtOwnerID.Text)
+            What.Sort = txtSortOrder.Text
+            What.gpsIcon = imgFileIcon.ImageUrl
             Dim strExtension As String = ""
-            If InStr(1, name, ".") <> 0 Then
-                strExtension = Mid(Name, InStrRev(Name, ".") + 1)
+            If InStr(1, What.Name, ".") <> 0 Then
+                strExtension = Mid(What.Name, InStrRev(What.Name, ".") + 1)
             End If
+
 
             Select Case strExtension.ToLower()
                 Case "jpg", "jpeg", "tif", "png"
                     Dim fileName As String
-                    FileName = Server.MapPath(ZFile.URL)
-                    Dim Exif As New ExifWorks(FileName)
-                    Exif.Artist = txtOwner.Text
-                    Exif.Copyright = GetDomainName(Request)
-                    Exif.Description = txtDescription.Text
-                    Exif.Title = txtTitle.Text
-                    Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
-                    BMP.Save(FileName & ".tmp")
-                    BMP.Dispose()
-                    Exif.Dispose()
-                    System.IO.File.Delete(FileName)
-                    System.IO.File.Move(FileName & ".tmp", FileName)
+                    fileName = Server.MapPath(ZFile.URL)
+                    Dim Exif As New ExifWorks(fileName)
+                    If What.Latitude = "" Then
+                        What.Latitude = Exif.Latitude(CType(3, ExifWorks.LatLongFormat))
+                        What.Longitude = Exif.Longitude(CType(3, ExifWorks.LatLongFormat))
+                    End If
+                    If What.Latitude = "" Then
+                        What.Latitude = "0"
+                        What.Longitude = "0"
+                    End If
+                    If Exif.UserComment <> txtWaterMark.Text Or Exif.Artist <> txtOwner.Text Or Exif.Title <> txtTitle.Text Or Exif.Copyright <> GetDomainName(Request) Or Exif.Description <> txtDescription.Text Then
+                        Exif.Artist = txtOwner.Text
+                        Exif.Copyright = GetDomainName(Request)
+                        Exif.Description = txtDescription.Text
+                        Exif.Title = txtTitle.Text
+                        Exif.UserComment = txtWaterMark.Text
+                        Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
+                        If txtWaterMark.Enabled Then
+                            BMP = watermrk(BMP, txtWaterMark.Text)
+                            Dim tBMP As System.Drawing.Bitmap = Exif.GetBitmap()
+                            Dim PropItm As Drawing.Imaging.PropertyItem
+                            For Each PropItm In tBMP.PropertyItems
+                                BMP.SetPropertyItem(PropItm)
+                            Next
+                            tBMP.Dispose()
+                        End If
+                        BMP.Save(fileName & ".tmp")
+                        BMP.Dispose()
+                        Exif.Dispose()
+                        System.IO.File.Delete(fileName)
+                        System.IO.File.Move(fileName & ".tmp", fileName)
+
+                    Else
+                        Exif.Dispose()
+                    End If
+
+
             End Select
 
+            ' put a watermark on file
 
 
-            GalleryXML.SaveMetaData(directory, name, title, description, categories, ownerID, LWidth, Lheight)
+            ' Put Sort in the XML
+            GalleryXML.SaveGalleryData(directory, What)
+
+
             GalleryConfig.ResetGalleryConfig(ZmoduleID)
+            Zfolder.Reset()
+            ClearModuleCache(ZmoduleID)
 
             Response.Redirect(CType(ViewState("UrlReferrer"), String))
 
         End Sub
 
-        Private Function GetCategories(ByVal List As CheckBoxList) As String
-            Dim catItem As ListItem
-            Dim catString As String = ""
-
-            For Each catItem In List.Items
-                If catItem.Selected Then
-                    catString += catItem.Value & ";"
-                End If
-            Next
-
-            If Len(catString) > 0 Then
-                Return catString.TrimEnd(";"c)
-            Else
-                Return ""
-            End If
-
-        End Function
 
         Private Function GetRootURL() As String
             ' Return GetFullDocument() & "?" & "&tabid=" & portalSettings.GetEditModuleSettings(ZmoduleID).TabId
@@ -248,6 +324,19 @@ Namespace DotNetZoom
         Private Sub btnEditOwner_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnEditOwner.Click
             pnlSelectOwner.Visible = True
             ctlUsers.BindUsers()
+        End Sub
+
+        Private Sub GPSIconImage_ItemCommand(ByVal Sender As System.Object, ByVal e As System.Web.UI.WebControls.DataListCommandEventArgs) Handles gpsIconImage.ItemCommand
+            imgFileIcon.ImageUrl = CStr(e.CommandArgument)
+            Dim directory As String = Zrequest.Folder.Path
+            Dim name As String = ZFile.Name
+            Dim mImage As System.Drawing.Image
+            mImage = System.Drawing.Image.FromFile(Request.MapPath(imgFileIcon.ImageUrl))
+            GalleryXML.Savegpsicon(directory, name, imgFileIcon.ImageUrl, "[" + mImage.Width.ToString + "," + mImage.Height.ToString + "]")
+            imgFileIcon.Width = CType(mImage.Width.ToString, Unit)
+            imgFileIcon.Height = CType(mImage.Height.ToString, Unit)
+            mImage.Dispose()
+
         End Sub
 
         Private Sub ctlUsers_UserSelected(ByVal sender As Object, ByVal e As System.EventArgs) Handles ctlUsers.UserSelected

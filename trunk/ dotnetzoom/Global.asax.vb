@@ -54,7 +54,7 @@ Namespace DotNetZoom
                 objStream.WriteLine(strWebConfig)
                 objStream.Close()
             Catch
-                SendHttpException("403", "Forbidden", Request, Server.MapPath("web.config"))
+				SendHttpException("403", "Forbidden", Request, Server.MapPath("web.config"))
             End Try
         End Sub
 
@@ -104,7 +104,7 @@ Namespace DotNetZoom
 
             ' for each build version up to the current version, perform the necessary upgrades
             If intBuild > -2 Then
-                While intBuild < System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly.Location).ProductBuildPart()
+	            While intBuild < ApplicationVersion
                     intBuild += 1
                     ' verify script has not already been run
                     context.Cache.Remove(TempKey)
@@ -180,7 +180,7 @@ Namespace DotNetZoom
                     Application("DoValidation") = Nothing
                     Dim TempError As String = Application("error403")
                     Application("error403") = Nothing
-                    SendHttpException("403", "Forbidden", Request, TempError)
+            	    SendHttpException("403", "Forbidden", Request, TempError)
                 End If
             End If
 
@@ -188,14 +188,14 @@ Namespace DotNetZoom
 
             If Not Application(Request.UserHostAddress) Is Nothing Then
                 If CType(Application(Request.UserHostAddress), DateTime) > DateTime.Now() Then
-                    Response.StatusCode = "403"
-                    Response.StatusDescription = "Forbidden"
-                    Response.Write("<html><head><title>Forbidden</title></head><body bgcolor=white text=black>Forbidden : " & Request.UserHostAddress & " IP address rejected</body></html>")
-                    Response.End()
+				  Response.StatusCode = "403"
+                  Response.StatusDescription = "Forbidden"
+                  Response.Write("<html><head><title>Forbidden</title></head><body bgcolor=white text=black>Forbidden : " & Request.UserHostAddress & " IP address rejected</body></html>")
+                  Response.End()
                 Else
                     Application(Request.UserHostAddress) = Nothing
                 End If
-            End If
+             End If
 
 
             Dim context As HttpContext = HttpContext.Current
@@ -209,28 +209,28 @@ Namespace DotNetZoom
                     Trootle = Trootle + 1
                     context.Cache.Insert(Request.UserHostAddress, Trootle, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(TSpan), Caching.CacheItemPriority.Low, Nothing)
                     If Trootle > 10 Then
-                        Response.StatusCode = "503"
-                        Response.StatusDescription = "Service Unavailable"
-                        Response.Write("<html><head><title>Service Unavailable</title></head><body bgcolor=white text=black>Wait</body></html>")
-                        Response.End()
+				        Response.StatusCode = "503"
+                		Response.StatusDescription = "Service Unavailable"
+                		Response.Write("<html><head><title>Service Unavailable</title></head><body bgcolor=white text=black>Wait</body></html>")
+                		Response.End()
                     End If
                 End If
-            End If
+            End If  'End Throttle
 
 
             If (Request.Path.IndexOf(Chr(92)) >= 0 Or _
                   System.IO.Path.GetFullPath(Request.PhysicalPath) <> Request.PhysicalPath) Then
-                SendHttpException("404", "Not Found", Request)
+	                 SendHttpException("404", "Not Found", Request)
             End If
 
 
-            Dim StrPhysicalPath As String = context.Request.PhysicalPath
-            Dim StrExtension As String = ""
+           Dim StrPhysicalPath As String = context.Request.PhysicalPath
+           Dim StrExtension As String = ""
             If InStr(1, StrPhysicalPath, ".") Then
-                StrExtension = Mid(StrPhysicalPath, InStrRev(StrPhysicalPath, ".")).ToLower
-            End If
+               StrExtension = Mid(StrPhysicalPath, InStrRev(StrPhysicalPath, ".")).ToLower
+           End If
 
-            If StrExtension <> ".axd" Then
+           If StrExtension <> ".axd" Then
 
                 If Application("dostartup") = "ok" Then
                     ' Site was not set up yet send Startup
@@ -288,10 +288,9 @@ Namespace DotNetZoom
                 ' check once to see if the upgrade worked
                 If Application("DoValidation") = "ok" Then
                     Dim DatabaseVersion As Integer = PortalSettings.GetVersion
-                    Dim AssemblyVersion As Integer = System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly.Location).ProductBuildPart()
-
-
-                    If DatabaseVersion <> AssemblyVersion Then
+                    
+					   
+                    If DatabaseVersion <> ApplicationVersion Then
                         ' the database version is not synchronized with the assembly version
                         Dim TempKey As String = GetDBname()
                         context.Cache.Remove(TempKey)
@@ -303,7 +302,7 @@ Namespace DotNetZoom
                             strMessage = Replace(GetXMLmessage("error1", Request), "[DBname]", GetDBname())
                         Else
                             Dim intVersion As Integer
-                            For intVersion = (DatabaseVersion + 1) To AssemblyVersion
+                            For intVersion = (DatabaseVersion + 1) To ApplicationVersion
                                 If Not File.Exists(Server.MapPath("Database\1.0." & intVersion.ToString & ".sql")) Then
                                     strMessage += "<br>1.0." & intVersion.ToString & ".sql"
                                 Else
@@ -322,7 +321,7 @@ Namespace DotNetZoom
 
 
                         Dim strHTML As String = GetXMLmessage("500", Request)
-                        strHTML = Replace(strHTML, "[ASSEMBLYVERSION]", "1.0." & AssemblyVersion.ToString)
+                        strHTML = Replace(strHTML, "[ASSEMBLYVERSION]", "1.0." & ApplicationVersion.ToString)
                         strHTML = Replace(strHTML, "[DATABASEVERSION]", "1.0." & DatabaseVersion.ToString)
                         strHTML = Replace(strHTML, "[MESSAGE]", strSql & strMessage)
                         Response.Write(strHTML)
@@ -341,7 +340,7 @@ Namespace DotNetZoom
                 If Not (Request.Params("linkclick") Is Nothing) Then
                     Dim objSecurity As New DotNetZoom.PortalSecurity()
                     Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("linkclick"))
-                    context.Items.Add("linkclick", Request.Params("linkclick"))
+                   context.Items.Add("linkclick", Request.Params("linkclick"))
                     HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
                 End If
 
@@ -350,10 +349,10 @@ Namespace DotNetZoom
                     If Request.Params("tabid") <> "" Then
                         If IsNumeric(Request.Params("tabid")) Then
                             tabId = Int32.Parse(Request.Params("tabid"))
-                        Else
+                       Else
                             Response.End()
                         End If
-                    End If
+                   End If
                 End If
 
 
@@ -376,8 +375,8 @@ Namespace DotNetZoom
                 End If
 
                 ' tabId uniquely identifies a Portal
-                If PortalAlias Is Nothing Then
-                    If tabId <> 0 Then
+               If PortalAlias Is Nothing Then
+                   If tabId <> 0 Then
                         PortalAlias = PortalSettings.GetPortalByTab(tabId, DomainName)
                     End If
                 End If
@@ -401,7 +400,7 @@ Namespace DotNetZoom
                     If InStr(1, TempLanguageCode, ".") <> 0 Then
                         TempLanguageCode = Left(TempLanguageCode, InStrRev(TempLanguageCode, ".") - 1)
                     Else
-                        If Not Request.Params("L") Is Nothing Then
+                       If Not Request.Params("L") Is Nothing Then
                             TempLanguageCode = Request.Params("L")
                         Else
                             TempLanguageCode = ""
@@ -439,10 +438,10 @@ Namespace DotNetZoom
 
                     ' Put in fckeditor language
 
-                    If Not LanguageHash.ContainsKey("fckeditor_language") Then
+                   If Not LanguageHash.ContainsKey("fckeditor_language") Then
                         If InStr(1, "ar;bg;bs;ca;cs;da;de;el;en;en-au;en-uk;eo;es;et;eu;fa;fi;fo;fr;gl;he;hi;hr;hu;it;ja;ko;lt;lv;mn;ms;nl;no;pl;pt;pt-br;ro;ru;sk;sl;sr;sr-latn;sv;th;tr;uk;vi;zh;zh-cn;", TempLanguage & ";") Then
                             LanguageHash.Add("fckeditor_language", TempLanguage)
-                        Else
+                       Else
                             LanguageHash.Add("fckeditor_language", "auto")
                         End If
                     End If
@@ -483,7 +482,7 @@ Namespace DotNetZoom
                                 'see if file exist otherwise send 404
                                 If Not IO.File.Exists(Server.MapPath(Request.Path)) Then
                                     result.Close()
-                                    SendHttpException("404", "Not Found", Request)
+											SendHttpException("404", "Not Found", Request)
                                 End If
 
                             End If
@@ -502,40 +501,40 @@ Namespace DotNetZoom
 
                     If _settings Is Nothing Then
                         ' If this object has not been instantiated yet, we need to grab it
-                        _settings = New PortalSettings(tabId, PortalAlias, Request.ApplicationPath, TempLanguage)
-                        context.Cache.Insert(TempKey, _settings, CDp(PortalNumber, tabId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Normal, Nothing)
-                        ' See if the Portal Directory Exist  if not create it
+                       _settings = New PortalSettings(tabId, PortalAlias, Request.ApplicationPath, TempLanguage)
+                       context.Cache.Insert(TempKey, _settings, CDp(PortalNumber, tabId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Normal, Nothing)
+                       ' See if the Portal Directory Exist  if not create it
                         If Not System.IO.Directory.Exists(Request.MapPath(_settings.UploadDirectory)) Then
                             'Create the new directory and put in files
-                            Try
-                                System.IO.Directory.CreateDirectory(Request.MapPath(_settings.UploadDirectory))
-                                Dim fileEntries As String() = System.IO.Directory.GetFiles(GetAbsoluteServerPath(Request) + "templates\base\")
-                                Dim TempFileName As String
-                                Dim strFileName As String
-                                For Each strFileName In fileEntries
-                                    If InStr(1, strFileName.ToLower, "template.") = 0 Then
-                                        TempFileName = strFileName.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory))
-                                        System.IO.File.Copy(strFileName, TempFileName)
-                                    End If
-                                Next strFileName
-                                Dim StrFolder As String
-                                For Each StrFolder In System.IO.Directory.GetDirectories(GetAbsoluteServerPath(Request) + "templates\base\")
-                                    CopyFileRecursively(StrFolder, StrFolder.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory)))
-                                Next
-                            Catch
+                             Try
+ 	                             System.IO.Directory.CreateDirectory(Request.MapPath(_settings.UploadDirectory))
+                                 Dim fileEntries As String() = System.IO.Directory.GetFiles(GetAbsoluteServerPath(Request) + "templates\base\")
+                                 Dim TempFileName As String
+                                 Dim strFileName As String
+                                 For Each strFileName In fileEntries
+                                     If InStr(1, strFileName.ToLower, "template.") = 0 Then
+                                         TempFileName = strFileName.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory))
+                                         System.IO.File.Copy(strFileName, TempFileName)
+                                     End If
+                                 Next strFileName
+                                 Dim StrFolder As String
+                                 For Each StrFolder In System.IO.Directory.GetDirectories(GetAbsoluteServerPath(Request) + "templates\base\")
+                                     CopyFileRecursively(StrFolder, StrFolder.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory)))
+                                 Next
+                             Catch
                                 ClearHostCache()
-                                SendHttpException("403", "Forbidden", Request, Request.MapPath(_settings.UploadDirectory))
-                            End Try
-                        End If
+            					 SendHttpException("403", "Forbidden", Request, Request.MapPath(_settings.UploadDirectory))
+                             End Try
+                         End If
 
                     End If
-                    context.Items.Add("PortalSettings", _settings)
+                   context.Items.Add("PortalSettings", _settings)
                 Else
                     ' alias does not exist in database
-                    SendHttpException("404", "Not Found", Request)
+            		 SendHttpException("404", "Not Found", Request)
 
-                End If
-            End If
+                End If ' End PortalNumber <> -1 
+           End If
         End Sub
 
 
@@ -714,7 +713,7 @@ Namespace DotNetZoom
                 End If
                 doc.Save(getConfigFilePath(InFile))
             Catch
-                SendHttpException("403", "Forbidden", Request, getConfigFilePath(InFile))
+            	 SendHttpException("403", "Forbidden", Request, getConfigFilePath(InFile))
 
             End Try
         End Sub
@@ -795,24 +794,38 @@ Namespace DotNetZoom
         End Sub
 
         Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
-            If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                Dim URLReferrer As String = ""
+        	 	If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+			    Dim URLReferrer As String = ""
                 If Not Request.UrlReferrer Is Nothing Then
                     URLReferrer = Request.UrlReferrer.ToString()
                 End If
-                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "Application_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Server.GetLastError().ToString, "")
+
+
+                Dim LastError As Exception
+                Dim ErrMessage As String
+
+               LastError = Server.GetLastError()
+
+               If Not LastError Is Nothing Then
+                  ErrMessage = LastError.Message + vbCrLf
+                 ErrMessage += LastError.StackTrace + vbCrLf
+                ErrMessage += LastError.Source + vbCrLf
+                Else
+                   ErrMessage = ""
+                End If
+
+                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Application_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + ErrMessage, "")
+                 If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
+                    ' read script file for version
+                    Dim objStreamReader As StreamReader
+                    objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
+                    Dim strHTML As String = objStreamReader.ReadToEnd
+                    objStreamReader.Close()
+                    Response.Write(strHTML)
+                End If
+                Server.ClearError()
+                Response.End()
             End If
-            If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
-                ' read script file for version
-                Dim objStreamReader As StreamReader
-                objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
-                Dim strHTML As String = objStreamReader.ReadToEnd
-                objStreamReader.Close()
-                Response.Write(strHTML)
-            End If
-            Server.ClearError()
-            Response.End()
-            'additional actions...
         End Sub
 
 

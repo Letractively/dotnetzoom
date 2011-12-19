@@ -6,6 +6,9 @@
 ' With ideas & code contributed by:
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' =======================================================================================
 
 Imports System.Text
@@ -151,7 +154,7 @@ Namespace DotNetZoom
                 ddlDisplay.Items.Add(GetLanguage("F_TreeView"))
 
                 ddlDisplay.Items.FindByText(GetLanguage("F_FlatView")).Selected = True
-                'TTTForum.IsFlatView = True
+                TTTForum.IsFlatView = True
 
                 If Request.IsAuthenticated = True Then
                     Dim LoggedOnID As Integer = TTTUtils.ConvertInteger(Context.User.Identity.Name)
@@ -162,7 +165,7 @@ Namespace DotNetZoom
                             If CBool(dr("FlatView")) = False Then
                                 ddlDisplay.ClearSelection()
                                 ddlDisplay.Items.FindByText(GetLanguage("F_TreeView")).Selected = True
-                                'TTTForum.IsFlatView = False
+                                TTTForum.IsFlatView = False
                             End If
                         End If
                     End If
@@ -180,28 +183,18 @@ Namespace DotNetZoom
                 End If
             End If
 
-            TTTForum.IsFlatView = ddlDisplay.Items.FindByText(GetLanguage("F_FlatView")).Selected
+            'TTTForum.IsFlatView = (ddlDisplay.SelectedItem.Text = GetLanguage("F_FlatView"))
             BuildBreadCrumbs() '<tam:note need to be re-implemented />
-
 
             lnkAdmin.Text = GetLanguage("F_cmdAdmin")
 
-
-
             lnkModerate.Text = GetLanguage("cmdModerate")
-
 
             lnkPMS.Text = GetLanguage("cmdPMS")
 
-
-
             lnkProfile.Text = GetLanguage("cmdProfile")
 
-
-
             lnkSubscribe.Text = GetLanguage("cmdSubscribe")
-
-
 
             lnkSearch.Text = GetLanguage("cmdSearch")
 

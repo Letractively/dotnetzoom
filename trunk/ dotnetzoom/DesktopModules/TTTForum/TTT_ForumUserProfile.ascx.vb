@@ -6,6 +6,9 @@
 ' With ideas & code contributed by:
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' =======================================================================================
 
 
@@ -453,12 +456,6 @@ Namespace DotNetZoom
             Dim objAdmin As New AdminDB()
             strFolder = Request.MapPath(_portalSettings.UploadDirectory)
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed.tostring() )
-			End If
-
-
 
             Dim Zconfig As ForumConfig = ForumConfig.GetForumConfig(ModuleId)
             
@@ -497,7 +494,9 @@ Namespace DotNetZoom
 
 					
 					
-					objAdmin.AddDirectory( strFolder, (SpaceUsed + filelen(strFileNamePath)).ToString())
+					objAdmin.AddDirectory( strFolder, (SpaceUsed + New FileInfo(strFileNamePath).Length).ToString())
+					
+
                     '<tam:note change to save full image url />
                         txtAvatar.Text = userAvatarURL & fileName
                         Me.imgAvatar.ImageUrl = userAvatarURL & fileName

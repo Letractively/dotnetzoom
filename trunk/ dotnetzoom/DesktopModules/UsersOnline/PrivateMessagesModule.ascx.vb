@@ -31,7 +31,7 @@ Namespace DotNetZoom
         Protected WithEvents txtSubject As System.Web.UI.WebControls.TextBox
         Protected WithEvents rfvSubject As System.Web.UI.WebControls.RequiredFieldValidator
 		
-        Protected WithEvents FCKeditor1 As FredCK.FCKeditorV2.FCKEditor
+        Protected WithEvents FCKeditor1 As DotNetZoom.FCKEditor
 
         Protected WithEvents btnSend As System.Web.UI.WebControls.Button
         Protected WithEvents pnlCompose As System.Web.UI.WebControls.PlaceHolder

@@ -6,6 +6,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' =======================================================================================
 
 Imports DotNetZoom
@@ -16,6 +19,13 @@ Namespace DotNetZoom
 
     Public Class TTT_ForumSettings
         Inherits DotNetZoom.PortalModuleControl
+
+        Protected WithEvents O1 As DotNetZoom.OpenClose
+        Protected WithEvents O2 As DotNetZoom.OpenClose
+        Protected WithEvents O3 As DotNetZoom.OpenClose
+        Protected WithEvents O4 As DotNetZoom.OpenClose
+        Protected WithEvents O5 As DotNetZoom.OpenClose
+
 
         Protected WithEvents lblAvatar As System.Web.UI.WebControls.Label
         Protected WithEvents cmdavatar As System.Web.UI.WebControls.HyperLink
@@ -42,6 +52,15 @@ Namespace DotNetZoom
         Protected WithEvents chkUserOnline As System.Web.UI.WebControls.CheckBox
         Protected WithEvents Regularexpressionvalidator1 As System.Web.UI.WebControls.RegularExpressionValidator
         Protected WithEvents txtStatsUpdateInterval As System.Web.UI.WebControls.TextBox
+
+        Protected WithEvents textbox1 As System.Web.UI.WebControls.TextBox
+        Protected WithEvents textbox2 As System.Web.UI.WebControls.TextBox
+        Protected WithEvents textbox3 As System.Web.UI.WebControls.TextBox
+        Protected WithEvents textbox4 As System.Web.UI.WebControls.TextBox
+        Protected WithEvents textbox5 As System.Web.UI.WebControls.TextBox
+        Protected WithEvents textbox6 As System.Web.UI.WebControls.TextBox
+        Protected WithEvents textbox7 As System.Web.UI.WebControls.TextBox
+
 
         Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
@@ -87,6 +106,11 @@ Namespace DotNetZoom
 
 
             If Not Page.IsPostBack Then
+                O1.What = GetLanguage("F_ImgSettings")
+                O2.What = GetLanguage("F_EMailYes")
+                O3.What = GetLanguage("F_ForumFormat")
+                O4.What = GetLanguage("F_UOInt")
+                O5.What = GetLanguage("F_GalHeight")
 
                 txtImageFolder.Text = ForumConfig.DefaultImageFolder()
                 If InStr(1, txtImageFolder.Text.ToLower(), _portalSettings.UploadDirectory.ToLower()) Then
@@ -112,6 +136,15 @@ Namespace DotNetZoom
                     txtImageExtensions.Text = Convert.ToString(Zconfig.ImageExtensions)
                     chkUserOnline.Checked = Zconfig.UserOnlineIntegrate
                     txtStatsUpdateInterval.Text = Zconfig.StatsUpdateInterval.ToString
+                    Dim _settings As Hashtable = PortalSettings.GetModuleSettings(ModuleId)
+                    textbox1.Text = GetValue(_settings(GetLanguage("N") + "_NewMessageTXT"), GetLanguage("Forum_NewMessageTXT"))
+                    textbox2.Text = GetValue(_settings(GetLanguage("N") + "_ModMessageTXT"), GetLanguage("Forum_ModMessageTXT"))
+                    textbox3.Text = GetValue(_settings(GetLanguage("N") + "_ReplayMessageTXT"), GetLanguage("Forum_ReplayMessageTXT"))
+                    textbox4.Text = GetValue(_settings(GetLanguage("N") + "_BodyMessageTXT"), GetLanguage("Forum_BodyMessageTXT"))
+                    textbox5.Text = GetValue(_settings(GetLanguage("N") + "_Moderated_messageTXT"), GetLanguage("Forum_Moderated_messageTXT"))
+                    textbox6.Text = GetValue(_settings(GetLanguage("N") + "_Moderated_approvedTXT"), GetLanguage("Forum_Moderated_approvedTXT"))
+                    textbox7.Text = GetValue(_settings(GetLanguage("N") + "_Moderated_refusedTXT"), GetLanguage("Forum_Moderated_refusedTXT"))
+
 
                 End If
 
@@ -132,6 +165,18 @@ Namespace DotNetZoom
 			
 			
         End Sub
+
+        Private Function GetValue(ByVal Input As Object, ByVal DefaultValue As String) As String
+            ' Used to determine if a valid input is provided, if not, return default value
+
+            If Input Is Nothing Then
+                Return DefaultValue
+            Else
+                Return CStr(Input)
+            End If
+
+        End Function
+
 
         Private Sub PopulateURL(ByVal GalModuleId As Integer)
             Dim admin As New AdminDB()
@@ -204,6 +249,28 @@ Namespace DotNetZoom
             admin.UpdateModuleSetting(ModuleId, "ImageExtensions", txtImageExtensions.Text)
             admin.UpdateModuleSetting(ModuleId, "UserOnlineIntegrate", chkUserOnline.Checked.ToString)
             admin.UpdateModuleSetting(ModuleId, "StatsUpdateInterval", txtStatsUpdateInterval.Text)
+
+            If textbox1.Text <> GetLanguage("Forum_NewMessageTXT") Then
+                admin.UpdateModuleSetting(ModuleId, GetLanguage("N") + "_NewMessageTXT", textbox1.Text)
+            End If
+            If textbox2.Text <> GetLanguage("Forum_ModMessageTXT") Then
+                admin.UpdateModuleSetting(ModuleId, GetLanguage("N") + "_ModMessageTXT", textbox2.Text)
+            End If
+            If textbox3.Text <> GetLanguage("Forum_ReplayMessageTXT") Then
+                admin.UpdateModuleSetting(ModuleId, GetLanguage("N") + "_ReplayMessageTXT", textbox3.Text)
+            End If
+            If textbox4.Text <> GetLanguage("Forum_BodyMessageTXT") Then
+                admin.UpdateModuleSetting(ModuleId, GetLanguage("N") + "_BodyMessageTXT", textbox4.Text)
+            End If
+            If textbox5.Text <> GetLanguage("Forum_Moderated_messageTXT") Then
+                admin.UpdateModuleSetting(ModuleId, GetLanguage("N") + "_Moderated_messageTXT", textbox5.Text)
+            End If
+            If textbox6.Text <> GetLanguage("Forum_Moderated_approvedTXT") Then
+                admin.UpdateModuleSetting(ModuleId, GetLanguage("N") + "_Moderated_approvedTXT", textbox6.Text)
+            End If
+            If textbox7.Text <> GetLanguage("Forum_Moderated_refusedTXT") Then
+                admin.UpdateModuleSetting(ModuleId, GetLanguage("N") + "_Moderated_refusedTXT", textbox7.Text)
+            End If
 
             ForumConfig.ResetForumConfig(ModuleId)
         End Sub

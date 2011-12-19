@@ -41,7 +41,7 @@ Namespace DotNetZoom
 		 ".html", ".jpg", ".inc", ".ini", ".log", ".mdb", ".mid", ".midi", _
 		 ".mov", ".mp3", ".mpg", ".mpeg", ".pdf", ".ppt", ".sys", ".txt", _
 		 ".tif", ".vb", ".vbs", ".vsdisco", ".wav", ".wri", ".xls", ".xml", _
-		 ".zip"}
+		 ".zip", ".flv"}
 		Private textExtensions() As String = { _
 		 ".asa", ".asax", ".ascx", ".asmx", ".asp", ".aspx", ".bat", _
 		 ".config", ".cs", ".css", ".disco", ".htm", ".html", ".inc", _
@@ -200,11 +200,11 @@ Namespace DotNetZoom
 				lblErr.Visible = True
 			End Try
 			'Refresh Grid
-			' update the directory size
-			objAdmin.AddDirectory( StrFolder, objAdmin.GetFolderSizeRecursive(StrFolder) )
-			Session("dt") = Nothing
-			BindData()
-		End Sub
+            ' update the directory size
+            objAdmin.AddDirectory(StrFolder, objAdmin.GetFolderSizeRecursive(StrFolder))
+            Session("dt") = Nothing
+            BindData()
+        End Sub
 
 		Public Sub DownloadFile()
 			Try
@@ -215,7 +215,6 @@ Namespace DotNetZoom
 						Dim FName As String = GetNameLinkButton(grdItem).Text()
 						If IsFile(grdItem) Then
                             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
                             Dim objSecurity As New PortalSecurity()
                             Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), Root & RelativeDir & "\" & FName))
                             Response.Redirect(ResolveUrl("TAGFileDownload.aspx") & "?File=" & crypto & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId))

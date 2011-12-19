@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="VB" Debug="false"  Inherits="DotNetZoom.BasePage"%>
-<%@ Register TagPrefix="FCKeditorV2" Namespace="FredCK.FCKeditorV2" Assembly="FredCK.FCKeditorV2" %>
+<%@ Register TagPrefix="Editor"  Namespace="dotnetzoom" Assembly="DotNetZoom" %>
 <%@ Import Namespace="DotNetZoom" %>
 <script runat="server">
 Private Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -73,10 +73,6 @@ end sub
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 	<meta name="robots" content="noindex, nofollow" />
 	<asp:literal id="StyleSheet" enableviewstate="false" runat="server" />
-    <style type="text/css">.scroll {overflow: auto; height : 87%}</style>
-<!--[if IE]>
-<style type="text/css">.scroll {overflow: auto; height : 338px}</style>
-<![endif]-->
 	
 <script type="text/javascript">
 		
@@ -88,11 +84,11 @@ function Cancel()
 </script>
 
 </head>
-<body>
+<body class="MainBorder">
 <form id="Form1"  enableviewstate="true" method="post" runat="server">
 <asp:placeholder id="pnlRichTextBox" Runat="server" Visible="False">
 <div align="center">
-<FCKeditorV2:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></FCKeditorV2:FCKeditor>
+<editor:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></editor:FCKeditor>
 </div>
 <p align="left">
     <asp:LinkButton cssclass="CommandButton" id="cmdUpdate"  onclick="cmdUpdate_Click" visible="true" runat="server"></asp:LinkButton>
@@ -101,25 +97,26 @@ function Cancel()
 </p>
 </asp:placeholder>	
 <asp:placeholder id="pnlhelp" Runat="server" Visible="True">
-<div align="center" class="scroll">
-<table class="MainBorder" cellpadding="0" cellspacing="0" border="0" width="100%">
+<div align="center">
+<table cellpadding="0" cellspacing="0" border="0" width="95%">
 	<tr>
-		<td align="left" valign="top">
+	<td align="right" valign="top" class="normal"><a href="javascript:Cancel();" title="<%= DotNetZoom.GetLanguage("return") %>"><%= DotNetZoom.GetLanguage("return") %></a>
+    </td>
+	</tr>
+	<tr>
+		<td height="330px" align="left" valign="top">
 		<asp:literal id="Help" runat="server" />
+		</td>
+	</tr>
+	<tr>
+	 	<td align="right" class="normal">
+	 	<asp:LinkButton cssclass="CommandButton" id="cmdEdit" onclick="cmdEdit_Click" visible="False" runat="server" CausesValidation="False"></asp:LinkButton>
+        &nbsp;&nbsp;&nbsp;
+        <a href="javascript:Cancel();" title="<%= DotNetZoom.GetLanguage("return") %>"><%= DotNetZoom.GetLanguage("return") %></a>
 		</td>
 	</tr>
 </table>
 </div>
-<table class="OtherCellBottom" cellpadding="0" cellspacing="0" border="0" width="100%">
- 	<tr>
-		<td align="left" height="10%">
-	    <asp:LinkButton cssclass="CommandButton" id="cmdEdit" onclick="cmdEdit_Click" visible="False" runat="server" CausesValidation="False"></asp:LinkButton>
-		<td>
-	 	<td align="right">
-		<input id="btnCANCEL" class="button" type="button" value="<%= DotNetZoom.GetLanguage("return") %>" onclick="Cancel();" />
-		</td>
-	</tr>
-</table>
 </asp:placeholder>
 </form>	
 </body>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" Codebehind="TTT_FlashPlayer.aspx.vb" Inherits="DotNetZoom.TTT_GalleryFlashPlayer" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" enableviewstate="false" Codebehind="TTT_FlashPlayer.aspx.vb" Inherits="DotNetZoom.TTT_GalleryFlashPlayer" %>
 <%@ Register TagPrefix="NB" Namespace="NetBrick.Web" Assembly="NetBrick.Web" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

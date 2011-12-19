@@ -189,11 +189,9 @@ updatelanguagecontext 'en','Mail_Send_To','The E-Mail was send:', 'BulkEMail'
 GO
 updatelanguagecontext 'en','today','Today', 'Calendar'
 GO
+updatelanguagecontext 'en','show','Show', 'Command'
+GO
 updatelanguagecontext 'en','Slideshow_Player','Slideshow', 'Command'
-GO
-updatelanguagecontext 'en','update','Update', 'Command'
-GO
-updatelanguagecontext 'en','upload','Upload', 'Command'
 GO
 updatelanguagecontext 'en','TwoClickToSelect','Double clicks to select', 'Command'
 GO
@@ -211,21 +209,21 @@ updatelanguagecontext 'en','send','Send', 'Command'
 GO
 updatelanguagecontext 'en','select_icone','select icone', 'Command'
 GO
+updatelanguagecontext 'en','download','Download', 'Command'
+GO
 updatelanguagecontext 'en','install','Install', 'Command'
 GO
 updatelanguagecontext 'en','Clear','Clear', 'Command'
 GO
-updatelanguagecontext 'en','delete','Erase', 'Command'
+updatelanguagecontext 'en','Cmd_Reload','Reload', 'Command'
 GO
 updatelanguagecontext 'en','editer','Edit', 'Command'
 GO
-updatelanguagecontext 'en','download','Download', 'Command'
+updatelanguagecontext 'en','delete','Erase', 'Command'
 GO
 updatelanguagecontext 'en','enregistrer','Update', 'Command'
 GO
 updatelanguagecontext 'en','erase','Erase', 'Command'
-GO
-updatelanguagecontext 'en','Cmd_Reload','Reload', 'Command'
 GO
 updatelanguagecontext 'en','New_Directory','New', 'Command'
 GO
@@ -241,7 +239,7 @@ updatelanguagecontext 'en','FileExtNotAllowed','<br>This type of file {fileext} 
 GO
 updatelanguagecontext 'en','filemanager_security','<p>Your security profile does not allow you access to this page.</p><p>If you think you should be allowed access <b>please make a request to the webmaster of {PortalName} </b>', 'Command'
 GO
-updatelanguagecontext 'en','filemanager_security1','{AdministratorEmail}<img src="/images/uoUnreadPriv.gif" border="0" height="10" width="14" alt="courriel" Title="Click here to request permission"></a></p>', 'Command'
+updatelanguagecontext 'en','filemanager_security1',' {AdministratorEmail}</p>', 'Command'
 GO
 updatelanguagecontext 'en','filemanager_security2','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value="Close" onClick="javascript:window.close();">', 'Command'
 GO
@@ -259,6 +257,8 @@ updatelanguagecontext 'en','preview','Preview', 'Command'
 GO
 updatelanguagecontext 'en','SS_Tigra_Edit','Edit menu', 'Command'
 GO
+updatelanguagecontext 'en','Media_Player','Media Player', 'Command'
+GO
 updatelanguagecontext 'en','request_confirm','Do you want to erase?', 'Command'
 GO
 updatelanguagecontext 'en','request_confirm_avatar','Do you want to configure the avatar gallery?', 'Command'
@@ -273,9 +273,9 @@ updatelanguagecontext 'en','request_confirm_erase_role','Do you wan to erase thi
 GO
 updatelanguagecontext 'en','request_confirm_erase_userrole','Do you want to retrieve this security role to this nember?', 'Command'
 GO
-updatelanguagecontext 'en','Media_Player','Media Player', 'Command'
-GO
 updatelanguagecontext 'en','syndicate','Create RSS File', 'Command'
+GO
+updatelanguagecontext 'en','annuler','Cancel', 'Command'
 GO
 updatelanguagecontext 'en','approuve','Approuve', 'Command'
 GO
@@ -286,8 +286,6 @@ GO
 updatelanguagecontext 'en','Add_Icone','Add a icon', 'Command'
 GO
 updatelanguagecontext 'en','Add_Image','Add an image', 'Command'
-GO
-updatelanguagecontext 'en','annuler','Cancel', 'Command'
 GO
 updatelanguagecontext 'en','F_ArticleID','ID article', 'Command'
 GO
@@ -315,7 +313,9 @@ updatelanguagecontext 'en','admin_tab_edit','Edit page', 'Command'
 GO
 updatelanguagecontext 'en','admin_txt','Admin menu', 'Command'
 GO
-updatelanguagecontext 'en','show','Show', 'Command'
+updatelanguagecontext 'en','update','Update', 'Command'
+GO
+updatelanguagecontext 'en','upload','Upload', 'Command'
 GO
 updatelanguagecontext 'en','Name','Name', 'Contact'
 GO
@@ -325,7 +325,7 @@ updatelanguagecontext 'en','contact_telephone','Telephone', 'Contact'
 GO
 updatelanguagecontext 'en','contact_title','Title', 'Contact'
 GO
-updatelanguagecontext 'en','label_close','Closed', 'Discussion'
+updatelanguagecontext 'en','label_anonymous','Anonymous', 'Discussion'
 GO
 updatelanguagecontext 'en','label_message_body','Message', 'Discussion'
 GO
@@ -339,13 +339,13 @@ updatelanguagecontext 'en','label_no_answer','No answer', 'Discussion'
 GO
 updatelanguagecontext 'en','label_open','Open', 'Discussion'
 GO
-updatelanguagecontext 'en','label_anonymous','Anonymous', 'Discussion'
+updatelanguagecontext 'en','label_close','Closed', 'Discussion'
+GO
+updatelanguagecontext 'en','new_message_re','RE:', 'Discussion'
 GO
 updatelanguagecontext 'en','message_de','From', 'Discussion'
 GO
 updatelanguagecontext 'en','message_le','the', 'Discussion'
-GO
-updatelanguagecontext 'en','new_message_re','RE:', 'Discussion'
 GO
 updatelanguagecontext 'en','Reply','Answer', 'Discussion'
 GO
@@ -363,11 +363,11 @@ updatelanguagecontext 'en','internal_doc','Internal document', 'Documents'
 GO
 updatelanguagecontext 'en','channel_syndicate','* RSS channel', 'Documents'
 GO
+updatelanguagecontext 'en','header_who','Who', 'Documents'
+GO
 updatelanguagecontext 'en','select_internal_doc','Select an internal document', 'Documents'
 GO
 updatelanguagecontext 'en','select_external_doc','Select an external document', 'Documents'
-GO
-updatelanguagecontext 'en','header_who','Who', 'Documents'
 GO
 updatelanguagecontext 'en','type_doc','Type', 'Documents'
 GO
@@ -375,15 +375,15 @@ updatelanguagecontext 'en','Email_Test','test for E-Mail SMTP Setup', 'EmailNoti
 GO
 updatelanguagecontext 'en','Demo_Portal','Demo Portal', 'EmailNotice'
 GO
+updatelanguagecontext 'en','Member_Quit','Membership was revoqued', 'EmailNotice'
+GO
 updatelanguagecontext 'en','Mod_Password','Password changed', 'EmailNotice'
 GO
 updatelanguagecontext 'en','New_Portal','New Portal', 'EmailNotice'
 GO
-updatelanguagecontext 'en','Account_Mod','Profile Modification', 'EmailNotice'
-GO
-updatelanguagecontext 'en','Member_Quit','Membership was revoqued', 'EmailNotice'
-GO
 updatelanguagecontext 'en','Vendor_request','Vendor request', 'EmailNotice'
+GO
+updatelanguagecontext 'en','Account_Mod','Profile Modification', 'EmailNotice'
 GO
 updatelanguagecontext 'en','Bad_IP','Hacking attempt', 'EmailNotice'
 GO
@@ -432,9 +432,13 @@ Portal URL:{1}
 UserName:       {2}
 Password:', 'EmailNotice'
 GO
+updatelanguagecontext 'en','ssl','Normally this page should be encrypted. However, you have accessed an unencrypted page. Therefore, the information you send and receive may be read during transmission. (Click OK for a secure page)', 'ErrorMessage'
+GO
 updatelanguagecontext 'en','Portal_Expired','The hosting aggrement for your {PortalName} ended {ExpiryDate}. For more information {AdministratorEmail}.', 'ErrorMessage'
 GO
 updatelanguagecontext 'en','need_city_name','City name is required', 'ErrorMessage'
+GO
+updatelanguagecontext 'en','nossl','Normally this page should not be encrypted. However, the website has been properly identified, and the information entered on this page can not be easily read during transmission. (Click OK to proceed ...)', 'ErrorMessage'
 GO
 updatelanguagecontext 'en','bad_trial_fee','You need to have a valid trial fee', 'ErrorMessage'
 GO
@@ -455,10 +459,6 @@ GO
 updatelanguagecontext 'en','need_CPM_number','You need a valid CPM number', 'ErrorMessage'
 GO
 updatelanguagecontext 'en','need_decimal','You need to use a valid decimal number', 'ErrorMessage'
-GO
-updatelanguagecontext 'en','bad_billing_period','The billing period is not valid', 'ErrorMessage'
-GO
-updatelanguagecontext 'en','bad_billing_period0','The billing period must be greater than 0', 'ErrorMessage'
 GO
 updatelanguagecontext 'en','need_username','You need a proper username.', 'ErrorMessage'
 GO
@@ -520,8 +520,6 @@ updatelanguagecontext 'en','need_banner_name','You need a name for the banner', 
 GO
 updatelanguagecontext 'en','need_body_message','You need to have some text un the message!', 'ErrorMessage'
 GO
-updatelanguagecontext 'en','not_a_date','Bad date!', 'ErrorMessage'
-GO
 updatelanguagecontext 'en','Need_Directory_Name','You need to have a valid name to create a new directory', 'ErrorMessage'
 GO
 updatelanguagecontext 'en','need_email','An E-Mail is required', 'ErrorMessage'
@@ -529,6 +527,12 @@ GO
 updatelanguagecontext 'en','need_exposition_number','You need a valid number of expositions', 'ErrorMessage'
 GO
 updatelanguagecontext 'en','need_firstname','A first name is required', 'ErrorMessage'
+GO
+updatelanguagecontext 'en','bad_billing_period','The billing period is not valid', 'ErrorMessage'
+GO
+updatelanguagecontext 'en','bad_billing_period0','The billing period must be greater than 0', 'ErrorMessage'
+GO
+updatelanguagecontext 'en','not_a_date','Bad date!', 'ErrorMessage'
 GO
 updatelanguagecontext 'en','SiteLogLimited','The site log history is limited to {days} days.', 'ErrorMessage'
 GO
@@ -542,17 +546,17 @@ updatelanguagecontext 'en','select_icone_tooltip','I recommand to user an icone 
 GO
 updatelanguagecontext 'en','end_date','End date', 'Events'
 GO
-updatelanguagecontext 'en','label_alt','Alternative text', 'Events'
-GO
-updatelanguagecontext 'en','label_period','Period', 'Events'
-GO
 updatelanguagecontext 'en','label_icone','Icone', 'Events'
+GO
+updatelanguagecontext 'en','label_alt','Alternative text', 'Events'
 GO
 updatelanguagecontext 'en','calendar','Calendar', 'Events'
 GO
 updatelanguagecontext 'en','calendar_cel_height','Cell Height', 'Events'
 GO
 updatelanguagecontext 'en','calendar_cel_width','Cell width', 'Events'
+GO
+updatelanguagecontext 'en','label_period','Period', 'Events'
 GO
 updatelanguagecontext 'en','events_day','Days(s)', 'Events'
 GO
@@ -662,6 +666,8 @@ updatelanguagecontext 'en','F_Refresh','Refresh', 'File'
 GO
 updatelanguagecontext 'en','F_delete','Erase the file or directory', 'File'
 GO
+updatelanguagecontext 'en','F_cmdSynchronize','Update the file data base', 'File'
+GO
 updatelanguagecontext 'en','F_Directory','Directory', 'File'
 GO
 updatelanguagecontext 'en','F_btnUpload','Upload', 'File'
@@ -675,8 +681,6 @@ GO
 updatelanguagecontext 'en','F_Header_Size','Size', 'File'
 GO
 updatelanguagecontext 'en','F_Header_Type','Type', 'File'
-GO
-updatelanguagecontext 'en','F_cmdSynchronize','Update the file data base', 'File'
 GO
 updatelanguagecontext 'en','F_Update','Update the upload permissions', 'File'
 GO
@@ -810,8 +814,6 @@ updatelanguagecontext 'en','F_Who','by', 'Forum'
 GO
 updatelanguagecontext 'en','F_WhoThere','Who''s there', 'Forum'
 GO
-updatelanguagecontext 'en','go','Go', 'Forum'
-GO
 updatelanguagecontext 'en','FZEditPost','Edit Post', 'Forum'
 GO
 updatelanguagecontext 'en','F_StatsNewPost','new posts.', 'Forum'
@@ -852,6 +854,18 @@ updatelanguagecontext 'en','F_TreeView','Tree view', 'Forum'
 GO
 updatelanguagecontext 'en','F_UnSubscribe','Cancel the subscription...', 'Forum'
 GO
+updatelanguagecontext 'en','Quote_Wrote','wrote', 'Forum'
+GO
+updatelanguagecontext 'en','F_SelectModerated','Select moderators', 'Forum'
+GO
+updatelanguagecontext 'en','F_SelectAdmin','Select administration', 'Forum'
+GO
+updatelanguagecontext 'en','F_Contributed','{username} contributed {numpost} posts.  The last one was {datelast}.', 'Forum'
+GO
+updatelanguagecontext 'en','F_ModerateForum','Moderated Forum', 'Forum'
+GO
+updatelanguagecontext 'en','F_StatsMostPost','The thread with the most posts is', 'Forum'
+GO
 updatelanguagecontext 'en','FZuserMSN','MSN', 'Forum'
 GO
 updatelanguagecontext 'en','FZuserYAHOO','YAHOO', 'Forum'
@@ -865,18 +879,6 @@ GO
 updatelanguagecontext 'en','Select_Forum_Search','Select all', 'Forum'
 GO
 updatelanguagecontext 'en','FZpage','Page', 'Forum'
-GO
-updatelanguagecontext 'en','F_SelectAdmin','Select administration', 'Forum'
-GO
-updatelanguagecontext 'en','F_Contributed','{username} contributed {numpost} posts.  The last one was {datelast}.', 'Forum'
-GO
-updatelanguagecontext 'en','F_ModerateForum','Moderated Forum', 'Forum'
-GO
-updatelanguagecontext 'en','F_StatsMostPost','The thread with the most posts is', 'Forum'
-GO
-updatelanguagecontext 'en','Quote_Wrote','wrote', 'Forum'
-GO
-updatelanguagecontext 'en','F_SelectModerated','Select moderators', 'Forum'
 GO
 updatelanguagecontext 'en','F_Home','Forum home', 'Forum'
 GO
@@ -950,7 +952,7 @@ updatelanguagecontext 'en','F_Down','Down', 'Forum'
 GO
 updatelanguagecontext 'en','F_Down1','Down one level', 'Forum'
 GO
-updatelanguagecontext 'en','Search_SelectAllForum','Select all', 'Forum'
+updatelanguagecontext 'en','go','Go', 'Forum'
 GO
 updatelanguagecontext 'en','F_Deleted','The post was deleted by {authorName} the :', 'Forum'
 GO
@@ -987,6 +989,8 @@ GO
 updatelanguagecontext 'en','F_AvYes','Allow Avatars?', 'Forum'
 GO
 updatelanguagecontext 'en','F_Bad_Ext','Only those file type {fileext} are accepted.', 'Forum'
+GO
+updatelanguagecontext 'en','Search_SelectAllForum','Select all', 'Forum'
 GO
 updatelanguagecontext 'en','F_FileNameUsed','The file name is already used, please chose another one', 'Forum'
 GO
@@ -1238,15 +1242,17 @@ updatelanguagecontext 'en','F_NeedF','You must select a forum before posting a n
 GO
 updatelanguagecontext 'en','F_NeedObject','Need an object', 'Forum'
 GO
-updatelanguagecontext 'en','F_ImgSettings','Images settings', 'Forum'
-GO
 updatelanguagecontext 'en','F_AdminAvatar','Avatars gallery', 'Forum'
+GO
+updatelanguagecontext 'en','Forum_Replied','Message reply', 'Forum'
 GO
 updatelanguagecontext 'en','select_avatar','Avatars gallery', 'Forum'
 GO
+updatelanguagecontext 'en','Search_Alias','User name', 'Forum'
+GO
 updatelanguagecontext 'en','F_VisitWWW','WWW', 'Forum'
 GO
-updatelanguagecontext 'en','Search_Alias','User name', 'Forum'
+updatelanguagecontext 'en','F_ImgSettings','Images settings', 'Forum'
 GO
 updatelanguagecontext 'en','Gal_InfoBule','Show text POPup? ', 'Gallery'
 GO
@@ -1497,21 +1503,21 @@ updatelanguagecontext 'en','Gal_Invalid_FileType','The file type is not valid.',
 GO
 updatelanguagecontext 'en','Gal_MaxFileKB','The file <b>{FileName}</b> you try to upload is {FileSize} (KB) but the maximum allowed is {MaxFileSize} (KB).', 'Gallery'
 GO
-updatelanguagecontext 'en','help','Help', 'Global'
-GO
 updatelanguagecontext 'en','True','True', 'Global'
 GO
-updatelanguagecontext 'en','need_help','Need help', 'Global'
-GO
-updatelanguagecontext 'en','no_module_info','There is not info available on this module.', 'Global'
-GO
-updatelanguagecontext 'en','Membership_Serv','Membership services', 'Global'
+updatelanguagecontext 'en','help','Help', 'Global'
 GO
 updatelanguagecontext 'en','module_info','Module Info :', 'Global'
 GO
-updatelanguagecontext 'en','login','Login', 'Global'
+updatelanguagecontext 'en','Membership_Serv','Membership services', 'Global'
+GO
+updatelanguagecontext 'en','no_module_info','There is not info available on this module.', 'Global'
+GO
+updatelanguagecontext 'en','need_help','Need help', 'Global'
 GO
 updatelanguagecontext 'en','list_none','<None>', 'Global'
+GO
+updatelanguagecontext 'en','login','Login', 'Global'
 GO
 updatelanguagecontext 'en','error','Error', 'Global'
 GO
@@ -1519,11 +1525,11 @@ updatelanguagecontext 'en','False','False', 'Global'
 GO
 updatelanguagecontext 'en','exit','Exit', 'Global'
 GO
+updatelanguagecontext 'en','all','all', 'Global'
+GO
 updatelanguagecontext 'en','*N','N', 'Global'
 GO
 updatelanguagecontext 'en','*O','Y', 'Global'
-GO
-updatelanguagecontext 'en','all','all', 'Global'
 GO
 updatelanguagecontext 'en','MapGoogle_big','Large', 'GoogleMap'
 GO
@@ -1651,9 +1657,9 @@ updatelanguagecontext 'en','HTML_ADDtxt','Add some text ...', 'HTML'
 GO
 updatelanguagecontext 'en','text','text', 'HTML'
 GO
-updatelanguagecontext 'en','SearchSummary','Search Summary', 'HTML'
-GO
 updatelanguagecontext 'en','AlternateDetailSummary','Key words', 'HTML'
+GO
+updatelanguagecontext 'en','SearchSummary','Search Summary', 'HTML'
 GO
 updatelanguagecontext 'en','ForSearchHTML','Information summary for use in the seach module', 'HTML'
 GO
@@ -1711,8 +1717,6 @@ updatelanguagecontext 'en','IconesFrom','icon from :', 'ImageManager'
 GO
 updatelanguagecontext 'en','IconesTo','to :', 'ImageManager'
 GO
-updatelanguagecontext 'en','UploadSuccessMessage','Upload succesfull', 'ImageManager'
-GO
 updatelanguagecontext 'en','NoFileMessage','No file selected', 'ImageManager'
 GO
 updatelanguagecontext 'en','NoFileToDeleteMessage','No file to erase', 'ImageManager'
@@ -1760,6 +1764,8 @@ GO
 updatelanguagecontext 'en','InvalidFileTypeMessage2','The file type is not valide, you can only use GIF or JPG', 'ImageManager'
 GO
 updatelanguagecontext 'en','ImageRangeFrom','Must be between 5px to 180px max.', 'ImageManager'
+GO
+updatelanguagecontext 'en','UploadSuccessMessage','Upload succesfull', 'ImageManager'
 GO
 updatelanguagecontext 'en','LanguageSettings1','Edit - Erase- Create', 'Language'
 GO
@@ -1865,8 +1871,6 @@ updatelanguagecontext 'en','external_link','External link', 'Links'
 GO
 updatelanguagecontext 'en','links_label_CSSClass','CSS Class for link', 'Links'
 GO
-updatelanguagecontext 'en','Signin_hide','Click here to close the window.', 'Login'
-GO
 updatelanguagecontext 'en','RegisterMessage','Please enter your User Name', 'Login'
 GO
 updatelanguagecontext 'en','RegisterMessage1','The user code does not exist', 'Login'
@@ -1881,8 +1885,6 @@ updatelanguagecontext 'en','RegisterMessage5','The code is not good', 'Login'
 GO
 updatelanguagecontext 'en','RegisterMessage6','It was not possible to send the requested information.', 'Login'
 GO
-updatelanguagecontext 'en','Login_Keep','Keep in memory', 'Login'
-GO
 updatelanguagecontext 'en','Label_Password','Password', 'Login'
 GO
 updatelanguagecontext 'en','Label_enter','Enter', 'Login'
@@ -1890,6 +1892,8 @@ GO
 updatelanguagecontext 'en','Label_UserName','User Code', 'Login'
 GO
 updatelanguagecontext 'en','Label_ValidCode','Validation code', 'Login'
+GO
+updatelanguagecontext 'en','Login_Keep','Keep in memory', 'Login'
 GO
 updatelanguagecontext 'en','Button_Enter','Enter', 'Login'
 GO
@@ -1902,6 +1906,8 @@ GO
 updatelanguagecontext 'en','Button_Register','Register', 'Login'
 GO
 updatelanguagecontext 'en','Button_RegisterTooltip','Click here to register.', 'Login'
+GO
+updatelanguagecontext 'en','Signin_hide','Click here to close the window.', 'Login'
 GO
 updatelanguagecontext 'en','mapquest_big','Large', 'MapQuest'
 GO
@@ -1948,8 +1954,6 @@ GO
 updatelanguagecontext 'en','ms_margin','Border', 'ModuleSettings'
 GO
 updatelanguagecontext 'en','ms_mod','Edit privileges', 'ModuleSettings'
-GO
-updatelanguagecontext 'en','ms_all_users','All users', 'ModuleSettings'
 GO
 updatelanguagecontext 'en','MS_ModuleDescription','Description', 'ModuleSettings'
 GO
@@ -2012,6 +2016,8 @@ GO
 updatelanguagecontext 'en','ms_custom','Personalize?', 'ModuleSettings'
 GO
 updatelanguagecontext 'en','ms_edit_contener','Edit Module SKIN', 'ModuleSettings'
+GO
+updatelanguagecontext 'en','ms_all_users','All users', 'ModuleSettings'
 GO
 updatelanguagecontext 'en','TitleHeader_class','Title header Class', 'ModuleSettings'
 GO
@@ -2083,29 +2089,6 @@ updatelanguagecontext 'en','EditAccessDenied','Access Denied', 'ModuleTitle'
 GO
 updatelanguagecontext 'en','UserListModule','Membership list', 'ModuleTitle'
 GO
-updatelanguagecontext 'en','ssl','Normally this page should be encrypted. However, you have accessed an unencrypted page. Therefore, the information you send and receive may be read during transmission.
-(Please confirm if it is OK to proceed ...)', 'New'
-GO
-updatelanguagecontext 'en','nossl','Normally this page should not be encrypted. However, the website has been properly identified, and the information entered on this page can not be easily read during transmission. (Please confirm if it is OK to proceed ...)', 'New'
-GO
-updatelanguagecontext 'en','Banner_Mail3','messages', 'PortalBanner'
-GO
-updatelanguagecontext 'en','register_more_info','You must enter with you User Name and password. If you are already registered. <a class="CommandButton" href="{httplogin}">Enter</a> now. Otherwise, <a class="CommandButton" href="{httpregister}">Register.</a>', 'PortalBanner'
-GO
-updatelanguagecontext 'en','register_no','You cannot register to our service', 'PortalBanner'
-GO
-updatelanguagecontext 'en','allow_vendors_register','Allow vendors to register?', 'PortalBanner'
-GO
-updatelanguagecontext 'en','banner_ClickProfile','Click here to search for a user or modify your profile', 'PortalBanner'
-GO
-updatelanguagecontext 'en','Banner_Mail','you have', 'PortalBanner'
-GO
-updatelanguagecontext 'en','Banner_Mail0','new message', 'PortalBanner'
-GO
-updatelanguagecontext 'en','Banner_Mail1','new messages', 'PortalBanner'
-GO
-updatelanguagecontext 'en','Banner_Mail2','if you want to read your messages you need to click on this image', 'PortalBanner'
-GO
 updatelanguagecontext 'en','directory_from','Directory', 'PortalBanner'
 GO
 updatelanguagecontext 'en','Banner_Mail4','message', 'PortalBanner'
@@ -2128,6 +2111,24 @@ updatelanguagecontext 'en','label_banner_source','Source for the banner', 'Porta
 GO
 updatelanguagecontext 'en','label_banner_type','Type of banner', 'PortalBanner'
 GO
+updatelanguagecontext 'en','register_more_info','You must enter with you User Name and password. If you are already registered. <a class="CommandButton" href="{httplogin}">Enter</a> now. Otherwise, <a class="CommandButton" href="{httpregister}">Register.</a>', 'PortalBanner'
+GO
+updatelanguagecontext 'en','register_no','You cannot register to our service', 'PortalBanner'
+GO
+updatelanguagecontext 'en','Banner_Mail3','messages', 'PortalBanner'
+GO
+updatelanguagecontext 'en','allow_vendors_register','Allow vendors to register?', 'PortalBanner'
+GO
+updatelanguagecontext 'en','banner_ClickProfile','Click here to search for a user or modify your profile', 'PortalBanner'
+GO
+updatelanguagecontext 'en','Banner_Mail','you have', 'PortalBanner'
+GO
+updatelanguagecontext 'en','Banner_Mail0','new message', 'PortalBanner'
+GO
+updatelanguagecontext 'en','Banner_Mail1','new messages', 'PortalBanner'
+GO
+updatelanguagecontext 'en','Banner_Mail2','if you want to read your messages you need to click on this image', 'PortalBanner'
+GO
 updatelanguagecontext 'en','P_Alias','Alias', 'PortalInfo'
 GO
 updatelanguagecontext 'en','P_Disk_Space','Disk space', 'PortalInfo'
@@ -2147,6 +2148,8 @@ GO
 updatelanguagecontext 'en','Billing_Period','Billing period(each)', 'PortalRoles'
 GO
 updatelanguagecontext 'en','Demo_Trial_Fee','Trial fee', 'PortalRoles'
+GO
+updatelanguagecontext 'en','ServicesFee','Services fee', 'PortalRoles'
 GO
 updatelanguagecontext 'en','Role_AllRoles','All roles', 'PortalRoles'
 GO
@@ -2176,13 +2179,7 @@ updatelanguagecontext 'en','Role_Trial','Trial', 'PortalRoles'
 GO
 updatelanguagecontext 'en','Role_Upload','Is allowed to upload', 'PortalRoles'
 GO
-updatelanguagecontext 'en','ServicesFee','Services fee', 'PortalRoles'
-GO
-updatelanguagecontext 'en','Required_Info','<b>*Note:</b> All the fields identified with (*) are required.', 'Register'
-GO
 updatelanguagecontext 'en','Verified_Register_info','<b>*Note:</b> The portal registration is verified. You will receive an E-Mail with a validation code after you complete this form.  You will have to use this validation code to enter the portal the first time.', 'Register'
-GO
-updatelanguagecontext 'en','UserName_Already_Used','You must use another User Name since <u>{username}</u> is already used.<br>Select another User Name.', 'Register'
 GO
 updatelanguagecontext 'en','Valid_IP_Not_Saved','Code not saved', 'Register'
 GO
@@ -2201,6 +2198,10 @@ GO
 updatelanguagecontext 'en','Register_Required_Info','All the fields identified with (*) are required.', 'Register'
 GO
 updatelanguagecontext 'en','Register_Title','Registration form', 'Register'
+GO
+updatelanguagecontext 'en','Required_Info','<b>*Note:</b> All the fields identified with (*) are required.', 'Register'
+GO
+updatelanguagecontext 'en','UserName_Already_Used','You must use another User Name since <u>{username}</u> is already used.<br>Select another User Name.', 'Register'
 GO
 updatelanguagecontext 'en','rss_account_info','Domain\username', 'RSS'
 GO
@@ -2318,7 +2319,7 @@ updatelanguagecontext 'en','SS_Guest','Anonymous', 'SiteSettings'
 GO
 updatelanguagecontext 'en','SS_Head_Demo','URL to create a new portal', 'SiteSettings'
 GO
-updatelanguagecontext 'en','SS_Head_Demo_Allow','Allow cration of a demo portal?', 'SiteSettings'
+updatelanguagecontext 'en','SS_Head_Demo_Allow','Allow creation of a demo portal?', 'SiteSettings'
 GO
 updatelanguagecontext 'en','SS_Head_Language','Linguistic settings', 'SiteSettings'
 GO
@@ -2326,7 +2327,7 @@ updatelanguagecontext 'en','SS_Head_Language_Info','Language info to edit', 'Sit
 GO
 updatelanguagecontext 'en','SS_Head_PortalInfo','Hosting information', 'SiteSettings'
 GO
-updatelanguagecontext 'en','SS_Label_Admin','Administrater', 'SiteSettings'
+updatelanguagecontext 'en','SS_Label_Admin','Administrator', 'SiteSettings'
 GO
 updatelanguagecontext 'en','SS_Label_Allow_Demo_Create','Allow the creation of a web portal', 'SiteSettings'
 GO
@@ -2458,9 +2459,13 @@ updatelanguagecontext 'en','optUserRegistration_2','Public', 'SiteSettings'
 GO
 updatelanguagecontext 'en','optUserRegistration_3','Validated', 'SiteSettings'
 GO
-updatelanguagecontext 'en','SS_Use_SSL','Use SSL', 'SiteSettings'
+updatelanguagecontext 'en','P_sub','sub', 'SiteSettings'
 GO
 updatelanguagecontext 'en','SS_ToolTipModuleSkin','ToolTip', 'SiteSettings'
+GO
+updatelanguagecontext 'en','SS_Use_SSL','Use SSL', 'SiteSettings'
+GO
+updatelanguagecontext 'en','P_ssl','ssl', 'SiteSettings'
 GO
 updatelanguagecontext 'en','Skin_FileErased','The file was erased', 'SkinEdit'
 GO
@@ -2844,6 +2849,8 @@ updatelanguagecontext 'en','UOSearchHelp','Use * to make a search', 'UserOnline'
 GO
 updatelanguagecontext 'en','Users_Delete','Delete non authorized users', 'Users'
 GO
+updatelanguagecontext 'en','Vendor_Register','Vendor Registration', 'Vendors'
+GO
 updatelanguagecontext 'en','Vender_Clicks','Clicks', 'Vendors'
 GO
 updatelanguagecontext 'en','Vender_End','End', 'Vendors'
@@ -2964,8 +2971,6 @@ updatelanguagecontext 'en','Negative_Feedback','Negative feedback', 'Vendors'
 GO
 updatelanguagecontext 'en','feedback_neg','Negatif', 'Vendors'
 GO
-updatelanguagecontext 'en','Vendor_Register','Vendor Registration', 'Vendors'
-GO
 updatelanguagecontext 'en','w_personalise','Personalise?', 'Weather'
 GO
 updatelanguagecontext 'en','XML_data','XML Data File', 'XML'
@@ -2976,8 +2981,9 @@ updatelanguagecontext 'en','XML_internal','Internal', 'XML'
 GO
 updatelanguagecontext 'en','XML_transform','XSL Transformation File', 'XML'
 GO
-UpdatelonglanguageSetting 'en','Access Denied','Either you are not currently logged in, or you do not have access to this content.<br><br>
-For help please contact {AdministratorEmail}.', null 
+UpdatelonglanguageSetting 'en','Access Denied','<p>&#160;</p><p>&#160;</p>
+<p>Either you are not currently logged in, or you do not have access to this content.<br><br>
+For help please contact {AdministratorEmail}.</p><p>&#160;</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'en','AccessDeniedInfo','<table align="center" width="80%" border="0">
 <tr>
@@ -3027,6 +3033,60 @@ UpdatelonglanguageSetting 'en','Demo_Portal_Info2','You can install your very ow
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_AccessDenied','This issue occurs because your security no longer matches the security required.', null 
 GO
+UpdatelonglanguageSetting 'en','DisplayHelp_AddModuleDef','<h1 style="text-align: center;">Add new module</h1>
+<p>You can add a new module using a xml template.</p>
+<p>The xml template should be :</p>
+<p>&#160;</p>
+<p>&#160;</p>
+<div style="margin-left: 1em; text-indent: -2em;" class="c"><span class="m">&lt;</span><span class="m">&lt;</span><span class="t">module</span><span class="m">&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">folder</span> <span class="m">/&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">friendlyname</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">friendlyname</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">desktopsrc</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">desktopsrc</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">helpsrc</span> <span class="m">/&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">editsrc</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">editsrc</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">description</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">description</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">editmoduleicon</span> <span class="m">/&gt;</span></div>
+</div>
+<div class="e">
+<div><span class="b">&#160;</span>&#160; <span class="m">&lt;</span><span class="t">uninstall</span> <span class="m">/&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;" class="c"><a href="fckeditor.html?InstanceName=FCKeditor1&amp;Toolbar=Default#" onclick="return false" onfocus="h()" class="b">-</a>&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">files</span><span class="m">&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;" class="c"><a href="fckeditor.html?InstanceName=FCKeditor1&amp;Toolbar=Default#" onclick="return false" onfocus="h()" class="b">-</a>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">file</span><span class="m">&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">name</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">name</span><span class="m">&gt;</span></div>
+</div>
+<div><span class="b">&#160;</span>&#160;&#160;&#160; <span class="m">&lt;/</span><span class="t">file</span><span class="m">&gt;</span></div>
+</div>
+</div>
+<div class="e">
+<div>&#160;&#160; <span class="m">&lt;/</span><span class="t">files</span><span class="m">&gt;</span></div>
+</div>
+</div>
+</div>
+</div>
+<div><span class="m">&lt;/</span><span class="t">module</span><span class="m">&gt;</span></div>
+</div>
+</div>
+<p>&#160;</p>', null 
+GO
 UpdatelonglanguageSetting 'en','DisplayHelp_AdminMenu','<P>A menu page titled ''Admin'' with  ( 8 ) child pages is visible to users Site Administrators. These pages are displayed to the right of existing pages in the menu and provide access to these Administrator tools:</P>
 <UL>
 <LI>Site Settings; 
@@ -3053,12 +3113,14 @@ The following details are automatically recorded and displayed for each discussi
     * First Name and Last Name of the user who posted the message, or the last user to update the message.<br>
     * Date and Time the message was added or last updated.', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Discussions','Read the content of a discussion thread.<br><br>
-
-   1. Click on the linked message title to read that message. The related message will now be displayed. To display replies to a thread, click the Maximize maximize.gif button.<br>
-   2. Click Cancel to return to the module.<br>', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Discussions','<div style="text-align: center;">
+<h1> Discussions </h1>
+</div>
+<p>&#160;</p>
+The discussion area is a place to discuss views on various topics. Limit your discussions on topics of general interests. Do not abuse your power. It is not because you can do something that you have the right to do so.  Also it is not because you have the right to do something that should must do it. Remember that the Internet is not anonymous, you are expected to respect the laws of your country (copyright, illegal information, protection of human integrity, ...). Participants are personally responsible for their writings. Anyone wishing to remove a discussion relating to personal injury must submit the complaint via e-mail explaining the reason for his request.
+<p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_EditAccessDenied','Either you are not currently logged in, or you do not have access to this content.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_EditAccessDenied','<p>&#160;</p><p>&#160;</p>Either you are not currently logged in, or you do not have access to this content.<p>&#160;</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_EditAlbum','<h1 style="text-align: center;">Photo album</h1>
 <h2>Album settings</h2>
@@ -3640,6 +3702,20 @@ UpdatelonglanguageSetting 'en','DisplayHelp_ForumAdmin','<h1 style="text-align: 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_ForumAnonymous','You need to register in order to be able to edit and post messages.', null 
 GO
+UpdatelonglanguageSetting 'en','DisplayHelp_ForumModerate','<h1 style="text-align: center;"> Forum Moderate </ h1> 
+<p></p>
+<ol> 
+     <li> Each section of the forum will display the number of messages waiting for approval </li> 
+     <li> Choose a section of the forum </li> 
+     <li> Choose a message to approve / delete / refuse.
+    <ol> 
+         <li> Click on the subject of the message to view it </ li> 
+         <li> Select tje messages to approve and click approved </ li> 
+         <li> Select the messages to delete and click Delete </ li> 
+     </ol> 
+     </li> 
+</ol>', null 
+GO
 UpdatelonglanguageSetting 'en','DisplayHelp_ForumSearch','<h1 style="text-align: center;">Forum advanced search</h1>
 <p>You can search for messages in the forum with one or more of the following options:</p>
 <ul>
@@ -3762,29 +3838,123 @@ UpdatelonglanguageSetting 'en','DisplayHelp_HostSettings','<p>Host settings</p>
 <p>File extension allow for Upload:</p>
 <p>See SQL update log:</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language0','Edit Erase or Create a new language', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language0','<h1 style="text-align: center;">Language</h1>
+<ul>
+    <li>
+    <p><strong> Generate SQL script: </strong> Select the language to generate the script and click on the appropriate option. Files with .sql extensions will be saved in the database directory.</p>
+    </li>
+    <li>
+    <p><strong> Adding a new language: </strong> Select the language From and To and click on <img alt="save" style="border-style: none; border-width: 0px; height: 16px; width: 16px;" src="../../images/save.gif" title="Click here to create a new language" />, the new language will be created with information from the originating language. You can edit the new language thereafter.</p>
+    </li>
+    <li>
+    <p><strong>language: </strong> Select the language to delete and click on <img title=" Click here to delete the language -&gt; en " src="../../images/delete.gif" style="border-width: 0px; height: 16px; width: 16px;" alt="d" /></p>
+    </li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language1','Edit help files', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language1','<h1 style="text-align: center;">Edit Help Files</h1>
+<p>The help topics are used for help files and to display different information in different context in the website. You can include HTML code in those files. In some file the following information will be added in the text where the following items are shown: <br />
+<br />
+&#160;</p>
+<ul>
+    <li> 	&#123;HostEmail} : Email the webmaster.</li>
+    <li> 	&#123;PortalName} : Name of the portal.</li>
+    <li> 	&#123;Year} : year.</li>
+    <li> 	&#123;AdministratorEmail} : Email address of the administrator of the current site.</li>
+    <li> 	&#123;Date} : Current date time, formated with the appropriate language code.</li>
+    <li> 	&#123;Httplogin} : The URL to enter the site.</li>
+    <li> 	&#123;Httpregister} : The URL to register.</li>
+</ul>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_Language10','Help settings for language', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language2','Edit language files', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language2','<h1 style="text-align: center;">Language settings</h1>
+<p><br />
+Each item is specific to a language that will be used on the website. Most items are specific to a module. An item can only have a maximum of 200 characters. <br />
+<br />
+Some items in order to include context specific information require code between {}.&#160; The information will be formatted accordingly when the appropiate code is include in a language setting. <br />
+<br />
+Such as: <br />
+<br />
+The file extension {FileExts} is not allowed. <br />
+You may only use the following extensions: {allowedext} <br />
+<br />
+In this example in the module download {FileExts} will be replaced by the file extension that the user tries to download and {allowdext} will be replaced by extensions allowed. <br />
+<br />
+<br />
+So when you edit a language item and there are information between {} you must include them in order to reproduce all the information needed to diplay the appropriate information to the user.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language3','Edit country codes', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language3','<h1 style="text-align: center;">Country codes</h1>
+<p>The country does table is use to display the country name in the appropriate language when a user register or change is personal information.&#160; The code cannot be modified but the coutry name can.&#160; You can associate region code to each county code.</p>
+<p>&#160;</p>
+<p>Select the country to edit and click <img alt="" title="Enregistrer -&gt; pay" src="../../images/save.gif" style="border-width: 0px; height: 16px; width: 16px;" /> to save the setting.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language4','Edit the admin menu information', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language4','<h1 style="text-align: center;">Admin menu</h1>
+<p>&#160;</p>
+<p>The admin modules names and description will be displayed in the admin menu.&#160; You can change the name and the description associated with a specific menu option.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language5','Edit currencies code to use with Pay-Pal', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language5','<h1 style="text-align: center;">Currencies codes</h1>
+<p>Currencies codes are used to display the currencies that will be used for different services on the web site.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language6','Edit frequency code for subscription', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language6','<h1 style="text-align: center;">Frequencies codes</h1>
+<p>Frequencies codes are used to display the billing frequencies of different services on the web site.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language7','Edit site log options', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language7','<h1 style="text-align: center;">Site Log</h1>
+<p>There are 12 différents report that can be generated for a site log.</p>
+<p>You can edit the name of each that wil be displayed in the Site Log module.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language8','Edit the region code associated with a country code', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language8','<h1 style="text-align: center;">Region codes</h1>
+<p>The region code is use to display available region, state or province associate to a particular country name in the appropriate language when a user register or change is personal information.&#160; A region code can be added or modified for a specific country.</p>
+<p>&#160;</p>
+<ul>
+    <li>To add a code : Select the country to edit, add the code and the Region, State or Province and click <img style="border-width: 0px; height: 16px; width: 16px;" src="../../images/save.gif" title="Save" alt="" /> to save the setting.</li>
+    <li>To edit a code : Click on the <img style="border-width: 0px;" alt="Edit" src="../../images/edit.gif" /> of the code you want to edit and click on  <img style="border-width: 0px; height: 16px; width: 16px;" src="../../images/save.gif" title="save" alt="" /> to save the setting.</li>
+    <li>To delete a code : Click on the <img style="border-width: 0px;" alt="Edit" src="../../images/edit.gif" /> of the code you want to edit and click on <img title="Erase -&gt; Region" src="../../images/delete.gif" style="border-width: 0px; height: 16px; width: 16px;" alt="" /> to delete the setting.</li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Language9','Edit time Zones information', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Language9','<h1 style="text-align: center;">Time Zones</h1>
+<p>&#160;</p>
+<p>Time zones are divided into standard and daylight saving (or summer). Daylight saving time zones (or summer time zones) include an offset (typically +1) for daylight saving time.  Standard time zones (Winter Time zones) can be defined by geometrically subdividing the Earth''s spheroid into 24 lunes (wedge-shaped sections), bordered by meridians each 15° of longitude apart.</p>
+<p>The local time in neighboring zones would differ by one hour. However, political boundaries, geographical practicalities, and convenience of inhabitants can result in irregularly-shaped zones. Moreover, in a few regions, half-hour or quarter-hour differences are in effect.  Before the adoption of time zones, people used local solar time. Originally this was apparent or true solar time, as shown by a sundial, and later it became mean solar time, as kept by most mechanical clocks. Mean solar time has days of equal length, but the difference between mean and apparent solar time, called the equation of time, averages to zero over a year.</p>
+<p>The use of local solar time became increasingly awkward as railways and telecommunications improved, because clocks differed between places by an amount corresponding to the difference in their geographical longitude, which was usually not a convenient number. This problem could be solved by synchronizing the clocks in all localities, although in many places the local time would then differ markedly from the solar time to which people were accustomed.</p>
+<p>Time zones are thus a compromise, relaxing the complex geographic dependence while still allowing local time to approximate the mean solar time. There has been a general trend to push the boundaries of time zones further west of their designated meridians in order to create a permanent daylight saving time effect. The increase in worldwide communication has further increased the need for interacting parties to communicate mutually comprehensible time references to one another.</p>
+<p>Time zones must be specified at the server, site and user level.</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_ManageTabs','Menu use to navigate, edit, view and manage site pages', null 
+GO
+UpdatelonglanguageSetting 'en','DisplayHelp_ManageTabsXML','<h1 style="text-align: center;">Page XML Template</h1>
+<p>You can edit the generated page xml in order to make a template that could be used to populate a new tab latter on.&#160; Once you are satisfied with the information, you can save the information to disk.&#160; The new file will have the name you specified with an xml extension.&#160; It will be saved in your portal&#160;&#160; skin/templates directory.&#160; All files in this directory will be available on a drop down list when you create a new page.&#160; The file will overwrite an existing file with the same name.</p>
+<p>The structure of the xml template is the following :</p>
+<p>&lt;?xml version="1.0" encoding="utf-8"?&gt;<br />
+&lt;portal&gt;<br />
+&#160;&lt;tabs language=''''&gt;<br />
+&#160; &lt;tab&gt;<br />
+&#160; &lt;name&gt;&lt;/name&gt;<br />
+&#160; &lt;visible&gt;&lt;/visible&gt;<br />
+&#160;&#160; &lt;panes&gt;<br />
+&#160;&#160; &lt;pane&gt;<br />
+&#160;&#160; &lt;name&gt;&lt;/name&gt;<br />
+&#160;&#160;&#160; &lt;modules&gt;<br />
+&#160;&#160;&#160;&#160;&#160; &lt;module&gt;<br />
+&#160;&#160;&#160;&#160; &lt;title&gt;&lt;/title&gt;<br />
+&#160;&#160;&#160;&#160; &lt;definition&gt;&lt;/definition&gt;<br />
+&#160;&#160;&#160;&#160;&#160; &lt;modulesettings&gt;<br />
+&#160;&#160;&#160;&#160;&#160; &lt;modulesetting&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160; &lt;settingname&gt;&lt;/settingname&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160; &lt;settingvalue&gt;&lt;/settingvalue&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160; &lt;/modulesetting&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;datas&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;data&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;data1&gt;&lt;/data1&gt;&lt;data2&gt;&lt;/data2&gt;&lt;data3&gt;&lt;/data3&gt;&lt;data4&gt;&lt;/data4&gt;&lt;data5&gt;&lt;/data5&gt;&lt;data6&gt;&lt;/data6&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;/data&gt;<br />
+&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;/datas&gt;<br />
+&#160;&#160;&#160;&#160;&#160; &lt;/module&gt;<br />
+&#160;&#160;&#160; &lt;/modules&gt;<br />
+&#160;&#160; &lt;/pane&gt;<br />
+&#160; &lt;/panes&gt;<br />
+&#160;&lt;/tab&gt;<br />
+&#160;&lt;/tabs&gt;<br />
+&lt;/portal&gt;<br />
+&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_MAnageUserDefinedTable','<p><span class="SubHead">Add UDT Columns</span><br />
 <span class="Normal">
@@ -3852,15 +4022,42 @@ UpdatelonglanguageSetting 'en','DisplayHelp_ModerateAdmin','<h1 style="text-alig
 </ol>
 <p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_ModuleDefinitions','The Module Definitions page allows the Host to set one or more modules as Premium, manage module properties and upload new modules.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_ModuleDefinitions','<h1 style="text-align: center;">Modules settings</h1>
+<ul>
+    <li>Module name : The name of the module in the current language, this name will be displayed in the module add option of a page.</li>
+    <li>Description : This information will be displayed in the module add option of a page.</li>
+    <li>Desktop : The place where the asp.net control will be situated on the server. (code used for the module)</li>
+    <li>Edit : The place where the asp.net control will be situated on the server. (code used when editing the setting of a module)</li>
+    <li>Help : Non implementated.</li>
+    <li>Icone : Icone displayed on the title of the edit screen of a module. (can be left empty)</li>
+    <li>Bonus : Click if you want to charge extra for the use of this module.<br />
+    <ul>
+        <li>Add bonus : You have to go to the site settings to add an amount for that specific module for a site.</li>
+    </ul>
+    </li>
+</ul>
+<p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_ModuleDefs','The Module Definitions page allows the Host to set one or more modules as Premium, manage module properties and upload new modules.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_ModuleDefs','<h1 style="text-align: center;">Modules settings</h1>
+<p>The Module Definitions page allows the Host to set one or more modules as Premium, manage module properties and upload new modules.</p>
+<ul>
+    <li>The module name and description is unique per language.</li>
+    <li>The Bonus column indicate if a module require a Premium or not.</li>
+</ul>
+<p>To edit a module settings click on <img style="border-width: 0px;" alt="edit" src="../../images/edit.gif" title="Edit a module" /></p>
+<p>To add a new module click <img style="border-width: 0px;" alt="add" src="../../images/add.gif" title="Add a new module" /></p>
+<p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_ModuleSettings','Settings relating to the Module content and permissions.  E.g. Those settings that will be the same on all pages that the Module appears.', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_MyBuddiesModule','Information about my buddies module', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_MyBuddiesModule','<h1 style="text-align: center;">my buddies module</h1>
+<p>The module display information on who is online from your list of buddies.</p>
+<p>To designate a buddy, use the user search engine and click on the name of the user.</p>
+<p>From this module you can view information about your buddies, you can send private message.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_NeedToLogin','Either you are not currently logged in, or you do not have access to this content.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_NeedToLogin','<p>&#160;</p><p>&#160;</p>
+<h1>Either you are not currently logged in, or you do not have access to this content.</h1>
+<p>&#160;</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_PMSCompose','You can write your messages using an online editor.', null 
 GO
@@ -3868,9 +4065,17 @@ UpdatelonglanguageSetting 'en','DisplayHelp_PMSInbox','You view and manage your 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_PMSOutbox','You can view and manage the messages your send to other users.', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Portals','Manage existing portals and create new portals.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Portals','<h1 style="text-align: center;">Portals settings</h1>
+<p>Diplay a list of all the portals on the server. </p>
+<ul>
+    <li>Edit Portal settings : Click on <img title="Edit" src="../../images/edit.gif" alt="Edit" style="border-width: 0px;" /> to edit portal specific settings, like demo portal, subsciption, ssl settings and portal alias.</li>
+    <li>View Portal : Click on the portal name to be redirected to the portal.</li>
+    <li>Add a new portal : Click on the <img src="../../images/add.gif" alt="*" style="border-width: 0px;" /> to create a new portal.</li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Privacy','You will find in this page the site privacy statement.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Privacy','<span class="Head"> PRIVACY STATEMENT </span>
+<p>
+This privacy statement discloses our practices regarding the protection of privacy. By using the Web site, you agree fully to the collection, use and disclosure of your personal information and practices relating to privacy contained in the privacy statement. If you would like more information or assistance please contact us. </p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_Register','<h1>Registration {PortalName}</h1>
 <p>All field with a<b> * </b>are required</p>
@@ -3882,7 +4087,7 @@ UpdatelonglanguageSetting 'en','DisplayHelp_Register','<h1>Registration {PortalN
     <li>Use a passphrase. Rather than trying to remember a password created using various character types which is also not a word from the dictionary, you can use a passphrase. Think up a sentence or a line from a song or poem that you like and create a password using the first letter from each word.        For example, rather than just having a password like ''yr$1Hes'', you could take a sentence such as "I like to read the About.com Internet / Network Security web site" and convert it to a password like ''il2rtA!nsws". By substituting the number ''2'' for the word ''to'' and using an exclamation point in place of the ''i'' for ''Internet'', you can use a variety of character types and create a secure password that is hard to crack, but much easier for you to remember.</li>
 </ol>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_RegisterEdit','<h1>Registration {PortalName}</h1>
+UpdatelonglanguageSetting 'en','DisplayHelp_RegisterEdit','<h1>Edit Personnal settings {PortalName}</h1>
 <p>All field with a<b> * </b>are required</p>
 <p>To create a secure password that is easy for you to remember :</p>
 <ol>
@@ -3892,7 +4097,17 @@ UpdatelonglanguageSetting 'en','DisplayHelp_RegisterEdit','<h1>Registration {Por
     <li>Use a passphrase. Rather than trying to remember a password created using various character types which is also not a word from the dictionary, you can use a passphrase. Think up a sentence or a line from a song or poem that you like and create a password using the first letter from each word.        For example, rather than just having a password like ''yr$1Hes'', you could take a sentence such as "I like to read the About.com Internet / Network Security web site" and convert it to a password like ''il2rtA!nsws". By substituting the number ''2'' for the word ''to'' and using an exclamation point in place of the ''i'' for ''Internet'', you can use a variety of character types and create a secure password that is hard to crack, but much easier for you to remember.</li>
 </ol>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_RegisterEditServices','Information about services', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_RegisterEditServices','<h1>Edit Personnal settings {PortalName}</h1>
+<p>All field with a<b> * </b>are required</p>
+<p>To create a secure password that is easy for you to remember :</p>
+<ol>
+    <li>&#160;Do not use personal information. You should never use personal information as a part of your password. It is very easy for someone to guess things like your last name, pet''s name, child''s birth date and other similar details.</li>
+    <li>Do not use real words. There are tools available to help attackers guess your password. With today''s computing power, it doesn''t take long to try every word in the dictionary and find your password, so it is best if you do not use real words for your password.</li>
+    <li>Mix different character types. You can make a password much more secure by mixing different types of characters. Use some uppercase letters along with lowercase letters, numbers and even special characters such as ''&amp;'' or ''%''.    4.</li>
+    <li>Use a passphrase. Rather than trying to remember a password created using various character types which is also not a word from the dictionary, you can use a passphrase. Think up a sentence or a line from a song or poem that you like and create a password using the first letter from each word.        For example, rather than just having a password like ''yr$1Hes'', you could take a sentence such as "I like to read the About.com Internet / Network Security web site" and convert it to a password like ''il2rtA!nsws". By substituting the number ''2'' for the word ''to'' and using an exclamation point in place of the ''i'' for ''Internet'', you can use a variety of character types and create a secure password that is hard to crack, but much easier for you to remember.</li>
+</ol>
+<h1>Services {PortalName}</h1>
+<p>List of available services you have or can subcribe to.</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_Roles','<div style="text-align: center;">
 <h1>Security Settings</h1>
@@ -3924,7 +4139,8 @@ UpdatelonglanguageSetting 'en','DisplayHelp_SecurityRole','<h1 style="text-align
 <p>Each page or modules can be accessed or modified according to the roles assigned to this resource.</p>
 <p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Services','Information about services available', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Services','<h1>Services {PortalName}</h1>
+<p>List of available services on {PortalName}.  You must be logged in to subscribe to a particular service.</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_Signin','<h1>Signing in</h1>
 <p>You need to enter a valid user code and password.</p>
@@ -3936,32 +4152,140 @@ UpdatelonglanguageSetting 'en','DisplayHelp_Signin','<h1>Signing in</h1>
 
 ', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Signup','Create a new potal', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Signup','<h1 style="text-align: center;">Add a new portal</h1>
+<p>You must enter all the information in order to create a new portal.</p>
+<ul>
+    <li>Portal Name : Use only alpha-numeric characters are allowed.&#160; You cannot use space.&#160; If the name is already used on the server you will be prompte to try a new one.</li>
+    <li>Template : Available template are liste in the drop down list.&#160; A image with be displayer with the selected template look. </li>
+    <li>First name : The first name of the administrator of the new site. (required field)</li>
+    <li>Name : The last name of the administrator of the new site. (required field)</li>
+    <li>User Code :&#160; Can be any alpha-numeric characters.&#160; Should be at least 8 characters long for security reason.&#160; Also you should combine Upper-Case Lower Case and have a mix of alpha and muneric characters. (required field)</li>
+    <li>Password : Can be any alpha-numeric characters.&#160; Should be at least 8 characters long for security reason.&#160; Also you should combine Upper-Case Lower Case and have a mix of alpha and muneric characters. (required field)</li>
+    <li>E-Mail : Valid E-Mail must be entered otherwise you will not be able to activate your new site.</li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_SiteLog','Select the appropriate report your want also a start date and End Date.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_SiteLog','<h1 style="text-align: center; ">Log reports</h1>
+<p>Select the appropriate report your want also a start date and End Date.</p>
+<ul>
+    <li>Browser</li>
+    <li>Clicks</li>
+    <li>Dayly</li>
+    <li>Detailled</li>
+    <li>Hourly</li>
+    <li>Monthly</li>
+    <li>Page</li>
+    <li>Site referral</li>
+    <li>Subscription by country</li>
+    <li>Subscription by date</li>
+    <li>User</li>
+    <li>Weekly</li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings1','Skinning<br />
-<br />
-You can personalise the way the site will look.<br />
-<br />
-Edit portal CSS files and Skin files.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings1','<h1>Skinning</h1>
+<p>You can personalise the way the site will look. Edit portal CSS files and Skin files.</p>
+<p>User info :&#160;</p>
+<table id="admin_chkUserInfo" cellspacing="0" cellpadding="0" border="0" style="font-family: Verdana, Arial; font-size: 8pt; width: 400 px; border-collapse: collapse; ">
+    <tbody>
+        <tr>
+            <td><img height="14" width="17" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -91px; " src="../../images/1x1.gif" />&#160;&#160;Search and list site members</td>
+        </tr>
+        <tr>
+            <td><img height="14" width="17" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -105px; " src="../../images/1x1.gif" />&#160;&#160;Show who is online</td>
+        </tr>
+        <tr>
+            <td><img height="12" width="18" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-color: initial; background-position: 0px -147px; " src="../../images/1x1.gif" />&#160;&#160;Show Link to PMS</td>
+        </tr>
+        <tr>
+            <td><img height="14" width="17" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -91px; " src="../../images/1x1.gif" />&#160;&#160;Activate session tracking of user online &#160;</td>
+        </tr>
+        <tr>
+            <td><img height="16" width="17" border="0" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -243px; " src="../../images/1x1.gif" />&#160;&#160;Activate the use of PMS</td>
+        </tr>
+    </tbody>
+</table>
+<p>CSS Files :</p>
+<ul>
+    <li>Portall.css : For basic style for the portal</li>
+    <li>TTT.css : For additionnal style to be use with the forum and photo album module.&#160;</li>
+</ul>
+<p>SKIN Files :</p>
+<ul>
+    <li>Portal.skin : Skin file for basic pages on the portal.</li>
+    <li>PortalEdit.skin : Skin file for admin and edit pages or the portal.</li>
+</ul>
+<p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings2','General information about your site', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings2','<h1>Site Settings</h1>
+<ul>
+    <li>Administrator : Désignate the administrator of the site. &#160;The administrator E-Mail will used and available to users.</li>
+    <li>E-Mail notice : &#160;If you want to designate an alternate E-Mail adresse for notice from the site.</li>
+    <li>Time Zone : Designate the time zone you want your site to be in.</li>
+    <li>Registration type :
+    <ul>
+        <li>None : &#160;Registering will be deactivated</li>
+        <li>Private : The administrator will need to autorise a new user before he can log in</li>
+        <li>Public : A new user will be able to log in immediatly after registering</li>
+        <li>Validated : A new user will on be able to log in after his E-Mail been validated</li>
+    </ul>
+    </li>
+    <li>Vendors source : None, Site or Host</li>
+    <li>Currency : Select the currency that will be used by the payment processor for the services offered (if any). &#160;New services can be set up with security roles.</li>
+    <li>Payment processor : &#160;Oncly paypal is presently available</li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings3','Select the language and the various language specific information to be displayed on each page.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings3','<h1>Linguistic settings</h1>
+<ol>
+    <li>Select the default language and the language to be used by the Portal.</li>
+    <li>Select the language to edit specific information.
+    <ul>
+        <li>Terms of use</li>
+        <li>Privacy statement</li>
+        <li>Portal Title</li>
+        <li>Footer text</li>
+        <li>Portal Description</li>
+        <li>Key word</li>
+        <li>Directives when logging in</li>
+        <li>Directives when registering</li>
+        <li>Text to be annened to a registration E-Mail</li>
+        <li>Demo portal creation directives (Only available if activated by the webmaster)</li>
+    </ul>
+    </li>
+</ol>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings4','Select the option for crating a demo portal.', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettings5','Subscription detail for the portal.', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_SQL','Enter your SQL request.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettingsAlias','<h1>Hosting information</h1>
+<p>The webmaster can change the hosting settings:</p>
+<ol>
+    <li>Basic hosting fee.</li>
+    <li>The maximum space in MB for the portal. 0 for unlimited.</li>
+    <li>The number of days to log.</li>
+    <li>Expiration date of the portal.</li>
+</ol>
+<h2>Alias and domain name</h2>
+<p>A portal can have multiple aliases; domain name or sub domain name. Each alias must be unique on the web server. If you enter an alias already in used by another portal, it will be reassigned to this portal. Each alias can be designated to use the SSL protocol. Before using this option, make sure this feature is enabled on the web server, otherwise it could make the portal inoperative.</p>
+<h2>SSL protocol</h2>
+<p><span style="font-size: larger; color: rgb(255, 0, 0);">VERY IMPORTANT :</span> The SSL protocol must be installed on the web server prior to using this option. Also the option<a target="_blank" class="headertitle" title="Change host SSL settings" href="en.default.aspx?adminpage=72"> force ssl </a>in the host settings option must be activated. &#160;An SSL certificate can only user one IP address. Therefore, only on SSL certificate can be installed at one time to be used by DotNetZoom. If the SSL certificate installed use a different domain name than the portal, you must check the sub and ssl option for this domain name. <span style="font-size: larger; color: rgb(255, 0, 0);">Make sure the SSL certificate is valid for the alias you select otherwise you may render the portal inoperable.</span></p>', null 
+GO
+UpdatelonglanguageSetting 'en','DisplayHelp_SiteSettingsDemo','<h1>Demo portal settings</h1>
+<p>The demo portal must be activated at the host level first. <a target="_blank" title="Change demo settings" class="headertitle" href="en.default.aspx?adminpage=72">&#160;You can set the basic option here</a>.</p>
+<p>You can allow per site demo creation. &#160;A demo site can use a child domain, i.e. dotnetzoom/yourname or a sub domain, i.e. yourname.dotnetzoom. &#160;To use a sub domain the dns server must be set up accordingly, otherwise it will make the demo portal inoperable, sinc the new sub domain will not be available in the dns table.</p>
+<p><b>* Note:</b>  Once a new portal is created. The user and the webmaster  will receive an email with a hyperlink to activate the portal. So it is important that the SMTP settings are enabled in the <a target="_blank" title="Change SMTP options in Host settings" class="headertitle" href="en.default.aspx?Adminpage=72">Host Settings.  </a></p>', null 
+GO
+UpdatelonglanguageSetting 'en','DisplayHelp_SQL','<p>The main mode of retrieving data from an SQL Server database is querying for it. The query is expressed using a variant of SQL called T-SQL, a dialect Microsoft SQL Server shares with Sybase SQL Server due to its legacy. The query declaratively specifies what is to be retrieved. It is processed by the query processor, which figures out the sequence of steps that will be necessary to retrieve the requested data. The sequence of actions necessary to execute a query is called a query plan. There might be multiple ways to process the same query. For example, for a query that contains a join statement and a select statement, executing join on both the tables and then executing select on the results would give the same result as selecting from each table and then executing the join, but result in different execution plans. In such case, SQL Server chooses the plan that is supposed to yield the results in the shortest possible time. This is called query optimization and is performed by the query processor itself.</p><p>
+SQL Server includes a cost-based query optimizer which tries to optimize on the cost, in terms of the resources it will take to execute the query. Given a query, the query optimizer looks at the database schema, the database statistics and the system load at that time. It then decides which sequence to access the tables referred in the query, which sequence to execute the operations and what access method to be used to access the tables. For example, if the table has an associated index, whether the index should be used or not - if the index is on a column which is not unique for most of the columns (low "selectivity"), it might not be worthwhile to use the index to access the data. Finally, it decides whether to execute the query concurrently or not. While a concurrent execution is more costly in terms of total processor time, because the execution is actually split to different processors might mean it will execute faster. Once a query plan is generated for a query, it is temporarily cached. For further invocations of the same query, the cached plan is used. Unused plans are discarded after some time.</p><p>
+SQL Server also allows stored procedures to be defined. Stored procedures are parameterized T-SQL queries, that are stored in the server itself (and not issued by the client application as is the case with general queries). Stored procedures can accept values sent by the client as input parameters, and send back results as output parameters. They can also call other stored procedures, and can be selectively provided access to. Unlike other queries, stored procedures have an associated name, which is used at runtime to resolve into the actual queries. Also because the code need not be sent from the client every time (as it can be accessed by name), it reduces network traffic and somewhat improves performance.[23] Execution plans for stored procedures are also cached as necessary.</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_Tabs','<h1 style="text-align: center; ">Pages</h1>
 <p>You can add a new page, edit the settings of an existing page or change the order of a page in the menu.</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_TAGFileManagerModule','DisplayHelp_TAGFileManagerModule', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Terms','You will find in this page the terms and policy for this site.', null 
+UpdatelonglanguageSetting 'en','DisplayHelp_Terms','<span class="Head"> TERMS </span>
+<p> These terms and conditions constitute the entire agreement for the use of the website. The general conditions of use of the website are governed by the laws of the Province of Quebec and the federal laws of Canada and must be construed in accordance with these laws. If you would like more information or assistance please contact us. </p>
+', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_UserInfoModule','<h1 style="text-align: center;">Users information</h1>
 <p>The module display basic information about members of the site.</p>
@@ -5040,33 +5364,35 @@ UpdateCountryCodes 'en','ZM','Zambia'
 GO
 UpdateCountryCodes 'en','ZW','Zimbabwe'
 GO
-UpdateAdminModuleDefinitions 'en','99','icon_site_16px.gif','Admin'
+UpdateAdminModuleDefinitions 'en','99','Admin','The Site Administrator has full control to build and maintain their site. Administrators have access to the Control Panel and the Admin page which has six (6) child pages that handle administration tasks.'
 GO
-UpdateAdminModuleDefinitions 'en','14','icon_sitesettings_16px.gif','Site settings'
+UpdateAdminModuleDefinitions 'en','14','Site settings','The Site Settings page enables Administrators to configure the both basic and advanced setting for the site. Settings include design, advertising, user registration settings, etc.'
 GO
-UpdateAdminModuleDefinitions 'en','13','icon_tabs_16px.gif','Pages'
+UpdateAdminModuleDefinitions 'en','13','Pages','The pages page offers Adminstrators management tools for managing hidden pages and page hierarchy.'
 GO
-UpdateAdminModuleDefinitions 'en','12','icon_securityroles_16px.gif','Security Roles'
+UpdateAdminModuleDefinitions 'en','12','Security Roles','This page manages Security Roles for this web site.'
 GO
-UpdateAdminModuleDefinitions 'en','72','icon_hostsettings_16px.gif','Host settings'
+UpdateAdminModuleDefinitions 'en','72','Host settings','Management of Host setting.'
 GO
-UpdateAdminModuleDefinitions 'en','15','icon_users_16px.gif','User Accounts'
+UpdateAdminModuleDefinitions 'en','15','User Accounts','This User Accounts page manages User Accounts for this portal.'
 GO
-UpdateAdminModuleDefinitions 'en','63','icon_portals_16px.gif','Portals Settings'
+UpdateAdminModuleDefinitions 'en','63','Portals Settings','Manage existing portals and create new portals.'
 GO
-UpdateAdminModuleDefinitions 'en','65','icon_sql_16px.gif','SQL'
+UpdateAdminModuleDefinitions 'en','65','SQL','This page enable Hosts to make SQL queries to the database.'
 GO
-UpdateAdminModuleDefinitions 'en','21','icon_filemanager_16px.gif','File explorer'
+UpdateAdminModuleDefinitions 'en','21','File explorer','The page allow you to browse the file system.'
 GO
-UpdateAdminModuleDefinitions 'en','64','icon_moduledefinitions_16px.gif','Modules settings'
+UpdateAdminModuleDefinitions 'en','64','Modules settings','Add new modules and manage existing modules.'
 GO
-UpdateAdminModuleDefinitions 'en','19','icon_vendors_16px.gif','Vendors'
+UpdateAdminModuleDefinitions 'en','19','Vendors','This page manages Vendor accounts within this web site.'
 GO
-UpdateAdminModuleDefinitions 'en','27','icon_sitelog_16px.gif','Site log'
+UpdateAdminModuleDefinitions 'en','27','Site log','This page displays statistical reports for this web site.'
 GO
-UpdateAdminModuleDefinitions 'en','28','icon_bulkmail_16px.gif','E-Mail'
+UpdateAdminModuleDefinitions 'en','28','E-Mail','This page enables the Administrators to send messages to users, email addresses and security roles.'
 GO
-UpdateAdminModuleDefinitions 'en','100','icon_language_16px.gif','Language'
+UpdateAdminModuleDefinitions 'en','100','Language','The Languages page displays the languages that are supported on the site.
+
+This page also provides webmaster with access to the Language Editor. As well as enabling webmaster to add new languages, the Language Editor enables the editing of emails sent by the site (e.g. User Registration, Password Reminder, and Notification of Role Assignment) as well as site wide messages (e.g. Privacy Statement, Login Instructions, Terms Of Use).'
 GO
 UpdateCurrencies 'en','CAD','Canadian (CAD)'
 GO

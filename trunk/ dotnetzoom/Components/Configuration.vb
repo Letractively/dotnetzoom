@@ -44,8 +44,8 @@ Namespace DotNetZoom
 
         Public TabId As Integer
         Public TabName As String
-		Public FriendlyTabName As String
-		Public ShowFriendly As Boolean
+        Public FriendlyTabName As String
+        Public ShowFriendly As Boolean
         Public TabOrder As Integer
         Public AuthorizedRoles As String
         Public AdministratorRoles As String
@@ -75,7 +75,7 @@ Namespace DotNetZoom
         Public TabName As String
         Public TabOrder As Integer
         Public FriendlyTabName As String
-		Public Css As String
+        Public Css As String
         Public Skin As String
         Public ssl As Boolean
         Public AuthorizedRoles As String
@@ -112,7 +112,7 @@ Namespace DotNetZoom
         Public ModuleOrder As Integer
         Public PaneName As String
         Public ModuleTitle As String
-		Public IsAdminModule As Boolean
+        Public IsAdminModule As Boolean
         Public AuthorizedEditRoles As String
         Public ShowFriendly As Boolean
         Public DesktopSrc As String
@@ -128,7 +128,7 @@ Namespace DotNetZoom
         Public AllTabs As Boolean
         Public ShowTitle As Boolean
         Public Personalize As Integer
-		Public Language As String
+        Public Language As String
         Public FriendlyName As String
 
     End Class
@@ -151,7 +151,7 @@ Namespace DotNetZoom
         Public PortalAlias As String
         Public HTTP As String
         Public HTTPS As String
-		Public PortalChild As Boolean
+        Public PortalChild As Boolean
         Public PortalName As String
         Public UploadDirectory As String
         Public LogoFile As String
@@ -170,14 +170,14 @@ Namespace DotNetZoom
         Public KeyWords As String
         Public BackgroundFile As String
         Public SiteLogHistory As Integer
-		Public TimeZone As Integer
+        Public TimeZone As Integer
         Public SuperUserId As Integer
         Public Version As String
         Public BreadCrumbs As New ArrayList()
         Public ActiveTab As New TabSettings()
         Public Language As String
         Public SSL As Boolean
-		
+
         '*********************************************************************
         '
         ' PortalSettings Constructor
@@ -189,13 +189,12 @@ Namespace DotNetZoom
         '*********************************************************************
 
         Public Sub New(ByVal tabId As Integer, ByVal PortalAlias As String, ByVal ApplicationPath As String, ByVal Language As String)
-			Me.Language = Language
+            Me.Language = Language
             GetPortalSettings(tabId, PortalAlias, Language)
 
             Me.UploadDirectory = IIf(ApplicationPath = "/", "", ApplicationPath) & "/Portals/" & Me.GUID.ToString & "/"
             GetBreadCrumbsRecursively(Me.ActiveTab.TabId)
-            Me.Version = System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly.Location).ProductVersion.ToString
-            Me.Version = Left(Me.Version, InStrRev(Me.Version, ".") - 1)
+            Me.Version = AssemblyVersion
 
         End Sub
 
@@ -212,7 +211,7 @@ Namespace DotNetZoom
             ' Execute the command
             myConnection.Open()
             Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
-			Dim objAdmin As New AdminDB()
+            Dim objAdmin As New AdminDB()
             If result.Read() Then
                 ' portal settings
 
@@ -238,59 +237,59 @@ Namespace DotNetZoom
                     End If
                 End If
 
-                    Me.PortalId = Int32.Parse(result("PortalID").ToString)
-                    Me.GUID = result("GUID").ToString
-                    Me.PortalAlias = result("PortalAlias").ToString
-                    If InStr(1, Me.PortalAlias, "/") <> 0 Then
-                        Me.PortalChild = True
-                    Else
-                        Me.PortalChild = False
-                    End If
-                    Me.PortalName = result("PortalName").ToString
-                    Me.LogoFile = result("LogoFile").ToString
-                    Me.FooterText = result("FooterText").ToString
-                    Me.ExpiryDate = result("ExpiryDate").ToString
-                    Me.UserRegistration = result("UserRegistration").ToString
-                    Me.BannerAdvertising = result("BannerAdvertising").ToString
-                    Me.Currency = result("Currency").ToString
-                    Me.AdministratorId = result("AdministratorId").ToString
-                    Me.Email = result("Email").ToString
-                    Me.HostFee = result("HostFee").ToString
-                    Me.HostSpace = IIf(IsDBNull(result("HostSpace")), 0, result("HostSpace"))
-                    Me.AdministratorRoleId = result("AdministratorRoleId").ToString
-                    Me.RegisteredRoleId = result("RegisteredRoleId").ToString
-                    Me.Description = result("Description").ToString
-                    Me.KeyWords = result("KeyWords").ToString
-                    Me.BackgroundFile = result("BackgroundFile").ToString
-                    Me.SiteLogHistory = IIf(IsDBNull(result("SiteLogHistory")), -1, result("SiteLogHistory"))
-                    Me.TimeZone = IIf(IsDBNull(result("TimeZone")), -99, result("TimeZone"))
-                    Me.SuperUserId = result("SuperUserId").ToString
-
-
-                    '  tab settings
-                    Me.ActiveTab.TabId = Int32.Parse(result("TabId").ToString)
-                    Me.ActiveTab.TabOrder = IIf(IsDBNull(result("TabOrder")), -1, result("TabOrder"))
-                    Me.ActiveTab.FriendlyTabName = IIf(IsDBNull(result("FriendlyTabName")), "", result("FriendlyTabName"))
-                    Me.ActiveTab.css = IIf(IsDBNull(result("css")), "", result("css"))
-                    Me.ActiveTab.skin = IIf(IsDBNull(result("skin")), "", result("skin"))
-                    If Me.SSL Then
-                        Me.ActiveTab.ssl = Boolean.Parse(result("tabssl").ToString)
-                    Else
-                        Me.ActiveTab.ssl = False
-                    End If
-                    Me.ActiveTab.AuthorizedRoles = result("AuthorizedRoles").ToString
-                    Me.ActiveTab.AdministratorRoles = result("AdministratorRoles").ToString
-                    Me.ActiveTab.TabName = result("TabName").ToString
-                    Me.ActiveTab.ShowFriendly = Boolean.Parse(result("ShowFriendly").ToString)
-                    Me.ActiveTab.LeftPaneWidth = result("LeftPaneWidth").ToString
-                    Me.ActiveTab.RightPaneWidth = result("RightPaneWidth").ToString
-                    Me.ActiveTab.IsVisible = Boolean.Parse(result("IsVisible").ToString)
-                    Me.ActiveTab.DisableLink = Boolean.Parse(result("DisableLink").ToString)
-                    Me.ActiveTab.ParentId = result("ParentId")
-                    Me.ActiveTab.Level = result("Level")
-                    Me.ActiveTab.IconFile = result("IconFile").ToString
-                    Me.ActiveTab.HasChildren = Boolean.Parse(result("HasChildren").ToString)
+                Me.PortalId = Int32.Parse(result("PortalID").ToString)
+                Me.GUID = result("GUID").ToString
+                Me.PortalAlias = result("PortalAlias").ToString
+                If InStr(1, Me.PortalAlias, "/") <> 0 Then
+                    Me.PortalChild = True
+                Else
+                    Me.PortalChild = False
                 End If
+                Me.PortalName = result("PortalName").ToString
+                Me.LogoFile = result("LogoFile").ToString
+                Me.FooterText = result("FooterText").ToString
+                Me.ExpiryDate = result("ExpiryDate").ToString
+                Me.UserRegistration = result("UserRegistration").ToString
+                Me.BannerAdvertising = result("BannerAdvertising").ToString
+                Me.Currency = result("Currency").ToString
+                Me.AdministratorId = result("AdministratorId").ToString
+                Me.Email = result("Email").ToString
+                Me.HostFee = result("HostFee").ToString
+                Me.HostSpace = IIf(IsDBNull(result("HostSpace")), 0, result("HostSpace"))
+                Me.AdministratorRoleId = result("AdministratorRoleId").ToString
+                Me.RegisteredRoleId = result("RegisteredRoleId").ToString
+                Me.Description = result("Description").ToString
+                Me.KeyWords = result("KeyWords").ToString
+                Me.BackgroundFile = result("BackgroundFile").ToString
+                Me.SiteLogHistory = IIf(IsDBNull(result("SiteLogHistory")), -1, result("SiteLogHistory"))
+                Me.TimeZone = IIf(IsDBNull(result("TimeZone")), -99, result("TimeZone"))
+                Me.SuperUserId = result("SuperUserId").ToString
+
+
+                '  tab settings
+                Me.ActiveTab.TabId = Int32.Parse(result("TabId").ToString)
+                Me.ActiveTab.TabOrder = IIf(IsDBNull(result("TabOrder")), -1, result("TabOrder"))
+                Me.ActiveTab.FriendlyTabName = IIf(IsDBNull(result("FriendlyTabName")), "", result("FriendlyTabName"))
+                Me.ActiveTab.Css = IIf(IsDBNull(result("css")), "", result("css"))
+                Me.ActiveTab.Skin = IIf(IsDBNull(result("skin")), "", result("skin"))
+                If Me.SSL Then
+                    Me.ActiveTab.ssl = Boolean.Parse(result("tabssl").ToString)
+                Else
+                    Me.ActiveTab.ssl = False
+                End If
+                Me.ActiveTab.AuthorizedRoles = result("AuthorizedRoles").ToString
+                Me.ActiveTab.AdministratorRoles = result("AdministratorRoles").ToString
+                Me.ActiveTab.TabName = result("TabName").ToString
+                Me.ActiveTab.ShowFriendly = Boolean.Parse(result("ShowFriendly").ToString)
+                Me.ActiveTab.LeftPaneWidth = result("LeftPaneWidth").ToString
+                Me.ActiveTab.RightPaneWidth = result("RightPaneWidth").ToString
+                Me.ActiveTab.IsVisible = Boolean.Parse(result("IsVisible").ToString)
+                Me.ActiveTab.DisableLink = Boolean.Parse(result("DisableLink").ToString)
+                Me.ActiveTab.ParentId = result("ParentId")
+                Me.ActiveTab.Level = result("Level")
+                Me.ActiveTab.IconFile = result("IconFile").ToString
+                Me.ActiveTab.HasChildren = Boolean.Parse(result("HasChildren").ToString)
+            End If
 
 
 
@@ -336,8 +335,8 @@ Namespace DotNetZoom
             result.Close()
         End Sub
 
-	
-		
+
+
         Public Shared Function GetEditModuleSettings(ByVal ModuleId As Integer) As ModuleSettings
 
             ' Get Settings for this module from the database
@@ -361,7 +360,7 @@ Namespace DotNetZoom
                 _moduleSettings.TabId = Int32.Parse(result("TabID").ToString)
                 _moduleSettings.PaneName = "Edit"
                 _moduleSettings.ModuleTitle = result("ModuleTitle").ToString
-				_moduleSettings.IsAdminModule = False
+                _moduleSettings.IsAdminModule = False
                 _moduleSettings.AuthorizedEditRoles = result("AuthorizedEditRoles").ToString
                 _moduleSettings.EditSrc = result("EditSrc").ToString
                 _moduleSettings.Secure = result("Secure")
@@ -390,35 +389,35 @@ Namespace DotNetZoom
         Public Shared Function GetModuleSettings(ByVal ModuleId As Integer) As Hashtable
 
             ' Get Settings for this module from the database
-            			
-			Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Dim TempKey as String = GetDBname & "ModuleSettings_" & CStr(ModuleId)
-			Dim context As HttpContext = HttpContext.Current
-			Dim _settings as Hashtable
-            _settings = CType(Context.Cache(TempKey), Hashtable)
-			
-             If _settings Is Nothing Then
-            ' If this object has not been instantiated yet, we need to grab it
-            _settings = New Hashtable()
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(GetDBConnectionString)
 
-            ' Generate Command Object based on Method
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {ModuleId})
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim TempKey As String = GetDBname() & "ModuleSettings_" & CStr(ModuleId)
+            Dim context As HttpContext = HttpContext.Current
+            Dim _settings As Hashtable
+            _settings = CType(context.Cache(TempKey), Hashtable)
 
-            ' Execute the command
-            myConnection.Open()
-            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+            If _settings Is Nothing Then
+                ' If this object has not been instantiated yet, we need to grab it
+                _settings = New Hashtable()
+                ' Create Instance of Connection and Command Object
+                Dim myConnection As New SqlConnection(GetDBConnectionString)
 
-            While result.Read()
-                _settings(result.GetString(0)) = result.GetString(1)
-            End While
-            result.Close()
-            Context.Cache.Insert(TempKey, _settings, CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.TabID, ModuleId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
+                ' Generate Command Object based on Method
+                Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                    CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                    New Object() {ModuleId})
+
+                ' Execute the command
+                myConnection.Open()
+                Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+
+                While result.Read()
+                    _settings(result.GetString(0)) = result.GetString(1)
+                End While
+                result.Close()
+                context.Cache.Insert(TempKey, _settings, CDp(_portalSettings.PortalId, _portalSettings.ActiveTab.TabId, ModuleId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
             End If
-			
+
             Return _settings
 
         End Function
@@ -432,25 +431,25 @@ Namespace DotNetZoom
         '
         '*********************************************************************
 
-		Public Shared Function Getportaltabs(ByVal PortalId As Integer, ByVal Language As String) as ArrayList
-			Dim TempKey as String = GetDBname & "_" & GetLanguage("N") & "_portaltabs_" & CStr(PortalId) 
-			Dim context As HttpContext = HttpContext.Current
-			If Context.Cache(TempKey) Is Nothing Then
-            ' If this object has not been instantiated yet, we need to grab it
-           	Dim DesktopTabs as New ArrayList()
+        Public Shared Function Getportaltabs(ByVal PortalId As Integer, ByVal Language As String) As ArrayList
+            Dim TempKey As String = GetDBname() & "_" & GetLanguage("N") & "_portaltabs_" & CStr(PortalId)
+            Dim context As HttpContext = HttpContext.Current
+            If context.Cache(TempKey) Is Nothing Then
+                ' If this object has not been instantiated yet, we need to grab it
+                Dim DesktopTabs As New ArrayList()
 
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(GetDBConnectionString)
+                ' Create Instance of Connection and Command Object
+                Dim myConnection As New SqlConnection(GetDBConnectionString)
 
-            ' Generate Command Object based on Method
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {PortalId, Language})
+                ' Generate Command Object based on Method
+                Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                    CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                    New Object() {PortalId, Language})
 
-            ' Execute the command
-            myConnection.Open()
-            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
-            While result.Read()
+                ' Execute the command
+                myConnection.Open()
+                Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+                While result.Read()
                     Dim tabDetails As New TabStripDetails()
                     tabDetails.TabId = Int32.Parse(result("TabId").ToString)
                     tabDetails.TabName = result("TabName").ToString
@@ -467,118 +466,118 @@ Namespace DotNetZoom
                     tabDetails.IconFile = result("IconFile").ToString
                     tabDetails.HasChildren = Boolean.Parse(result("HasChildren").ToString)
                     DesktopTabs.Add(tabDetails)
-            End While
-            result.Close()
-            Context.Cache.Insert(TempKey, DesktopTabs, CDp(PortalID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-            Return DesktopTabs
-			else
-			Return CType(Context.Cache(TempKey), ArrayList)
-			End If
-            
-		end Function
+                End While
+                result.Close()
+                context.Cache.Insert(TempKey, DesktopTabs, CDp(PortalId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
+                Return DesktopTabs
+            Else
+                Return CType(context.Cache(TempKey), ArrayList)
+            End If
+
+        End Function
 
         Public Shared Function GetSiteSettings(ByVal PortalId As Integer) As Hashtable
 
-			Dim TempKey as String = GetDBname & "SiteSettings_" & CStr(PortalId)
-			Dim context As HttpContext = HttpContext.Current
-			Dim _settings as Hashtable
-            _settings = CType(Context.Cache(TempKey), Hashtable)
-			
-             If _settings Is Nothing Then
-            ' If this object has not been instantiated yet, we need to grab it
-            _settings = New Hashtable()
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(GetDBConnectionString)
+            Dim TempKey As String = GetDBname() & "SiteSettings_" & CStr(PortalId)
+            Dim context As HttpContext = HttpContext.Current
+            Dim _settings As Hashtable
+            _settings = CType(context.Cache(TempKey), Hashtable)
 
-            ' Generate Command Object based on Method
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {PortalId})
+            If _settings Is Nothing Then
+                ' If this object has not been instantiated yet, we need to grab it
+                _settings = New Hashtable()
+                ' Create Instance of Connection and Command Object
+                Dim myConnection As New SqlConnection(GetDBConnectionString)
 
-            ' Execute the command
-            myConnection.Open()
-            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+                ' Generate Command Object based on Method
+                Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                    CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                    New Object() {PortalId})
 
-            While result.Read()
-                _settings(result.GetString(0)) = result.GetString(1)
-            End While
-            result.Close()
-            Context.Cache.Insert(TempKey, _settings, CDp(PortalID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
+                ' Execute the command
+                myConnection.Open()
+                Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+
+                While result.Read()
+                    _settings(result.GetString(0)) = result.GetString(1)
+                End While
+                result.Close()
+                context.Cache.Insert(TempKey, _settings, CDp(PortalId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
             End If
-			
+
             Return _settings
 
         End Function
 
         Public Shared Function GetHostSettings() As Hashtable
 
-			Dim TempKey as String = GetDBname & "HostSetting"
-			Dim context As HttpContext = HttpContext.Current
-			Dim _settings as Hashtable
-            _settings = CType(Context.Cache(TempKey), Hashtable)
+            Dim TempKey As String = GetDBname() & "HostSetting"
+            Dim context As HttpContext = HttpContext.Current
+            Dim _settings As Hashtable
+            _settings = CType(context.Cache(TempKey), Hashtable)
 
-             If _settings Is Nothing Then
-            ' If this object has not been instantiated yet, we need to grab it
-            _settings = New Hashtable()
-		
+            If _settings Is Nothing Then
+                ' If this object has not been instantiated yet, we need to grab it
+                _settings = New Hashtable()
 
-			
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(GetDBConnectionString)
 
-            ' Generate Command Object based on Method
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {})
 
-            ' Execute the command
-            myConnection.Open()
-            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+                ' Create Instance of Connection and Command Object
+                Dim myConnection As New SqlConnection(GetDBConnectionString)
 
-            While result.Read()
-                _settings(result.GetString(0)) = result.GetString(1)
-            End While
-            result.Close()
-            Context.Cache.Insert(TempKey, _settings, CDp(-1), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-			end if
-			
-            Return _settings
-
-        End Function
-
-		
-        Public Shared Function GetPortalByAlias(ByVal PortalAlias As String) As Integer
-
-            GetPortalByAlias = -1
-
-		If PortalAlias <> "" then
-			Dim TKey as String = GetDBname & "Alias_" & PortalAlias
-			Dim context As HttpContext = HttpContext.Current
-
-	       If Context.Cache(TKey) Is Nothing Then
-			' Item not in cache, get it manually
-            ' Create Instance of Connection and Command Object
-              Dim myConnection As New SqlConnection(GetDBConnectionString)
                 ' Generate Command Object based on Method
                 Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
                     CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                    New Object() {PortalAlias})
+                    New Object() {})
 
                 ' Execute the command
                 myConnection.Open()
                 Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
 
-                If result.Read() Then
-                    If Not IsDBNull(result("PortalId")) Then
-                        GetPortalByAlias = result("PortalID")
-			            Context.Cache.Insert(TKey, GetPortalByAlias, CDp(result("PortalID")), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-                    End If
-                End If
+                While result.Read()
+                    _settings(result.GetString(0)) = result.GetString(1)
+                End While
                 result.Close()
-			Else
-			GetPortalByAlias = Context.Cache(TKey)
-  			End If
-		end if
+                context.Cache.Insert(TempKey, _settings, CDp(-1), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
+            End If
+
+            Return _settings
+
+        End Function
+
+
+        Public Shared Function GetPortalByAlias(ByVal PortalAlias As String) As Integer
+
+            GetPortalByAlias = -1
+
+            If PortalAlias <> "" Then
+                Dim TKey As String = GetDBname() & "Alias_" & PortalAlias
+                Dim context As HttpContext = HttpContext.Current
+
+                If context.Cache(TKey) Is Nothing Then
+                    ' Item not in cache, get it manually
+                    ' Create Instance of Connection and Command Object
+                    Dim myConnection As New SqlConnection(GetDBConnectionString)
+                    ' Generate Command Object based on Method
+                    Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                        CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                        New Object() {PortalAlias})
+
+                    ' Execute the command
+                    myConnection.Open()
+                    Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+
+                    If result.Read() Then
+                        If Not IsDBNull(result("PortalId")) Then
+                            GetPortalByAlias = result("PortalID")
+                            context.Cache.Insert(TKey, GetPortalByAlias, CDp(result("PortalID")), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
+                        End If
+                    End If
+                    result.Close()
+                Else
+                    GetPortalByAlias = context.Cache(TKey)
+                End If
+            End If
             Return GetPortalByAlias
 
         End Function
@@ -613,22 +612,22 @@ Namespace DotNetZoom
 
         Private Sub GetBreadCrumbsRecursively(ByVal intTabId As Integer)
             Dim objAdmin As New AdminDB()
-						
+
             Dim dr As SqlDataReader = objAdmin.GetTabById(intTabId, Me.Language)
             While dr.Read
                 If Not IsDBNull(dr("ParentId")) Then
                     Dim tabDetails As New TabStripDetails()
 
                     tabDetails.TabId = intTabId.ToString
-					
-					tabDetails.TabName = dr("TabName").ToString
+
+                    tabDetails.TabName = dr("TabName").ToString
                     Me.BreadCrumbs.Insert(0, tabDetails)
                     GetBreadCrumbsRecursively(dr("ParentId"))
                 Else ' root tabid
                     Dim tabDetails As New TabStripDetails()
 
                     tabDetails.TabId = intTabId.ToString
-						tabDetails.TabName = dr("TabName").ToString
+                    tabDetails.TabName = dr("TabName").ToString
                     Me.BreadCrumbs.Insert(0, tabDetails)
                 End If
             End While
@@ -638,27 +637,27 @@ Namespace DotNetZoom
 
         Public Shared Function GetVersion() As Integer
 
-			Dim TempKey as String = GetDBname
+            Dim TempKey As String = GetDBname()
 
-       		Dim context As HttpContext = HttpContext.Current
-	
-			if Context.Cache(TempKey) is nothing then
-        		
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(GetDBConnectionString)
+            Dim context As HttpContext = HttpContext.Current
 
-            ' check if database exists
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {}, CommandType.Text, "select * from dbo.sysobjects where id = object_id(N'[dbo].[version]')")
+            If context.Cache(TempKey) Is Nothing Then
 
-            Try
-                myConnection.Open()
-                myCommand.ExecuteNonQuery()
-                myConnection.Close()
-            Catch
-                return -2
-            End Try
+                ' Create Instance of Connection and Command Object
+                Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+                ' check if database exists
+                Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                    CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                    New Object() {}, CommandType.Text, "select * from dbo.sysobjects where id = object_id(N'[dbo].[version]')")
+
+                Try
+                    myConnection.Open()
+                    myCommand.ExecuteNonQuery()
+                    myConnection.Close()
+                Catch
+                    Return -2
+                End Try
 
                 ' Generate Command Object based on Method
                 myCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
@@ -676,13 +675,13 @@ Namespace DotNetZoom
                     End If
                     result.Close()
                 Catch
-                ' table does not exist - GetVersion = -1
-				Return -1
+                    ' table does not exist - GetVersion = -1
+                    Return -1
                 End Try
-			Context.Cache.insert(TempKey, GetVersion, Nothing)
-			else
-			GetVersion = Context.Cache(TempKey) 
-		end if
+                context.Cache.Insert(TempKey, GetVersion, Nothing)
+            Else
+                GetVersion = context.Cache(TempKey)
+            End If
 
         End Function
 
@@ -704,9 +703,9 @@ Namespace DotNetZoom
             Catch
                 ' stored procedure does not exist
             End Try
-			Dim TempKey as String = GetDBname
-    		Dim context As HttpContext = HttpContext.Current
-			Context.Cache.Remove(TempKey) 
+            Dim TempKey As String = GetDBname()
+            Dim context As HttpContext = HttpContext.Current
+            context.Cache.Remove(TempKey)
         End Sub
 
 

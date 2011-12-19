@@ -1,6 +1,6 @@
 <%@ Control Inherits="DotNetZoom.BulkEmail" codebehind="BulkEmail.ascx.vb" Language="vb" autoeventwireup="false" Explicit="True" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
-<%@ Register TagPrefix="FCKeditorV2" Namespace="FredCK.FCKeditorV2" Assembly="FredCK.FCKeditorV2" %>
+<%@ Register TagPrefix="Editor"  Namespace="dotnetzoom" Assembly="DotNetZoom" %>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <table id="TableMessage" runat="server" align="center" cellspacing="0" cellpadding="2" border="0">
@@ -46,7 +46,7 @@
                     <asp:TextBox id="txtMessage" runat="server" CssClass="NormalTextBox" width="700" columns="75" textmode="multiline" rows="25"></asp:TextBox>
                 </asp:placeholder>
                 <asp:placeholder id="pnlRichTextBox" Runat="server" Visible="True">
-				<FCKeditorV2:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></FCKeditorV2:FCKeditor>
+				<editor:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></editor:FCKeditor>
 				</asp:placeholder>
             </td>
         </tr>

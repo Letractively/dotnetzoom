@@ -816,10 +816,11 @@ Namespace DotNetZoom
 			result.Close() 
 
 			result = ObjAdmin.GetAdminModuleDefinitions(Session("language"))
-			While result.Read()
-	        objStream.WriteLine("UpdateAdminModuleDefinitions '" & Session("language") & "','" & Int32.Parse(result("ModuleDefID")).ToString & "','" & MakeSQLFriendly(result.GetString(6)) & "','" & MakeSQLFriendly(result.GetString(7))& "'")
-			objStream.WriteLine("GO")
-        	End While 
+                While Result.Read()
+                    ' objAdmin.UpdateAdminModuleDefinitions(               Session("language"),         e.CommandArgument,                                     GetTextBox(e.Item, "txtFriendLyName").Text,    GetTextBox(e.Item, "txtDescription").Text)
+                    objStream.WriteLine("UpdateAdminModuleDefinitions '" & Session("language") & "','" & Int32.Parse(Result("ModuleDefID")).ToString & "','" & MakeSQLFriendly(Result("FriendlyName")) & "','" & MakeSQLFriendly(Result("Description")) & "'")
+                    objStream.WriteLine("GO")
+                End While
 			result.Close() 
 
 

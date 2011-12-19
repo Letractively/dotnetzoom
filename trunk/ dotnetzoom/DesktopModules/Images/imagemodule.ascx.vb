@@ -27,11 +27,24 @@ Namespace DotNetZoom
     Public MustInherit Class ImageModule
         Inherits DotNetZoom.PortalModuleControl
 
+
+        Public LinkURL As String = "/"
+        Public GoogleMapURL As String = "/"
+
 		Protected WithEvents before As System.Web.UI.WebControls.Literal
 		Protected WithEvents after As System.Web.UI.WebControls.Literal
-
-
+        Protected WithEvents imgmenu As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents imgImage As System.Web.UI.WebControls.Image
+        Protected WithEvents Image1 As System.Web.UI.WebControls.Image
+
+        Protected WithEvents GoogleEarth As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents GoogleMap As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents Info As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents infoExif As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents Link As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents TD1 As System.Web.UI.HtmlControls.HtmlTableCell
+        Protected WithEvents cmdSendKML As System.Web.UI.WebControls.LinkButton
+
 		Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
 
 #Region " Web Form Designer Generated Code "
@@ -62,33 +75,84 @@ Namespace DotNetZoom
 			' Obtain PortalSettings from Current Context
              Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-			
+ 
 
    			Title1.EditText = getlanguage("editer")
             Dim imageSrc As String = CType(Settings("src"), String)
-			Dim TempTooltip As String
 
             ' Set Image Source, Width and Height Properties
             If Not (imageSrc Is Nothing) And imageSrc <> "" Then
+
+                imgmenu.Visible = CType(Settings("show"), Boolean) Or _
+                  CType(Settings("position"), Boolean) Or _
+                    CType(Settings("optGoogleEarth"), Boolean) Or _
+                    CType(Settings("optExif"), Boolean) Or _
+                    CType(Settings("optInternalLink"), Boolean)
+
+
                 If InStr(1, imageSrc, "://") = 0 Then
                     imageSrc = _portalSettings.UploadDirectory & imageSrc
-					If File.Exists(Server.MapPath(imageSrc)) then
-					Dim Exif As New ExifWorks(Server.MapPath(imageSrc))
-					TempTooltip = Exif.ToString()
-					If TempTooltip <> "" then
-					imgImage.Attributes.Add("onmouseover", ReturnToolTip("<pre>" & TempTooltip & "</pre>"))
-					end if
-					Exif.Dispose()
-					end if
+
+                    If CType(Settings("optExif"), Boolean) And CType(Settings("Exif"), String) <> "" Then
+                        infoExif.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("Exif"), String)))
+                        infoExif.Visible = True
+                    End If
+                    If CType(Settings("secure"), Boolean) Then
+                        Dim objSecurity As New PortalSecurity()
+                        Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), imageSrc))
+                        imgImage.ImageUrl = glbPath + "controls/img.aspx?" & crypto
+                    Else
+                        imgImage.ImageUrl = imageSrc
+                    End If
+                Else
+                    imgImage.ImageUrl = imageSrc
                 End If
 
-                imgImage.ImageUrl = imageSrc
+                If CType(Settings("show"), Boolean) And CType(Settings("infobule"), String) <> "" Then
+                    Info.Visible = True
+                    Info.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("infobule"), String)))
+                End If
+
+
+                If CType(Settings("position"), Boolean) And CType(Settings("latlong"), String) <> "" Then
+                    GoogleMap.Visible = True
+                    GoogleMap.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("latlong"), String)))
+                    GoogleMapURL = """javascript:DestroyWnd;CreateWnd('" + CType(Settings("latlong"), String) + "',640,640,false)"""
+                    Page.RegisterClientScriptBlock("POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
+                End If
+
+                If CType(Settings("optGoogleEarth"), Boolean) And CType(Settings("fileGPS"), String) <> "" Then
+                    GoogleEarth.Visible = True
+                    GoogleEarth.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("fileGPS"), String)))
+                    cmdSendKML.CommandArgument = CType(Settings("fileGPS"), String)
+                End If
+                If CType(Settings("optInternalLink"), Boolean) And CType(Settings("link"), String) <> "-1" Then
+                    Link.Visible = True
+                    If IsNumeric(CType(Settings("link"), String)) Then
+                        Dim objAdmin As New AdminDB()
+                        Dim dr As SqlDataReader = objAdmin.GetTabById(CType(Settings("link"), Integer), GetLanguage("N"))
+                        Dim Objtab As New TabStripDetails()
+                        Objtab.ShowFriendly = False
+                        Objtab.FriendlyTabName = ""
+                        While dr.Read
+                            Objtab.ShowFriendly = Boolean.Parse(dr("ShowFriendly").ToString)
+                            Objtab.FriendlyTabName = IIf(IsDBNull(dr("FriendlyTabName")), "", dr("FriendlyTabName"))
+                        End While
+                        dr.Close()
+                        Link.Attributes.Add("onmouseover", ReturnToolTip(FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ssl, Objtab.ShowFriendly, CType(Settings("link"), String))))
+                        LinkURL = FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ssl, Objtab.ShowFriendly, CType(Settings("link"), String))
+                    End If
+                End If
+
+
+
 
                 If CType(Settings("alt"), String) <> "" Then
                     imgImage.AlternateText = CType(Settings("alt"), String)
                 End If
                 If CType(Settings("width"), String) <> "" Then
                     imgImage.Width = Unit.Pixel(CType(Settings("width"), Integer))
+                    TD1.Width = CType(Settings("width"), String)
                 End If
                 If CType(Settings("height"), String) <> "" Then
                     imgImage.Height = Unit.Pixel(CType(Settings("height"), Integer))
@@ -97,6 +161,39 @@ Namespace DotNetZoom
                 imgImage.Visible = False
             End If
 
+            Image1.Height = imgImage.Height
+            Image1.Width = imgImage.Width
+            Image1.AlternateText = imgImage.AlternateText
+            Image1.ImageUrl = imgImage.ImageUrl
+
+            imgImage.Visible = Not imgmenu.Visible
+
+        End Sub
+
+        Private Sub cmdSendKML_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdSendKML.Click
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+
+            Dim FileName As String = _portalSettings.UploadDirectory + cmdSendKML.CommandArgument
+            Dim strExtension As String = Replace(System.IO.Path.GetExtension(cmdSendKML.CommandArgument), ".", "")
+            If InStr(1, "," & glbGoogleEarthTypes, "," & strExtension.ToLower) <> 0 Then
+                ' force download dialog
+                Response.Clear()
+
+                Response.AppendHeader("content-disposition", "attachment; filename=" + cmdSendKML.CommandArgument)
+
+                Select Case strExtension.ToLower()
+                    Case "kmz"
+                        Response.ContentType = "Application/vnd.google-earth.kmz"
+                    Case "kml"
+                        Response.ContentType = "application/vnd.google-earth.kml+xml"
+                    Case "gpx"
+                        Response.ContentType = "application/gpx"
+                End Select
+                Response.WriteFile(FileName)
+                Response.End()
+            End If
         End Sub
 
     End Class

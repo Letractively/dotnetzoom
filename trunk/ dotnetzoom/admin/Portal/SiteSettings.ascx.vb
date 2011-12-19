@@ -104,9 +104,7 @@ Namespace DotNetZoom
 
         Protected WithEvents chkStyleMenu As System.Web.UI.WebControls.CheckBox
         Protected WithEvents StyleRow As System.Web.UI.HtmlControls.HtmlTableRow
-        Protected WithEvents ssltd As System.Web.UI.HtmlControls.HtmlTableCell
 
-        
         Protected WithEvents grdModuleDefs As System.Web.UI.WebControls.DataGrid
         Protected WithEvents PortalRow3 As System.Web.UI.HtmlControls.HtmlTable
 		Protected WithEvents PortalRow5 As System.Web.UI.HtmlControls.HtmlTable
@@ -127,7 +125,7 @@ Namespace DotNetZoom
         Protected WithEvents AddSetting As System.Web.UI.WebControls.ImageButton
         Protected WithEvents sslCheckBox1 As System.Web.UI.WebControls.CheckBox
         Protected WithEvents sslSubDomainBox1 As System.Web.UI.WebControls.CheckBox
-        Protected WithEvents sllline As System.Web.UI.HtmlControls.HtmlTableRow
+        Protected WithEvents sllline As System.Web.UI.HtmlControls.HtmlTable
 
 
 
@@ -269,12 +267,17 @@ Namespace DotNetZoom
                 ddlTimeZone.DataBind()
                 cboProcessor.DataSource = objAdmin.GetProcessorCodes
                 cboProcessor.DataBind()
-                sllline.Visible = PortalSettings.GetHostSettings("chkEnableSSL").ToString = "Y"
 
                 Dim dr As Data.SqlClient.SqlDataReader = objAdmin.GetSinglePortal(intPortalId)
                 If dr.Read Then
-                    If sllline.Visible Then
+                    If PortalSettings.GetHostSettings("chkEnableSSL").ToString = "Y" Then
                         SSLCheckBox.Checked = Boolean.Parse(dr("ssl").ToString)
+                        If PortalSecurity.IsSuperUser Then
+                            sllline.Visible = True
+                        Else
+                            sllline.Visible = False
+                        End If
+
                     Else
                         SSLCheckBox.Checked = False
                         SSLCheckBox.Enabled = False
@@ -284,80 +287,80 @@ Namespace DotNetZoom
                         sslCheckBox1.Checked = False
                     End If
 
-                    txtPortalName.Text = dr("PortalName").ToString
-                    If cboLogo.Items.Contains(New ListItem(dr("LogoFile").ToString)) Then
-                        cboLogo.Items.FindByText(dr("LogoFile").ToString).Selected = True
+                        txtPortalName.Text = dr("PortalName").ToString
+                        If cboLogo.Items.Contains(New ListItem(dr("LogoFile").ToString)) Then
+                            cboLogo.Items.FindByText(dr("LogoFile").ToString).Selected = True
+                        End If
+                        txtDescription.Text = dr("Description").ToString
+                        txtKeyWords.Text = dr("KeyWords").ToString
+                        If cboBackground.Items.Contains(New ListItem(dr("BackgroundFile").ToString)) Then
+                            cboBackground.Items.FindByText(dr("BackgroundFile").ToString).Selected = True
+                        End If
+                        txtFooterText.Text = dr("FooterText").ToString
+
+                        optUserRegistration.Items.FindByValue("0").Text = GetLanguage("optUserRegistration_0")
+                        optUserRegistration.Items.FindByValue("1").Text = GetLanguage("optUserRegistration_1")
+                        optUserRegistration.Items.FindByValue("2").Text = GetLanguage("optUserRegistration_2")
+                        optUserRegistration.Items.FindByValue("3").Text = GetLanguage("optUserRegistration_3")
+
+                        optBannerAdvertising.Items.FindByValue("0").Text = GetLanguage("optBannerAdvertising_0")
+                        optBannerAdvertising.Items.FindByValue("1").Text = GetLanguage("optBannerAdvertising_1")
+                        optBannerAdvertising.Items.FindByValue("2").Text = GetLanguage("optBannerAdvertising_2")
+
+                        optUserRegistration.SelectedIndex = dr("UserRegistration")
+                        optBannerAdvertising.SelectedIndex = dr("BannerAdvertising")
+
+                        cboCurrency.DataSource = objAdmin.GetCurrencies(GetLanguage("N"))
+                        cboCurrency.DataBind()
+                        If dr("Currency").ToString = "" Then
+                            cboCurrency.Items.FindByValue("USD").Selected = True
+                        Else
+                            cboCurrency.Items.FindByValue(dr("Currency").ToString).Selected = True
+                        End If
+
+                        Dim drUsers As Data.SqlClient.SqlDataReader = objUser.GetRoleMembership(intPortalId, GetLanguage("N"), dr("AdministratorRoleId"))
+                        While drUsers.Read()
+                            cboAdministratorId.Items.Add(New ListItem(drUsers("FullName"), drUsers("UserId").ToString))
+                        End While
+                        drUsers.Close()
+                        If Not cboAdministratorId.Items.FindByValue(dr("AdministratorId")) Is Nothing Then
+                            cboAdministratorId.Items.FindByValue(dr("AdministratorId")).Selected = True
+                        End If
+
+                        txtPortalAlias.Text = ""
+                        If Not IsDBNull(dr("ExpiryDate")) Then
+                            txtExpiryDate.Text = Format(CDate(dr("ExpiryDate")), "yyyy-MM-dd")
+                        End If
+
+                        txtHostFee.Text = Format(Val(dr("HostFee").ToString), "#,##0.00")
+                        If txtHostFee.Text <> "" Then
+                            lblHostFee.Text = Format(Val(txtHostFee.Text), "#,##0.00")
+                        Else
+                            lblHostFee.Text = "0.00"
+                        End If
+                        lblHostCurrency.Text = PortalSettings.GetHostSettings("HostCurrency") & " / " & GetLanguage("SS_Month")
+                        txtHostSpace.Text = dr("HostSpace").ToString
+                        If Not IsDBNull(dr("SiteLogHistory")) Then
+                            txtSiteLogHistory.Text = dr("SiteLogHistory").ToString
+                        End If
+
+
+                        Try
+                            ddlTimeZone.SelectedValue = dr("TimeZone")
+                        Catch ex As Exception
+                            ddlTimeZone.SelectedValue = 0
+                        End Try
+
+                        lblTimeZone.Text = DateTime.Now().AddMinutes(GetTimeDiff(_portalSettings.TimeZone)).ToString()
+
+                        If Not cboProcessor.Items.FindByText(dr("PaymentProcessor").ToString) Is Nothing Then
+                            cboProcessor.Items.FindByText(dr("PaymentProcessor").ToString).Selected = True
+                        Else ' default
+                            cboProcessor.Items.FindByText("PayPal").Selected = True
+                        End If
+                        txtUserId.Text = dr("ProcessorUserId").ToString
+                        txtPassword.Text = dr("ProcessorPassword").ToString
                     End If
-                    txtDescription.Text = dr("Description").ToString
-                    txtKeyWords.Text = dr("KeyWords").ToString
-                    If cboBackground.Items.Contains(New ListItem(dr("BackgroundFile").ToString)) Then
-                        cboBackground.Items.FindByText(dr("BackgroundFile").ToString).Selected = True
-                    End If
-                    txtFooterText.Text = dr("FooterText").ToString
-
-                    optUserRegistration.Items.FindByValue("0").Text = GetLanguage("optUserRegistration_0")
-                    optUserRegistration.Items.FindByValue("1").Text = GetLanguage("optUserRegistration_1")
-                    optUserRegistration.Items.FindByValue("2").Text = GetLanguage("optUserRegistration_2")
-                    optUserRegistration.Items.FindByValue("3").Text = GetLanguage("optUserRegistration_3")
-
-                    optBannerAdvertising.Items.FindByValue("0").Text = GetLanguage("optBannerAdvertising_0")
-                    optBannerAdvertising.Items.FindByValue("1").Text = GetLanguage("optBannerAdvertising_1")
-                    optBannerAdvertising.Items.FindByValue("2").Text = GetLanguage("optBannerAdvertising_2")
-
-                    optUserRegistration.SelectedIndex = dr("UserRegistration")
-                    optBannerAdvertising.SelectedIndex = dr("BannerAdvertising")
-
-                    cboCurrency.DataSource = objAdmin.GetCurrencies(GetLanguage("N"))
-                    cboCurrency.DataBind()
-                    If dr("Currency").ToString = "" Then
-                        cboCurrency.Items.FindByValue("USD").Selected = True
-                    Else
-                        cboCurrency.Items.FindByValue(dr("Currency").ToString).Selected = True
-                    End If
-
-                    Dim drUsers As Data.SqlClient.SqlDataReader = objUser.GetRoleMembership(intPortalId, GetLanguage("N"), dr("AdministratorRoleId"))
-                    While drUsers.Read()
-                        cboAdministratorId.Items.Add(New ListItem(drUsers("FullName"), drUsers("UserId").ToString))
-                    End While
-                    drUsers.Close()
-                    If Not cboAdministratorId.Items.FindByValue(dr("AdministratorId")) Is Nothing Then
-                        cboAdministratorId.Items.FindByValue(dr("AdministratorId")).Selected = True
-                    End If
-
-                    txtPortalAlias.Text = ""
-                    If Not IsDBNull(dr("ExpiryDate")) Then
-                        txtExpiryDate.Text = Format(CDate(dr("ExpiryDate")), "yyyy-MM-dd")
-                    End If
-
-                    txtHostFee.Text = Format(Val(dr("HostFee").ToString), "#,##0.00")
-                    If txtHostFee.Text <> "" Then
-                        lblHostFee.Text = Format(Val(txtHostFee.Text), "#,##0.00")
-                    Else
-                        lblHostFee.Text = "0.00"
-                    End If
-                    lblHostCurrency.Text = PortalSettings.GetHostSettings("HostCurrency") & " / " & GetLanguage("SS_Month")
-                    txtHostSpace.Text = dr("HostSpace").ToString
-                    If Not IsDBNull(dr("SiteLogHistory")) Then
-                        txtSiteLogHistory.Text = dr("SiteLogHistory").ToString
-                    End If
-
-
-                    Try
-                        ddlTimeZone.SelectedValue = dr("TimeZone")
-                    Catch ex As Exception
-                        ddlTimeZone.SelectedValue = 0
-                    End Try
-
-                    lblTimeZone.Text = DateTime.Now().AddMinutes(GetTimeDiff(_portalSettings.TimeZone)).ToString()
-
-                    If Not cboProcessor.Items.FindByText(dr("PaymentProcessor").ToString) Is Nothing Then
-                        cboProcessor.Items.FindByText(dr("PaymentProcessor").ToString).Selected = True
-                    Else ' default
-                        cboProcessor.Items.FindByText("PayPal").Selected = True
-                    End If
-                    txtUserId.Text = dr("ProcessorUserId").ToString
-                    txtPassword.Text = dr("ProcessorPassword").ToString
-                End If
                 dr.Close()
 
                 Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(intPortalId)
@@ -595,7 +598,6 @@ Namespace DotNetZoom
                 Title1.DisplayHelp = ViewState("DisplayHelp")
             End If
 
-            ssltd.Visible = SSLCheckBox.Checked
             sslCheckBox1.Visible = SSLCheckBox.Checked
             sslSubDomainBox1.Visible = SSLCheckBox.Checked
 
@@ -605,6 +607,15 @@ Namespace DotNetZoom
         Private Sub BindDataAlias()
 
             Dim objAdmin As New AdminDB()
+            If SSLCheckBox.Checked Then
+                grdPortalsAlias.Columns(0).HeaderText = GetLanguage("P_sub")
+                grdPortalsAlias.Columns(1).HeaderText = GetLanguage("P_ssl")
+            Else
+                grdPortalsAlias.Columns(0).HeaderText = ""
+                grdPortalsAlias.Columns(1).HeaderText = ""
+            End If
+            grdPortalsAlias.Columns(2).HeaderText = GetLanguage("P_Alias")
+
 
             grdPortalsAlias.DataSource = objAdmin.GetPortalAlias(intPortalId)
             grdPortalsAlias.DataBind()
@@ -721,27 +732,28 @@ Namespace DotNetZoom
 			PortalRow5.visible = False
 			End if
 			
-			If PortalSecurity.IsSuperUser Then
-			PortalRow3.visible = True
-			PortalRow5.visible = True
-	        SiteTable1.Visible = True
-	    	txtExpiryDate.Enabled = True
-			cmdExpiryCalendar.Visible = True
-			DemoCell.Visible = True
-			SiteRow7.Visible = True
-			SiteRow6.visible = True
-			pnlDemoContent.Visible = true
-			if intportalID > 0 then
-			' Can only delete if not base portal
-            cmdDelete.Visible = True
-			end if
-            cmdRenew.Visible = False
-			PortalRow7.Visible = False
-			txtHostFee.Enabled = True
-			txtHostFee.Visible = true 
-			lblHostFee.Visible = False
-			txtSiteLogHistory.Enabled = True
-			txtHostSpace.Enabled = True
+            If PortalSecurity.IsSuperUser Then
+                AddSetting.ToolTip = GetLanguage("add")
+                PortalRow3.Visible = True
+                PortalRow5.Visible = True
+                SiteTable1.Visible = True
+                txtExpiryDate.Enabled = True
+                cmdExpiryCalendar.Visible = True
+                DemoCell.Visible = True
+                SiteRow7.Visible = True
+                SiteRow6.Visible = True
+                pnlDemoContent.Visible = True
+                If intPortalId > 0 Then
+                    ' Can only delete if not base portal
+                    cmdDelete.Visible = True
+                End If
+                cmdRenew.Visible = False
+                PortalRow7.Visible = False
+                txtHostFee.Enabled = True
+                txtHostFee.Visible = True
+                lblHostFee.Visible = False
+                txtSiteLogHistory.Enabled = True
+                txtHostSpace.Enabled = True
             End If
 
 
@@ -1152,11 +1164,21 @@ Namespace DotNetZoom
                     Title1.DisplayHelp = "DisplayHelp_SiteSettings3"
                 Case "4"
                     Setting4.Visible = True
-                    Title1.DisplayHelp = "DisplayHelp_SiteSettings4"
+                    If PortalSecurity.IsSuperUser Then
+                        ' Demo Portal
+                        Title1.DisplayHelp = "DisplayHelp_SiteSettingsDemo"
+                    Else
+                        Title1.DisplayHelp = "DisplayHelp_SiteSettings4"
+                    End If
+
                 Case "5"
                     Setting5.Visible = True
-                    Title1.DisplayHelp = "DisplayHelp_SiteSettings5"
-                    ' Set Portal Alias
+                    If PortalSecurity.IsSuperUser Then
+                        ' Set Portal Alias
+                        Title1.DisplayHelp = "DisplayHelp_SiteSettingsAlias"
+                    Else
+                        Title1.DisplayHelp = "DisplayHelp_SiteSettings5"
+                    End If
                     BindDataAlias()
             End Select
 		   
@@ -1206,6 +1228,9 @@ Namespace DotNetZoom
 
         End Sub
 
+        Private Sub SSLCheckBox_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles SSLCheckBox.CheckedChanged
+            BindDataAlias()
+        End Sub
 
 		
         Protected Sub dlTabs_ItemCommand(ByVal source As Object, ByVal e As System.Web.UI.WebControls.DataListCommandEventArgs)

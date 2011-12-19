@@ -297,11 +297,7 @@ Private Function CanUpload() As Boolean
             Else
             strFolder = Request.MapPath(_portalSettings.UploadDirectory)
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-			End If
-			SpaceUsed = SpaceUsed / 1048576
+            SpaceUsed = SpaceUsed / 1048576
 			End If
 
 			If Request.IsAuthenticated and ((SpaceUsed <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Then
@@ -391,7 +387,9 @@ Public Sub DisplayImages()
        End If 
        myHtmlImage.Attributes("ondblclick") = "OpenFile('" + ImageUrl + ImageFileName + "','" & ParentID & "');" 
        GalleryPlaceHolder.Controls.Add(myHtmlImage)
-	   GalleryPlaceHolder.Controls.Add(New LiteralControl ("<br>" + ImageFileName + "<br>" + myImage.Width.ToString() + "x" + myImage.Height.ToString() + " (" + (FileLen(ImageFile)/1024).ToString("0.00") + "k)" )) 
+'	   GalleryPlaceHolder.Controls.Add(New LiteralControl ("<br>" + ImageFileName + "<br>" + myImage.Width.ToString() + "x" + myImage.Height.ToString() + " (" + (FileLen(ImageFile)/1024).ToString("0.00") + "k)" )) 
+	   GalleryPlaceHolder.Controls.Add(New LiteralControl ("<br>" + ImageFileName + "<br>" + myImage.Width.ToString() + "x" + myImage.Height.ToString() )) 
+
 	   GalleryPlaceHolder.Controls.Add(New LiteralControl("</td>"))
        end if
 	   myImage.Dispose() 

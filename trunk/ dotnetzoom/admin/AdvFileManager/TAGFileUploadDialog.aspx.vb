@@ -36,7 +36,7 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             If Request.IsAuthenticated = False Then
-                SendHttpException("404", "Not Found", Request)
+       		 SendHttpException("404", "Not Found", Request)
             End If
 
 			
@@ -50,11 +50,7 @@ Namespace DotNetZoom
 
 
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-			End If
-			SpaceUsed = SpaceUsed / 1048576
+            SpaceUsed = SpaceUsed / 1048576
 
 			
             If (Request.Params("hostpage") Is Nothing) Then
@@ -122,10 +118,6 @@ Namespace DotNetZoom
 
 			
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-			End If
 
 			If ((((SpaceUsed + htmlUploadFile.PostedFile.ContentLength) / 1048576) <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Or (Not (Request.Params("hostpage") Is Nothing)) Then
   
@@ -143,7 +135,7 @@ Namespace DotNetZoom
 			
                   
                             If File.Exists(strFileNamePath) Then
-							SpaceUsed = SpaceUsed - FileLen(strFileNamePath)
+							SpaceUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
                             File.Delete(strFileNamePath)
                             End If
 							htmlUploadFile.PostedFile.SaveAs(strFileNamePath)
@@ -168,7 +160,7 @@ Namespace DotNetZoom
 
                                             If InStr(1, "," & portalSettings.GetHostSettings("FileExtensions").ToString, "," & strExtension) <> 0 Or  Not (Request.Params("hostpage") Is Nothing) Then
                                                 If File.Exists(strFileNamePath) Then
-												SpaceUsed = SpaceUsed - FileLen(strFileNamePath)
+												SpaceUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
                                                 File.Delete(strFileNamePath)
 												End If
                                                 Dim objFileStream As FileStream = File.Create(strFileNamePath)
@@ -187,7 +179,7 @@ Namespace DotNetZoom
 
                                                 objFileStream.Close()
                                               
-												SpaceUsed = SpaceUsed + FileLen(strFileNamePath)
+												SpaceUsed = SpaceUsed + New FileInfo(strFileNamePath).Length
                                             Else
                                                 ' restricted file type
                                             	Session("message")  += replace(GetLanguage("FileExtNotAllowed"), "{fileext}", strFileName)
@@ -203,7 +195,7 @@ Namespace DotNetZoom
                                 objZipInputStream.Close()
 
                                 ' delete the zip file
-								SpaceUsed = SpaceUsed - FileLen(strFileNamePath)
+								SpaceUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
                                 File.Delete(strSaveFileNamePath)
 							else
 								If RootFolder = strFolder then
@@ -268,9 +260,11 @@ Namespace DotNetZoom
             Dim objAdmin As New AdminDB()
 
             If Not (Request.Params("hostpage") Is Nothing) Then
-                objAdmin.AddFile(-1, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+                 objAdmin.AddFile(-1, strFileName, strExtension, New FileInfo(strFileNamePath).Length, strWidth, strHeight, strContentType)
+
             Else
-                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, New FileInfo(strFileNamePath).Length, strWidth, strHeight, strContentType)
+
             End If
 
         End Sub

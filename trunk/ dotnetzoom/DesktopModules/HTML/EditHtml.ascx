@@ -1,6 +1,6 @@
 <%@ Control Language="vb" Inherits="DotNetZoom.EditHtml" codebehind="EditHtml.ascx.vb" autoeventwireup="false" Explicit="True" %>
-<%@ Register TagPrefix="FCKeditorV2" Namespace="FredCK.FCKeditorV2" Assembly="FredCK.FCKeditorV2" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
+<%@ Register TagPrefix="Editor"  Namespace="dotnetzoom" Assembly="DotNetZoom" %>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <table cellspacing="2" cellpadding="2" border="0">
@@ -19,7 +19,7 @@
                 <asp:TextBox id="txtDesktopHTML" runat="server" CssClass="NormalTextBox" textmode="multiline" rows="25" width="750" columns="75"></asp:TextBox>
                 </asp:placeholder>
                 <asp:placeholder id="pnlRichTextBox" Runat="server" Visible="False">
-				<FCKeditorV2:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></FCKeditorV2:FCKeditor>
+				<editor:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></editor:FCKeditor>
                 </asp:placeholder>
             </td>
         </tr>

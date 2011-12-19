@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -19,7 +22,11 @@ Namespace DotNetZoom
         Protected WithEvents lblTitle As System.Web.UI.WebControls.Label
         Protected WithEvents btnBack As System.Web.UI.WebControls.Button
         Protected WithEvents ErrorMessage As System.Web.UI.WebControls.Label
+		Protected WithEvents flv As System.Web.UI.HtmlControls.HtmlTableCell
+		Protected WithEvents wmv As System.Web.UI.HtmlControls.HtmlTableCell
+		Protected WithEvents mpg As System.Web.UI.HtmlControls.HtmlTableCell
 
+		
 #Region " Web Form Designer Generated Code "
 
         'This call is required by the Web Form Designer.
@@ -44,6 +51,22 @@ Namespace DotNetZoom
             ErrorMessage.Visible = False
             If Not Request.Params("media") Is Nothing Then
                 lblTitle.Text = Request.Params("media").ToString
+	           Dim StrExtension As String = lblTitle.Text
+               If InStr(1, lblTitle.Text, ".") <> 0 Then
+               StrExtension = Mid(lblTitle.Text, InStrRev(lblTitle.Text, ".")).ToLower
+               Select Case StrExtension.Tolower()
+                    Case ".flv"
+					flv.visible = True
+					Case ".wmv"
+					wmv.visible = True
+					Case else
+					mpg.visible = True
+				End Select
+               End If
+
+        
+			
+				
             End If
             If Not Page.IsPostBack Then
                 ' Store URL Referrer to return to portal
@@ -58,8 +81,14 @@ Namespace DotNetZoom
 
         Public Function MovieURL() As String
             Try
-                Return Request.Params("Path").Trim()
-            Catch Exc As System.Exception
+			If InStr(1, Request.Params("path"), "controls/img.aspx?") > 0 Then
+            Dim objSecurity As New DotNetZoom.PortalSecurity()
+			Dim dnPath As String = Mid(Request.Params("path"), InStrRev(Request.Params("path"), "?") + 1)
+			Return objSecurity.Decrypt(Application("cryptokey").ToString(), dnPath)
+			else
+			Return Request.Params("path")
+			end if
+			Catch Exc As System.Exception
                 ErrorMessage.Text = Exc.Message
                 ErrorMessage.Visible = True
                 Return ""

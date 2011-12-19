@@ -42,7 +42,7 @@ Namespace DotNetZoom
 		
         Protected WithEvents pnlBasicTextBox As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents pnlRichTextBox As System.Web.UI.WebControls.PlaceHolder
-		Protected WithEvents FCKeditor1 As FredCK.FCKeditorV2.FCKEditor
+		Protected WithEvents FCKeditor1 As DotNetZoom.FCKEditor
         Protected WithEvents optView As System.Web.UI.WebControls.RadioButtonList
 		Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
 

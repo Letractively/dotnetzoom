@@ -15,10 +15,10 @@
 &nbsp;<asp:Label id="lblDate" cssclass="SelectedTab" runat="server" EnableViewState="false" >Date</asp:Label>
 </asp:TableCell>
 <asp:TableCell ID="editpanel" Height="30" width="100%" visible="false" VerticalAlign="Bottom" HorizontalAlign="Left" Wrap="false">
-     <div class="nav">
+    <div class="nav">
 	<ul>
-	<li class="folder" style="z-index: 3"><img src="/images/edit.gif" alt="" style="border-width:0px;">
-	<ul>
+	<li class="folder" style="z-index: 3"><a title="<%= DotNetZoom.GetLanguage("admin_menu")%>" href="javascript:toggleBox('adminmenu',1)" ><img src="/images/edit.gif" alt="" style="border-width:0px;"></a>
+	<ul id="adminmenu">
 	<li id="liadmin" runat="server" EnableViewState="false" visible="False" class="items"><asp:HyperLink id="cmdAdminMenu" runat="server" EnableViewState="false"><img  src="/images/icon_site_16px.gif" alt="*" style="border-width:0px;"> </asp:HyperLink></li>
 	<li class="items"><asp:LinkButton id="cmdPreview"  Visible="False" runat="server" EnableViewState="false" BorderWidth="0" BorderStyle="none" CausesValidation="False"></asp:LinkButton></li>
 	<li id="liaddtab" runat="server" EnableViewState="false" visible="False" class="items"><asp:Hyperlink id="cmdAddTab" runat="server" EnableViewState="false"><img  src="/images/add1.gif" alt="" style="border-width:0px;"> </asp:Hyperlink></li>
@@ -38,9 +38,9 @@
 &nbsp;<mail:check id="check" runat="server" EnableViewState="false"></mail:check>
 <asp:hyperlink id="hypUser" runat="server" EnableViewState="false" CssClass="SelectedTab">User</asp:hyperlink>
 &nbsp;<asp:literal id="hypHelp" runat="server" EnableViewState="false">Help</asp:literal>
-<asp:linkButton cssclass="OtherTabs" visible="false" id="cmdRegister" runat="server" ></asp:linkButton>
+<asp:linkButton cssclass="OtherTabs" visible="false" id="cmdRegister"  CausesValidation="False" runat="server" ></asp:linkButton>
 <asp:Label id="lblSeparator" cssclass="OtherTabs" runat="server" EnableViewState="false" >&nbsp;|&nbsp;</asp:Label>
-<asp:linkButton cssclass="OtherTabs" visible="false" id="cmdLogin" runat="server" ></asp:linkButton>
+<asp:linkButton cssclass="OtherTabs" visible="false"  CausesValidation="False" id="cmdLogin" runat="server" ></asp:linkButton>
 &nbsp;<asp:linkButton cssclass="OtherTabs" visible="false" id="cmdLogOff" runat="server" ></asp:linkButton>
 &nbsp;&nbsp;&nbsp;
 <asp:DropDownList id="ddlLanguage" EnableViewState="true" visible="false" AutoPostBack="True" DataValueField="language" DataTextField="SettingValue" runat="server" CssClass="NormalTextBox" ></asp:DropDownList>

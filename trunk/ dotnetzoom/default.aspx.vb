@@ -26,7 +26,6 @@ Namespace DotNetZoom
 			
             InitializeComponent()
 
-
             LinkClick()
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -37,10 +36,10 @@ Namespace DotNetZoom
             End If
 
             Dim context As HttpContext = HttpContext.Current
-			Dim strPageHTML As String
-			Dim SkinFileName As String
-			Dim TempKey as String
-				' if portal page not in memory get it
+            Dim strPageHTML As String
+            Dim SkinFileName As String
+            Dim TempKey As String
+            ' if portal page not in memory get it
             If IsAdminTab() Or Not (Request.Params("edit") Is Nothing) Or Not (Request.Params("def") Is Nothing) Then
                 TempKey = GetDBname() & "PAGESKINEDIT_" & CStr(_portalSettings.PortalId) & GetLanguage("N")
                 strPageHTML = context.Cache(TempKey)
@@ -95,8 +94,8 @@ Namespace DotNetZoom
                 End If
 
             End If
-            
-			Dim strTitle As String 
+
+            Dim strTitle As String
             If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey(GetLanguage("N") & "_PortalName") Then
                 strTitle = PortalSettings.GetSiteSettings(_portalSettings.PortalId)(GetLanguage("N") & "_PortalName")
             Else
@@ -113,7 +112,7 @@ Namespace DotNetZoom
             Else
                 strTitle += " ( DNZ " & _portalSettings.Version & " " & GetLanguage("language") & ")"
             End If
-    		strPageHTML = strPageHTML.Insert(strPageHTML.IndexOf("</title>") , strTitle)
+            strPageHTML = strPageHTML.Insert(strPageHTML.IndexOf("</title>"), strTitle)
             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
                 strPageHTML = Regex.Replace(strPageHTML, "{isadmin}", "", RegexOptions.IgnoreCase)
                 strPageHTML = Regex.Replace(strPageHTML, "{/isadmin}", "", RegexOptions.IgnoreCase)
@@ -122,7 +121,7 @@ Namespace DotNetZoom
                 strPageHTML = Regex.Replace(strPageHTML, "{isadmin}[^{}]+{/isadmin}", "", RegexOptions.IgnoreCase)
             End If
 
-			strPageHTML = Regex.Replace(strPageHTML, "{datetime}" , ProcessLanguage("{date}"), RegexOptions.IgnoreCase)
+            strPageHTML = Regex.Replace(strPageHTML, "{datetime}", ProcessLanguage("{date}"), RegexOptions.IgnoreCase)
 
 
             If Request.Browser.Browser.ToUpper().IndexOf("IE") >= 0 Then
@@ -132,21 +131,21 @@ Namespace DotNetZoom
                     strPageHTML = Regex.Replace(strPageHTML, "<body", "<body style=""behavior:url(/csshover.htc)"" ", RegexOptions.IgnoreCase)
                 End If
             End If
-			
 
-			Dim form As New HtmlForm()
-			form.id = "Form1"
-			Dim ContentPane as new Placeholder()
-			contentpane.id = "contentpane"
+
+            Dim form As New HtmlForm()
+            form.ID = "Form1"
+            Dim ContentPane As New PlaceHolder()
+            ContentPane.ID = "contentpane"
             Dim leftPaneSpacer As New PlaceHolder()
             leftPaneSpacer.EnableViewState = False
-			leftpaneSpacer.id = "leftpanespacer"
+            leftPaneSpacer.ID = "leftpanespacer"
             Dim rightPaneSpacer As New PlaceHolder()
             rightPaneSpacer.EnableViewState = False
-			rightpaneSpacer.id = "rightpanespacer"
-			Dim leftPane as new Placeholder()
-			leftpane.id = "leftpane"
-			Dim rightPane as new Placeholder()
+            rightPaneSpacer.ID = "rightpanespacer"
+            Dim leftPane As New PlaceHolder()
+            leftPane.ID = "leftpane"
+            Dim rightPane As New PlaceHolder()
             rightPane.ID = "rightpane"
             Dim TopPane As New PlaceHolder()
             TopPane.ID = "toppane"
@@ -156,24 +155,24 @@ Namespace DotNetZoom
             BottomPane.Visible = False
             Dim leftline As New PlaceHolder()
             leftline.EnableViewState = False
-			leftline.id = "leftline"
+            leftline.ID = "leftline"
             Dim rightline As New PlaceHolder()
             rightline.EnableViewState = False
-			rightline.id = "rightline"
+            rightline.ID = "rightline"
             Dim CSSPane As New PlaceHolder()
             CSSPane.EnableViewState = False
-			csspane.id = "CSS"
-			
-			
-           ' put in the portal.css
-			strPageHTML = AddCSSControlToPage( csspane, strPageHTML )
-			
+            CSSPane.ID = "CSS"
+
+
+            ' put in the portal.css
+            strPageHTML = AddCSSControlToPage(CSSPane, strPageHTML)
+
             Dim objLink As System.Web.UI.LiteralControl
             objLink = New System.Web.UI.LiteralControl("PORTALCSS")
             objLink.EnableViewState = False
-			objLink.text = "<link href=""" & _portalSettings.UploadDirectory & "skin/portal.css"" type=""text/css"" rel=""stylesheet"">"
-			CSSPane.Controls.Add(objLink)
-		   'See if a CSS file for this tab
+            objLink.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/portal.css"" type=""text/css"" rel=""stylesheet"">"
+            CSSPane.Controls.Add(objLink)
+            'See if a CSS file for this tab
             If IsAdminTab() Or Not Request.Params("edit") Is Nothing Or Not (Request.Params("def") Is Nothing) Then
                 SkinFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/portaledit.css")
                 If File.Exists(SkinFileName) Then
@@ -191,20 +190,20 @@ Namespace DotNetZoom
                 End If
             End If
 
-			
-			' addform to page			
-	    	  strPageHTML = AddForm( Form, strPageHTML )
-			' add control to form
-		
+
+            ' addform to page			
+            strPageHTML = Addform(form, strPageHTML)
+            ' add control to form
+
             Dim myValues As [String]() = {"{banner}", "{leftline}", "{leftspacer}", "{toppane}", "{leftpane}", "{contentpane}", "{rightspacer}", "{rightline}", "{rightpane}", "{bottompane}", "{footer}", "{tigramenu}", "{solpartmenu}", "{altmenu}", "{mailcheck}", "{tabmenu}"}
             Dim myKeys(15) As Integer
-	
-			  Dim i As Integer
-               For i = myKeys.GetLowerBound(0) To myKeys.GetUpperBound(0)
-			   myKeys.SetValue(strPageHTML.IndexOf(myValues(i)), i)
-			   next i
-			   Array.Sort(myKeys, myValues)
-               
+
+            Dim i As Integer
+            For i = myKeys.GetLowerBound(0) To myKeys.GetUpperBound(0)
+                myKeys.SetValue(strPageHTML.IndexOf(myValues(i)), i)
+            Next i
+            Array.Sort(myKeys, myValues)
+
             For i = myValues.GetLowerBound(0) To myValues.GetUpperBound(0)
 
                 Select Case myValues(i)
@@ -284,51 +283,39 @@ Namespace DotNetZoom
 
                 End Select
             Next i
-			   
-			form.Controls.Add(New LiteralControl(strPageHTML))
-		
+
+            form.Controls.Add(New LiteralControl(strPageHTML))
+
             leftPane.Visible = False
             rightPane.Visible = False
-			leftline.visible = false
-			rightline.visible = false
-						
+            leftline.Visible = False
+            rightline.Visible = False
+
             ' if first time loading this page then reload to avoid caching
             If Request.Params("tabId") Is Nothing Then
                 Response.Expires = -1
             End If
 
             ' get module container
-			Dim objAdmin As New AdminDB()
-			
-            Dim strContainer As String 
-			If portalSettings.GetSiteSettings(_portalSettings.PortalID)("container") <> "" then
-			strContainer = portalSettings.GetSiteSettings(_portalSettings.PortalID)("container")
-			Else
-			strContainer = "[MODULE]"
-			end if
-			Dim EditContainer As String =  "<div id=""EditTable"" align=""center""><table width=""750"" cellspacing=""0"" cellpadding=""0"" border=""0"" ><tr valign=""top""><td valign=""top"" align=""left"">[MODULE]</td></tr></table></div>"
-			Dim AdminContainer As String = "<div id=""AdminTable"" align=""center""><table width=""750"" cellspacing=""0"" cellpadding=""0"" border=""0"" ><tr valign=""top""><td valign=""top"" align=""left"">[MODULE]</td></tr></table></div>"
-			Dim LoginContainer As String = "<div id=""signin"">[MODULE]</div>"
-			
-			if portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey("logincontainer") then
-                LoginContainer = "<div id=""signin"" style=""z-index: 4"">" & PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainer") & "</div>"
-			end if
+            Dim objAdmin As New AdminDB()
 
-			if portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey("editcontainer") then
-			EditContainer = "<div id=""EditTable"">" & portalSettings.GetSiteSettings(_portalSettings.PortalID)("editcontainer") & "</div>"
-			end if
-			if portalSettings.GetSiteSettings(_portalSettings.PortalID).ContainsKey("admincontainer") then
-			AdminContainer = "<div id=""AdminTable"">" & portalSettings.GetSiteSettings(_portalSettings.PortalID)("admincontainer")  & "</div>"
-			end if
+            Dim strContainer As String
+            If PortalSettings.GetSiteSettings(_portalSettings.PortalId)("container") <> "" Then
+                strContainer = PortalSettings.GetSiteSettings(_portalSettings.PortalId)("container")
+            Else
+                strContainer = "[MODULE]"
+            End If
+            Dim EditContainer As String = "<div id=""EditTable"" align=""center""><table width=""750"" cellspacing=""0"" cellpadding=""0"" border=""0"" ><tr valign=""top""><td valign=""top"" align=""left"">[MODULE]</td></tr></table></div>"
+            Dim AdminContainer As String = "<div id=""AdminTable"" align=""center""><table width=""750"" cellspacing=""0"" cellpadding=""0"" border=""0"" ><tr valign=""top""><td valign=""top"" align=""left"">[MODULE]</td></tr></table></div>"
 
-			Dim _moduleSettings As New ModuleSettings()
-
-            Dim blnShowLogin As Boolean = False
-            ' show login module if the client is not yet authenticated and they requested to login
-            If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
-                blnShowLogin = True
+            If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey("editcontainer") Then
+                EditContainer = "<div id=""EditTable"">" & PortalSettings.GetSiteSettings(_portalSettings.PortalId)("editcontainer") & "</div>"
+            End If
+            If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey("admincontainer") Then
+                AdminContainer = "<div id=""AdminTable"">" & PortalSettings.GetSiteSettings(_portalSettings.PortalId)("admincontainer") & "</div>"
             End If
 
+            Dim _moduleSettings As New ModuleSettings()
 
             If Not Request.Params("edit") Is Nothing Or Not (Request.Params("def") Is Nothing) Then
                 ' Determine ModuleId of Portal Module
@@ -435,7 +422,7 @@ Namespace DotNetZoom
                             Throw objException
                         Else
                             If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "ERROR LOADING MODULE", objException.ToString(), "")
+                                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE", objException.ToString(), "")
                             End If
                             ContentPane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>"))
                         End If
@@ -482,13 +469,9 @@ Namespace DotNetZoom
                     CheckSSL = _portalSettings.ActiveTab.ssl And _portalSettings.SSL
                     ' ensure that the user has access to the current page
                     If PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AuthorizedRoles) = False Then
-                        If Request.IsAuthenticated = False Then
-                            blnShowLogin = True
-                        Else
-                            Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/AccessDenied.ascx"), PortalModuleControl)
-                            objModule.ID = "denied"
-                            AddModule(ContentPane, objModule, strContainer, _portalSettings.UploadDirectory)
-                        End If
+                        Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/AccessDenied.ascx"), PortalModuleControl)
+                        objModule.ID = "denied"
+                        AddModule(ContentPane, objModule, strContainer, _portalSettings.UploadDirectory)
                     End If
 
 
@@ -561,7 +544,7 @@ Namespace DotNetZoom
                                             Throw objException
                                         Else
                                             If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                                                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "ERROR LOADING MODULE", objException.ToString(), "")
+                                                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE", objException.ToString(), "")
                                             End If
                                             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
                                                 parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>"))
@@ -601,35 +584,11 @@ Namespace DotNetZoom
             leftPaneSpacer.Visible = leftPane.Visible
             leftline.Visible = leftPane.Visible
             rightline.Visible = rightPane.Visible
-            ' show login module
-            If blnShowLogin Then
+            ' Warning message if required
+            If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
                 CheckSSL = _portalSettings.SSL
-                Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/SignIn.ascx"), PortalModuleControl)
-                objModule.ID = "SignIn"
-                AddModule(ContentPane, objModule, LoginContainer, _portalSettings.UploadDirectory, IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment") <> "", _
-                  PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment"), ""), _
-                   IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor") <> "", _
-                  PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor"), ""), _
-                  IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder") <> "", _
-                   PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder"), ""))
             End If
-
-
-            ' Redirect to SSL if required
-            ' CheckSecureSSL(HttpContext.Current.Request, CheckSSL)
-            If Not Request.IsSecureConnection And CheckSSL Then
-                Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/ssl.ascx"), PortalModuleControl)
-                objModule.ID = "SSL"
-                ContentPane.Controls.Add(objModule)
-                ContentPane.Visible = True
-            ElseIf Request.IsSecureConnection And Not CheckSSL Then
-                Dim objModule As PortalModuleControl = CType(Me.LoadModule("~/Admin/Security/nossl.ascx"), PortalModuleControl)
-                objModule.ID = "SSL"
-                ContentPane.Controls.Add(objModule)
-                ContentPane.Visible = True
-            End If
-
-
+            CheckSecureSSL(Page, CheckSSL)
         End Sub
 		
 
@@ -690,7 +649,7 @@ Namespace DotNetZoom
             strtxtpage = Regex.Replace(strtxtpage, "<body", "<body", options)
             strtxtpage = Regex.Replace(strtxtpage, "</title>", "</title>", options)
 			dim TempString as String = ""       	
-            TempString = Replace(System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly.Location).LegalCopyright.ToString, "YYYY", Year(Now).ToString)
+            TempString = Replace(AssemblyCopyright, "YYYY", Year(Now).ToString)
 			TempString = "<a class=""Normal"" href=""http://www.DotNetZoom.com"" style=""font-size:9px;"">" + TempString + "</a>"
 			strtxtpage = Regex.Replace(strtxtpage, "{hypcopyright}", tempstring, options)
 			TempString = _portalSettings.UploadDirectory & "favicon.ico"
@@ -708,7 +667,7 @@ Namespace DotNetZoom
             tempstring = _portalSettings.KeyWords & IIf(_portalSettings.KeyWords <> "", ",", "") & "DotNetZoom"
 			end if
 			strtxtpage = Regex.Replace(strtxtpage, "{keyword}", tempstring, options)
-			TempString = "Copyright (c) 2004-" & Year(Now).ToString & " by DotNetZoom ( " & System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly.Location).ProductName.ToString & " )"
+			TempString = "Copyright (c) 2004-" & Year(Now).ToString & " by DotNetZoom ( " & AssemblyProduct & " )"
 			strtxtpage = Regex.Replace(strtxtpage, "{copyright}", tempstring, options)
             TempString = "DotNetZoom " & _portalSettings.Version
 			strtxtpage = Regex.Replace(strtxtpage, "{generator}", tempstring, options)
@@ -779,14 +738,24 @@ Namespace DotNetZoom
                             strLink = _portalSettings.UploadDirectory & strLink
                         End If
 
-                        ' link to internal file fix the vulnerability?
+
                         If Not Request.Params("contenttype") Is Nothing Then
                             ' verify file extension for request
                             Dim strExtension As String = Replace(System.IO.Path.GetExtension(Request.Params("link").ToString()), ".", "")
                             If InStr(1, "," & PortalSettings.GetHostSettings("FileExtensions").ToString.ToUpper, "," & strExtension.ToUpper) <> 0 Then
                                 ' force download dialog
+                                Response.Clear()
+
                                 Response.AppendHeader("content-disposition", "attachment; filename=" + Request.Params("link").ToString)
-                                Response.ContentType = Request.Params("contenttype").ToString
+
+                                Select Case strExtension.ToLower()
+                                    Case "kmz"
+                                        Response.ContentType = "Application/vnd.google-earth.kmz"
+                                    Case "kml"
+                                        Response.ContentType = "application/vnd.google-earth.kml+xml"
+                                    Case "gpx"
+                                        Response.ContentType = "application/gpx"
+                                End Select
                                 Response.WriteFile(strLink)
                                 Response.End()
                             End If

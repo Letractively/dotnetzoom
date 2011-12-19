@@ -1,5 +1,5 @@
 <%@ Control Language="vb" autoeventwireup="false" codebehind="TTT_ForumPMS.ascx.vb" Inherits="DotNetZoom.TTT_ForumPMS" targetschema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>
-<%@ Register TagPrefix="FCKeditorV2" Namespace="FredCK.FCKeditorV2" Assembly="FredCK.FCKeditorV2" %>
+<%@ Register TagPrefix="Editor"  Namespace="dotnetzoom" Assembly="DotNetZoom" %>
 <script language="javascript" type="text/javascript">
 function SelectAllCheckboxes(intType)
 {
@@ -295,7 +295,7 @@ function SelectAllCheckboxes(intType)
 	<td class="TTTSubHeader" valign="top" width="20%">&nbsp;<%= DotNetZoom.GetLanguage("UO_Message") %>
 	</td>
 	<td class="TTTRow"  height="24">
-	<FCKeditorV2:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></FCKeditorV2:FCKeditor>
+	<editor:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></editor:FCKeditor>
 	</td>
 	</tr>
 	<tr>

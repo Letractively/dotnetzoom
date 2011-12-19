@@ -35,7 +35,6 @@ Imports System.Xml
 
 
 
-
 Namespace DotNetZoom
 
     '*********************************************************************
@@ -47,11 +46,21 @@ Namespace DotNetZoom
 
     Public Module Globals
 
+
+		' Modification IPermission Level="Medium"
+        Public Const AssemblyTitle As String =  "DotNetZoom"
+		Public Const AssemblyProduct AS String = "http://www.DotNetZoom.com"
+        Public Const AssemblyCopyright As String = "Les codes sources du portail sont copyrights © 2002-2003 par DotNetNuke et 2004-YYYY par DotNetZoom. tous droits réservés"
+        Public Const AssemblyVersion As String = "1.0.3"
+		Public Const ApplicationVersion As integer = 3
+
+
         Public Const glbRoleAllUsers As String = "-1"
         Public Const glbRoleSuperUser As String = "-2"
         Public Const glbRoleUnauthUser As String = "-3"
 
         Public Const glbImageFileTypes As String = "jpg,jpeg,jpe,gif,bmp,png"
+        Public Const glbGoogleEarthTypes As String = "kml,kmz,gpx,gdb"
 
         Public ReadOnly Property glbSiteDirectory() As String
             Get
@@ -120,28 +129,24 @@ Namespace DotNetZoom
 		end sub
 		
         Public Sub EditDenied()
-            HttpContext.Current.Response.Redirect(GetDocument() & "&def=Edit Access Denied", True)
+        	 HttpContext.Current.Response.Redirect(GetDocument() & "&def=Edit Access Denied", True)
         End Sub
 
         Public Sub AccessDenied()
-            HttpContext.Current.Response.Redirect(GetDocument() & "&def=Access Denied", True)
+				HttpContext.Current.Response.Redirect(GetDocument() & "&def=Access Denied", True)
         End Sub
 
         Public Sub LogOffUser()
             ' Log User Off from Cookie Authentication System
             ' Reset Session variable
-
-            FormsAuthentication.SignOut()
-
+		   	  FormsAuthentication.SignOut()
             ' expire cookies
-            HttpContext.Current.Response.Cookies("portalid").Value = Nothing
-            HttpContext.Current.Response.Cookies("portalid").Path = "/"
-            HttpContext.Current.Response.Cookies("portalid").Expires = DateTime.Now.AddYears(-30)
-
-            HttpContext.Current.Response.Cookies("portalroles").Value = Nothing
-            HttpContext.Current.Response.Cookies("portalroles").Path = "/"
-            HttpContext.Current.Response.Cookies("portalroles").Expires = DateTime.Now.AddYears(-30)
-
+             HttpContext.Current.Response.Cookies("portalid").Value = Nothing
+             HttpContext.Current.Response.Cookies("portalid").Path = "/"
+             HttpContext.Current.Response.Cookies("portalid").Expires = DateTime.Now.AddYears(-30)
+             HttpContext.Current.Response.Cookies("portalroles").Value = Nothing
+             HttpContext.Current.Response.Cookies("portalroles").Path = "/"
+             HttpContext.Current.Response.Cookies("portalroles").Expires = DateTime.Now.AddYears(-30)
         End Sub
 
 		Public Sub ClearHostCache()
@@ -161,7 +166,7 @@ Namespace DotNetZoom
 		end sub
 		
 
-        Public Sub SetEditor(ByVal FCKeditor1 As FredCK.FCKeditorV2.FCKeditor)
+        Public Sub SetEditor(ByVal FCKeditor1 As FCKeditor)
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             If GetLanguage("fckeditor_language") <> "auto" Then
@@ -213,29 +218,26 @@ Namespace DotNetZoom
         End Function
 
 
-        Public Sub CheckSecureSSL(ByVal Request As HttpRequest, ByVal ToSecure As Boolean)
-            If Not Request.IsSecureConnection And ToSecure Then
-                'If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                'Dim URLReferrer As String = ""
-                'If Not Request.UrlReferrer Is Nothing Then
-                'URLReferrer = Request.UrlReferrer.ToString()
-                'End If
-                'If Not Request.Browser.Crawler Then
-                'SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "HTTP to HTTPS", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Request.UserHostName, "")
-                'End If
-                'End If
-                HttpContext.Current.Response.Redirect(Replace(HttpContext.Current.Items("RequestURL"), "http://", "https://"), True)
-            ElseIf Request.IsSecureConnection And Not ToSecure Then
-                'If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                'Dim URLReferrer As String = ""
-                'If Not Request.UrlReferrer Is Nothing Then
-                'URLReferrer = Request.UrlReferrer.ToString()
-                'End If
-                'If Not Request.Browser.Crawler Then
-                'SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "HTTPS to HTTP", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Request.UserHostName, "")
-                'End If
-                'End If
-                HttpContext.Current.Response.Redirect(Replace(HttpContext.Current.Items("RequestURL"), "https://", "http://"), True)
+        Public Sub CheckSecureSSL(ByVal Page As Page, ByVal ToSecure As Boolean)
+            If Not HttpContext.Current.Request.IsSecureConnection And ToSecure Then
+                If HttpContext.Current.Request.Browser.JavaScript = True Then
+                    Dim ssl As String = "<SCRIPT type=""text/javascript"" language=""JavaScript""><!--" + vbCrLf
+                    ssl += "var answer = confirm(""" + RTESafe(GetLanguage("ssl")) + """)" + vbCrLf
+                    ssl += "if (answer){" + vbCrLf
+                    ssl += "window.location = """ + Replace(HttpContext.Current.Items("RequestURL"), "http://", "https://") + """;" + vbCrLf
+                    ssl += "} else" + vbCrLf
+                    ssl += "{" + vbCrLf
+                    ssl += "}" + vbCrLf
+                    ssl += "--></SCRIPT>"
+                    Page.RegisterClientScriptBlock("ssl", ssl)
+                End If
+            ElseIf HttpContext.Current.Request.IsSecureConnection And Not ToSecure Then
+                If HttpContext.Current.Request.Browser.JavaScript = True Then
+                    Dim ssl As String = "<SCRIPT type=""text/javascript"" language=""JavaScript""><!--" + vbCrLf
+                    ssl += "alert(""" + RTESafe(GetLanguage("nossl")) + """)" + vbCrLf
+                    ssl += "--></SCRIPT>"
+                    Page.RegisterClientScriptBlock("ssl", ssl)
+                End If
             End If
         End Sub
 
@@ -1194,6 +1196,7 @@ Namespace DotNetZoom
         Public Function GetDBname() As String
 		if HTTPContext.Current.Items("DBName") is nothing then
 			Dim TempName As String = GetDBConnectionString.tolower()
+			TempName = Replace(TempName, "catalog", "database")
 			Dim ResultString As String = "Portal"
 			Try
  			Dim RegexObj As New Regex("database=\b[A-Z0-9_a-z][A-Z0-9_a-z][A-Z0-9_a-z]{1,40}\b;", RegexOptions.IgnoreCase)
@@ -1289,7 +1292,7 @@ Namespace DotNetZoom
  			tmpString = tmpString.replace("\'", "[ESCAPE]")
  			tmpString = tmpString.replace("\", "\\")
 			tmpString = tmpString.replace("'", "\'")
-			tmpString = tmpString.replace("""", "¨")
+            tmpString = tmpString.Replace("""", "&quot;")
 			'replace carriage returns & line feeds & tab and ff
 			tmpString = replace(tmpString, chr(11), "\t")
 			tmpString = replace(tmpString, chr(10), "\n")
@@ -1298,6 +1301,85 @@ Namespace DotNetZoom
 			RTESafe = tmpString
 		end function				
 
+        Public Function ModToEntity(ByVal strText As String) As String
+            'returns safe code for preloading in the RTE
+            If strText <> "" Then
+                Dim tmpString As String
+                tmpString = Trim(strText)
+                tmpString = tmpString.Replace("À", "&#192;")
+                tmpString = tmpString.Replace("Á", "&#193;")
+                tmpString = tmpString.Replace("Â", "&#194;")
+                tmpString = tmpString.Replace("Ã", "&#195;")
+                tmpString = tmpString.Replace("Ä", "&#196;")
+                tmpString = tmpString.Replace("Å", "&#197;")
+                tmpString = tmpString.Replace("Æ", "&#198;")
+                tmpString = tmpString.Replace("Ç", "&#199;")
+                tmpString = tmpString.Replace("È", "&#200;")
+                tmpString = tmpString.Replace("É", "&#201;")
+                tmpString = tmpString.Replace("Ê", "&#202;")
+                tmpString = tmpString.Replace("Ë", "&#203;")
+                tmpString = tmpString.Replace("Ì", "&#204;")
+                tmpString = tmpString.Replace("Í", "&#205;")
+                tmpString = tmpString.Replace("Î", "&#206;")
+                tmpString = tmpString.Replace("Ï", "&#207;")
+                tmpString = tmpString.Replace("Ð", "&#208;")
+                tmpString = tmpString.Replace("Ñ", "&#209;")
+                tmpString = tmpString.Replace("Ò", "&#210;")
+                tmpString = tmpString.Replace("Ó", "&#211;")
+                tmpString = tmpString.Replace("Ô", "&#212;")
+                tmpString = tmpString.Replace("Õ", "&#213;")
+                tmpString = tmpString.Replace("Ö", "&#214;")
+                tmpString = tmpString.Replace("Ø", "&#216;")
+                tmpString = tmpString.Replace("Ù", "&#217;")
+                tmpString = tmpString.Replace("Ú", "&#218;")
+                tmpString = tmpString.Replace("Û", "&#219;")
+                tmpString = tmpString.Replace("Ü", "&#220;")
+                tmpString = tmpString.Replace("Ý", "&#221;")
+                tmpString = tmpString.Replace("Þ", "&#222;")
+                tmpString = tmpString.Replace("ß", "&#223;")
+                tmpString = tmpString.Replace("à", "&#224;")
+                tmpString = tmpString.Replace("á", "&#225;")
+                tmpString = tmpString.Replace("â", "&#226;")
+                tmpString = tmpString.Replace("ã", "&#227;")
+                tmpString = tmpString.Replace("ä", "&#228;")
+                tmpString = tmpString.Replace("å", "&#229;")
+                tmpString = tmpString.Replace("æ", "&#230;")
+                tmpString = tmpString.Replace("ç", "&#231;")
+                tmpString = tmpString.Replace("è", "&#232;")
+                tmpString = tmpString.Replace("é", "&#233;")
+                tmpString = tmpString.Replace("ê", "&#234;")
+                tmpString = tmpString.Replace("ë", "&#235;")
+                tmpString = tmpString.Replace("ì", "&#236;")
+                tmpString = tmpString.Replace("í", "&#237;")
+                tmpString = tmpString.Replace("î", "&#238;")
+                tmpString = tmpString.Replace("ï", "&#239;")
+                tmpString = tmpString.Replace("ð", "&#240;")
+                tmpString = tmpString.Replace("ñ", "&#241;")
+                tmpString = tmpString.Replace("ò", "&#242;")
+                tmpString = tmpString.Replace("ó", "&#243;")
+                tmpString = tmpString.Replace("ô", "&#244;")
+                tmpString = tmpString.Replace("õ", "&#245;")
+                tmpString = tmpString.Replace("ö", "&#246;")
+                tmpString = tmpString.Replace("ø", "&#248;")
+                tmpString = tmpString.Replace("ù", "&#249;")
+                tmpString = tmpString.Replace("ú", "&#250;")
+                tmpString = tmpString.Replace("û", "&#251;")
+                tmpString = tmpString.Replace("ü", "&#252;")
+                tmpString = tmpString.Replace("ý", "&#253;")
+                tmpString = tmpString.Replace("þ", "&#254;")
+                tmpString = tmpString.Replace("ÿ", "&#255;")
+                tmpString = tmpString.Replace("\", "\\")
+                tmpString = tmpString.Replace("'", "\'")
+                tmpString = tmpString.Replace("""", "&quot;")
+                'replace carriage returns & line feeds & tab and ff
+                tmpString = Replace(tmpString, Chr(11), "\t")
+                tmpString = Replace(tmpString, Chr(10), "\n")
+                tmpString = Replace(tmpString, Chr(13), "\r")
+                tmpString = Replace(tmpString, Chr(12), "\f")
+                Return tmpString
+            End If
+            Return ""
+        End Function
 		
         Function GetDocument() As String
 		    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -1555,7 +1637,9 @@ Namespace DotNetZoom
 	 
 	 
 	 Public Function GetLanguage(ByVal Item As String) As String
+	 If item is Nothing then return "Nothing"
 	 Dim _language As HashTable = HttpContext.Current.Items("Language")
+	 If _language is Nothing then return "Nothing Language"
 	 Dim TempString As STring
 	    If _language.ContainsKey(item) Then
             TempString = _language(item)
@@ -1943,8 +2027,8 @@ Namespace DotNetZoom
             End If
             Dim strHTML As String = GetXMLmessage(Errornb, Request)
             If Not ErrorMessage <> "" Then
-                HttpContext.Current.Response.StatusCode = Errornb
-                HttpContext.Current.Response.StatusDescription = Errortxt
+               HttpContext.Current.Response.StatusCode = Errornb
+               HttpContext.Current.Response.StatusDescription = Errortxt
             End If
             strHTML = strHTML.Replace("[errormessage]", ErrorMessage)
             HttpContext.Current.Response.Write(strHTML)

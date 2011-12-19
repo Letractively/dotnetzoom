@@ -6,6 +6,9 @@
 ' With ideas & code contributed by:
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' =======================================================================================
 Option Strict On
 
@@ -33,6 +36,8 @@ Namespace DotNetZoom
         Private _ParentUser As ForumUser
         Private _Action As String
         Private _EmailType As ForumEmailType = ForumEmailType.PostNormal
+        Private _settings As Hashtable
+
 
         Public Enum ForumEmailType
             PostNormal
@@ -135,24 +140,24 @@ Namespace DotNetZoom
 			
                 Select Case _Action
                     Case "new"
-                        sb.AppendFormat(GetLanguage("Forum_NewMessageTXT"), Zuser.Alias, _Forum.Name)
+                        sb.AppendFormat(GetValue(_settings(GetLanguage("N") + "_NewMessageTXT"), GetLanguage("Forum_NewMessageTXT")), Zuser.Alias, _Forum.Name)
                     Case "edit"
-                        sb.AppendFormat(GetLanguage("Forum_ModMessageTXT"), _Post.Subject, Zuser.Alias, _Forum.Name)
+                        sb.AppendFormat(GetValue(_settings(GetLanguage("N") + "_ModMessageTXT"), GetLanguage("Forum_ModMessageTXT")), _Post.Subject, Zuser.Alias, _Forum.Name)
                     Case Else
-                        sb.AppendFormat(GetLanguage("Forum_ReplayMessageTXT") , _ParentPost.Subject, Zuser.Alias, _Forum.Name)
+                        sb.AppendFormat(GetValue(_settings(GetLanguage("N") + "_ReplayMessageTXT"), GetLanguage("Forum_ReplayMessageTXT")), _ParentPost.Subject, Zuser.Alias, _Forum.Name)
                 End Select
-                sb.AppendFormat(GetLanguage("Forum_BodyMessageTXT"), _Post.Subject, bodyForumText.Process(fullAvatarURL), UrlContentBase )
+                sb.AppendFormat(GetValue(_settings(GetLanguage("N") + "_BodyMessageTXT"), GetLanguage("Forum_BodyMessageTXT")), _Post.Subject, bodyForumText.Process(fullAvatarURL), UrlContentBase)
 
             ElseIf _EmailType = ForumEmailType.PostModerate Then
 
-                sb.AppendFormat(GetLanguage("Forum_Moderated_messageTXT") , Zuser.Alias, _Forum.Name, UrlContentBase)
+                sb.AppendFormat(GetValue(_settings(GetLanguage("N") + "_Moderated_messageTXT"), GetLanguage("Forum_Moderated_messageTXT")), Zuser.Alias, _Forum.Name, UrlContentBase)
 
             ElseIf _EmailType = ForumEmailType.PostApprove Then
 			    ' ViewerId DateTime
-                sb.AppendFormat( GetLanguage("Forum_Moderated_approvedTXT"), _Post.PostDate.ToString, _Post.Subject, _Forum.Name, ProcessLanguage("{date}"), _Forum.Name.ToString)
+                sb.AppendFormat(GetValue(_settings(GetLanguage("N") + "_Moderated_approvedTXT"), GetLanguage("Forum_Moderated_approvedTXT")), _Post.PostDate.ToString, _Post.Subject, _Forum.Name, ProcessLanguage("{date}"), _Forum.Name.ToString)
             Else
 				' Refuse or Delete
-                sb.AppendFormat(GetLanguage("Forum_Moderated_refusedTXT") , _Post.PostDate.ToString, _Post.Subject, _Forum.Name, ProcessLanguage("{date}"), _Forum.Name.ToString)
+                sb.AppendFormat(GetValue(_settings(GetLanguage("N") + "_Moderated_refusedTXT"), GetLanguage("Forum_Moderated_refusedTXT")), _Post.PostDate.ToString, _Post.Subject, _Forum.Name, ProcessLanguage("{date}"), _Forum.Name.ToString)
 
             End If
 
@@ -173,6 +178,7 @@ Namespace DotNetZoom
             _Group = ForumGroupInfo.GetGroupInfo(_Forum.ForumGroupID)
             Zconfig = ForumConfig.GetForumConfig(_Group.ModuleID)
             Zuser = _Post.User
+            _settings = PortalSettings.GetModuleSettings(_Group.ModuleID)
 
             If _Post.ParentPostID > 0 Then
                 _ParentPost = ForumPostInfo.GetPostInfo(_Post.ParentPostID)
@@ -257,6 +263,20 @@ Namespace DotNetZoom
             End Set
         End Property
 
+#Region "Private Functions"
+
+        Private Function GetValue(ByVal Input As Object, ByVal DefaultValue As String) As String
+            ' Used to determine if a valid input is provided, if not, return default value
+
+            If Input Is Nothing Then
+                Return DefaultValue
+            Else
+                Return CStr(Input)
+            End If
+
+        End Function
+
+#End Region
 
     End Class 'ForumEmail
 

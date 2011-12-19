@@ -1,6 +1,8 @@
-<%@ Control Language="vb" codebehind="Register.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.Register" %>
+<%@ Control Language="vb"  codebehind="Register.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.Register" %>
+<%@ Register Assembly="dotnetzoom" Namespace="DotNetZoom" TagPrefix="cc1" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <%@ Register TagPrefix="Portal" TagName="Address" Src="~/controls/Address.ascx" %>
+
 <portal:title id="Title1" runat="server" EnableViewState="true"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <asp:placeholder id="UserRow" Runat="server">
@@ -78,6 +80,58 @@
             </tr>
         </tbody>
     </table>
+ <asp:placeholder id="pnlSecurite" Runat="server">
+<hr>
+<cc1:OpenClose ID="O1" EnableViewState="true" visible="true" show="false" runat="server">
+ <table cellspacing="0" cellpadding="0" width="600">
+<tr><td colspan="2">
+<p class="Normal"><%= DotNetZoom.GetLanguage("U_SecurityContryHelp") %></p></td> 
+</tr>
+<tr><td  valign="top" width="100px">
+<asp:DropDownList id="cboCountry"  AutoPostBack="true" runat="server" cssclass="NormalTextBox" DataTextField="Description" DataValueField="Code" Width="200px" Visible="True"></asp:DropDownList>
+</td><td width="500px">
+<asp:datalist width="100%" id="dlCountryCode"  HorizontalAlign="left" ItemStyle-HorizontalAlign="Left" ShowHeader="false" ShowFooter="false" ItemStyle-Height="30"  runat="Server" cssclass="Normal" itemstyle-wrap="False" cellpadding="0" repeatcolumns="5">
+        <ItemTemplate>
+		<asp:ImageButton tooltip='<%# DotNetZoom.GetLanguage("delete") & " -> " & DataBinder.Eval(Container, "DataItem.Description") %>' id="imgdelete" ImageURL="~/images/delete.gif"  Width="16px" Height="16px"  CommandName='<%# DataBinder.Eval(Container, "DataItem.Code") %>' CommandArgument='<%# DataBinder.Eval(Container, "DataItem.Code") %>' runat="server" EnableViewState="true" BorderWidth="0" CausesValidation="False"></asp:ImageButton>
+        <%#DataBinder.Eval(Container, "DataItem.Description")%>
+        </ItemTemplate>
+	<separatortemplate>
+	<img src="/images/1x1.gif" alt="*" border="0">
+	</separatortemplate>
+</asp:datalist>
+<asp:textbox id="Country" visible="False" runat="server" Width="150px" MaxLength="50" cssclass="NormalTextBox"></asp:textbox>
+</td></tr></table>
+<hr>
+<table cellspacing="0" cellpadding="0" width="600">
+<tr><td colspan="4" width="600px">
+<p class="Normal"><%= DotNetZoom.GetLanguage("U_SecurityIPHelp") %></p></td> 
+</tr>
+<tr align="left"><td class="SubHead" width="100px"><%= DotNetZoom.GetLanguage("U_SecurityIPFROM") %></td>
+<td width="200px"><asp:textbox id="IPlow" runat="server"  Width="150px" MaxLength="15" cssclass="NormalTextBox"></asp:textbox></td>
+<td class="SubHead" width="100px"><%= DotNetZoom.GetLanguage("U_SecurityIPTO") %></td>
+<td width="200px"><asp:textbox id="IPHigh" runat="server"  Width="150px" MaxLength="15" cssclass="NormalTextBox"></asp:textbox>
+</td></tr></table>
+</cc1:OpenClose>
+
+</asp:placeholder>
+<asp:placeholder id="pnlAudit" visible="false" Runat="server">
+<hr>
+    <table cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr align="left">
+                <td width="150px" align="right" class="SubHead">
+				<%= DotNetZoom.GetLanguage("U_Created_Date") %>&nbsp;:&nbsp;&nbsp;</td>
+                <td width="150px" align="left">
+                <asp:Label id="lblCreatedDate" visible="true" runat="server" cssclass="Normal"></asp:Label></td>
+                <td width="150px"  align="right" class="SubHead">
+				<%= DotNetZoom.GetLanguage("U_LastLogin_Date") %>&nbsp;:&nbsp;&nbsp;</td>
+                <td width="150px" align="left">
+                <asp:Label id="lblLastLoginDate" visible="true" runat="server" cssclass="Normal"></asp:Label></td>
+            </tr>
+        </tbody>
+    </table>
+<hr>
+</asp:placeholder>
     <p align="left">
         <asp:linkbutton cssclass="CommandButton" id="RegisterBtn" runat="server" ></asp:linkbutton>
         &nbsp;&nbsp; 

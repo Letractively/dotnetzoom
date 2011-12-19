@@ -30,16 +30,16 @@ Namespace DotNetZoom
 		 	' Response.redirect(dnpath, true)
 		    Dim dnFile As FileInfo = New FileInfo(rootPath  + dnPath)
             Dim strExtension As String = Replace(System.IO.Path.GetExtension(dnFile.Name), ".", "")
+
+            
             Response.Clear()
-            If InStr(1, "," & PortalSettings.GetHostSettings("FileExtensions").ToString.ToUpper, "," & strExtension.ToUpper) <> 0 Then
+             If InStr(1, "," & PortalSettings.GetHostSettings("FileExtensions").ToString.ToUpper, "," & strExtension.ToUpper) <> 0 Then
                 Response.AddHeader("Content-Disposition", "attachment; filename=" & System.Web.HttpUtility.UrlEncode(dnFile.Name))
-                Response.AddHeader("Content-Description", dnFile.Name)
                 Response.AddHeader("Content-Length", dnFile.Length.ToString)
                 Response.ContentType = "application/octet-stream"
                 Response.WriteFile(dnFile.FullName)
-                ' Response.Flush()
-            End If
-            Response.End()
+             End If
+             Response.End()
 
         End Sub
 

@@ -56,14 +56,14 @@
         </tr>
         <tr>
             <td valign="middle" align="center" colspan="2">
-                <asp:Button cssclass="button" id="cmdLogin" runat="server" ></asp:Button>
+                <asp:Button cssclass="button"  CausesValidation="false" id="cmdLogin" runat="server" ></asp:Button>
                 &nbsp;
-                <asp:Button cssclass="button" id="cmdRegister" runat="server" ></asp:Button>
+                <asp:Button cssclass="button"  CausesValidation="false" id="cmdRegister" runat="server" ></asp:Button>
             </td>
         </tr>
         <tr>
             <td valign="middle" align="center" colspan="2">
-                <asp:Button cssclass="button" id="cmdSendPassword" runat="server" ></asp:Button>
+                <asp:Button cssclass="button"  CausesValidation="false"  id="cmdSendPassword" runat="server" ></asp:Button>
             </td>
         </tr>
         <tr>

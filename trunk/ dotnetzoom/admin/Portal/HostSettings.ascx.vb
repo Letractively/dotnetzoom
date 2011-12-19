@@ -33,6 +33,7 @@ Namespace DotNetZoom
         Protected WithEvents txtHostTitle As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtHostURL As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtHostEmail As System.Web.UI.WebControls.TextBox
+        Protected WithEvents txtHostEmail2 As System.Web.UI.WebControls.TextBox
         Protected WithEvents cboProcessor As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cmdProcessor As System.Web.UI.WebControls.LinkButton
         Protected WithEvents txtUserId As System.Web.UI.WebControls.TextBox
@@ -134,65 +135,70 @@ Namespace DotNetZoom
             txtHostTitle.Text = portalSettings.GetHostSettings("HostTitle").ToString
             txtHostURL.Text = portalSettings.GetHostSettings("HostURL").ToString
             txtHostEmail.Text = portalSettings.GetHostSettings("HostEmail").ToString
+            Try
+                txtHostEmail2.Text = PortalSettings.GetHostSettings("HostEmail2").ToString
+            Catch ex As Exception
+                txtHostEmail2.Text = txtHostEmail.Text
+            End Try
 
             cboProcessor.DataSource = objAdmin.GetProcessorCodes
             cboProcessor.DataBind()
-			ddlTimeZone.DataSource =  objAdmin.GetTimeZoneCodes(GetLanguage("N"))
-			ddlTimeZone.DataBind()
-			
-			Try
- 		    ddlTimeZone.SelectedValue = portalSettings.GetHostSettings("TimeZone")
-			Catch ex As Exception
-       		ddlTimeZone.SelectedValue = 0     
-			End Try
+            ddlTimeZone.DataSource = objAdmin.GetTimeZoneCodes(GetLanguage("N"))
+            ddlTimeZone.DataBind()
+
+            Try
+                ddlTimeZone.SelectedValue = PortalSettings.GetHostSettings("TimeZone")
+            Catch ex As Exception
+                ddlTimeZone.SelectedValue = 0
+            End Try
 
 
-            If Not cboProcessor.Items.FindByText(portalSettings.GetHostSettings("PaymentProcessor").ToString) Is Nothing Then
-                cboProcessor.Items.FindByText(portalSettings.GetHostSettings("PaymentProcessor").ToString).Selected = True
+            If Not cboProcessor.Items.FindByText(PortalSettings.GetHostSettings("PaymentProcessor").ToString) Is Nothing Then
+                cboProcessor.Items.FindByText(PortalSettings.GetHostSettings("PaymentProcessor").ToString).Selected = True
             End If
-			If portalSettings.GetHostSettings.ContainsKey("ViewState") then
-            If Not ddlViewState.Items.FindByValue(portalSettings.GetHostSettings("ViewState").ToString) Is Nothing Then
-                ddlViewState.Items.FindByValue(portalSettings.GetHostSettings("ViewState").ToString).Selected = True
-			else
-			ddlViewState.Items.FindByText(GetLanguage("list_none")).Selected = True
+            If PortalSettings.GetHostSettings.ContainsKey("ViewState") Then
+                If Not ddlViewState.Items.FindByValue(PortalSettings.GetHostSettings("ViewState").ToString) Is Nothing Then
+                    ddlViewState.Items.FindByValue(PortalSettings.GetHostSettings("ViewState").ToString).Selected = True
+                Else
+                    ddlViewState.Items.FindByText(GetLanguage("list_none")).Selected = True
+                End If
+            Else
+                ddlViewState.Items.FindByText(GetLanguage("list_none")).Selected = True
             End If
-			else
-			ddlViewState.Items.FindByText(GetLanguage("list_none")).Selected = True
-			End If
 
-			If portalSettings.GetHostSettings.ContainsKey("WhiteSpace") then
-            If Not ddlWhiteSpace.Items.FindByValue(portalSettings.GetHostSettings("WhiteSpace").ToString) Is Nothing Then
-                ddlWhiteSpace.Items.FindByValue(portalSettings.GetHostSettings("WhiteSpace").ToString).Selected = True
-            else
-			ddlWhiteSpace.Items.FindByText(GetLanguage("list_none")).Selected = True
-			End If
-            else
-			ddlWhiteSpace.Items.FindByText(GetLanguage("list_none")).Selected = True
-			End If
+            If PortalSettings.GetHostSettings.ContainsKey("WhiteSpace") Then
+                If Not ddlWhiteSpace.Items.FindByValue(PortalSettings.GetHostSettings("WhiteSpace").ToString) Is Nothing Then
+                    ddlWhiteSpace.Items.FindByValue(PortalSettings.GetHostSettings("WhiteSpace").ToString).Selected = True
+                Else
+                    ddlWhiteSpace.Items.FindByText(GetLanguage("list_none")).Selected = True
+                End If
+            Else
+                ddlWhiteSpace.Items.FindByText(GetLanguage("list_none")).Selected = True
+            End If
 
 
 
-            txtUserId.Text = portalSettings.GetHostSettings("ProcessorUserId").ToString
-            txtPassword.Text = portalSettings.GetHostSettings("ProcessorPassword").ToString
+            txtUserId.Text = PortalSettings.GetHostSettings("ProcessorUserId").ToString
+            txtPassword.Text = PortalSettings.GetHostSettings("ProcessorPassword").ToString
 
-            txtHostFee.Text = Format(portalSettings.GetHostSettings("HostFee").ToString, "0.00")
+            txtHostFee.Text = Format(PortalSettings.GetHostSettings("HostFee").ToString, "0.00")
             cboHostCurrency.DataSource = objAdmin.GetCurrencies(GetLanguage("N"))
             cboHostCurrency.DataBind()
-            If Not cboHostCurrency.Items.FindByValue(portalSettings.GetHostSettings("HostCurrency")) Is Nothing Then
-                cboHostCurrency.Items.FindByValue(portalSettings.GetHostSettings("HostCurrency").ToString).Selected = True
+            If Not cboHostCurrency.Items.FindByValue(PortalSettings.GetHostSettings("HostCurrency")) Is Nothing Then
+                cboHostCurrency.Items.FindByValue(PortalSettings.GetHostSettings("HostCurrency").ToString).Selected = True
             Else
                 cboHostCurrency.Items.FindByValue("CAD").Selected = True
             End If
-            txtHostSpace.Text = portalSettings.GetHostSettings("HostSpace").ToString
-            txtSiteLogHistory.Text = portalSettings.GetHostSettings("SiteLogHistory").ToString
-            txtDemoPeriod.Text = portalSettings.GetHostSettings("DemoPeriod").ToString
-            If portalSettings.GetHostSettings("DemoSignup").ToString = "Y" Then
+            txtHostSpace.Text = PortalSettings.GetHostSettings("HostSpace").ToString
+            txtSiteLogHistory.Text = PortalSettings.GetHostSettings("SiteLogHistory").ToString
+            txtDemoPeriod.Text = PortalSettings.GetHostSettings("DemoPeriod").ToString
+            If PortalSettings.GetHostSettings("DemoSignup").ToString = "Y" Then
                 chkDemoSignup.Checked = True
             Else
                 chkDemoSignup.Checked = False
             End If
-            If portalSettings.GetHostSettings.ContainsKey("DisablePageTitleVersion") Then
-                If portalSettings.GetHostSettings("DisablePageTitleVersion").ToString = "Y" Then
+            If PortalSettings.GetHostSettings.ContainsKey("DisablePageTitleVersion") Then
+                If PortalSettings.GetHostSettings("DisablePageTitleVersion").ToString = "Y" Then
                     chkPageTitleVersion.Checked = True
                 Else
                     chkPageTitleVersion.Checked = False
@@ -201,8 +207,8 @@ Namespace DotNetZoom
                 chkPageTitleVersion.Enabled = False
             End If
 
-            If portalSettings.GetHostSettings.ContainsKey("EnableErrorReporting") Then
-                If portalSettings.GetHostSettings("EnableErrorReporting").ToString = "Y" Then
+            If PortalSettings.GetHostSettings.ContainsKey("EnableErrorReporting") Then
+                If PortalSettings.GetHostSettings("EnableErrorReporting").ToString = "Y" Then
                     chkEnableErrorReport.Checked = True
                 Else
                     chkEnableErrorReport.Checked = False
@@ -223,24 +229,24 @@ Namespace DotNetZoom
             End If
 
 
-            txtEncryptionKey.Text = portalSettings.GetHostSettings("EncryptionKey").ToString
-            txtProxyServer.Text = portalSettings.GetHostSettings("ProxyServer").ToString
-            txtProxyPort.Text = portalSettings.GetHostSettings("ProxyPort").ToString
-            txtSMTPServer.Text = portalSettings.GetHostSettings("SMTPServer").ToString
-			if portalSettings.GetHostSettings.ContainsKey("SMTPServerUser") = True then
-			txtSMTPServerUser.Text = portalSettings.GetHostSettings("SMTPServerUser").ToString
-			else
-			txtSMTPServerUser.Text = ""
-			end if
-			if portalSettings.GetHostSettings.ContainsKey("SMTPServerPassword") = True then
-			txtSMTPServerPassword.Text = portalSettings.GetHostSettings("SMTPServerPassword").ToString
-			else
-			txtSMTPServerPassword.Text = ""
-			end if
-            txtFileExtensions.Text = portalSettings.GetHostSettings("FileExtensions").ToString
+            txtEncryptionKey.Text = PortalSettings.GetHostSettings("EncryptionKey").ToString
+            txtProxyServer.Text = PortalSettings.GetHostSettings("ProxyServer").ToString
+            txtProxyPort.Text = PortalSettings.GetHostSettings("ProxyPort").ToString
+            txtSMTPServer.Text = PortalSettings.GetHostSettings("SMTPServer").ToString
+            If PortalSettings.GetHostSettings.ContainsKey("SMTPServerUser") = True Then
+                txtSMTPServerUser.Text = PortalSettings.GetHostSettings("SMTPServerUser").ToString
+            Else
+                txtSMTPServerUser.Text = ""
+            End If
+            If PortalSettings.GetHostSettings.ContainsKey("SMTPServerPassword") = True Then
+                txtSMTPServerPassword.Text = PortalSettings.GetHostSettings("SMTPServerPassword").ToString
+            Else
+                txtSMTPServerPassword.Text = ""
+            End If
+            txtFileExtensions.Text = PortalSettings.GetHostSettings("FileExtensions").ToString
 
             Dim intVersion As Integer
-            For intVersion = 0 To System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly.Location).ProductBuildPart()
+            For intVersion = 0 To ApplicationVersion
                 cboUpgrade.Items.Add("1.0." & intVersion.ToString)
             Next
 
@@ -256,6 +262,7 @@ Namespace DotNetZoom
             objAdmin.UpdateHostSetting("HostTitle", txtHostTitle.Text)
             objAdmin.UpdateHostSetting("HostURL", txtHostURL.Text)
             objAdmin.UpdateHostSetting("HostEmail", txtHostEmail.Text)
+            objAdmin.UpdateHostSetting("HostEmail2", txtHostEmail2.Text)
             objAdmin.UpdateHostSetting("PaymentProcessor", cboProcessor.SelectedItem.Text)
 			objAdmin.UpdateHostSetting("ViewState", ddlViewState.SelectedItem.Value)
 			objAdmin.UpdateHostSetting("WhiteSpace", ddlWhiteSpace.SelectedItem.Value)
@@ -334,15 +341,15 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub cmdEmail_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdEmail.Click
-            If txtHostEmail.Text <> "" Then
-                Dim strMessage As String = SendNotification(txtHostEmail.Text, txtHostEmail.Text, "", txtHostTitle.Text & " " & GetLanguage("Email_Test"), "")
+            If txtHostEmail.Text <> "" And txtHostEmail2.Text <> "" Then
+                Dim strMessage As String = SendNotification(txtHostEmail.Text, txtHostEmail2.Text, "", txtHostTitle.Text & " " & GetLanguage("Email_Test"), "")
                 If strMessage <> "" Then
                     lblEmail.Text = "<br>" & strMessage
                 Else
                     lblEmail.Text = "<br>" & GetLanguage("MailSend")
                 End If
             Else
-                lblEmail.Text = GetLanguage("HS_Need_Email") 
+                lblEmail.Text = GetLanguage("HS_Need_Email")
             End If
         End Sub
 

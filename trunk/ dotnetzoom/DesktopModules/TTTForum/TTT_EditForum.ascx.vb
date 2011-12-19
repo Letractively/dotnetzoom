@@ -6,6 +6,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' =======================================================================================
 
 
@@ -56,34 +59,54 @@ Public Class TTT_EditForum
                         _editPage = glbPath & "DeskTopModules/TTTForum/TTT_EditForumPost.ascx"
                         Title1.DisplayHelp = "DisplayHelp_EditForumPost"
                     Else
-                        Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
+                        AccessDenied()
                     End If
-            End Select
-            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
-                Select Case editType
-                    Case ForumEditType.ForumAdmin
+                Case ForumEditType.ForumAdmin
+                    If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
+
                         _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumAdmin.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ForumAdmin"
-                    Case ForumEditType.GlobalSettings
+                    Else
+                        EditDenied()
+                    End If
+
+                Case ForumEditType.GlobalSettings
+                    If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
                         _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumSettings.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ForumSettings"
-                    Case ForumEditType.ForumModerate
-                        _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumModerate.ascx"
-                        Title1.DisplayHelp = "DisplayHelp_ForumModerate"
-                    Case ForumEditType.ForumModerateAdmin
+                    Else
+                        EditDenied()
+                    End If
+
+                Case ForumEditType.ForumModerate
+                    _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumModerate.ascx"
+                    Title1.DisplayHelp = "DisplayHelp_ForumModerate"
+                Case ForumEditType.ForumModerateAdmin
+                    If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
                         _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ModerateAdmin.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ModerateAdmin"
-                    Case ForumEditType.ForumPrivateMessage
+                    Else
+                        EditDenied()
+                    End If
+
+                Case ForumEditType.ForumPrivateMessage
+                    If Context.Request.IsAuthenticated Then
                         _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumPMS.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ForumPMS"
-                    Case ForumEditType.ForumUserAdmin
+                    Else
+                        AccessDenied()
+                    End If
+
+                Case ForumEditType.ForumUserAdmin
+                    If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Then
                         _editPage = glbPath & "DeskTopModules/TTTForum/TTT_ForumUserAdmin.ascx"
                         Title1.DisplayHelp = "DisplayHelp_ForumUserAdmin"
-                End Select
-            Else
-                EditDenied()
-            End If
+                    Else
+                        EditDenied()
+                    End If
+            End Select
         End If
+
         Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule(_editPage), PortalModuleControl)
             If Not objModule Is Nothing Then
             	objModule.ModuleConfiguration = Me.ModuleConfiguration
