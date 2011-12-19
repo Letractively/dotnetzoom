@@ -20,12 +20,12 @@
 </script>
 	<asp:label id="ClientJavascript" EnableViewState="false" runat="server"></asp:label>
 	<asp:PlaceHolder id="pnlModuleContent" Runat="server">
-		<table class="TTTBorder" cellSpacing="1" cellPadding="3" align="center">
+		<table class="TTTBorder" cellSpacing="0" cellPadding="0" align="center">
 			<tr>
 				<td class="TTTHeader" id="TitleBox" align="center" valign="middle" height="28"><%= DotNetZoom.getlanguage("Gal_Loading") %></td>
 			</tr>
 			<tr>
-				<td id="VU" align="center" valign="middle" width="100%">
+				<td id="img" Runat="server" valign="middle" align="center" class="TTTRow">
 					<asp:Label id="ImageSrc" EnableViewState="false" runat="server"></asp:Label>
 				</td>
 			</tr>

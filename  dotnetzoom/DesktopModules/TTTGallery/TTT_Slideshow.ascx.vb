@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -26,7 +29,7 @@ Namespace DotNetZoom
         Protected WithEvents ErrorMessage As System.Web.UI.WebControls.Label
         Protected WithEvents pnlModuleContent As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents btnBack As System.Web.UI.WebControls.Button
-        Protected WithEvents Table1 As System.Web.UI.HtmlControls.HtmlTable
+        Protected WithEvents img As System.Web.UI.HtmlControls.HtmlTableCell
 
 #Region " Web Form Designer Generated Code "
 
@@ -52,25 +55,32 @@ Namespace DotNetZoom
             ErrorMessage.Visible = False
 
             Dim TabID As Integer = Int32.Parse(HttpContext.Current.Request("tabid"))
-
+            Dim Zconfig As GalleryConfig = GalleryConfig.GetGalleryConfig(ModuleId)
             Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
+            If Not Zconfig.RootFolder.IsPopulated Then
+                Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
+                'Response.Redirect(Request.RawUrl)
+            End If
 
             If Not Zrequest.Folder.IsPopulated Then
-                Server.Transfer("TTT_cache.aspx")
+                ' Zrequest.Folder.Populate()
+                ' Server.Transfer("~/DesktopModules/tttGallery/TTT_cache.aspx")
+                Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
+                'Response.Redirect(Request.RawUrl)
             End If
 
 
             If Zrequest.Folder.IsBrowsable Then
 
-                Dim albumPath As String = Zrequest.Folder.Path
-                Dim SlideSpeed As String = CType(Zrequest.GalleryConfig.SlideshowSpeed, String)
-                Dim sb As New StringBuilder()
+        Dim albumPath As String = Zrequest.Folder.Path
+        Dim SlideSpeed As String = CType(Zrequest.GalleryConfig.SlideshowSpeed, String)
+        Dim sb As New StringBuilder()
 
-                Dim StartImage As String = ""
+        Dim StartImage As String = ""
 
-                'Generate Clientside Javascript for Slideshow
-                Dim JavaScript As String = ""
-                Dim Count As Integer
+        'Generate Clientside Javascript for Slideshow
+        Dim JavaScript As String = ""
+        Dim Count As Integer
 
                 sb.Append("<script language='javascript'>")
                 sb.Append(vbCrLf)
@@ -84,36 +94,38 @@ Namespace DotNetZoom
                 sb.Append("var Description = new Array()")
                 sb.Append(vbCrLf)
 
-                Dim item As Object
-                Dim image As GalleryFile
+        Dim item As Object
+        Dim image As GalleryFile
 
 
                 For Each item In Zrequest.FileItems
                     image = CType(item, GalleryFile)
                     If image.Type = IGalleryObjectInfo.ItemType.Image Then
+        'StartImage = CryptoUrl(image.URL, Zrequest.GalleryConfig.IsPrivate)
                         StartImage = image.URL
                         sb.Append("Pic[")
                         sb.Append(Count)
-                        'BRT: sb.Append("] = ')
+        'BRT: sb.Append("] = ')
                         sb.Append("] = """)
+        'sb.Append(CryptoUrl(image.URL, Zrequest.GalleryConfig.IsPrivate))
                         sb.Append(image.URL)
-                        'BRT: sb.Append("'")
+        'BRT: sb.Append("'")
                         sb.Append("""")
                         sb.Append(vbCrLf)
                         sb.Append("Title[")
                         sb.Append(Count)
-                        'BRT: sb.Append("] = '")
+        'BRT: sb.Append("] = '")
                         sb.Append("] = """)
                         sb.Append(JSEncode(image.Title.Replace(vbCrLf, "<br>")))
-                        'BRT: sb.Append("'")
+        'BRT: sb.Append("'")
                         sb.Append("""")
                         sb.Append(vbCrLf)
                         sb.Append("Description[")
                         sb.Append(Count)
-                        'BRT: sb.Append("] = '")
+        'BRT: sb.Append("] = '")
                         sb.Append("] = """)
                         sb.Append(JSEncode(image.Description.Replace(vbCrLf, "<br>")))
-                        'BRT: sb.Append("'")
+        'BRT: sb.Append("'")
                         sb.Append("""")
                         sb.Append(vbCrLf)
                         Count = Count + 1
@@ -145,7 +157,10 @@ Namespace DotNetZoom
                 ErrorMessage.Text = GetLanguage("Gal_NoImage")
             End If
             If Not Page.IsPostBack Then
-                ' Store URL Referrer to return to portal
+        ' Store URL Referrer to return to portal
+                img.Height = Zrequest.GalleryConfig.FixedHeight.ToString
+                img.Width = Zrequest.GalleryConfig.FixedWidth.ToString
+
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
@@ -153,6 +168,8 @@ Namespace DotNetZoom
                 End If
             End If
         End Sub
+
+
 
         Private Sub btnBack_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnBack.Click
             Response.Redirect(ViewState("UrlReferrer").ToString)

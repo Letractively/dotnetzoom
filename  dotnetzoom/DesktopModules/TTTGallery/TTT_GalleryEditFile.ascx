@@ -5,20 +5,20 @@
 <table class="TTTBorder" cellspacing="1" cellpadding="0" width="780" align="center">
 	<tbody>
 		<tr>
-			<td colspan=2 >
+			<td colspan="3" >
 				<table cellpadding=0 cellspacing=0 border=0>
 					<tr>
 						<td class="TTTHeader" align="left" style="white-space: nowrap;" width="90" height=28>
 						&nbsp;<span class="TTTHeaderText"><%= DotNetZoom.getlanguage("Gal_EditFile") %></span>&nbsp;:&nbsp;
 					</td>
-					<td class="TTTHeader" style="white-space: nowrap;" align="left" width=90% height="28">
+					<td class="TTTHeader" style="white-space: nowrap;" align="left" width="690" height="28">
 						<asp:datalist id="dlFolders" repeatdirection="Horizontal" repeatlayout="Flow" runat="server" HorizontalAlign="Left">
 							<itemtemplate>
 								<asp:hyperlink id="hlFolder" cssClass="TTTAltHeaderText" runat="server" navigateurl='<%# GetFolderURL(Container.DataItem) %>'>
 									<%# CType(Container.DataItem, FolderDetail).Name %>
 								</asp:hyperlink>
 							</itemtemplate>
-							<separatortemplate>&nbsp;&raquo;&nbsp;</separatortemplate>
+							<separatortemplate>&nbsp;/&nbsp;</separatortemplate>
 						</asp:datalist>
 					</td>
 					
@@ -27,7 +27,7 @@
 			</td>			
 		</tr>
 		<tr>
-			<td class="TTTAltHeader" height="28" colspan="2">
+			<td class="TTTAltHeader" height="28" colspan="3">
 				&nbsp;
 				<asp:Label id="lblInfo" CssClass="TTTNormal" ForeColor="Red" runat="server"></asp:Label>
 			</td>
@@ -39,7 +39,7 @@
 						<tr>
 							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_URL") %>:</td>
 							<td class="TTTRow" align="left">
-								<asp:TextBox id="txtPath" runat="server" cssclass="NormalTextBox" Enabled="False" Width="100%"></asp:TextBox></td>
+								<asp:TextBox id="txtPath" runat="server" cssclass="NormalTextBox" Enabled="False" Width="50%"></asp:TextBox></td>
 						</tr>
 						<tr>
 							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_Name") %>:</td>
@@ -68,23 +68,49 @@
 								<asp:TextBox id="txtTitle" runat="server" cssclass="NormalTextBox" Width="50%"></asp:TextBox></td>
 						</tr>
 						<tr>
+							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("OrderBy") %></td>
+									<td class="TTTRow" align="left">
+									<asp:TextBox id="txtSortOrder" runat="server" Width="50%" cssclass="NormalTextBox"></asp:TextBox></td>
+						</tr>
+						<tr>
+							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.GetLanguage("WaterMark")%></td>
+									<td class="TTTRow" align="left">
+									<asp:TextBox id="txtWaterMark" runat="server" Width="50%" cssclass="NormalTextBox"></asp:TextBox></td>
+						</tr>
+
+						<tr>
 							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_Desc") %>:</td>
 							<td class="TTTRow" align="left">
-								<asp:TextBox id="txtDescription" TextMode="MultiLine" runat="server" cssclass="NormalTextBox" Width="100%"></asp:TextBox></td>
+								<asp:TextBox id="txtDescription" TextMode="MultiLine" runat="server" cssclass="NormalTextBox" Width="50%"></asp:TextBox></td>
 						</tr>
 						<tr>
 							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_Cat") %>:</td>
 							<td class="TTTRow" align="left">
-								<asp:checkboxlist id="lstCategories" runat="server" RepeatColumns="4" Font-Names="Verdana,Arial" Font-Size="8pt" width="100%"></asp:checkboxlist></td>
+								<asp:DropDownList ID="ddCategories" runat=server></asp:DropDownList></td>
 						</tr>
 					</table>
 				</td>
 				<td class="TTTRow" valign="middle" align="center" width="150">
 					<asp:Image id="imgFile" Runat="server"></asp:Image></td>
+                    <td class="TTTRow" valign="middle" align="center">
+                        <table><tr><td>
+    <asp:Image id="ImgFileIcon" AlternateText="gpsicon" EnableViewState="True" Runat="server"></asp:Image>
+    </td><td>
+    <div id="Div1" EnableViewState="True" Runat="server" style="padding:0px; height:97px;  width:49px; :auto; overflow-x:hidden; ">
+      <asp:datalist id="gpsIconImage" runat="server" EnableViewState="True" cssclass="NormalBold"  RepeatDirection="Vertical" cellpadding="0" width="100%">
+        <ItemStyle BorderWidth="0" horizontalalign="Center" verticalalign="Middle"></ItemStyle>
+        <ItemTemplate>
+         <asp:ImageButton ID="ImgThumb" runat="server" Width="24" Height="24" AlternateText="<%# CType(Container.DataItem, FolderDetail).Name %>" BorderWidth="0"  CommandArgument="<%# CType(Container.DataItem, FolderDetail).url %>" imageurl="<%# CType(Container.DataItem, FolderDetail).url %>"/>
+        </ItemTemplate>
+        </asp:datalist>
+    </div>
+    </td></tr></table>
+
+                    </td>
 			</tr>
 		</asp:placeholder>
 		<tr valign="middle">
-			<td class="TTTAltHeader" align="left" colspan="2">
+			<td class="TTTAltHeader" align="left" colspan="3">
 				&nbsp;
 				<asp:button id="CancelButton" cssclass="button" runat="server" CommandName="back"></asp:button>
 				&nbsp;

@@ -92,8 +92,25 @@ Namespace DotNetZoom
 
         Function FormatURL(ByVal Link As String, ByVal ID As Integer) As String
 
+            Dim contenttype As String = ""
+
+            Try
+                Dim strExtension As String = Replace(System.IO.Path.GetExtension(Link), ".", "")
+                Select Case strExtension.ToLower()
+                    Case "kmz", "kml", "gpx" : contenttype = "&contenttype=" + strExtension.ToLower()
+                    Case Else
+                        contenttype = ""
+                End Select
+            Catch ex As Exception
+
+            End Try
+
+
             Dim objSecurity As New PortalSecurity()
-            Dim crypto As String = "tabid=" & TabId & "&table=Documents&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+            Dim crypto As String = "tabid=" & TabId & contenttype & "&table=Documents&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+
+
+
             Return glbPath & GetLanguage("N") & ".default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
 
 
@@ -137,8 +154,18 @@ Namespace DotNetZoom
             Dim dr As SqlDataReader = objDocuments.GetSingleDocument(ItemId, ModuleId)
             If dr.Read() Then
 
+                Dim contenttype As String = ""
+
+                Dim strExtension As String = Replace(System.IO.Path.GetExtension(dr("URL").ToString), ".", "")
+                Select Case strExtension.ToLower()
+                    Case "kmz", "kml", "gpx" : contenttype = "&contenttype=" + strExtension.ToLower()
+                    Case Else
+                        contenttype = ""
+                End Select
+
+
                 Dim objSecurity As New PortalSecurity()
-                Dim crypto As String = "tabid=" & TabId & "&table=Documents&field=ItemID&id=" & ItemId.ToString & "&link=" & Server.UrlEncode(dr("URL").ToString)
+                Dim crypto As String = "tabid=" & TabId & contenttype & "&table=Documents&field=ItemID&id=" & ItemId.ToString & "&link=" & Server.UrlEncode(dr("URL").ToString)
                 strLink += glbPath & GetLanguage("N") & ".default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
                 ' strLink += glbPath() & "admin/Portal/LinkClick.aspx?tabid=" & TabId & "&table=Documents&field=ItemID&id=" & ItemId.ToString & "&link=" & Server.UrlEncode(dr("URL").ToString)
             End If

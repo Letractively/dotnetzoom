@@ -11,7 +11,7 @@
 <br>
 <img height="15" width="17" src="/images/1x1.gif" Alt="ip" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -30px;">
 &nbsp;<%= DotNetZoom.GetLanguage("browser")%>&nbsp;:
-<span class="normal" style="color:Blue;"><%=  GetBrowserType %></span>
+<span class="normal" style="color:Blue;"> (<%=Request.Browser.Id %>) <%=  GetBrowserType %></span>
 <br>
 <img height="15" width="17" src="/images/1x1.gif" Alt="En ligne" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -15px;">
 &nbsp;<%= DotNetZoom.GetLanguage("number_of_connections")%>&nbsp;:
@@ -31,7 +31,6 @@
 </tr>
 </table>
 <br><img height="15" width="17" src="/images/1x1.gif" Alt="img" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -60px;">
-
 &nbsp;
 <span class="normal"><%= DotNetZoom.GetLanguage("number_of_restart")%>&nbsp;:</span>
 <asp:Label cssclass="normal" id="lblAppRestarts" runat="server" EnableViewState="false" forecolor="Blue">

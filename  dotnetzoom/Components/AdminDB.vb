@@ -1438,7 +1438,7 @@ Namespace DotNetZoom
 			UpdatelonglanguageSetting(Language, SettingName, SettingName, PortalId)
 			
 			if portalSettings.GetHostSettings("EnableErrorReporting") <> "N" then
-			SendNotification(portalSettings.GetHostSettings("HostEmail"), portalSettings.GetHostSettings("HostEmail"), "", SettingName, String.Format(GetLanguage("LanguageERROR"), SettingName, GetLanguage("N")) , "")
+                            SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", SettingName, String.Format(GetLanguage("LanguageERROR"), SettingName, GetLanguage("N")), "")
 			End if
 			End if
 			
@@ -1782,8 +1782,9 @@ Namespace DotNetZoom
                             strContentType = "application/octet-stream"
                         End Try
                     End If
-                    AddFile(PortalId, Mid(strFileName, InStrRev(strFileName, "\") + 1), strExtension, FileLen(strFileName), strWidth, strHeight, strContentType)
-                Next strFileName
+                    AddFile(PortalId, Mid(strFileName, InStrRev(strFileName, "\") + 1), strExtension, New FileInfo(strFileName).Length, strWidth, strHeight, strContentType)
+               
+		        Next strFileName
             End If
 
         End Sub
@@ -1828,7 +1829,7 @@ Namespace DotNetZoom
             If System.IO.Directory.Exists(strFolder) Then
                 Dim fileEntries As String() = System.IO.Directory.GetFiles(strFolder)
                 For Each strFileName In fileEntries
-                    SpaceUsedFile += FileLen(strFileName)
+		             SpaceUsedFile += New FileInfo(strFileName).Length
                 Next strFileName
             End If
             Return SpaceUsedFile
@@ -1836,13 +1837,25 @@ Namespace DotNetZoom
 
 
         Public Sub AddDirectory(ByVal strRoot As String, ByVal SpaceUsedDir As String)
+            Dim IntSpaceUsedDir As Integer = 0
+            Try
+                IntSpaceUsedDir = Convert.ToInt32(Convert.ToInt64(SpaceUsedDir) / 1024)
+            Catch ex As Exception
+                If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                    ' Function SendNotification(ByVal strFrom As String, ByVal strTo As String, ByVal strBcc As String, ByVal strSubject As String, ByVal strBody As String, Optional ByVal strAttachment As String = "", Optional ByVal strBodyType As String = "")
+                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Convert.ToInt32(SpaceUsedDir)", strRoot + " " + SpaceUsedDir + ControlChars.CrLf + ControlChars.CrLf + ex.ToString)
+                End If
+
+                Return
+            End Try
+
+
             ' Create Instance of Connection and Command Object
             Dim myConnection As New SqlConnection(GetDBConnectionString)
-
             ' Generate Command Object based on Method
             Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
                 CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {strRoot, SpaceUsedDir})
+                New Object() {strRoot, IntSpaceUsedDir})
 
             myConnection.Open()
             myCommand.ExecuteNonQuery()
@@ -1852,7 +1865,8 @@ Namespace DotNetZoom
 
         Public Function GetdirectorySpaceUsed(ByVal strRoot As String) As Double
 
-            GetdirectorySpaceUsed = 0
+            Dim TempSpaceUsed As Double
+            TempSpaceUsed = 0
             ' Create Instance of Connection and Command Object
             Dim myConnection As New SqlConnection(GetDBConnectionString)
 
@@ -1866,10 +1880,16 @@ Namespace DotNetZoom
             Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
             If result.Read Then
                 If Not IsDBNull(result("Size")) Then
-                    GetdirectorySpaceUsed = result("Size")
+                    TempSpaceUsed = result("Size") * 1024
                 End If
             End If
             result.Close()
+
+            If TempSpaceUsed = 0 Then
+                TempSpaceUsed = GetFolderSizeRecursive(strRoot)
+                AddDirectory(strRoot, TempSpaceUsed)
+            End If
+            Return TempSpaceUsed
 
         End Function
 
@@ -1943,7 +1963,7 @@ Namespace DotNetZoom
             ' Generate Command Object based on Method
             Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
                 CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {IIf(Code <> "", Code, SqlInt16.Null), IIf(Description <> "", Description, SqlInt16.Null)})
+                New Object() {Language, IIf(Code <> "", Code, SqlInt16.Null), IIf(Description <> "", Description, SqlInt16.Null)})
 
             ' Execute the command
             myConnection.Open()
@@ -2058,7 +2078,7 @@ Namespace DotNetZoom
             Catch objSQLException As SqlException
                 If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
                     ' Function SendNotification(ByVal strFrom As String, ByVal strTo As String, ByVal strBcc As String, ByVal strSubject As String, ByVal strBody As String, Optional ByVal strAttachment As String = "", Optional ByVal strBodyType As String = "")
-                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", SQL, objSQLException.ToString)
+                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", SQL, objSQLException.ToString)
                 End If
             End Try
 

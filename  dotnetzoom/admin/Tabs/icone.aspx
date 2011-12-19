@@ -309,9 +309,13 @@ End Sub
             Dim objAdmin As New AdminDB()
 
             If Not (Request.Params("hostpage") Is Nothing) Then
-                objAdmin.AddFile(-1, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+'                objAdmin.AddFile(-1, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+                objAdmin.AddFile(-1, strFileName, strExtension, 0, strWidth, strHeight, strContentType)
+
             Else
-                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+'                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, 0, strWidth, strHeight, strContentType)
+
             End If
         End Sub
 
@@ -342,11 +346,7 @@ Private Function CanUpload() As Boolean
             Else
             strFolder = Request.MapPath(_portalSettings.UploadDirectory)
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-			End If
-			SpaceUsed = SpaceUsed / 1048576
+            SpaceUsed = SpaceUsed / 1048576
 			End If
 
 			If Request.IsAuthenticated and ((SpaceUsed <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Then
@@ -436,7 +436,9 @@ Public Sub DisplayImages()
                             End If
                             myHtmlImage.Attributes("ondblclick") = "OpenFile('" + ImageFileName + "');"
                             GalleryPlaceHolder.Controls.Add(myHtmlImage)
-                            GalleryPlaceHolder.Controls.Add(New LiteralControl("<br>" + ImageFileName + "<br>" + myImage.Width.ToString() + "x" + myImage.Height.ToString() + " (" + (FileLen(ImageFile) / 1024).ToString("0.00") + "k)"))
+'                           GalleryPlaceHolder.Controls.Add(New LiteralControl("<br>" + ImageFileName + "<br>" + myImage.Width.ToString() + "x" + myImage.Height.ToString() + " (" + (FileLen(ImageFile) / 1024).ToString("0.00") + "k)"))
+                            GalleryPlaceHolder.Controls.Add(New LiteralControl("<br>" + ImageFileName + "<br>" + myImage.Width.ToString() + "x" + myImage.Height.ToString() ))
+
                             GalleryPlaceHolder.Controls.Add(New LiteralControl("</td>"))
                         End If
                         myImage.Dispose()

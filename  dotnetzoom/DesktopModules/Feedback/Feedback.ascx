@@ -1,4 +1,4 @@
-<%@ Control Language="vb" autoeventwireup="false" Explicit="True" codebehind="Feedback.ascx.vb" Inherits="DotNetZoom.Feedback" %>
+<%@ Control Language="vb" EnableViewState=False autoeventwireup="false" Explicit="True" codebehind="Feedback.ascx.vb" Inherits="DotNetZoom.Feedback" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <portal:title id="Title1" NAME="Title1" runat="server"></portal:title>
 <asp:PlaceHolder id="pnlModuleContent" Runat="server">
@@ -7,7 +7,7 @@
 <td class="SubHead">
 <label for="<%=txtSendTo.ClientID%>"><%= DotNetZoom.GetLanguage("to")%>:</label>
 </td>
-<td><asp:TextBox id="txtSendTo" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="200px"></asp:TextBox>
+<td><asp:TextBox id="txtSendTo" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="350px"></asp:TextBox>
 </td>
 </tr>
 <tr valign="top">
@@ -15,7 +15,7 @@
 <label for="<%=txtEmail.ClientID%>"><%= DotNetZoom.GetLanguage("email")%>:</label>
 </td>
 <td>
-<asp:TextBox id="txtEmail" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="200px"></asp:TextBox>
+<asp:TextBox id="txtEmail" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="350px"></asp:TextBox>
 </td>
 </tr>
 <tr valign="top">
@@ -23,14 +23,14 @@
 <label for="<%=txtName.ClientID%>"><%= DotNetZoom.GetLanguage("your_name")%>:</label>
 </td>
 <td>
-<asp:TextBox id="txtName" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="200px"></asp:TextBox>
+<asp:TextBox id="txtName" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="350px"></asp:TextBox>
 </td>
 </tr>
 <tr valign="top">
 <td class="SubHead"><label for="<%=txtSubject.ClientID%>"><%= DotNetZoom.GetLanguage("object")%>:</label>
 </td>
 <td>
-<asp:TextBox id="txtSubject" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="200px"></asp:TextBox>
+<asp:TextBox id="txtSubject" runat="server" maxlength="100" columns="35" cssclass="NormalTextBox" Width="350px"></asp:TextBox>
 </td>
 </tr>
 <tr valign="top">
@@ -38,7 +38,7 @@
 <label for="<%=txtBody.ClientID%>"><%= DotNetZoom.GetLanguage("label_message_body")%>:</label>
 </td>
 <td>
-<asp:TextBox id="txtBody" runat="server" columns="25" Width="200px" CssClass="NormalTextBox" Rows="10" TextMode="Multiline"></asp:TextBox>
+<asp:TextBox id="txtBody" runat="server" columns="25" Width="350px" CssClass="NormalTextBox" Rows="16" TextMode="Multiline"></asp:TextBox>
 </td>
 </tr>
 <tr valign="top">

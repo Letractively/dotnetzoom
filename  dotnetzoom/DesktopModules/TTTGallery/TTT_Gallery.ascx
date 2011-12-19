@@ -18,7 +18,7 @@
 <%# CType(Container.DataItem, FolderDetail).Name %>
 </asp:hyperlink>
 </itemtemplate>
-<separatortemplate>&nbsp;&raquo;&nbsp;</separatortemplate>
+<separatortemplate>&nbsp;/&nbsp;</separatortemplate>
 </asp:datalist>&nbsp;
 <asp:imagebutton id="ClearCache" runat="server" EnableViewState="false" visible="False" height="16" width="16" ImageURL="~/images/1x1.gif" style="border-width:0px;"></asp:imagebutton>
 <asp:imagebutton id="SubAlbum" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/Admin/AdvFileManager/Images/NewFolder.gif" style="border-width:0px"></asp:imagebutton>
@@ -46,7 +46,7 @@
 <asp:Literal id="lblPageInfo" runat="server" EnableViewState="false" />
 </span>
 <asp:datalist id="dlPager" runat="server" EnableViewState="false" repeatlayout="Flow" repeatdirection="Horizontal">
-<SelectedItemStyle ForeColor="red">
+<SelectedItemStyle Font-Bold="true"  ForeColor="red">
 </SelectedItemStyle>
 <selecteditemtemplate>
 <%# Ctype(Container.DataItem, PagerDetail).Text %>
@@ -77,7 +77,7 @@
 <tr>
 <td align="center" valign="top" height="100%">
 <asp:hyperlink id="Thumb" runat="server" EnableViewState="false" onmouseover='<%# GetImageToolTip( Container.DataItem )  %>' navigateurl="<%# GetBrowserURL(Container.DataItem) %>" visible="<%# Not Ctype(Container.DataItem, IGalleryObjectInfo).Thumbnail = string.empty %>">
-<asp:Image ID="ImgThumb" runat="server" AlternateText="*" BorderWidth="0" imageurl="<%# Ctype(Container.DataItem, IGalleryObjectInfo).Thumbnail %>"/>
+<asp:Image ID="ImgThumb" runat="server" AlternateText="*" BorderWidth="0" imageurl="<%# GetThumbnailURL(Container.DataItem) %>"/>
 </asp:hyperlink>
 </td>
 </tr>
@@ -99,6 +99,8 @@
 </tr>
 <tr>
 <td align="center" valign="top" height="20">
+<asp:ImageButton id="Left" runat="server"  height="16" width="16" visible="<%# CanGoLeft(Container.DataItem) %>" CommandName="left" ImageURL="~/images/lt.gif" BorderWidth="0" BorderStyle="none" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>'>
+</asp:ImageButton>
 <asp:hyperlink id="lnkSlideshow" visible="<%# CanView(Container.DataItem) %>" navigateurl="<%# GetSlideshowURL(Container.DataItem) %>"  EnableViewState="false" runat="server">
 <%# SetImage("0px -288px") %>
 </asp:hyperlink>
@@ -114,6 +116,8 @@
 <asp:ImageButton id="btnDownload" runat="server"  height="16" width="16" visible="<%# CanDownload(Container.DataItem) %>" CommandName="edit" ImageURL="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' style='<%# GetImageStyle("0px -96px") %>'>
 </asp:ImageButton>
 <asp:ImageButton id="Delete" runat="server"  height="16" width="16" visible="<%# ItemAuthority(Container.DataItem) %>" CommandName="delete" ImageURL="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>'  style='<%# GetImageStyle("0px -32px") %>'>
+</asp:ImageButton>
+<asp:ImageButton id="Right" runat="server"  height="16" width="16" visible="<%# CanGoRight(Container.DataItem)%>" CommandName="right" ImageURL="~/images/rt.gif" BorderWidth="0" BorderStyle="none" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>'>
 </asp:ImageButton>
 </td>
 </tr>
@@ -133,8 +137,8 @@
 &nbsp;
 <span Class="TTTNormal">
 <asp:Literal id="lblPageInfo2" runat="server" EnableViewState="false" /></span>
-<asp:datalist id="dlPager2" runat="server" EnableViewState="false" repeatlayout="Flow" repeatdirection="Horizontal">
-<SelectedItemStyle ForeColor="red">
+<asp:datalist id="dlPager2" runat="server"  EnableViewState="false" repeatlayout="Flow" repeatdirection="Horizontal">
+<SelectedItemStyle Font-Bold="true" ForeColor="red">
 </SelectedItemStyle>
 <selecteditemtemplate><%# Ctype(Container.DataItem, PagerDetail).Text %></selecteditemtemplate>
 <itemtemplate>

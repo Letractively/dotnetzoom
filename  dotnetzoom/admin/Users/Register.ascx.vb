@@ -28,6 +28,8 @@ Namespace DotNetZoom
     Public Class Register
         Inherits DotNetZoom.PortalModuleControl
 
+        Protected WithEvents O1 As DotNetZoom.OpenClose
+
         Protected WithEvents Title1 As DesktopModuleTitle
         Protected WithEvents UserRow As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents lblRegister As System.Web.UI.WebControls.Label
@@ -52,13 +54,23 @@ Namespace DotNetZoom
         Protected WithEvents RegisterBtn As System.Web.UI.WebControls.LinkButton
         Protected WithEvents UnregisterBtn As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdCancel As System.Web.UI.WebControls.LinkButton
-        Protected WithEvents ReturnBtn As System.Web.UI.WebControls.LinkButton
 
         Protected WithEvents ServicesRow As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents myDataGrid As System.Web.UI.WebControls.DataGrid
         Protected WithEvents lblMessage As System.Web.UI.WebControls.Label
         Protected WithEvents ReturnButton As System.Web.UI.WebControls.LinkButton
 		Protected WithEvents Tableservices As System.Web.UI.HtmlControls.HtmlTable
+
+        Protected WithEvents pnlAudit As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents lblCreatedDate As System.Web.UI.WebControls.Label
+        Protected WithEvents lblLastLoginDate As System.Web.UI.WebControls.Label
+
+        Protected WithEvents pnlSecurite As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents Country As System.Web.UI.WebControls.TextBox
+        Protected WithEvents cboCountry As System.Web.UI.WebControls.DropDownList
+        Protected WithEvents dlCountryCode As System.Web.UI.WebControls.DataList
+        Protected WithEvents IPLow As System.Web.UI.WebControls.TextBox
+        Protected WithEvents IPHigh As System.Web.UI.WebControls.TextBox
 
         Private Services As Integer = 0
         Private RoleID As Integer = -1
@@ -139,6 +151,26 @@ Namespace DotNetZoom
                 Title1.DisplayHelp = "DisplayHelp_RegisterEdit"
                 lblRegister.Text = GetLanguage("Required_Info")
                 RegisterBtn.Text = GetLanguage("enregistrer")
+            Else
+                Title1.DisplayHelp = "DisplayHelp_Register"
+                Select Case _portalSettings.UserRegistration
+                    Case 1 ' private
+                        Title1.DisplayTitle = GetLanguage("Register_Title")
+                        lblRegister.Text = GetLanguage("Private_Info")
+                    Case 2 ' public
+                        Title1.DisplayTitle = GetLanguage("Register_Title")
+                        lblRegister.Text = GetLanguage("Public_Register_info")
+                    Case 3 ' verified
+                        Title1.DisplayTitle = GetLanguage("Register_Title")
+                        lblRegister.Text = GetLanguage("Verified_Register_info")
+                End Select
+                lblRegister.Text += GetLanguage("Register_Required_Info")
+                RegisterBtn.Text = GetLanguage("banner_register")
+                UnregisterBtn.Visible = False
+                ServicesRow.Visible = False
+                valPassword.Enabled = True
+                valConfirm1.Enabled = True
+                valConfirm2.Enabled = True
             End If
 
 
@@ -146,6 +178,14 @@ Namespace DotNetZoom
             ' If this is the first visit to the page, bind the role data to the datalist
             If Page.IsPostBack = False Then
 
+                O1.What = GetLanguage("U_SecurityControl") + " (" + GetLanguage("U_yourIP") + Request.UserHostAddress + " " + GetCountry() + ")"
+
+                Dim objAdmin As New AdminDB()
+
+                cboCountry.DataSource = objAdmin.GetCountryCodes(GetLanguage("N"))
+                cboCountry.DataBind()
+                cboCountry.Items.Insert(0, New ListItem(GetLanguage("autre"), "--"))
+                cboCountry.Items.Insert(0, New ListItem(GetLanguage("list_none"), ""))
 
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
@@ -157,7 +197,7 @@ Namespace DotNetZoom
                 UnregisterBtn.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm_unsubscribe")) & "');")
 
                 BindData()
-
+                BindCountry()
                 Try
                     SetFormFocus(txtFirstName)
                 Catch
@@ -226,6 +266,7 @@ Namespace DotNetZoom
                 UserRow.Visible = True
 
                 If Request.IsAuthenticated Then
+                    pnlAudit.Visible = True
                     valPassword.Enabled = False
                     valConfirm1.Enabled = False
                     valConfirm2.Enabled = False
@@ -233,8 +274,12 @@ Namespace DotNetZoom
                     Dim users As New UsersDB()
                     Dim dr As SqlDataReader = users.GetSingleUser(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
 
+                    lblLastLoginDate.Text = Session("LastLoginDate")
+
+
                     ' Read first row from database
                     If dr.Read() Then
+                        lblCreatedDate.Text = dr("CreatedDate").ToString
                         txtFirstName.Text = dr("FirstName").ToString
                         txtLastName.Text = dr("LastName").ToString
                         txtUsername.Text = dr("Username").ToString
@@ -249,6 +294,21 @@ Namespace DotNetZoom
                         Address1.Telephone = dr("Telephone").ToString
                     End If
                     dr.Close()
+
+                    dr = users.GetUserCountryCode(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
+                    If dr.Read() Then
+                        Country.Text = IIf(IsDBNull(dr("Country_Code")), "", dr("Country_Code"))
+                        IPLow.Text = IIf(IsDBNull(dr("IPfrom")), "", dr("IPfrom"))
+                        IPHigh.Text = IIf(IsDBNull(dr("IPto")), "", dr("IPto"))
+                    End If
+                    If IPLow.Text = "" Then
+                        IPLow.Text = "0.0.0.1"
+                    End If
+                    If IPHigh.Text = "" Then
+                        IPHigh.Text = "255.255.255.255"
+                    End If
+                    dr.Close()
+
 
                     Dim objUser As New UsersDB()
 
@@ -284,27 +344,6 @@ Namespace DotNetZoom
                         End If
                         dr.Close()
                     End If
-                Else
-                    Title1.DisplayHelp = "DisplayHelp_Register"
-                    Select Case _portalSettings.UserRegistration
-                        Case 1 ' private
-                            Title1.DisplayTitle = GetLanguage("Register_Title")
-                            lblRegister.Text = GetLanguage("Private_Info")
-                        Case 2 ' public
-                            Title1.DisplayTitle = GetLanguage("Register_Title")
-                            lblRegister.Text = GetLanguage("Public_Register_info")
-                        Case 3 ' verified
-                            Title1.DisplayTitle = GetLanguage("Register_Title")
-                            lblRegister.Text = GetLanguage("Verified_Register_info")
-                    End Select
-                    lblRegister.Text += GetLanguage("Register_Required_Info")
-
-                    RegisterBtn.Text = GetLanguage("banner_register")
-                    UnregisterBtn.Visible = False
-                    ServicesRow.Visible = False
-                    valPassword.Enabled = True
-                    valConfirm1.Enabled = True
-                    valConfirm2.Enabled = True
                 End If
             End If
 
@@ -313,6 +352,36 @@ Namespace DotNetZoom
         Private Sub RegisterBtn_Click(ByVal sender As Object, ByVal E As EventArgs) Handles RegisterBtn.Click
 
             Dim strBody As String
+            ' check the country code to make sure it is a valid one
+            Dim IPNow As String = Request.UserHostAddress
+            If Country.Text <> "" Then
+                If InStr(1, Country.Text, Trim(DisplayCountrycode(Request.UserHostAddress))) Then
+                Else
+                    Message.Text = GetLanguage("Valid_IP_Security3")
+                    Exit Sub
+                End If
+            End If
+
+
+
+            If IPLow.Text <> "" And IPHigh.Text <> "" Then
+                If IPConvert(IPLow.Text) = 0 Or IPConvert(IPHigh.Text) = 0 Then
+                    Message.Text = GetLanguage("Valid_IP_Security")
+                    Exit Sub
+                End If
+                If IPConvert(IPLow.Text) > IPConvert(IPHigh.Text) Then
+                    Message.Text = GetLanguage("Valid_IP_Security1")
+                    Exit Sub
+                End If
+                If (IPConvert(IPNow) < IPConvert(IPLow.Text)) Or (IPConvert(IPNow) > IPConvert(IPHigh.Text)) Then
+                    ' does not fall in the IP range
+                    Message.Text = GetLanguage("Valid_IP_Security2")
+                    Exit Sub
+                End If
+
+            End If
+
+
 
             Page.Validate()
             ' Only attempt a save/update if all form fields on the page are valid
@@ -354,6 +423,8 @@ Namespace DotNetZoom
                             Dim GotAmod As Boolean = False
 
                             objUser.UpdateUser(_portalSettings.PortalId, CType(Context.User.Identity.Name, Integer), txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, IIf(txtPassword.Text <> "", objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), ""))
+                            objUser.UpdateUsercodes(CType(Context.User.Identity.Name, Integer), Country.Text, IPLow.Text, IPHigh.Text)
+
                             ' informe le webmestre du site du changement d'info
                             If dr.read Then
 
@@ -435,11 +506,17 @@ Namespace DotNetZoom
 
                     End If
                 Else
+
                     Dim UserId As Integer
 
                     UserId = objUser.AddUser(_portalSettings.PortalId, txtFirstName.Text, txtLastName.Text, Address1.Unit, Address1.Street, Address1.City, Address1.Region, Address1.Postal, Address1.Country, Address1.Telephone, txtEmail.Text, txtUsername.Text, objSecurity.Encrypt(PortalSettings.GetHostSettings("EncryptionKey"), txtPassword.Text), IIf(_portalSettings.UserRegistration = 1, CStr(False), CStr(True)), UserId)
 
                     If UserId >= 0 Then
+
+
+                        objUser.UpdateUsercodes(UserId, Country.Text, IPLow.Text, IPHigh.Text)
+
+
                         ' Add user to Forum Dbase
                         Dim dbForumUser As New ForumUserDB()
                         dbForumUser.TTTForum_UserCreateUpdateDelete(UserId, txtUsername.Text, True, False, "", "", "", _portalSettings.TimeZone, "", "", "", "", "", "", "", False, True, False, True, True, True, 0)
@@ -613,7 +690,73 @@ Namespace DotNetZoom
 		ToProcess = Regex.Replace(ToProcess, "{validationcode}" , _portalSettings.PortalId.ToString & "-" & TUserId.ToString, RegexOptions.IgnoreCase)
 		Return ToProcess
 		End Function
-    
-	End Class
+
+        Private Sub BindCountry()
+            If Country.Text <> "" Then
+                Dim arrCountry As Array = Split(Country.Text, ",")
+                Dim strCountry As String
+                Dim dt As New Data.DataTable()
+                Dim dr As Data.DataRow
+                Dim objAdmin As New AdminDB()
+                dt.Columns.Add(New Data.DataColumn("Description", GetType(String)))
+                dt.Columns.Add(New Data.DataColumn("Code", GetType(String)))
+                For Each strCountry In arrCountry
+                    dr = dt.NewRow()
+                    ' getsinglecountry
+                    If strCountry = "--" Then
+                        dr(0) = GetLanguage("autre")
+                    Else
+                        dr(0) = objAdmin.GetSingleCountry(GetLanguage("N"), strCountry)
+                    End If
+                    dr(1) = strCountry
+                    dt.Rows.Add(dr)
+                Next
+                dlCountryCode.DataSource = dt
+                dlCountryCode.DataBind()
+                dlCountryCode.Visible = True
+            Else
+                dlCountryCode.Visible = False
+            End If
+        End Sub
+
+        Private Sub dlCountryCode_ItemCommand(ByVal source As System.Object, ByVal e As System.Web.UI.WebControls.DataListCommandEventArgs) Handles dlCountryCode.ItemCommand
+
+            Dim arrCountry As Array = Split(Country.Text, ",")
+            Dim strCountry As String
+            Country.Text = ""
+            For Each strCountry In arrCountry
+                If strCountry <> e.CommandArgument.ToString Then
+                    If Country.Text <> "" Then
+                        Country.Text += ","
+                    End If
+                    Country.Text += strCountry
+                End If
+            Next
+            BindData()
+            BindCountry()
+            O1.Show = True
+
+        End Sub
+
+
+        Private Sub cboCountry_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles cboCountry.SelectedIndexChanged
+            O1.Show = True
+
+            If cboCountry.SelectedItem.Value <> "" And InStr(1, Country.Text, cboCountry.SelectedItem.Value) = 0 Then
+                If Country.Text <> "" Then
+                    Country.Text += ","
+                End If
+                Country.Text += cboCountry.SelectedItem.Value
+                BindData()
+                BindCountry()
+            End If
+        End Sub
+
+        Private Function GetCountry() As String
+            Dim objAdmin As New AdminDB()
+            Return objAdmin.GetSingleCountry(GetLanguage("N"), Trim(DisplayCountrycode(Request.UserHostAddress)))
+        End Function
+
+    End Class
 
 End Namespace

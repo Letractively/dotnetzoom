@@ -82,14 +82,14 @@
 <p align="left" class="SubHead">
 <%= DotNetZoom.GetLanguage("U_SecurityControl") %>
 <br>
-<%= DotNetZoom.GetLanguage("U_SecurityContryCode") %> : <asp:textbox id="Country" runat="server" size="15" MaxLength="50" cssclass="NormalTextBox"></asp:textbox>
+<%= DotNetZoom.GetLanguage("U_SecurityContryCode") %> : <asp:textbox id="Country" runat="server" Width="150px" MaxLength="50" cssclass="NormalTextBox"></asp:textbox>
 &nbsp;
-<%= DotNetZoom.GetLanguage("U_SecurityIPFROM") %> : <asp:textbox id="IPlow" runat="server" size="15" MaxLength="15" cssclass="NormalTextBox"></asp:textbox>
+<%= DotNetZoom.GetLanguage("U_SecurityIPFROM") %> : <asp:textbox id="IPlow" runat="server"  Width="150px" MaxLength="15" cssclass="NormalTextBox"></asp:textbox>
 &nbsp;
-<%= DotNetZoom.GetLanguage("U_SecurityIPTO") %> : <asp:textbox id="IPHigh" runat="server" size="15" MaxLength="15" cssclass="NormalTextBox"></asp:textbox>
+<%= DotNetZoom.GetLanguage("U_SecurityIPTO") %> : <asp:textbox id="IPHigh" runat="server"  Width="150px" MaxLength="15" cssclass="NormalTextBox"></asp:textbox>
 <br>
 <br>
-<asp:linkbutton class="CommandButton" id="cmdUpdateCode" runat="server" Text="Enregistrer"></asp:linkbutton>
+<asp:linkbutton cssclass="CommandButton" id="cmdUpdateCode" runat="server" Text="Enregistrer"></asp:linkbutton>
 </p>
 <hr>
 </asp:placeholder>

@@ -39,7 +39,7 @@
 <span class="TTTSubHeader"><asp:Literal id="lblBreadCrumbs1" runat="server" EnableViewState="false" /></span>
 </td>
 <td align="right" style="white-space: nowrap;" width="25%">
-<asp:dropdownlist id="ddlDisplay" runat="server" CssClass="NormalTextBox" Width="120" AutoPostBack="True"></asp:dropdownlist>
+<asp:dropdownlist id="ddlDisplay" EnableViewState="true" runat="server" CssClass="NormalTextBox" Width="120" AutoPostBack="True"></asp:dropdownlist>
 &nbsp;&nbsp;
 </td>
 </tr>

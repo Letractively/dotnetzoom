@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -39,7 +42,8 @@ Namespace DotNetZoom
 #End Region
 
         Private Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
+		GalleryConfig.SetSkinCSS(Me.Page)
+	
 			ContinueGO.Text = GetLanguage("Gal_Cont")		
             If Not Request.Params("mid") Is Nothing Then
             Dim ModuleID As Integer = Int32.Parse(Request("mid"))
@@ -50,11 +54,9 @@ Namespace DotNetZoom
         End Sub
 
         Public Function NewURL() As String
-
-            Return "../../" & GetLanguage("N") & ".default.aspx?" & _
-                "&tabid=" & Request("tabid") & _
-                "&path=" & Request("path")
-
+                 Return "../../" & GetLanguage("N") & ".default.aspx?" & _
+                    "&tabid=" & Request("tabid") & _
+                    "&path=" & Request("path")
         End Function
 
         Public Sub BuildCache()

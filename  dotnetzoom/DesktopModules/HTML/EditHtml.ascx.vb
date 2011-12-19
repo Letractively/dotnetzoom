@@ -35,7 +35,7 @@ Namespace DotNetZoom
         Protected WithEvents pnlRichTextBox As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents txtDesktopHTML As System.Web.UI.WebControls.TextBox
 
-        Protected WithEvents FCKeditor1 As FredCK.FCKeditorV2.FCKEditor
+        Protected WithEvents FCKeditor1 As DotNetZoom.FCKEditor
 			
         Protected WithEvents txtAlternateSummary As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtAlternateDetails As System.Web.UI.WebControls.TextBox
@@ -72,7 +72,6 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
            Title1.DisplayHelp = "DisplayHelp_EditHTML"
-		   ' Obtain PortalSettings from Current Context
 			cmdUpdate.Text = GetLanguage("enregistrer")
 			cmdCancel.Text = GetLanguage("annuler")
 			cmdPreview.Text = GetLanguage("visualiser")
@@ -96,26 +95,25 @@ Namespace DotNetZoom
             If DesktopView <> "" Then
                 optView.Items.FindByValue(DesktopView).Selected = True
             Else
-                optView.SelectedIndex = 0
+               optView.SelectedIndex = 0
             End If
 
+
             If optView.SelectedItem.Value = "B" Then
-				optView.SelectedItem.Value = "B"
                 pnlBasicTextBox.Visible = True
                 pnlRichTextBox.Visible = False
-			End If
-
-            If optView.SelectedItem.Value = "R" Then
-				optView.SelectedItem.Value = "R"
-                pnlBasicTextBox.Visible = False
+			ElseIf optView.SelectedItem.Value = "R" Then
+	           pnlBasicTextBox.Visible = False
 				lblPreview.Text = ""
 				cmdPreview.Visible = False
 				pnlRichTextBox.Visible = True
-				SetFckEditor()
+				SetFckEditor1()
             End If
+
         
 		If Page.IsPostBack = False Then
                 ' Obtain PortalSettings from Current Context
+				
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
                 ' Store URL Referrer to return to portal
@@ -158,25 +156,34 @@ Namespace DotNetZoom
         End Sub
 
 
-		Private Sub SetFckEditor()
+		Private Sub SetFckEditor1()
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Dim objAdmin As New AdminDB()
             Dim tmpUploadRoles As String = ""
-            If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+           If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
                 tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
             End If
-            If PortalSecurity.IsInRoles(tmpUploadRoles) Then
+           If PortalSecurity.IsInRoles(tmpUploadRoles) Then
                 Session("FCKeditor:UserFilesPath") = _portalSettings.UploadDirectory
                 FCKeditor1.LinkBrowserURL = glbPath & "admin/AdvFileManager/filemanager.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
                 FCKeditor1.ImageBrowserURL = glbPath & "DesktopModules/TTTGallery/fckimage.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)
-            Else
+           Else
                 Session("FCKeditor:UserFilesPath") = Nothing
-                FCKeditor1.LinkBrowserURL = ""
-                FCKeditor1.ImageBrowserURL = ""
+               FCKeditor1.LinkBrowserURL = ""
+               FCKeditor1.ImageBrowserURL = ""
+           End If
+             FCKeditor1.Width = Unit.Pixel(700)
+             FCKeditor1.Height = Unit.Pixel(500)
+           '  SetEditor(FCKeditor1)
+		    ' Obtain PortalSettings from Current Context
+            If GetLanguage("fckeditor_language") <> "auto" Then
+                FCKeditor1.DefaultLanguage = GetLanguage("fckeditor_language")
+                FCKeditor1.AutoDetectLanguage = False
             End If
-            FCKeditor1.Width = Unit.Pixel(700)
-            FCKeditor1.Height = Unit.Pixel(500)
-            SetEditor(FCKeditor1)
+            If Directory.Exists(HttpContext.Current.Request.MapPath(_portalSettings.UploadDirectory & "skin/fckeditor/")) Then
+                FCKeditor1.SkinPath = _portalSettings.UploadDirectory & "skin/fckeditor/"
+                FCKeditor1.EditorAreaCSS = _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
+                FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
+            End If
         End Sub
 		
 

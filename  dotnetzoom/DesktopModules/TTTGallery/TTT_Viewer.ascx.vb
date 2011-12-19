@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -19,18 +22,16 @@ Imports System.Text
 Namespace DotNetZoom
     Public Class TTT_Viewer
         Inherits DotNetZoom.PortalModuleControl
-        Protected WithEvents cmdAlbum As System.Web.UI.WebControls.HyperLink
         Protected WithEvents MovePrevious As System.Web.UI.WebControls.HyperLink
         Protected WithEvents Title As System.Web.UI.WebControls.Label
         Protected WithEvents MoveNext As System.Web.UI.WebControls.HyperLink
         Protected WithEvents Image As System.Web.UI.WebControls.Image
-        Protected WithEvents Description As System.Web.UI.WebControls.Label
-        Protected WithEvents Status As System.Web.UI.WebControls.Label
-        Protected WithEvents ImageInfo As System.Web.UI.WebControls.Label
         Protected WithEvents cmdBack As System.Web.UI.WebControls.HyperLink
         Protected WithEvents lblInfo As System.Web.UI.WebControls.Label
-
+        Protected WithEvents img As System.Web.UI.HtmlControls.HtmlTableCell
+        Protected WithEvents info As System.Web.UI.WebControls.Image
         Protected Zrequest As GalleryViewerRequest
+        Protected Zconfig As GalleryConfig
 
 #Region " Web Form Designer Generated Code "
 
@@ -54,11 +55,21 @@ Namespace DotNetZoom
 
             Dim tabID As Integer = Int32.Parse(HttpContext.Current.Request("tabid"))
 
+            Zconfig = GalleryConfig.GetGalleryConfig(ModuleId)
             Zrequest = New GalleryViewerRequest(ModuleId)
+            If Not Zconfig.RootFolder.IsPopulated Then
+                Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
+                'Response.Redirect(Request.RawUrl)
+            End If
 
             If Not Zrequest.Folder.IsPopulated Then
-                Server.Transfer("TTT_cache.aspx")
+                ' Zrequest.Folder.Populate()
+                ' Server.Transfer("~/DesktopModules/tttGallery/TTT_cache.aspx")
+                Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
+                'Response.Redirect(Request.RawUrl)
             End If
+
+
 
             Dim sb As New StringBuilder()
 
@@ -92,26 +103,43 @@ Namespace DotNetZoom
 
 
             Dim config As GalleryConfig = GalleryConfig.GetGalleryConfig(ModuleId)
-            Image.ImageUrl = Zrequest.CurrentItem.URL
-            If config.InfoBule Then
+
+
+            Try
+                ' Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, config.IsPrivate)
+                img.Height = CStr(Zrequest.GalleryConfig.FixedHeight + 4)
+                img.Width = CStr(Zrequest.GalleryConfig.FixedWidth + 4)
+                Image.ImageUrl = Zrequest.CurrentItem.URL
+                If Zrequest.CurrentItem.Width <> "0" Then
+                    CalculatePhotoSize()
+                End If
+
+            Catch ex As Exception
+                ClearModuleCache(ModuleId)
+                Response.Clear()
+                Response.End()
+            End Try
+
+
+
+			If config.InfoBule Then
                 ' Image properties
 
-                Dim TempTooltip As String
-                If File.Exists(Server.MapPath(Image.ImageUrl)) Then
-                    Dim Exif As New ExifWorks(Server.MapPath(Image.ImageUrl))
+                If File.Exists(Server.MapPath(Zrequest.CurrentItem.URL)) Then
+                    Dim Exif As New ExifWorks(Server.MapPath(Zrequest.CurrentItem.URL))
+                    Dim TempTooltip As String
                     TempTooltip = Exif.ToString()
                     If TempTooltip <> "" Then
-                        Image.Attributes.Add("onmouseover", ReturnToolTip("<pre>" & TempTooltip & "</pre>"))
+                        info.Visible = True
+                        info.Attributes.Add("onmouseover", ReturnToolTip(TempTooltip, "200"))
                     End If
                     Exif.Dispose()
+                    If Zrequest.CurrentItem.Description <> "" Then
+                        Image.Attributes.Add("onmouseover", ReturnToolTip("<pre>" & Zrequest.CurrentItem.Description & "</pre>"))
+                    End If
                 End If
             End If
-
-            'Suggested by uinlibr for multi lines
-            'Title.Text = Zrequest.CurrentItem.Title
             Title.Text = Zrequest.CurrentItem.Title.Replace(vbCrLf, "<br>")
-            'Description.Text = Zrequest.CurrentItem.Description
-            Description.Text = Zrequest.CurrentItem.Description.Replace(vbCrLf, "<br>")
 
 
             ' image info
@@ -126,17 +154,33 @@ Namespace DotNetZoom
 
             sb.Append(GetFullDocument() & "?tabid=")
             sb.Append(tabID)
-            sb.Append("&gallerypage=")
-            sb.Append(TTT_GalleryDispatch.GalleryDesktopType.GalleryMain)
             sb.Append("&path=")
             sb.Append(Zrequest.Path)
-            sb.Append("&mid=" & ModuleId.ToString)
-
-            cmdAlbum.Text = Zrequest.Folder.Name
-            cmdAlbum.NavigateUrl = sb.ToString
+            sb.Append("&currentstrip=" & Zrequest.currentstrip)
             cmdBack.NavigateUrl = sb.ToString
 
         End Sub
 
+        Private Sub CalculatePhotoSize()
+            Dim lWidth As Integer = CInt(Zrequest.CurrentItem.Width)
+            Dim lHeight As Integer = CInt(Zrequest.CurrentItem.Height)
+            Dim newWidth As Integer = lWidth
+            Dim newHeight As Integer = lHeight
+            Dim sRatio As Double
+
+            If (lWidth > Zrequest.GalleryConfig.FixedWidth Or lHeight > Zrequest.GalleryConfig.FixedHeight) Or (lWidth < Zrequest.GalleryConfig.FixedWidth And lHeight < Zrequest.GalleryConfig.FixedHeight) Then
+                sRatio = (lHeight / lWidth)
+                If sRatio > 1 Then ' Bounded by height
+                    newWidth = CShort(Zrequest.GalleryConfig.FixedWidth / sRatio)
+                    newHeight = Zrequest.GalleryConfig.FixedHeight
+                Else 'Bounded by width
+                    newWidth = Zrequest.GalleryConfig.FixedWidth
+                    newHeight = CShort(Zrequest.GalleryConfig.FixedHeight * sRatio)
+                End If
+            End If
+            Image.Width = Unit.Pixel(CInt(newWidth))
+            Image.Height = Unit.Pixel(CInt(newHeight))
+
+        End Sub
     End Class
 End Namespace

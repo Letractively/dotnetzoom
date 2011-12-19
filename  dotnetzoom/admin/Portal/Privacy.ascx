@@ -1,11 +1,11 @@
 ﻿<%@ Control Language="vb" codebehind="Privacy.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.Privacy" %>
-<%@ Register TagPrefix="FCKeditorV2" Namespace="FredCK.FCKeditorV2" Assembly="FredCK.FCKeditorV2" %>
+<%@ Register TagPrefix="Editor"  Namespace="dotnetzoom" Assembly="DotNetZoom" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <asp:placeholder id="pnlRichTextBox" Runat="server" Visible="False">
 <div align="center">
-<FCKeditorV2:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></FCKeditorV2:FCKeditor>
+<editor:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></editor:FCKeditor>
 </div>
 <p align="left">
     <asp:LinkButton class="CommandButton" id="cmdUpdate" visible="true" runat="server"></asp:LinkButton>

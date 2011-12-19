@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -27,6 +30,7 @@ Namespace DotNetZoom
         Private _req As HttpRequest
 
         Private _currentStrip As Integer
+        Private _SelectedIndex As Integer
         Private _stripCount As Integer
         Private _startItem As Integer
         Private _endItem As Integer
@@ -56,6 +60,14 @@ Namespace DotNetZoom
             ' Current page being viewed
             Get
                 Return _currentStrip
+            End Get
+        End Property
+
+
+        Public ReadOnly Property SelectedIndex() As Integer
+            ' Current page being viewed
+            Get
+                Return _SelectedIndex
             End Get
         End Property
 
@@ -154,8 +166,12 @@ Namespace DotNetZoom
             ' Grab current request context
             _req = HttpContext.Current.Request
 
-            ' Logic to determine paging
-            _currentStrip = CInt(_req("CurrentStrip"))
+            Try
+                ' Logic to determine paging
+                _currentStrip = CInt(_req("CurrentStrip"))
+            Catch ex As Exception
+                _currentStrip = 1
+            End Try
 
             Try
 
@@ -185,20 +201,35 @@ Namespace DotNetZoom
 
             ' Creates the pager items
             ' Create the previous item
+            Dim TempSelectedIndex As Integer = 0
+            _SelectedIndex = TempSelectedIndex
+
             If _stripCount > 1 AndAlso _currentStrip > 1 Then
                 newPagerDetail = New PagerDetail()
                 newPagerDetail.Strip = _currentStrip - 1
                 newPagerDetail.Text = GetLanguage("Gal_Prev0")
                 ZpagerItems.Add(newPagerDetail)
+                TempSelectedIndex += +1
             End If
 
-            ' Creates folder items
             For pagerCounter = 1 To _stripCount
-                newPagerDetail = New PagerDetail()
-                newPagerDetail.Strip = pagerCounter
-                newPagerDetail.Text = CStr(pagerCounter)
-                ZpagerItems.Add(newPagerDetail)
+                If (pagerCounter \ 10 = _currentStrip \ 10) Or (pagerCounter = (pagerCounter \ 10) * 10) Or pagerCounter = 1 Then
+                    newPagerDetail = New PagerDetail()
+                    newPagerDetail.Strip = pagerCounter
+                    If pagerCounter \ 10 = _currentStrip \ 10 Then
+                        newPagerDetail.Text = CStr(pagerCounter)
+                        If pagerCounter = _currentStrip Then
+                            _SelectedIndex = TempSelectedIndex
+                        End If
+                        TempSelectedIndex += +1
+                    Else
+                        newPagerDetail.Text = CStr(pagerCounter)
+                        TempSelectedIndex += +1
+                    End If
+                    ZpagerItems.Add(newPagerDetail)
+                End If
             Next
+
 
             ' Creates the next item
             If _stripCount > 1 AndAlso _currentStrip < _stripCount Then
@@ -228,6 +259,7 @@ Namespace DotNetZoom
         Private _currentItem As Integer
         Private _nextItem As Integer
         Private _previousItem As Integer
+		Private _currentstrip As Integer
 
 #End Region
 
@@ -236,7 +268,15 @@ Namespace DotNetZoom
 
         Public ReadOnly Property CurrentItem() As GalleryFile
             Get
-                Return CType(MyBase.Folder.List.Item(_currentItemIndex), GalleryFile)
+                Dim File As GalleryFile
+                Try
+                    File = CType(MyBase.Folder.List.Item(_currentItemIndex), GalleryFile)
+                Catch ex As Exception
+                    Dim Request As System.Web.HttpRequest
+                    Request = HttpContext.Current.Request
+                    SendHttpException("404", "Not Found", Request)
+                End Try
+                Return File
             End Get
         End Property
 
@@ -246,6 +286,19 @@ Namespace DotNetZoom
             End Get
         End Property
 
+		Public ReadOnly Property currentstrip() As Integer
+            Get
+                Return _currentstrip
+            End Get
+        End Property
+		
+		
+		Public ReadOnly Property currentItemIndex() As Integer
+            Get
+                Return _currentItemIndex
+            End Get
+        End Property
+		
         Public ReadOnly Property NextItem() As Integer
             Get
                 Return _nextItem
@@ -274,7 +327,12 @@ Namespace DotNetZoom
 
             ' Determine initial item to be viewed.
             If Not _req("currentitem") Is Nothing Then
-                _currentItem = CInt(_req("currentitem"))
+                Try
+                    _currentItem = CInt(_req("currentitem"))
+                Catch ex As Exception
+                    _currentItem = 0
+                End Try
+
                 If _currentItem > MyBase.Folder.BrowsableItems.Count - 1 Then ' 0-based
                     _currentItem = MyBase.Folder.BrowsableItems.Count - 1 ' 0-based
                 ElseIf _currentItem < 0 Then
@@ -287,6 +345,8 @@ Namespace DotNetZoom
             ' Grab the index of the item in the folder.list collection
             If MyBase.Folder.IsBrowsable Then
                 _currentItemIndex = CInt(MyBase.Folder.BrowsableItems(_currentItem))
+				Else 
+				_currentItemIndex = 0
             End If
 
             ' Assign next and previous properties
@@ -302,7 +362,12 @@ Namespace DotNetZoom
             If _previousItem < 0 Then
                 _previousItem = MyBase.Folder.BrowsableItems.Count - 1
             End If
-
+			
+			' MyBase.Folder.BrowsableItems.Count
+			' MyBase.Folder.Size
+			
+			_currentstrip = CINT(System.Math.Ceiling((_currentItemIndex +1) / GalleryConfig.ItemsPerStrip) )
+			
         End Sub
 
 #End Region
@@ -397,6 +462,7 @@ Namespace DotNetZoom
 
                     ' Navigate the path structure
                     For pathCounter = 0 To paths.GetUpperBound(0)
+                        ' Get it from memory or populate
                         Zfolder = CType(Zfolder.List.Item(paths(pathCounter)), GalleryFolder)
 
                         ' Gotta do it differently for the first path
@@ -408,27 +474,27 @@ Namespace DotNetZoom
 
                         ' Create the folder details for this folder
                         newFolderDetail = New FolderDetail()
-                        newFolderDetail.Name = Zfolder.Name
+                        newFolderDetail.Name = Zfolder.Title
                         newFolderDetail.URL = intermediatePaths(pathCounter)
                         ZfolderPaths.Add(newFolderDetail)
 
                         ' Stop here because we've got to populate the folder first
                         If Not Zfolder.IsPopulated Then
-						   Exit For
+                            Zfolder.Populate()
+                            ' Exit For
                         End If
                     Next
                 Catch ex As Exception ' an incorrect folder structure probably returned
                     ' Keep the last known good folder
                 End Try
-
+				
             End If
 
         End Sub
 
         Public Function FolderPaths() As ArrayList
             ' Returns hierarchy of folder paths to current path
-
-            Return ZfolderPaths
+	          Return ZfolderPaths
 
         End Function
 

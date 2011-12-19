@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -21,29 +24,27 @@ Namespace DotNetZoom
     Public Class GalleryUser
 #Region "GalleryUser"
 
-        Private Const GalleryUserCacheKeyPrefix As String = "GalleryUser"
+        Public Const GalleryUserCacheKeyPrefix As String = "GalleryUser"
         Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-        Private ZuserID As Integer
+        Private _userID As Integer
         Private _userName As String
-        Private _email As String
 
 
-      
+
         Public Sub New()
         End Sub 'New
 
-        Private Sub New(ByVal UserID As Integer)
+        Public Sub New(ByVal UserID As Integer)
 
-            ZuserID = UserID
+            _userID = UserID
 
             ' Grab settings from the database
             Dim dbUsers As New UsersDB()
-            Dim dr As SqlDataReader = dbUsers.GetSingleUser(_portalSettings.PortalID, UserID)
+            Dim dr As SqlDataReader = dbUsers.GetSingleUser(_portalSettings.PortalId, UserID)
 
             If dr.Read Then
                 _userName = ConvertString(dr("UserName"))
-                _email = ConvertString(dr("Email"))
             End If
             dr.Close()
 
@@ -52,32 +53,32 @@ Namespace DotNetZoom
         Public Shared Function GetGalleryUser(ByVal UserID As Integer) As GalleryUser
 
             ' Grab reference to the applicationstate object
-			' Need to change Forum Cashing
-			Dim TempKey as String = GetDBName & GalleryUserCacheKeyPrefix & CStr(UserID)
-			Dim context As HttpContext = HttpContext.Current
-			Dim user As GalleryUser = CType(Context.Cache(TempKey), GalleryUser)
-			
+            ' Need to change Forum Cashing
+            Dim TempKey As String = GetDBname() & GalleryUserCacheKeyPrefix & CStr(UserID)
+            Dim context As HttpContext = HttpContext.Current
+            Dim user As GalleryUser = CType(context.Cache(TempKey), GalleryUser)
+
             If user Is Nothing Then
-			' Obtain PortalSettings from Current Context
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            ' If this object has not been instantiated yet, we need to grab it
-            user = New GalleryUser(UserID)
-			Context.Cache.Insert(TempKey, user, DotNetZoom.CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.Tabid), Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.low, nothing)
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                ' If this object has not been instantiated yet, we need to grab it
+                user = New GalleryUser(UserID)
+                context.Cache.Insert(TempKey, user, DotNetZoom.CDp(_portalSettings.PortalId, _portalSettings.ActiveTab.TabId), Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Low, Nothing)
             End If
             Return user
 
         End Function
 
-	
+
 
 #Region "User - Public Properties"
 
         Public Property UserID() As Integer
             Get
-                Return ZuserID
+                Return _userID
             End Get
             Set(ByVal Value As Integer)
-                ZuserID = Value
+                _userID = Value
             End Set
         End Property
 

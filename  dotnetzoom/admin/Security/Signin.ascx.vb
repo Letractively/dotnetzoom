@@ -208,31 +208,38 @@ Namespace DotNetZoom
             End If
 
             If blnLogin Then
-                ' Attempt to Validate User Credentials
-                Dim userId As Integer = objSecurity.UserLogin(txtUsername.Text, txtPassword.Text, _portalSettings.PortalId)
+                    ' Attempt to Validate User Credentials
+                    Dim dr As SqlDataReader = objUser.GetSingleUserByUsername(_portalSettings.PortalId, txtUsername.Text)
+                    Dim LastLoginDate As String = ""
+                    If dr.Read() Then
+                        LastLoginDate = dr("LastLoginDate").ToString
+                    End If
+                    dr.Close()
 
-                If userId >= 0 Then
-				
-				
-                Dim dr As SqlDataReader = objUser.GetUserCountryCode(_portalSettings.PortalId, userId)
-				Dim TempUserCode As String
-				Dim IPLow As String = ""
-				Dim IPHigh As String = ""
-				Dim IPNow As String = Request.UserHostAddress
-                ' Read first row from database
-                If dr.Read() Then
-				TempUserCode = IIf(IsDBNull(dr("Country_Code")), "", dr("Country_Code"))
-				IPLow  = IIf(IsDBNull(dr("IPfrom")), "", dr("IPfrom"))
-				IPHigh = IIf(IsDBNull(dr("IPto")), "", dr("IPto"))
-				If IPLow <> "" and IPHigh <> "" then
-				if (IPConvert(IPNow) < IPConvert(IPLow)) or (IPConvert(IPNow) > IPConvert(IPHigh))
-				' does not fall in the IP range
-				lblMessage.Text = ProcessLanguage(admin.getsinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), page)
-				lblMessage.Text = replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
-				Exit Sub
-				end if
-				end if
-				
+                    Dim userId As Integer = objSecurity.UserLogin(txtUsername.Text, txtPassword.Text, _portalSettings.PortalId)
+
+                    If userId >= 0 Then
+
+
+                        dr = objUser.GetUserCountryCode(_portalSettings.PortalId, userId)
+                        Dim TempUserCode As String
+                        Dim IPLow As String = ""
+                        Dim IPHigh As String = ""
+                        Dim IPNow As String = Request.UserHostAddress
+                        ' Read first row from database
+                        If dr.Read() Then
+                            TempUserCode = IIf(IsDBNull(dr("Country_Code")), "", dr("Country_Code"))
+                            IPLow = IIf(IsDBNull(dr("IPfrom")), "", dr("IPfrom"))
+                            IPHigh = IIf(IsDBNull(dr("IPto")), "", dr("IPto"))
+                            If IPLow <> "" And IPHigh <> "" Then
+                                If (IPConvert(IPNow) < IPConvert(IPLow)) Or (IPConvert(IPNow) > IPConvert(IPHigh)) Then
+                                    ' does not fall in the IP range
+                                    lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
+                                    lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
+                                    Exit Sub
+                                End If
+                            End If
+
                             If TempUserCode = "" Or InStr(1, TempUserCode.ToLower, DisplayCountrycode(Request.UserHostAddress).ToLower) Then
                                 ' Use security system to set the UserID within a client-side Cookie
                                 objUser.UpdateUserIP(userId, Request.UserHostAddress, "")
@@ -240,6 +247,8 @@ Namespace DotNetZoom
                                 objUser.UpdateCheckUserSecurity(userId, "", DateTime.Now.AddYears(-30), 0)
                                 ' Reset Session variable
                                 Session.Contents.RemoveAll()
+                                Session("LastLoginDate") = LastLoginDate
+
                                 ' Redirect browser back to home page
                                 ' If admin admin or webmestre webmestre then redirect to account
                                 If (txtUsername.Text.ToLower() = txtPassword.Text.ToLower()) And (txtUsername.Text.ToLower() = "admin" Or txtUsername.Text.ToLower() = "webmestre") Then
@@ -254,11 +263,11 @@ Namespace DotNetZoom
                                     End If
                                     Response.Redirect(GetFullDocument(_portalSettings.ActiveTab.ssl) & "?" & TempQuerystring, True)
                                 End If
-                        Else
-                            lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
-                            lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
-                        End If
+                            Else
+                                lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
+                                lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
                             End If
+                        End If
                         dr.Close()
                     Else
                         RegisterBADip(Request.UserHostAddress)

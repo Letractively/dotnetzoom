@@ -256,7 +256,19 @@ Public Class ExifWorks
     ''' <history>
     ''' 	[altair] 	10.9.2003	Created
     ''' </history>
-    '''-----------------------------------------------------------------------------
+        '''-----------------------------------------------------------------------------
+
+        ''  DMS = Degree Minute Second
+        ''  DMDec = Degree Minutes.Decimal
+        ''  DDec = Degree.Decimal
+
+
+        Public Enum LatLongFormat
+            DMS = 1
+            DMDec = 2
+            DDec = 3
+        End Enum
+
     Public Enum Orientations
         HautGauche = 1
         HautDroite = 2
@@ -489,89 +501,100 @@ Public Class ExifWorks
     ''' </history>
     '''-----------------------------------------------------------------------------
     Public Overrides Function ToString() As String
+	
+	if Me._Image.PropertyIdList.length > 0 then
         Dim SB As New System.Text.StringBuilder
 
-        
+		
+                SB.Append("<table width='100%' class='TTTBorder' cellspacing='0' cellpadding='0'>")
+		If Me.Title <> "" then
+                    SB.Append("<tr><td class='TTTAltHeader' align='center' colspan='2'>" & Me.Title & "</td></tr>")
+                End If
+		If me.Description <> "" then
+        SB.Append("<tr><td class='TTTRow' colspan='2'>" &  Me.Description & "</td></tr>")
+		end if	
 		If Me.Width <> 0 and Me.Height <> 0 then
-        SB.Append("\n" & Getlanguage("exif_width_height") &  Me.Width & " x " & Me.Height & " px")
+                    SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_width_height") & "</td><td width='100'>" & Me.Width & " x " & Me.Height & " px</td></tr>")
 		end if
 		If me.ResolutionX and Me.ResolutionY <> 0 then
-        SB.Append("\n" & Getlanguage("exif_resolution") &  Me.ResolutionX & " x " & Me.ResolutionY & " dpi")
+                    SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_resolution") & "</td><td width='100'>" & Me.ResolutionX & " x " & Me.ResolutionY & " dpi</td></tr>")
 		end if
 		If me.orientation <> 1
-        SB.Append("\n" & Getlanguage("exif_orientation") &  [Enum].GetName(GetType(Orientations), Me.Orientation))
+                    SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_orientation") & "</td><td width='100'>" & [Enum].GetName(GetType(Orientations), Me.Orientation) & "</td></tr>")
 		end if
-		If Me.Title <> "" then
-        SB.Append("\n" & Getlanguage("exif_title") &  Me.Title)
-		end if
-		If me.Description <> "" then
-        SB.Append("\n" & Getlanguage("exif_description") &  Me.Description)
-		end if
+		
 		If Me.Copyright <> "" then
-        SB.Append("\n" & Getlanguage("exif_copyright") &  Me.Copyright)
+                    SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_copyright") & "</td><td width='100'>" & Me.Copyright & "</td></tr>")
 		end if
 		If Me.Artist <> "" then
-        SB.Append("\n" & Getlanguage("exif_artist") &  Me.Artist)
+                    SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_artist") & "</td><td width='100'>" & Me.Artist & "</td></tr>")
 		End if
 		if Me.EquipmentMaker <> "" or Me.EquipmentModel <> "" or Me.Software <> "" then
-        SB.Append("\n" & Getlanguage("exif_equipement"))
+        SB.Append("<tr><td class='TTTAltHeader' align='center' colspan='2'>" &  Getlanguage("exif_equipement") & "</td></tr>")
 		If Me.EquipmentMaker <> "" then
-        SB.Append("\n" & Getlanguage("exif_equipement_maker") &  Me.EquipmentMaker)
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_equipement_maker") & "</td><td width='100'>" & Me.EquipmentMaker & "</td></tr>")
 		end if
 		If Me.EquipmentModel <> "" then
-        SB.Append("\n" & Getlanguage("exif_equipement_model") &  Me.EquipmentModel)
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_equipement_model") & "</td><td width='100'>" & Me.EquipmentModel & "</td></tr>")
 		end if
 		If Me.Software <> "" then
-        SB.Append("\n" & Getlanguage("exif_software") &  Me.Software)
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_software") & "</td><td width='100'>" & Me.Software & "</td></tr>")
 		end if
 		end if
 		
 		if Me.DateTimeLastModified.ToString() <> "0001-01-01 00:00:00" or Me.DateTimeOriginal.ToString() <> "0001-01-01 00:00:00" or Me.DateTimeDigitized.ToString() <> "0001-01-01 00:00:00" then
-        SB.Append("\n" & Getlanguage("exif_date_time"))
+        SB.Append("<tr><td class='TTTAltHeader' align='center' colspan='2'>" & Getlanguage("exif_date_time") & "</td></tr>")
 		if Me.DateTimeLastModified.ToString() <> "0001-01-01 00:00:00" and Me.DateTimeLastModified.ToString() <> Me.DateTimeOriginal.ToString() then
-        SB.Append("\n" & Getlanguage("exif_date_time_last_mod") & Me.DateTimeLastModified.ToString())
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_date_time_last_mod") & "</td><td width='100'>" & Me.DateTimeLastModified.ToString() & "</td></tr>")
 		end if
 		if Me.DateTimeOriginal.ToString() <> "0001-01-01 00:00:00" then
-        SB.Append("\n" & Getlanguage("exif_date_time_created") & Me.DateTimeOriginal.ToString())
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_date_time_created") & "</td><td width='100'>" & Me.DateTimeOriginal.ToString() & "</td></tr>")
 		end if
 		if Me.DateTimeDigitized.ToString() <> "0001-01-01 00:00:00" and Me.DateTimeDigitized.ToString() <> Me.DateTimeOriginal.ToString() then
-        SB.Append("\n" & Getlanguage("exif_date_time_digitized") &  Me.DateTimeDigitized.ToString())
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_date_time_digitized") & "</td><td width='100'>" & Me.DateTimeDigitized.ToString() & "</td></tr>")
 		end if
 		end if
 		If Me.ExposureTime <> 0 or Me.ExposureProgram <> 2 or ExposureMeteringMode <> 0 or Me.Aperture <> 0 or Me.ISO <> 0 or Me.SubjectDistance.ToString() <> 0 or Me.FocalLength <> 0 or Me.LightSource <> 0 then
-        SB.Append("\n" & Getlanguage("exif_photo_param") )
+        SB.Append("<tr><td class='TTTAltHeader' align='center' colspan='2'>" & Getlanguage("exif_photo_param") & "</td></tr>")
 		if Me.ExposureTime <> 0 then
-        SB.Append("\n" & Getlanguage("exif_ExposureTime") &  Me.ExposureTime.ToString("N4") & " s")
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_ExposureTime") & "</td><td width='100'>" & Me.ExposureTime.ToString("N4") & " s" & "</td></tr>")
  		end if
 		if Me.ExposureProgram <> 2 then
-        SB.Append("\n" & Getlanguage("exif_ExposureProgram") &  [Enum].GetName(GetType(ExposurePrograms), Me.ExposureProgram))
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_ExposureProgram") & "</td><td width='100'>" & [Enum].GetName(GetType(ExposurePrograms), Me.ExposureProgram) & "</td></tr>")
         end if
 		if ExposureMeteringMode <> 0 then
-		SB.Append("\n" & Getlanguage("exif_ExposureMeteringMode") &  [Enum].GetName(GetType(ExposureMeteringModes), Me.ExposureMeteringMode))
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_ExposureMeteringMode") & "</td><td width='100'>" & [Enum].GetName(GetType(ExposureMeteringModes), Me.ExposureMeteringMode) & "</td></tr>")
         end if
 		if Me.Aperture <> 0 then
-		SB.Append("\n" & Getlanguage("exif_Aperture") &  Me.Aperture.ToString("N2"))
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_Aperture") & "</td><td width='100'>" & Me.Aperture.ToString("N2") & "</td></tr>")
 		end if
 		if Me.ISO <> 0 then
-        SB.Append("\n" & Getlanguage("exif_iso") &  Me.ISO)
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_iso") & "</td><td width='100'>" & Me.ISO & "</td></tr>")
 		end if
 		if Me.SubjectDistance.ToString() <> 0 then
-        SB.Append("\n" & Getlanguage("exif_SubjectDistance") &  Me.SubjectDistance.ToString("N2") & " m")
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_SubjectDistance") & "</td><td width='100'>" & Me.SubjectDistance.ToString("N2") & " m" & "</td></tr>")
 		end if
 		if Me.FocalLength <> 0 then
-        SB.Append("\n" & Getlanguage("exif_FocalLength") & Me.FocalLength)
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_FocalLength") & "</td><td width='100'>" & Me.FocalLength & "</td></tr>")
 		end if
 		if Me.FocalLength <> 0 then
-        SB.Append("\n" & Getlanguage("exif_flash") &  [Enum].GetName(GetType(FlashModes), Me.FlashMode))
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_flash") & "</td><td width='100'>" & [Enum].GetName(GetType(FlashModes), Me.FlashMode) & "</td></tr>")
 		end if
 		if Me.LightSource <> 0 then 
-        SB.Append("\n" & Getlanguage("exif_LightSource") & [Enum].GetName(GetType(LightSources), Me.LightSource))
+                        SB.Append("<tr class='TTTNormal'><td width='100'>" & GetLanguage("exif_LightSource") & "</td><td width='100'>" & [Enum].GetName(GetType(LightSources), Me.LightSource) & "</td></tr>")
 		end if
 		end if
-        SB.Replace("\n", vbCrLf)
-        
-        Return SB.ToString()
-    End Function
+                SB.Append("</table>")
+                If SB.ToString() <> "<table width='100%' class='TTTBorder' cellspacing='0' cellpadding='0'></table>" Then
+                    Return SB.ToString()
+                Else
+                    Return ""
+                End If
+
+            Else
+                Return ""
+            End If
+        End Function
 
     '''-----------------------------------------------------------------------------
     ''' <summary>
@@ -823,6 +846,101 @@ Public Class ExifWorks
         End Set
     End Property
 
+
+        '   GpsLatitude = &H2
+        '   GpsLongitudeRef = &H3
+        '   GpsLongitude = &H4
+        '   GpsAltitudeRef = &H5
+        Public ReadOnly Property Latitude(Optional ByVal whatto As LatLongFormat = LatLongFormat.DMS) As String
+            Get
+                Try
+
+                    Dim propItem As Drawing.Imaging.PropertyItem
+                    Dim Tempstring As String = ""
+                    propItem = Me._Image.GetPropertyItem(TagNames.GpsLatitude)
+                    Dim ci As New System.Globalization.CultureInfo("en-us")
+                    Dim dN As UInteger = BitConverter.ToUInt32(propItem.Value, 0)
+                    Dim dD As UInteger = BitConverter.ToUInt32(propItem.Value, 4)
+                    Dim mN As UInteger = BitConverter.ToUInt32(propItem.Value, 8)
+                    Dim mD As UInteger = BitConverter.ToUInt32(propItem.Value, 12)
+                    Dim sN As UInteger = BitConverter.ToUInt32(propItem.Value, 16)
+                    Dim sD As UInteger = BitConverter.ToUInt32(propItem.Value, 20)
+                    Dim min As Double = 0
+                    Select Case whatto
+                        Case LatLongFormat.DMS
+                            Tempstring = (dN / dD).ToString() + "° " + (mN / mD).ToString + "' "
+                            If sN > 0 Then
+                                Tempstring = Tempstring + (sN / sD).ToString() + """ "
+                            End If
+                            Tempstring = Tempstring + Me.GetPropertyString(TagNames.GpsLatitudeRef)
+                        Case LatLongFormat.DMDec
+                            If sN > 0 Then
+                                min = (sN / sD / 60)
+
+                            End If
+                            Tempstring = (dN / dD).ToString() + "° " + ((mN / mD) + min).ToString("G", ci) + "' " + Me.GetPropertyString(TagNames.GpsLatitudeRef)
+                        Case LatLongFormat.DDec
+                            min = ((mN / mD) + (sN / sD / 60)) / 60
+
+                            If Me.GetPropertyString(TagNames.GpsLatitudeRef) = "S" Then
+                                Tempstring = "-"
+                            End If
+                            Tempstring = Tempstring + ((dN / dD) + min).ToString("G", ci)
+                    End Select
+
+                    Return Tempstring
+                Catch ex As Exception
+                    Return ""
+                End Try
+
+            End Get
+
+        End Property
+
+        Public ReadOnly Property Longitude(Optional ByVal whatto As LatLongFormat = LatLongFormat.DMS) As String
+            Get
+                Try
+                    Dim propItem As Drawing.Imaging.PropertyItem
+                    Dim Tempstring As String = ""
+                    propItem = Me._Image.GetPropertyItem(TagNames.GpsLongitude)
+                    Dim ci As New System.Globalization.CultureInfo("en-us")
+                    Dim dN As UInteger = BitConverter.ToUInt32(propItem.Value, 0)
+                    Dim dD As UInteger = BitConverter.ToUInt32(propItem.Value, 4)
+                    Dim mN As UInteger = BitConverter.ToUInt32(propItem.Value, 8)
+                    Dim mD As UInteger = BitConverter.ToUInt32(propItem.Value, 12)
+                    Dim sN As UInteger = BitConverter.ToUInt32(propItem.Value, 16)
+                    Dim sD As UInteger = BitConverter.ToUInt32(propItem.Value, 20)
+                    Dim min As Double = 0
+                    Select Case whatto
+                        Case LatLongFormat.DMS
+                            Tempstring = (dN / dD).ToString() + "° " + (mN / mD).ToString + "' "
+                            If sN > 0 Then
+                                Tempstring = Tempstring + (sN / sD).ToString() + """ "
+                            End If
+                            Tempstring = Tempstring + Me.GetPropertyString(TagNames.GpsLongitudeRef)
+                        Case LatLongFormat.DMDec
+                            If sN > 0 Then
+                                min = (sN / sD / 60)
+                            End If
+                            Tempstring = (dN / dD).ToString() + "° " + ((mN / mD) + min).ToString("G", ci) + "' " + Me.GetPropertyString(TagNames.GpsLongitudeRef)
+                        Case LatLongFormat.DDec
+                            min = ((mN / mD) + (sN / sD / 60)) / 60
+                            If Me.GetPropertyString(TagNames.GpsLongitudeRef) = "W" Then
+                                Tempstring = "-"
+                            End If
+                            Tempstring = Tempstring + ((dN / dD) + min).ToString("G", ci)
+                    End Select
+                    Return Tempstring
+
+
+                Catch ex As Exception
+                    Return ""
+                End Try
+            End Get
+
+        End Property
+
+
     '''-----------------------------------------------------------------------------
     ''' <summary>
     '''     User comment (EXIF UserComment)
@@ -838,10 +956,10 @@ Public Class ExifWorks
             Return Me.GetPropertyString(TagNames.ExifUserComment)
         End Get
         Set(ByVal Value As String)
-            Try
-                Me.SetPropertyString(TagNames.ExifUserComment, Value)
-            Catch ex As Exception
-            End Try
+                Try
+                    Me.SetPropertyString(TagNames.ExifUserComment, Value)
+                Catch ex As Exception
+                End Try
         End Set
     End Property
 
@@ -1189,7 +1307,9 @@ Public Class ExifWorks
             R.Denominator = 1
             Return R
         End If
-    End Function
+        End Function
+
+
 
     '''-----------------------------------------------------------------------------
     ''' <summary>
@@ -1334,6 +1454,7 @@ Public Class ExifWorks
         R.Numerator = GetInt32(N)
         Return R
     End Function
+
 
     '''-----------------------------------------------------------------------------
     ''' <summary>

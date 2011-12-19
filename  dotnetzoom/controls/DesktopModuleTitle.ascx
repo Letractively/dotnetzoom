@@ -30,19 +30,20 @@
 </table>
 </asp:PlaceHolder>
 <asp:PlaceHolder ID="pnlModuleTitle" Runat="server" Visible="False" EnableViewState="false">
+<div class="nav">
 <table width="100%" class='<asp:literal id="TableTitle" runat="server" />'>
 	<tr>
 	<td>
 	<cc1:solpartmenu id="ctlMenu" MenuEffects-MouseOutHideDelay="500" runat="server" MouseOutHideDelay="1"  ForceDownlevel="False" Moveable="False" IconWidth="0" MenuEffects-MouseOverExpand="True" MenuEffects-MouseOverDisplay="Highlight" MenuEffects-MenuTransitionStyle=" " SystemImagesPath="/" SeparateCSS="True" MenuCSSPlaceHolderControl="SPMenuStyle" MenuCSS-SubMenu="Option_SubMenu" MenuCSS-RootMenuArrow="Option_RootMenuArrow" MenuCSS-MenuItemSel="Option_MenuItemSel" MenuCSS-MenuItem="Option_MenuItem" MenuCSS-MenuIcon="Option_MenuIcon" MenuCSS-MenuContainer="Option_MenuContainer" MenuCSS-MenuBreak="Option_MenuBreak" MenuCSS-MenuBar="Option_MenuBar" MenuCSS-MenuArrow="Option_MenuArrow"></cc1:solpartmenu>
 	</td>
 	<td id="rowadmin1" runat="server" EnableViewState="false" visible="false" align="left" valign="middle" style="white-space: nowrap;">
-	<div class="nav">
 	<ul>
-	<li class="folder" style="z-index: 0"><img  src="/images/action.gif" alt="" style="border-width:0px;">
+	<li class="folder" style="z-index: 2"><a title="<%= DotNetZoom.GetLanguage("modifier")%>" href="javascript:toggleBox('nav',1)" ><img  src="/images/action.gif" alt="" style="border-width:0px;"></a>
 	<ul>
 	<li id="modifier" runat="server" EnableViewState="false" visible="false" class="items"><asp:Hyperlink id="cmdEditModule" runat="server" EnableViewState="false" Visible="False"><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> </asp:Hyperlink></li>
 	<li id="modifierC" runat="server" EnableViewState="false" visible="false" class="items"><asp:Hyperlink ID="cmdEditContent" Runat="server" EnableViewState="false"><img  src="/images/edit.gif" alt="*" style="border-width:0px;" /> </asp:Hyperlink></li>
 	<li id="param" runat="server" EnableViewState="false" visible="false" class="items"><asp:Hyperlink ID="cmdEditOptions" Visible=False Runat="server" EnableViewState="false"><img  src="/images/view.gif" alt="*" style="border-width:0px;"> </asp:Hyperlink></li>
+	<li id="param2" runat="server" EnableViewState="false" visible="false" class="items"><asp:Hyperlink ID="cmdEditOptions4" Visible=False Runat="server" EnableViewState="false"><img  src="/images/view.gif" alt="*" style="border-width:0px;"> </asp:Hyperlink></li>
 	<li id="delete" runat="server" EnableViewState="false" visible="false" class="items"><asp:LinkButton id="cmddelete" runat="server" EnableViewState="false" Visible="False" ><img  src="/images/delete.gif" alt="*" style="border-width:0px;"> </asp:LinkButton></li>
 	<li id="top" runat="server" EnableViewState="false" visible="false" class="items"><asp:LinkButton id="cmdModuleTop" runat="server" EnableViewState="false" Visible="False" ><img  src="/images/up1.gif" alt="*" style="border-width:0px;"> </asp:LinkButton></li>
 	<li id="haut" runat="server" EnableViewState="false" visible="false" class="items"><asp:LinkButton id="cmdModuleUp" runat="server" EnableViewState="false" Visible="False" ><img  src="/images/up.gif" alt="*" style="border-width:0px;"> </asp:LinkButton></li>
@@ -54,7 +55,6 @@
 	</ul>
 	</li>
 	</ul>
-	</div>
 	</td>
 	<td align="left" valign="middle" width="100%" style="white-space: nowrap;">
 	<asp:Image Visible="False" BorderWidth="0" runat=server ID="cmdEditModuleImage"/>
@@ -74,5 +74,6 @@
 	</td>
 	</tr>
 	</table>
+</div>
 </asp:PlaceHolder>
 <asp:literal id="Titleafter" runat="server" visible="false" EnableViewState="false"></asp:literal>

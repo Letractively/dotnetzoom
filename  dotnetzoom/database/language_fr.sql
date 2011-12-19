@@ -113,13 +113,13 @@ updatelanguagecontext 'fr','admin_menu_hide','Faire disparaitre le menu', 'Admin
 GO
 updatelanguagecontext 'fr','admin_hide_info','Faire disparaitre', 'AdminMenu'
 GO
-updatelanguagecontext 'fr','title_TopToolTip','Déplacer le module un niveau supérieur', 'AdminMenu'
-GO
 updatelanguagecontext 'fr','admin_StartHost','Début section webmestre', 'AdminMenu'
 GO
 updatelanguagecontext 'fr','admin_StartPortal','Début section portail', 'AdminMenu'
 GO
 updatelanguagecontext 'fr','admin_menu_title','Administration du site web', 'AdminMenu'
+GO
+updatelanguagecontext 'fr','title_TopToolTip','Déplacer le module un niveau supérieur', 'AdminMenu'
 GO
 updatelanguagecontext 'fr','top','Niveau supérieur', 'AdminMenu'
 GO
@@ -193,7 +193,7 @@ updatelanguagecontext 'fr','send','Envoyer', 'Command'
 GO
 updatelanguagecontext 'fr','show','Afficher', 'Command'
 GO
-updatelanguagecontext 'fr','filemanager_security1','{AdministratorEmail}<img src="/images/uoUnreadPriv.gif" border="0" height="10" width="14" alt="courriel" Title="Cliquer ici pour faire une demande au webmestre"></a></p>', 'Command'
+updatelanguagecontext 'fr','filemanager_security1','{AdministratorEmail}</p>', 'Command'
 GO
 updatelanguagecontext 'fr','filemanager_security2','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=button value="Fermer" onClick="javascript:window.close();">', 'Command'
 GO
@@ -204,34 +204,6 @@ GO
 updatelanguagecontext 'fr','request_confirm_unsubscribe','Voulez vous vraiment annuler votre inscription ?', 'Command'
 GO
 updatelanguagecontext 'fr','request_confirm_delete_icone','Voulez vous vraiment effacer l''îcone. Un îcone par défaut sera utilisé, sinon vous pouvez en télécharger un nouveau.', 'Command'
-GO
-updatelanguagecontext 'fr','filemanager_security','<p>Votre profil de sécurité ne vous donne pas accès à cette page.</p><p>Si vous croyez que vous devriez avoir accès à cette page <b>veuillez faire une demande au webmestre du site web {PortalName} </b>', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm_erasealbum','Dans l''album vous avez {items} items. Voulez vous vraiment tous les effacer?', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm','Voulez vous vraiment l''effacer?', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm_file_or_rep','Voulez vous effacer ces fichiers ou dossiers?', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm_erase_role','Voulez vous vraiment effacer ce profil de sécurité ?', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm_erase_userrole','Voulez vous vraiment enlever ce profil de sécurité à cet usager ?', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm_erase','Voulez vous vraiment les effacer?', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm_erase_message','Voulez vous vraiment effacer le message?', 'Command'
-GO
-updatelanguagecontext 'fr','request_confirm_avatar','Voulez vous continuer avec la configuration de la galerie des avatars?', 'Command'
-GO
-updatelanguagecontext 'fr','select_icone','choisir un icône', 'Command'
-GO
-updatelanguagecontext 'fr','delete','Supprimer', 'Command'
-GO
-updatelanguagecontext 'fr','syndicate','Contenu en syndication', 'Command'
-GO
-updatelanguagecontext 'fr','admin_caches_x','Purger', 'Command'
-GO
-updatelanguagecontext 'fr','admin_delete_tab','Effacer page', 'Command'
 GO
 updatelanguagecontext 'fr','Cmd_Reload','Actualiser', 'Command'
 GO
@@ -286,6 +258,34 @@ GO
 updatelanguagecontext 'fr','admin_txt','Menu admin', 'Command'
 GO
 updatelanguagecontext 'fr','admin_tab_delete','Effacer la page', 'Command'
+GO
+updatelanguagecontext 'fr','filemanager_security','<p>Votre profil de sécurité ne vous donne pas accès à cette page.</p><p>Si vous croyez que vous devriez avoir accès à cette page <b>veuillez faire une demande au webmestre du site web {PortalName} </b>', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm_erasealbum','Dans l''album vous avez {items} items. Voulez vous vraiment tous les effacer?', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm','Voulez vous vraiment l''effacer?', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm_file_or_rep','Voulez vous effacer ces fichiers ou dossiers?', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm_erase_role','Voulez vous vraiment effacer ce profil de sécurité ?', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm_erase_userrole','Voulez vous vraiment enlever ce profil de sécurité à cet usager ?', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm_erase','Voulez vous vraiment les effacer?', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm_erase_message','Voulez vous vraiment effacer le message?', 'Command'
+GO
+updatelanguagecontext 'fr','request_confirm_avatar','Voulez vous continuer avec la configuration de la galerie des avatars?', 'Command'
+GO
+updatelanguagecontext 'fr','select_icone','choisir un icône', 'Command'
+GO
+updatelanguagecontext 'fr','delete','Supprimer', 'Command'
+GO
+updatelanguagecontext 'fr','syndicate','Contenu en syndication', 'Command'
+GO
+updatelanguagecontext 'fr','admin_caches_x','Purger', 'Command'
+GO
+updatelanguagecontext 'fr','admin_delete_tab','Effacer page', 'Command'
 GO
 updatelanguagecontext 'fr','OK','OK', 'Command'
 GO
@@ -426,9 +426,9 @@ updatelanguagecontext 'fr','Forum_BodyMessageTXT','<b>Sujet: {0}</b><br><b>Messa
 GO
 updatelanguagecontext 'fr','Forum_Moderated_messageTXT','Un nouveau fil de discussion a été créé <b>{0}</b> dans le forum <b>{1}</b>.<br>pour votre approbation.<br>Cliquer <a href="{2}">ici</a> pour aller au forum."', 'EmailNotice'
 GO
-updatelanguagecontext 'fr','Forum_Moderated_approvedTXT','A {0}<br>vous avez sauvegardé ce message : <b>{1}</b> dans le forum <b>{2}</b>.<br>Ce forum est dirigé.<br>Ce courriel est pour vous informer que votre message est <b>approuvé</b> à {3}<br><br>Merci de votre participation du personnel de <br><b>{4}</b>', 'EmailNotice'
+updatelanguagecontext 'fr','Forum_Moderated_approvedTXT','A {0}<br>vous avez sauvegardé ce message : <b>{1}</b> dans le forum <b>{2}</b>.<br>Ce forum est dirigé.<br>Ce courriel est pour vous informer que votre message est <b>approuvé</b> : {3}<br><br>Merci de votre participation du personnel de <br><b>{4}</b>', 'EmailNotice'
 GO
-updatelanguagecontext 'fr','Forum_Moderated_refusedTXT','A {0}<br>Vous avez créé un nouveau message : <b>{1}</b> dans le forum <b>{2}</b>.<br>Ce forum est dirigé.<br>Ce courriel est pour vous informer que votre message est <b>refusé</b> à {3}<br><br>Merci de votre participation du personnel de <b>{4}</b>', 'EmailNotice'
+updatelanguagecontext 'fr','Forum_Moderated_refusedTXT','A {0}<br>Vous avez créé un nouveau message : <b>{1}</b> dans le forum <b>{2}</b>.<br>Ce forum est dirigé.<br>Ce courriel est pour vous informer que votre message est <b>refusé</b> : {3}<br><br>Merci de votre participation du personnel de <b>{4}</b>', 'EmailNotice'
 GO
 updatelanguagecontext 'fr','SiteLogOff','Le webmestre a désactivé cette fonction pour votre portail.', 'ErrorMessage'
 GO
@@ -445,8 +445,6 @@ GO
 updatelanguagecontext 'fr','Valid_Date_Format','Vous devez utiliser un format de date valide tel que AAAA/MM/JJ', 'ErrorMessage'
 GO
 updatelanguagecontext 'fr','Valid_Boolean','Vous devez utiliser une valeur True/False seulement', 'ErrorMessage'
-GO
-updatelanguagecontext 'fr','need_valid_email','Une adresse de courriel valide est requise.', 'ErrorMessage'
 GO
 updatelanguagecontext 'fr','need_city_name','Le nom de la ville est requis.', 'ErrorMessage'
 GO
@@ -535,6 +533,12 @@ GO
 updatelanguagecontext 'fr','need_start_date','Une date de début est requise', 'ErrorMessage'
 GO
 updatelanguagecontext 'fr','need_country_name','Le nom du pays est requis!', 'ErrorMessage'
+GO
+updatelanguagecontext 'fr','nossl','Normalement cette page ne devrait pas être chiffrée. Le site Web s''est correctement identifié et les informations saisies sur cette page ne pourront pas facilement être lues lors de leur acheminement. (Cliquer sur OK pour continuer..)', 'ErrorMessage'
+GO
+updatelanguagecontext 'fr','ssl','Normalement cette page devrait être chiffrée. Donc, les informations que vous enverrez et recevrez pourraient éventuellement être lues lors de leur acheminement. (Cliquer sur OK pour aller vers une page sécurisée ...)', 'ErrorMessage'
+GO
+updatelanguagecontext 'fr','need_valid_email','Une adresse de courriel valide est requise.', 'ErrorMessage'
 GO
 updatelanguagecontext 'fr','calendar','Calendrier', 'Events'
 GO
@@ -1200,7 +1204,15 @@ updatelanguagecontext 'fr','F_Bad_Ext','Seulement les fichiers {fileext} sont au
 GO
 updatelanguagecontext 'fr','F_MaxImage','L''image ne peut être plus que {maxHeight} x {maxWidth} pixels.', 'Forum'
 GO
+updatelanguagecontext 'fr','Forum_Replied','Réponse au message', 'Forum'
+GO
 updatelanguagecontext 'fr','go','Go', 'Forum'
+GO
+updatelanguagecontext 'fr','F_SelectModerated','Choisir moderateur', 'Forum'
+GO
+updatelanguagecontext 'fr','select_avatar_tooltip','Aller et modifier la gallerie des avatars', 'Forum'
+GO
+updatelanguagecontext 'fr','select_avatar','Avatars gallerie', 'Forum'
 GO
 updatelanguagecontext 'fr','F_VisitWWW','WWW', 'Forum'
 GO
@@ -1225,12 +1237,6 @@ GO
 updatelanguagecontext 'fr','Search_SelectAllForum','Choisir tous les forums de la section', 'Forum'
 GO
 updatelanguagecontext 'fr','Search_SelectAllForumGroup','Choisir tous les forums de toutes les sections', 'Forum'
-GO
-updatelanguagecontext 'fr','F_SelectModerated','Chosir moderateur', 'Forum'
-GO
-updatelanguagecontext 'fr','select_avatar_tooltip','Aller et modifier la gallerie des avatars', 'Forum'
-GO
-updatelanguagecontext 'fr','select_avatar','Avatars gallerie', 'Forum'
 GO
 updatelanguagecontext 'fr','Forum_Search','Recherche avancée', 'Forum'
 GO
@@ -1567,15 +1573,15 @@ updatelanguagecontext 'fr','MapGoogle_size','Grandeur', 'GoogleMap'
 GO
 updatelanguagecontext 'fr','MapGoogle_small','Petite', 'GoogleMap'
 GO
-updatelanguagecontext 'fr','HS_EnableSSLInfo','SSL sera appliqué sur certaine page', 'HostSettings'
-GO
-updatelanguagecontext 'fr','ViewState_SQL','ViewState dans SQL', 'HostSettings'
-GO
 updatelanguagecontext 'fr','WhiteSpace_ALL','HTML et Espace Blanc', 'HostSettings'
 GO
 updatelanguagecontext 'fr','ViewState_memory','ViewState en mémoire', 'HostSettings'
 GO
 updatelanguagecontext 'fr','WhiteSpace_Only','Espace blanc seulement', 'HostSettings'
+GO
+updatelanguagecontext 'fr','HS_EnableSSLInfo','SSL sera appliqué sur certaine page', 'HostSettings'
+GO
+updatelanguagecontext 'fr','ViewState_SQL','ViewState dans SQL', 'HostSettings'
 GO
 updatelanguagecontext 'fr','HS_EnableSSL','Forcer SSL', 'HostSettings'
 GO
@@ -1931,6 +1937,30 @@ updatelanguagecontext 'fr','ms_select_color','Choisir une couleur', 'ModuleSetti
 GO
 updatelanguagecontext 'fr','ms_SelectModuleSkin','Choisir un habillage', 'ModuleSettings'
 GO
+updatelanguagecontext 'fr','TitleHeader_class','CSS class du titre', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','Title_class','CSS class du texte titre', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ModuleOnly','Intérieur', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ModuleTitle','Titre', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ModuleWrapper','Extérieur', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ms_contener_default_info','Pour sauvegarder cette habillage comme celui par défaut pour le site, donc cette habillage sera utilisé lorsqu''il n''y aura pas d''habillage de définie pour un module.', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ms_contener_global','Global?', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ms_move_to_tab','Déplacer vers la page', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ms_contener_error1','Vous devez avoir [MODULE] dans la définition de l''habillage.', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ms_contener_error2','Une erreur de code HTML existe dans le container', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ms_non_authorized','Visiteurs anonymes', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ms_all_users','Tous', 'ModuleSettings'
+GO
 updatelanguagecontext 'fr','ms_title','Titre', 'ModuleSettings'
 GO
 updatelanguagecontext 'fr','ms_language','Langue', 'ModuleSettings'
@@ -1980,30 +2010,6 @@ GO
 updatelanguagecontext 'fr','ms_contener_default','Par défaut?', 'ModuleSettings'
 GO
 updatelanguagecontext 'fr','ms_contener_global_info','L''habillage de tous les modules seront effacés et l''habillage par défaut sera utilisé à la place.', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','TitleHeader_class','CSS class du titre', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','Title_class','CSS class du texte titre', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ModuleOnly','Intérieur', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ms_contener_default_info','Pour sauvegarder cette habillage comme celui par défaut pour le site, donc cette habillage sera utilisé lorsqu''il n''y aura pas d''habillage de définie pour un module.', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ms_contener_global','Global?', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ms_move_to_tab','Déplacer vers la page', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ms_contener_error1','Vous devez avoir [MODULE] dans la définition de l''habillage.', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ms_contener_error2','Une erreur de code HTML existe dans le container', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ms_non_authorized','Visiteurs anonymes', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ms_all_users','Tous', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ModuleTitle','Titre', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ModuleWrapper','Extérieur', 'ModuleSettings'
 GO
 updatelanguagecontext 'fr','EditAccessDenied','Restriction d''accès', 'ModuleTitle'
 GO
@@ -2065,26 +2071,6 @@ updatelanguagecontext 'fr','title_vendor_feedback','Rétroaction fournisseur', '
 GO
 updatelanguagecontext 'fr','PrivateMessages','Messagerie', 'ModuleTitle'
 GO
-updatelanguagecontext 'fr','nossl','Normalement cette page ne devrait pas être chiffrée.  Le site Web s''est correctement identifié et les informations saisies sur cette page ne pourront pas facilement être lues lors de leur acheminement. (S''il vous plaît confirmer si c''est OK de continuer..)', 'New'
-GO
-updatelanguagecontext 'fr','ssl','Normalement cette page devrait être chiffrée.    Donc, les informations que vous enverrez et recevrez pourraient éventuellement être lues lors de leur acheminement. (S''il vous plaît confirmer si c''est OK de continuer ...)', 'New'
-GO
-updatelanguagecontext 'fr','Banner_Mail2','si vous désirez lire vos messages vous devez cliquer sur cet icône', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail3','messages', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail4','message', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail5','Vous devez cliquer sur cet icône pour avoir accès à la messagerie', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','banner_ClickProfile','Cliquer ici pour faire une recherche pour trouver un usager ou pour modifier votre profil', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail','vous avez', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail0','nouveau message', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail1','nouveaux messages', 'PortalBanner'
-GO
 updatelanguagecontext 'fr','banners_host','serveur', 'PortalBanner'
 GO
 updatelanguagecontext 'fr','banners_portal','portail', 'PortalBanner'
@@ -2108,6 +2094,22 @@ GO
 updatelanguagecontext 'fr','register_no','Pour le moment, vous ne pouvez pas vous inscrire à notre service', 'PortalBanner'
 GO
 updatelanguagecontext 'fr','register_more_info','Vous devez vous identifier avec votre code d''accès et votre mot de passe. Si vous êtes déjà inscrit, S.V.P. <a class="CommandButton" href="{httplogin}">Entrer</a> maintenant. Sinon, <a class="CommandButton" href="{httpregister}">inscrivez vous.</a>', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail2','si vous désirez lire vos messages vous devez cliquer sur cet icône', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail3','messages', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail4','message', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail5','Vous devez cliquer sur cet icône pour avoir accès à la messagerie', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','banner_ClickProfile','Cliquer ici pour faire une recherche pour trouver un usager ou pour modifier votre profil', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail','vous avez', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail0','nouveau message', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail1','nouveaux messages', 'PortalBanner'
 GO
 updatelanguagecontext 'fr','P_PortalName','Nom du portail', 'PortalInfo'
 GO
@@ -2437,11 +2439,15 @@ updatelanguagecontext 'fr','SS_Label_PortalBasicFee','Frais de base pour l''héb
 GO
 updatelanguagecontext 'fr','SS_Label_PortalExtraFee','Frais additionnel pour les modules', 'SiteSettings'
 GO
-updatelanguagecontext 'fr','SS_Use_SSL','Utiliser SSL', 'SiteSettings'
-GO
 updatelanguagecontext 'fr','SS_Site_Description','Description en', 'SiteSettings'
 GO
 updatelanguagecontext 'fr','SS_ToolTipModuleSkin','ToolTip', 'SiteSettings'
+GO
+updatelanguagecontext 'fr','P_ssl','ssl', 'SiteSettings'
+GO
+updatelanguagecontext 'fr','SS_Use_SSL','Utiliser SSL', 'SiteSettings'
+GO
+updatelanguagecontext 'fr','P_sub','sub', 'SiteSettings'
 GO
 updatelanguagecontext 'fr','Skin_FileErased','Le fichier à été effacé', 'SkinEdit'
 GO
@@ -2611,6 +2617,8 @@ updatelanguagecontext 'fr','tigra_Menu1.6','Largeur d''une cellule en pixel', 'T
 GO
 updatelanguagecontext 'fr','tigra_Menu2.1','Position du sous menu relatif au menu supérieur', 'Tigra'
 GO
+updatelanguagecontext 'fr','SS_Tigra_Edit','Modifier tigra', 'Tigra'
+GO
 updatelanguagecontext 'fr','tigra_help1','Pour générer les paramètres nécessaire pour la création d''un menu horizontal, après la création vous pouvez modifier les informations dans la grille de paramêtres.  Pour voir le résultat sur l''écran vous devrez utiliser le bouton <b>tester</b>', 'Tigra'
 GO
 updatelanguagecontext 'fr','tigra_help2','Prendre les informations de la grille de paramètres et générer un nouveau fichier menu</b> ainsi que d''afficher à l''écran le résultat', 'Tigra'
@@ -2620,8 +2628,6 @@ GO
 updatelanguagecontext 'fr','tigra_return','Revenir sans sauvegarder.', 'Tigra'
 GO
 updatelanguagecontext 'fr','tigra_help','Pour générer les paramètres nécessaire pour la création d''un menu vertical, après la création vous pouvez modifier les informations dans la grille de paramêtres.  Pour voir le résultat sur l''écran vous devrez utiliser le bouton <b>tester</b>', 'Tigra'
-GO
-updatelanguagecontext 'fr','SS_Tigra_Edit','Modifier tigra', 'Tigra'
 GO
 updatelanguagecontext 'fr','ManageTableUDT','Administrer les tables usager', 'UDT'
 GO
@@ -2941,11 +2947,11 @@ updatelanguagecontext 'fr','Vendor_ThankYou','Merci de votre contribution.', 'Ve
 GO
 updatelanguagecontext 'fr','Vendor_Name','Nom du fournisseur', 'Vendors'
 GO
+updatelanguagecontext 'fr','Oriflamme','Oriflamme', 'Vendors'
+GO
 updatelanguagecontext 'fr','Vendor_Register','Inscription fournisseur', 'Vendors'
 GO
 updatelanguagecontext 'fr','vendors_date','date', 'Vendors'
-GO
-updatelanguagecontext 'fr','Oriflamme','Oriflamme', 'Vendors'
 GO
 updatelanguagecontext 'fr','w_personalise','Personaliser?', 'Weather'
 GO
@@ -2967,9 +2973,10 @@ UpdatelonglanguageSetting 'fr','Access Denied','<table width="80%" border="0" al
 GO
 UpdatelonglanguageSetting 'fr','AccessDeniedInfo','<table align="center" width="80%" border="0">
 <tr>
-<td>
+<td><p>&#160;</p><p>&#160;</p>
 <p>Votre profil de sécurité ne vous donne pas accès à cette section du site web. Si vous croyez que vous devriez y avoir accès ou pour avoir plus d''information n''hésitez
 pas à vous adresser au {PortalName} par courriel à {AdministratorEmail}.</p>
+<p>&#160;</p><p>&#160;</p>
 </td></tr></table>', null 
 GO
 UpdatelonglanguageSetting 'fr','Demo_Portal_Info','<div align="left" class="normal">
@@ -3010,6 +3017,60 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_AccessDenied','<table width="80%" bo
         </tr>
     </tbody>
 </table>', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_AddModuleDef','<h1 style="text-align: center;">Ajout nouveau module</h1>
+<p>Vous pouvez ajouter un nouveau module en utilisant un gabarit xml.</p>
+<p>La structure du fichier xml doit être la suivante :</p>
+<p>&#160;</p>
+<p>&#160;</p>
+<div style="margin-left: 1em; text-indent: -2em;" class="c"><span class="m">&lt;</span><span class="m">&lt;</span><span class="t">module</span><span class="m">&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">folder</span> <span class="m">/&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">friendlyname</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">friendlyname</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">desktopsrc</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">desktopsrc</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">helpsrc</span> <span class="m">/&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">editsrc</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">editsrc</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">description</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">description</span><span class="m">&gt;</span></div>
+</div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">editmoduleicon</span> <span class="m">/&gt;</span></div>
+</div>
+<div class="e">
+<div><span class="b">&#160;</span>&#160; <span class="m">&lt;</span><span class="t">uninstall</span> <span class="m">/&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;" class="c"><a href="#" onclick="return false" onfocus="h()" class="b">-</a>&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">files</span><span class="m">&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;" class="c"><a href="#" onclick="return false" onfocus="h()" class="b">-</a>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">file</span><span class="m">&gt;</span></div>
+<div>
+<div class="e">
+<div style="margin-left: 1em; text-indent: -2em;"><span class="b">&#160;</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="m">&lt;</span><span class="t">name</span><span class="m">&gt;</span><span class="m">&lt;/</span><span class="t">name</span><span class="m">&gt;</span></div>
+</div>
+<div><span class="b">&#160;</span>&#160;&#160;&#160; <span class="m">&lt;/</span><span class="t">file</span><span class="m">&gt;</span></div>
+</div>
+</div>
+<div class="e">
+<div>&#160;&#160; <span class="m">&lt;/</span><span class="t">files</span><span class="m">&gt;</span></div>
+</div>
+</div>
+</div>
+</div>
+<div><span class="m">&lt;/</span><span class="t">module</span><span class="m">&gt;</span></div>
+</div>
+</div>
+<p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_AdminMenu','<table cellspacing="3" cellpadding="3" border="0">
     <tbody>
@@ -3072,8 +3133,8 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_AdminMenu','<table cellspacing="3" c
     </tbody>
 </table>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_BulkEmail','<h1 style="text-align: center; ">Envoi de Courriel</h1>
-<p>Les administrateurs peuvent faire parvenir un courriel aux utilisateurs appartenant à un rôle de sécurité ou à une adresse de courriel en particulier. Le courriel est envoyé à chaque utilisateur séparément, sans indiquer les autres utilisateurs dans l''adresse du courriel.  Les envois peuvent être, soit en format texte ou HTML. Vous pouvez ajouter une pièce jointe au courriel à partir de votre gestionnaire de fichiers.</p>', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_BulkEmail','<h1 style="text-align: center; ">Envoi de Courriel</h1><p>&#160;</p>
+<p>Les administrateurs peuvent faire parvenir un courriel aux utilisateurs appartenant à un rôle de sécurité ou à une adresse de courriel en particulier. Le courriel est envoyé à chaque utilisateur séparément, sans indiquer les autres utilisateurs dans l''adresse du courriel.  Les envois peuvent être, soit en format texte ou HTML. Vous pouvez ajouter une pièce jointe au courriel à partir de votre gestionnaire de fichiers.</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Demo','<table width="80%" border="0" align="center">
     <tbody>
@@ -3090,14 +3151,20 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_DiscussDetails','<div style="text-al
 <p>Vous devez saisir un titre ainsi que du contenu dans le message avant de l''enregistrer.</p>
 <p>
 Les codes HTML ne sont pas permits.
-</p>', null 
+</p><p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Discussions','Ce module affiche un groupe de message sur une matière spécifique. La discussion permet aux utilisateurs autorisés de répondre aux messages ou d''en ajouter un nouveau.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Discussions','<div style="text-align: center;">
+<h1>Zone discussions</h1>
+</div>
+<p>&#160;</p>
+La zone de discussion est un endroit pour discuter s''exprimer sur différents sujet.  Limitez vos discussions sur des sujets d''intérêts généraux. N''abusez pas de votre pouvoir. Ce n''est pas parce que l''on peut faire quelque chose que l''on a le droit de le faire et ce n''est pas parce que l''on a le droit de faire quelque chose qu''il faut le faire. Rappelez vous qu''Internet n''est pas une zone de non droit et qu''on y est rarement complètement anonyme. Sur Internet aussi vous êtes censés respecter les lois de votre pays (droits d''auteur, informations illicites, protection de l''intégrité humaine, ...).  Les participants sont personnellement responsables de leurs écrits; ils s''interdisent tout propos diffamatoire, injurieux, raciste ou susceptible de tomber sous le coup de la loi. Leur responsabilité pourra être engagée en cas de manquement à cette règle.  Toute personne désireuse de faire supprimer une discussion lui portant un préjudice personnel doit adresser sa plainte par courriel en expliquant le motif de sa demande.
+<p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_EditAccessDenied','<h1>Vous n''avez pas accès à cette page.</h1>
+UpdatelonglanguageSetting 'fr','DisplayHelp_EditAccessDenied','<h1>Vous n''avez pas accès à cette page.</h1><p>&#160;</p><p>&#160;</p><p>&#160;</p>
 <p>Si vous n''avez pas ouvert une session vous devriez essayer maintenant.</p>
 <p>Il est possible que votre session est expiré après une inactivité de plus que 20 minutes.</p>
-<p>Il est aussi possible que votre accès à cette fonction ai été révoqué par le webmestre.</p>', null 
+<p>Il est aussi possible que votre accès à cette fonction ai été révoqué par le webmestre.</p><p>&#160;</p>
+<p>&#160;</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_EditAlbum','<h1 style="text-align: center;">Album photo</h1>
 <h2>Paramètres Album</h2>
@@ -3326,11 +3393,7 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_EditFAQ','<div style="text-align: ce
 Il n''y a aucune limite au nombre de question.<br />
 <br />
 Un info bulle affichera la réponse lorsque l''utilisateur fera passé la souris au dessus de la question.<br />
-<br />
-<br />
-<br />
-<br />
-<br />
+<p>&#160;</p><p>&#160;</p>
 </div>
 </div>', null 
 GO
@@ -3344,7 +3407,7 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_EditFile','<h1 style="text-align: ce
     <li>Description: Une information descriptive.</li>
     <li>Catégories: Le type de fichier dans l''album.</li>
 </ul>
-<p>&#160;</p>', null 
+<p>&#160;</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_EditHTML','<div style="text-align: center;">
 <h1>HTML/TEXTE</h1>
@@ -3353,13 +3416,8 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_EditHTML','<div style="text-align: c
     <li>Option texte :&nbsp; &Eacute;diteur de base en mode texte &quot;TextBox&quot;.&nbsp; L''&eacute;diteur accepte tous les codes HTML.</li>
     <li>Option HTML : Avec firefox et microsoft exploreur, vous pourrez utilisez un &eacute;diteur HTML enrichie.</li>
 </ul>
-<br />
-Si vous utilisez le module de recherche, vous pouvez saisir des informations additionnelles facultatives.<br />
-<br />
-<br />
-<br />
-<br />
-<br />', null 
+<p>&#160;</p>
+<p>Si vous utilisez le module de recherche, vous pouvez saisir des informations additionnelles facultatives.</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_EditIFrame','<h1 style="text-align: center;">IFRAME</h1>
 <p>L''élément <b><i>IFRAME</i></b> permet aux auteurs d''insérer un cadre dans un bloc de texte. L''insertion d''un cadre en-ligne dans un passage textuel revient un peu à y insérer un objet via l''élément OBJECT&#160;: ces éléments permettent tous deux l''insertion d''un document <i><b>HTML</b></i> au sein d''un autre, ils peuvent tous deux être alignés sur le texte environnant, etc.</p>
@@ -3518,25 +3576,12 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_EditSearch','<h1 style="text-align: 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_EditUserDefinedTable','<h1 style="text-align: center;">Tableau à définir</h1>
 <p>Vous devez définir des champs avant de pouvoir saisir de l''information dans le tableau,
-Utiliser l''option</p><p> <span class="CommandButton"> Administrer les tables usager</span></p>', null 
+Utiliser l''option</p><p> <span class="CommandButton"> Administrer les tables usager</span></p><p>&#160;</p><p>&#160;</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_EditVendors','<div style="text-align: center;">
 <h1>Inscription fournisseur</h1>
 <div style="text-align: left;">Il est important de saisir toutes les informations sur compagnie.&nbsp; Les usagers pourront faire une recherche, donner&nbsp; des r&eacute;troactions et chercher une direction vers votre commerce.<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
+<p>&#160;</p><p>&#160;</p><p>&#160;</p><p>&#160;</p>
 </div>
 </div>', null 
 GO
@@ -3614,9 +3659,21 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_ForumAdmin','<h1 style="text-align: 
 <p>Pour effacer un forum vous devez cliquer sur <img title="Effacer" src="/images/1x1.gif" alt="Effacer" style="border-width: 0px; background: transparent url(/images/TTT/forum.gif) no-repeat scroll 0px -32px; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; height: 16px; width: 16px;" type="image" />.</p>
 <p>L''ordre dans lesquelles les forums s''affichent peut être modifié en utilisant&#160;<img src="/images/up.gif" alt="" />&#160;ou&#160;<img src="/images/dn.gif" alt="" /></p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_ForumAnonymous','Vous devez ouvrir une session pour pouvoir écrire des messages dans le forum.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_ForumAnonymous','<p>&#160;</p>Vous devez ouvrir une session pour pouvoir écrire des messages dans le forum.<p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_ForumModerate','DisplayHelp_ForumModerate', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_ForumModerate','<h1 style="text-align: center;">Forum dirigé</h1>
+<p>&#160;</p>
+<ol>
+    <li>Chaque section du forum dirigé affichera le nombre de message en attente d''approbation</li>
+    <li>Choisir une section du forum</li>
+    <li>Choisir un message pour approuver/effacer/refuser.
+   <ol>
+        <li>Cliquer sur le sujet du message pour le voir</li>
+        <li>Choisir les messages à approuver et cliquer sur approuvé</li>
+        <li>Choisir les messages à effacer et cliquer sur effacé</li>
+    </ol>
+    </li>
+</ol>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_ForumSearch','<p align="center"><span class="Head">Recherche pour le forum</span></p>
 <p align="left">&nbsp;Vous pouvez&nbsp; rechercher des messages dans le forum avec une ou plusieurs des options suivantes :</p>
@@ -3782,15 +3839,45 @@ Validation type de fichier pour téléchargement: </p>
 <p><br />
 Voir le log de mise à jours pour la version:.</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language0','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language0','<h1 style="text-align: center;">Language</h1>
+<ul>
+    <li><strong>Générer un script SQL :&#160;</strong> Choisir la langue pour générer le script et cliquer sur l''option approprié.&#160; Les fichiers .sql seront sauvegarder dans le répertoire database.</li>
+    <li><strong>Ajouter une nouvelle langue :</strong>&#160; Choisir la langue de : et À et cliquer sur&#160; <img alt="" style="border-style: none; border-width: 0px; height: 16px; width: 16px;" src="../../images/save.gif" title="Cliquer ici pour créer un nouvelle langue" />, la nouvelle langue sera créé avec les informations de la lnague de départ.&#160; Vous pourrez les modifier par la suite.</li>
+    <li><strong>Effacer une langue :&#160;</strong> Choisir la langue à effacer et cliquer sur&#160; <img name="admin$DelLang" id="admin_DelLang" title="Cliquer ici pour effacer la langue -&gt; fr" src="../../images/delete.gif" style="border-width: 0px; height: 16px; width: 16px;" alt="" /></li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language1','DisplayHelp_Language1', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language1','<h1 style="text-align: center;">Rubrique d''aide</h1>
+<p>Les rubriques d''aide sont utilisées en autre pour les fichiers d''aide ainsi que pour afficher différentes informations dans différents contexte dans le site web.&#160;&#160; Vous pouvez y inclure des codes HTML.&#160; Dans certain fichier les informations suivantes seront ajoutées dans le texte lorsque les items suivants sont indiqués :</p>
+<p>&#160;</p>
+<ul>
+    <li> 	&#123;HostEmail} : Adresse de courriel du webmestre.</li>
+    <li> 	&#123;PortalName} : Nom du portail.</li>
+    <li> 	&#123;Year} : année.</li>
+    <li> 	&#123;AdministratorEmail} : Adresse de courriel de l''administrateur du site actuel.</li>
+    <li> 	&#123;Date} : Current date time, formated with the appropriate language code.</li>
+    <li> 	&#123;httplogin} : l''URL pour entrer sur le site.</li>
+    <li> 	&#123;httpregister} : l''URL pour s''inscrire.</li>
+</ul>
+<p>&#160;</p>
+<p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Language10','Fonction de paramétrisation du site web.', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language2','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language2','<h1 style="text-align: center;">Rubriques générales</h1>
+<p>Les rubriques générales sont des informations spécifiques à une langue qui sera utilisé dans un contexte particulier sur le site web.&#160; La majorité des rubriques sont spécifiques à un module.&#160; Une rubrique ne peut avoir qu''un maximum de 200 caractères.</p>
+<p>Dans certaine rubrique afin de formater et d''inclure de l''information contextuelle des code entre {} doivent être inclus.&#160; Les informations seront modifiés en conséquence lors de l''affichage de la page en question. </p>
+<p>Tel que : </p>
+<p style="margin-left: 40px;">L''extension du fichier {fileext} n''est pas autorisé.<br />
+Vous pouvez seulement utiliser les extensions suivantes :<br />
+{allowedext}</p>
+<p>Dans cet exemple dans le contexte du module de téléchargement {fileext} sera remplacé par l''extension du fichier que l''utilisateur essayait de télécharger et {allowdext} sera remplacé par les extensions permises.</p>
+<p>&#160;</p>
+<p>Donc quand vous modifier une rubrique et qu''il y a des infos entre {} assurez vous de les reproduire si vous voulez que les informations soient modifiés convenablement.</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language3','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language3','<h1 style="text-align: center;">Codes Pays</h1>
+<p>La table des codes de pay est utilisé pour afficher le nom du pay lors de l''inscription d''un usager.&#160; Le code ne peut être modifié mais son appelation oui.&#160; Aussi des codes de régions peuvent être associés a une code de pay. &#160;</p>
+<p>&#160;</p>
+<p>Choisir le pay à modifier et cliquer sur <img title="Enregistrer -&gt; pay" src="../../images/save.gif" style="border-width: 0px; height: 16px; width: 16px;"></mg> pour sauvegarder.&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Language4','<h1 style="text-align: center;">Info modules admin</h1>
 <p>Vous pouvez modifier les titres ainsi que la description de chacunne des options du menu de l''adminstrateur.&#160; Les information seront affichés sur le menu admin.</p>
@@ -3801,15 +3888,28 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_Language4','<h1 style="text-align: c
     <li>Description du module : Information affiché dans le menu admin ainsi que dans les infos bulles.</li>
 </ul>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language5','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language5','<h1 style="text-align: center;">Codes argent</h1>
+<p>Les codes argent est pour identifié la devise qui sera utilisé pour la facturation de différents service sur le site web.</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language6','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language6','<h1 style="text-align: center;">Codes fréquences</h1>
+<p>Les codes de fréquence sont utilisés pour déterminer la fréquences de facturation de différents services sur le site web.</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language7','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language7','<h1 style="text-align: center;">Code rapports statistiques</h1>
+<p>Vous pouvez modifier l''appellation de chacun des codes de rapports disponible dans le module statistiques su site web.</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language8','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language8','<h1 style="text-align: center;">Codes Regions</h1>
+<p>Chaque pay peut avoir des codes de région, état, département ou province associé au code de pay.&#160; Si des codes de région sont disponible ils seront affiché comme choix à un utilisateur pour sont inscription ou lors de la modification de ses informations personnel.&#160; Un code de région peut facilement être ajouté ou modifié pour un pay en particulier.</p>
+<p>&#160;</p>
+<ul>
+    <li>Pour ajouter un code : Choisir un pay, ajouter le code et son appélation cliquer sur <img style="border-width: 0px; height: 16px; width: 16px;" src="../../images/save.gif" title="sauvegarder" alt="" /> pour sauvegarder l''information.</li>
+    <li>Pour modifier un code : Cliquer sur <img style="border-width: 0px;" alt="modifier" src="../../images/edit.gif" /> du code que vous voulez modifier et cliquer sur  <img style="border-width: 0px; height: 16px; width: 16px;" src="../../images/save.gif" title="sauvegarder" alt="" /> pour sauvegarder vos modifications.</li>
+    <li>Pour effacer un code : Cliquer sur <img style="border-width: 0px;" alt="modifier" src="../../images/edit.gif" /> du code que vous voulez effacer et cliquer sur <img title="Effacer -&gt; Région" src="../../images/delete.gif" style="border-width: 0px; height: 16px; width: 16px;" alt="" /> pour l''effacer.</li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Language9','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Language9','<h1 style="text-align: center;">Zones horaire</h1>
+<p>&#160;</p>
+<p>Un fuseau horaire est une zone de la surface terrestre où, à l''origine, l''heure adoptée doit être identique en tout lieu.  Ce système a été proposé par l''ingénieur et géographe montréalais Sir Sandford Fleming en 1876, avec le méridien de Greenwich comme origine des temps, la ligne de changement de date au méridien 180° (est et ouest), et en divisant le globe en 24 fuseaux horaires de même taille.  La zone couverte par un fuseau, limitée par deux méridiens distants de 15°, s''étend du pôle nord au pôle sud; elle est centrée sur un méridien dont la longitude est multiple de 15°. Le premier fuseau est donc centré sur le méridien de Greenwich. Au passage d''un fuseau à l''autre l''heure augmente ou diminue d''une heure.</p>
+<p>Vous pouvez modifié l''appelation d''un fuseau horaire.&#160; Cettte information sera affichée dans les paramètres du serveur, du site et de l''usager.</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_ManageTabs','<h1 align="center">Paramètres page</h1>
 <ul>
@@ -3837,7 +3937,69 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_ManageTabs','<h1 align="center">Para
 </ul>
 <p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_ManageTabsXML','DisplayHelp_ManageTabsXML', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_ManageTabsXML','<h1 style="text-align: center;">Gabarit XML Page</h1>
+<p>Vous pouvez modifier le code xml de la page pour en faire un gabarit que vous pourrez utiliser par la suite lors de la creation d''une nouvelle page.&#160; Une fois les modifications apportés vous pouvez sauvegarder le gabarit.&#160; Le fichier xml utilsera le nom que vous lui donnerez.&#160; Le fichier sera sauvegarder dans le répertoire skin/templates de votre site.&#160; Si le fichier existe déjà il sera écrasé par le nouveau fichier. Tous les fichiers dans ce répertoire seront disponible pour populer une nouvelle page lors de sa création.</p>
+<p>La structure du gabarit xml est le suivant:</p>
+<p>&lt;?xml version="1.0" encoding="utf-8"?&gt;</p>
+<br />
+<p>&lt;portal&gt;</p>
+<br />
+<p>&#160;&lt;tabs language=''''&gt;</p>
+<br />
+<p>&#160; &lt;tab&gt;</p>
+<br />
+<p>&#160; &lt;name&gt;&lt;/name&gt;</p>
+<br />
+<p>&#160; &lt;visible&gt;&lt;/visible&gt;</p>
+<br />
+<p>&#160;&#160; &lt;panes&gt;</p>
+<br />
+<p>&#160;&#160; &lt;pane&gt;</p>
+<br />
+<p>&#160;&#160; &lt;name&gt;&lt;/name&gt;</p>
+<br />
+<p>&#160;&#160;&#160; &lt;modules&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160; &lt;module&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160; &lt;title&gt;&lt;/title&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160; &lt;definition&gt;&lt;/definition&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160; &lt;modulesettings&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160; &lt;modulesetting&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160; &lt;settingname&gt;&lt;/settingname&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160; &lt;settingvalue&gt;&lt;/settingvalue&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160; &lt;/modulesetting&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;datas&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;data&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;data1&gt;&lt;/data1&gt;&lt;data2&gt;&lt;/data2&gt;&lt;data3&gt;&lt;/data3&gt;&lt;data4&gt;&lt;/data4&gt;&lt;data5&gt;&lt;/data5&gt;&lt;data6&gt;&lt;/data6&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;/data&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160;&#160;&#160; &lt;/datas&gt;</p>
+<br />
+<p>&#160;&#160;&#160;&#160;&#160; &lt;/module&gt;</p>
+<br />
+<p>&#160;&#160;&#160; &lt;/modules&gt;</p>
+<br />
+<p>&#160;&#160; &lt;/pane&gt;</p>
+<br />
+<p>&#160; &lt;/panes&gt;</p>
+<br />
+<p>&#160;&lt;/tab&gt;</p>
+<br />
+<p>&#160;&lt;/tabs&gt;</p>
+<br />
+<p>&lt;/portal&gt;</p>
+<br />', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_MAnageUserDefinedTable','<h1 style="text-align: center;">Gestion des tables usager</h1>
 <ol>
@@ -3883,21 +4045,41 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_ModerateAdmin','<h1 style="text-alig
 <p>&#160;</p>
 <ol>
     <li>Ouvrir le panneau de la section où vous voulez faire les modifications au forum &#160;<img alt="Ouvrir une section" title="Ouvrir la section" src="http://dotnetzoom.com/images/plus2.gif" /></li>
-    <li>Pour ajouter ou enlever des modérateur pour ce forum <img type="image" style="border-width: 0px; background: transparent url(/images/TTT/forum.gif) no-repeat scroll 0px -176px; height: 16px; width: 16px; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;" alt="Choisir moderateur" src="/images/1x1.gif" title="Choisir moderateur" /></li>
-    <li>Pour désigner un forum comme dirigé  cliquer sur <img type="image" style="border-width: 0px; background: transparent url(/images/TTT/forum.gif) no-repeat scroll 0px -128px; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; height: 16px; width: 16px;" alt="Modifier" src="../../images/1x1.gif" title="Modifier" />
+    <li>Pour ajouter ou enlever des modérateur pour ce forum <img type="image" style="border-width: 0px; background: transparent url(../../images/TTT/forum.gif) no-repeat scroll 0px -176px; height: 16px; width: 16px;" alt="Choisir moderateur" src="/images/1x1.gif" title="Choisir moderateur" /></li>
+    <li>Pour désigner un forum comme dirigé  cliquer sur <img type="image" style="border-width: 0px; background: transparent url(../../images/TTT/forum.gif) no-repeat scroll 0px -128px; height: 16px; width: 16px;" alt="Modifier" src="../../images/1x1.gif" title="Modifier" />
     <ol>
         <li>Pour choisir un ou des administreur utilisé les boutons de a - z ou (tout)</li>
-        <li><img title="Select moderator" src="../../images/1x1.gif" alt="Select" style="border-width: 0px; background: transparent url(/images/TTT/forum.gif) no-repeat scroll 0px -176px; height: 16px; width: 16px; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;" type="image" /> sera visible suite au nom d''un moderateur</li>
-        <li>Pour ajouter un modérateur cliquer sur <img style="border-style: none; border-width: 0px;" alt="Ajouter" src="/images/rt.gif" /></li>
-        <li>Pour voir l''information sur le modérateur ainsi ajouté cliquer sur&#160; <img alt="Ouvrir une section" title="Ouvrir la section" src="http://dotnetzoom.com/images/plus2.gif" /></li>
-        <li>Pour enlever un modérateur cliquer sur <img type="image" style="border-style: none; border-width: 0px;" alt="Enlever" src="/images/lt.gif" title="Enlever" /></li>
+        <li><img title="Select moderator" src="../../images/1x1.gif" alt="Select" style="border-width: 0px; background: transparent url(../../images/TTT/forum.gif) no-repeat scroll 0px -176px; height: 16px; width: 16px;" type="image" /> sera visible suite au nom d''un moderateur</li>
+        <li>Pour ajouter un modérateur cliquer sur <img style="border-style: none; border-width: 0px;" alt="Ajouter" src="../../images/rt.gif" /></li>
+        <li>Pour voir l''information sur le modérateur ainsi ajouté cliquer sur&#160; <img alt="Ouvrir une section" title="Ouvrir la section" src="../../images/plus2.gif" /></li>
+        <li>Pour enlever un modérateur cliquer sur <img type="image" style="border-style: none; border-width: 0px;" alt="Enlever" src="../../images/lt.gif" title="Enlever" /></li>
     </ol>
     </li>
 </ol>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_ModuleDefinitions','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_ModuleDefinitions','<h1 style="text-align: center;">Gestion des modules</h1>
+<ul>
+    <li>Nom du module : Nom descriptif qui sera utilisé pour désigner le module dans le menu d''ajout de module d''une page.</li>
+    <li>Description : Information qui sera utilisé pour donner de l''information sur l''utilisation du module dans le menu d''ajout de module d''une page.</li>
+    <li>Source bureau : l''endroit ou le fichier de contrôle asp.net ascx est situé sur le site web. (code utilisé pour afficher le module)</li>
+    <li>Modifier source : l''endroit ou le fichier de contrôle asp.net ascx est situé sur le site web. (code utilisé pour l''option modifier du module)</li>
+    <li>Fichier aide : Non utilisé présentement.</li>
+    <li>Icône : Icone qui sera affiché sur la page de modification du module. (Peut être vide)</li>
+    <li>Bonus : Indique si un Bonus sera exigé pour l''utilisation du module par un site.
+    <ul>
+        <li>Ajout du bonus : Aller dans les paramètres du site section subscrition pour inscrire le montant requis pour l''utilisation du bonus.</li>
+    </ul>
+    </li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_ModuleDefs','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_ModuleDefs','<h1 style="text-align: center;">Gérer les modules</h1>
+<p>Vous trouvez dans ce menu, tous les modules disponible sur le serveur. </p>
+<ul>
+    <li>Le nom du module est ainsi que sa description est spécifique à la langue d''affichage.</li>
+    <li>La colone Bonus indique si le module est gratuit ou non. </li>
+</ul>
+<p>Pour modifier les informations spécifique au module cliquer sur <img style="border-width: 0px;" alt="Modifier" src="../../images/edit.gif" title="Modifier" /></p>
+<p>Pour ajouter un nouveau module cliquer sur <img style="border-width: 0px;" alt="*" src="../../images/add.gif" /></p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_ModuleSettings','<h1 align="center">Param&egrave;tres d''un Module</h1>
 <ul>
@@ -3927,9 +4109,14 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_ModuleSettings','<h1 align="center">
     </li>
 </ul>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_MyBuddiesModule','Fonction de paramétrisation.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_MyBuddiesModule','<h1 style="text-align: center;">Usagers préférés</h1>
+<p>Information sur les usagers préférés en ligne ou non.</p>
+<p>Pour désigner un usager préférés, utiliser le module de recherche d''usager et cliquer sur le nom de l''usager.</p>
+<p>À partir de ce module vous pouvez visionner l''information sur l''usager préféré ainsi que d''aller dans le module de courriel pour faire parvenir un courrier à l''usager.</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_NeedToLogin','Vous devez ouvrir une session.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_NeedToLogin','<p>&#160;</p><p>&#160;</p>
+<h1>Vous devez ouvrir une session pour utiliser cette option.</h1>
+<p>&#160;</p><p>&#160;</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_PMSCompose','<div style="text-align: center;">
 <h1>Écrire un nouveau message</h1>
@@ -3951,9 +4138,18 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_PMSOutbox','<div style="text-align: 
 <p>Liste des messages que vous avez fait parvenir aux autres usager.&#160; Vous pouvez lire, valider les informations sur l''usager et effacer les messages envoyés.</p>
 <p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Portals','Fonction de paramétrisation des site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Portals','<h1 style="text-align: center;">Portails</h1>
+<p>Une liste de tous les portails du serveur. </p>
+<ul>
+    <li>Modifier les paramètre d''un portail : Cliquer sur <img title="Modifier le portail" src="../../images/edit.gif" alt="modifier" style="border-width: 0px;" /> pour modifier les paramètres du portail tel que : site démo, subcription, paramètres SSL, nom de domaine.</li>
+    <li>Voir Portail : Cliquer sur le nom du portail pour être rediriger sur ce portail.</li>
+    <li>Ajouter un nouveau portail: Cliquer sur <img src="../../images/add.gif" alt="*" style="border-width: 0px;" /> pour ajouter un nouveau portail.</li>
+</ul>
+<p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Privacy','La présente déclaration de confidentialité divulgue nos pratiques relatives à la protection de la vie privée. En utilisant le site web, vous consentez sans réserve à la collecte,  l''utilisation et  la divulgation de vos renseignements personnels et aux pratiques relatives à la protection de la vie privée énoncées dans la déclaration de confidentialité.  Si vous désirez plus d''information ou d''aide veuillez nous écrire.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Privacy','<span class="Head">DÉCLARATION DE CONFIDENTIALITÉ</span>
+<p>
+La présente déclaration de confidentialité divulgue nos pratiques relatives à la protection de la vie privée. En utilisant le site web, vous consentez sans réserve à la collecte,  l''utilisation et  la divulgation de vos renseignements personnels et aux pratiques relatives à la protection de la vie privée énoncées dans la déclaration de confidentialité.  Si vous désirez plus d''information ou d''aide veuillez nous écrire.</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Register','<h1>Inscription {PortalName}</h1>
 <p>Tous les champs avec un <b>*&#160;</b>sont obligatoires.</p>
@@ -3966,7 +4162,7 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_Register','<h1>Inscription {PortalNa
 </ol>
 <p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_RegisterEdit','<h1>Inscription {PortalName}</h1>
+UpdatelonglanguageSetting 'fr','DisplayHelp_RegisterEdit','<h1>Modification information personnelle {PortalName}</h1>
 <p>Tous les champs avec un <b>*&#160;</b>sont obligatoires.</p>
 <p>Pour créer un mot de passe sécure et facile à mémoriser pour vous:</p>
 <ol>
@@ -3977,7 +4173,19 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_RegisterEdit','<h1>Inscription {Port
 </ol>
 <p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_RegisterEditServices','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_RegisterEditServices','<h1>Modification information personnelle {PortalName}</h1>
+<p>Tous les champs avec un <b>*&#160;</b>sont obligatoires.</p>
+<p>Pour créer un mot de passe sécure et facile à mémoriser pour vous:</p>
+<ol>
+    <li>Ne pas utiliser des renseignements personnels. Vous ne devez jamais utiliser les renseignements personnels dans le cadre de votre mot de passe. Il est très facile de deviner votre nom, prénom, nom de l''animal, date de la naissance ou d''autres détails.</li>
+    <li>Ne pas utiliser de vrais mots. Il ya des outils disponibles pour aider les attaquants à deviner votre mot de passe. Il ne faut pas longtemps pour essayer tous les mots dans le dictionnaire et ainsi trouver votre mot de passe, il est donc préférable si vous n''utilisez pas de mots réels comme mot de passe.</li>
+    <li>Mélanger différents types de caractères. Vous pouvez faire un mot de passe beaucoup plus sûr en mélangeant différents types de caractères. Utilisez des majuscules avec des lettres minuscules, chiffres et même des caractères spéciaux tels que ''&amp;'' ou ''%''.</li>
+    <li>Plutôt que d''essayer de se rappeler d''un mot de passe créé à l''aide de différents types de caractères, vous pouvez créer un mot de passe en utilisant par exemple la première lettre des môt dans une ligne d''une chanson ou un poème que vous aimez. Par exemple, plutôt que simplement comme un mot de passe ''an $ 1Hes'', vous pouvez prendre une phrase telle que «J''aime lire la Presse tous les samedi matin" et de le convertir en mot de passe comme'' JallP2lsm. Vous pouvez utiliser une variété de types de caractères et de créer un mot de passe qui est difficile à deviner, mais beaucoup plus facile à mémoriser pour vous.</li>
+</ol>
+<p>&#160;</p>
+<h1>Services {PortalName}</h1>
+<p>Liste des services disponible ainsi que ceux que vous vous êtes inscrit.</p>
+', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Roles','<div style="text-align: center;">
 <h1>Paramètres de sécurité</h1>
@@ -4016,7 +4224,9 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_SecurityRole','<h1 style="text-align
 <p>Chacune des pages ou des modules sont accessibles ou modifiables selon les rôles désignés pour cette ressource.</p>
 <p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Services','Information sur les services disponible sur le site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Services','<h1>Services {PortalName}</h1>
+<p>Liste des services disponible.  Pour adhérer à un service vous devez vous inscrire.</p>
+', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Signin','<h1>Ouvrir une session</h1>
 <p>Vous devez entrer un Code d''accès et mot de passe.</p>
@@ -4024,23 +4234,65 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_Signin','<h1>Ouvrir une session</h1>
 <p>Si vous ne vous souvenez plus de votre mot de passe, vous pouvez le récupérer par courriel, utilisez l''option appropriée.</p>
 <p>Pour des raisons de sécurité, si vous n''avez pas entrer le bon compte ou vous avez utilisé un mauvais mot de passe, un délai sera nécessaire avant toute nouvelle tentative d''ouvrir une session</p>
 <hr>
-<p>Si vous éprouvez de la difficulté à ouvrir un session vous pouvez toujours contacter l''administrateur de {AdministratorEmail}</p>', null 
+<p>Si vous éprouvez de la difficulté à ouvrir un session vous pouvez toujours contacter l''administrateur de {AdministratorEmail}</p><p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Signup','<table width="80%" border="0" align="center">
-    <tbody>
-        <tr>
-            <td> <span style="" class="ItemTitle"> Conditions g&eacute;n&eacute;rales d''utilisation entre vous et {PortalName}</span>  <br /> <br /> <span class="ItemTitle"> COMPTE D''UTILISATEUR, MOT DE PASSE ET S&Eacute;CURIT&Eacute;</span>  <br /> <br /> Si vous ouvrez un compte sur le site web {PortalName}, vous devez compl&eacute;ter le formulaire d''inscription avec des informations actuelles, compl&egrave;tes et exactes, comme le formulaire d''inscription en question vous y invite. Vous choisirez ensuite un mot de passe et un nom d''utilisateur. Vous &ecirc;tes enti&egrave;rement responsable du maintien de la confidentialit&eacute; de votre mot de passe et de votre nom d''utilisateur. Vous &ecirc;tes en outre enti&egrave;rement responsable de toute activit&eacute; ayant lieu sous votre compte. Vous vous engagez &agrave;&nbsp; avertir imm&eacute;diatement {PortalName} de toute utilisation non autoris&eacute;e de votre compte, ou de toute autre atteinte &agrave;&nbsp; la s&eacute;curit&eacute;. {PortalName} ne pourra en aucun cas &ecirc;tre tenue pour responsable d''un quelconque dommage que vous subiriez du fait de l''utilisation par autrui de votre mot de passe ou de votre compte, que vous ayez eu connaissance ou non de cette utilisation. N&eacute;anmoins, votre responsabilit&eacute; pourrait &ecirc;tre engag&eacute;e si {PortalName} ou un tiers subissait des dommages dus &agrave;&nbsp;l''utilisation par autrui de votre compte ou de votre mot de passe. Il ne vous est jamais permis d''utiliser le compte d''autrui sans l''autorisation du titulaire du compte.  <br /> <br /> <span class="ItemTitle"> MODIFICATION DES PR&Eacute;SENTES CONDITIONS D''UTILISATION</span>  <br /> <br /> {PortalName} se r&eacute;serve le droit de modifier les termes, conditions et mentions d''avertissement applicables au site et Services qui vous sont propos&eacute;s. Il vous incombe de consulter r&eacute;guli&egrave;rement ces termes et conditions d''utilisation. Votre utilisation renouvel&eacute;e du site web {PortalName} constitue l''acceptation de votre part de tous ces termes, conditions d''utilisation et mentions d''avertissement.  <br /> <br /> <span class="ItemTitle"> UTILISATION LIMIT&Eacute;E &Agrave; DES FINS PERSONNELLES ET NON COMMERCIALES</span>  <br /> <br /> Sauf indication contraire, le site web {PortalName} est destin&eacute; &agrave;&nbsp; &ecirc;tre utilis&eacute;s &agrave;&nbsp; des fins personnelles et non commerciales. Vous n''&ecirc;tes pas autoris&eacute; &agrave;&nbsp; modifier, copier, distribuer, transmettre, diffuser, repr&eacute;senter, reproduire, publier, conc&eacute;der sous licence, cr&eacute;er des oeuvres d&eacute;riv&eacute;es, transf&eacute;rer ou vendre tout information, logiciel, produit ou service obtenu &agrave;&nbsp; partir de ce site web. Vous ne pouvez pas utiliser le site web {PortalName} &agrave;&nbsp; des fins commerciales, sans l''autorisation expresse, &eacute;crite et pr&eacute;alable, de {PortalName}.  <br /> <br /> <span class="ItemTitle"> LIENS VERS DES SITES TIERS </span>  <br /> <br /> Le site web {PortalName} peut contenir des images de, et des liens vers des sites Web g&eacute;r&eacute;s par des tiers. {PortalName} n''exerce aucun contr&ocirc;le sur ces sites et n''assume aucune responsabilit&eacute; quant &agrave;&nbsp;leur contenu, ni notamment quant au contenu des liens pr&eacute;sent&eacute;s dans ces sites, ou encore aux modifications ou mises &agrave; jour apport&eacute;es &agrave;&nbsp; ces sites.  <br /> <br /> <span class="ItemTitle"> UTILISATION ILLICITE OU INTERDITE</span>  <br /> <br /> Vous ne pouvez utiliser le site web {PortalName} qu''&agrave;&nbsp; condition de garantir que vous ne l''utiliserez pas &agrave;&nbsp; des fins illicites ou interdites par ces termes, conditions d''utilisation et mentions d''avertissement.  <br /> <br /> <span class="ItemTitle">QUESTIONS</span> <br /> <br /> Si vous avez des questions ou des commentaires au sujet des conditions d''utilisation, n''h&eacute;sitez pas &agrave; vous adresser {PortalName} par courriel &agrave; {AdministratorEmail}. <br /> <br /> </td>
-        </tr>
-    </tbody>
-</table>', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Signup','<h1 style="text-align: center;">Ajouter un nouveau portail</h1>
+<p>Vous devez entrer toutes les informations afin de créer un nouveau portail.       </p>
+<ul>
+    <li>Nom du portail: Utilisez uniquement des caractères alphanumériques. Vous ne pouvez pas utiliser des espaces. Si le nom est déjà utilisé sur le serveur, vous devrez en utiliser un autre.</li>
+    <li>Gabarit: Modèles disponibles dans une liste déroulante. Une image sera affiché pour un gabarit choisi.</li>
+    <li>Prénom: Le prénom de l''administrateur du site. (obligatoire)</li>
+    <li>Nom: Le nom de l''administrateur du site. (obligatoire)</li>
+    <li>Code d''accès: Peut être une combinaison de n''importe quel caractère alphanumérique. Devrait être d''au moins 8 caractères de long pour des raisons de sécurité. Aussi il est fortement conseillé de combiner majuscules et minuscules et faire un mélange de chiffres et de lettres. (obligatoire)</li>
+    <li>Môt de passe: Peut être une combinaison de n''importe quel caractère alphanumérique. Devrait être d''au moins 8 caractères de long pour des raisons de sécurité. Aussi il est fortement conseillé de combiner majuscules et minuscules et faire un mélange de chiffres et de lettres. (obligatoire)</li>
+    <li>Courriel: Un courriel est requis pour activer le nouveau site.</li>
+</ul>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_SiteLog','Le module sert à voir les statistiques d''utilisations de votre portail.  Plus particulièrement, qui utilise le site, quand et comment.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_SiteLog','<h1 style="text-align: center; ">Statistiques</h1>
+<p>&#160;</p>
+<p>Le module sert à voir les statistiques d''utilisations de votre portail.  Plus particulièrement, qui utilise le site, quand et comment.</p>
+<p>&#160;</p>
+<p>Choisir un rapport avec une date de début et de fin.</p>
+<ul>
+    <li>Inscription par date</li>
+    <li>Inscription par pays</li>
+    <li>Nombre de clics</li>
+    <li>Popularité par page</li>
+    <li>Références au site</li>
+    <li>Statistiques détaillées</li>
+    <li>Statistiques hebdomadaire</li>
+    <li>Statistiques horaire</li>
+    <li>Statistiques mensuelle</li>
+    <li>Statistiques quotidienne
+    <option value="3">Utilisation par usager</option>
+    </li>
+</ul>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings1','<h1 style="text-align: center;">Paramètres du site Habillage</h1>
 <ul>
     <li>Image d''entête : Vous pouvez choisir une image à afficher dans l''entête de la page.</li>
     <li>Image d''arrière plan : Vous pouvez choisir une image qui sera utilisé pour définir l''arrière plan de la page.</li>
-    <li>Info utilisateur : Vous pouvez activé les fonctions suivantes, la recherche d''usager, qui est en ligne, la n otification de message, activation du module qui est en ligne et permettre l''avis courriel d''un nouveau message.</li>
+    <li>Info utilisateur : Vous pouvez activé les fonctions suivantes, la recherche d''usager, qui est en ligne, la n otification de message, activation du module qui est en ligne et permettre l''avis courriel d''un nouveau message.
+    <table id="admin_chkUserInfo" cellspacing="0" cellpadding="0" border="0" style="font-family: Verdana, Arial; font-size: 8pt; width: 400 px; border-collapse: collapse; ">
+        <tbody>
+            <tr>
+                <td><img height="14" width="17" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -91px; " src="../../images/1x1.gif" />&#160;&#160;Recherche usagers</td>
+            </tr>
+            <tr>
+                <td><img height="14" width="17" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -105px; " src="../../images/1x1.gif" />&#160;&#160;Indique qui est en ligne</td>
+            </tr>
+            <tr>
+                <td><img height="12" width="18" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-color: initial; background-position: 0px -147px; " src="../../images/1x1.gif" />&#160;&#160;Hyperlien pour le courriel</td>
+            </tr>
+            <tr>
+                <td><img height="14" width="17" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -91px; " src="../../images/1x1.gif" />&#160;&#160;Active l''option de suivi de qui est en ligne &#160;</td>
+            </tr>
+            <tr>
+                <td><img height="16" width="17" border="0" alt="*" style="background-image: url(../../images/uostrip.gif); background-repeat: no-repeat; background-position: 0px -243px; " src="../../images/1x1.gif" />&#160;&#160;Active l''option de courriel</td>
+            </tr>
+        </tbody>
+    </table>
+    </li>
     <li>Mise en forme : Vous pouvez modifier les fichiers de mise en forme CSS et SKIN.</li>
     <li>Remplacement de l''entête: Code HTML pour afficher à l''entête de la page.</li>
     <li>Habillage pour modules : Vous pouvez modifier l''habillage des modules du portail, des options administrateur, des modules d''edition, du module d''inscription et les Tooltip.</li>
@@ -4110,7 +4362,7 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings1','<h1 style="text-alig
             <br />
             <ul type="circle"><br />
                 <li><strong>La table principale</strong> - Utiliser le paramètre CSS #maintable { } pour désigner un style qui englobera .leftpane .contentpane et .rightpane</li>
-                <li><strong>Le menu</strong> - Vous trouverez un fichier menu_tp1.js dans votre répertoire racine. Ce fichier détermine le paramètres d''affichages du menu. Pour changer la position du menu vous devez modifier block_top et block_left . Le menu est très flexible vous pouvez l''afficher ou vous voulez dans l''écran vertical ou horizontal. je vous invite à aller voir la <a href="http://www.softcomplex.com/products/tigra_menu/docs/" title="Info tigra menu">documentation ici</a></li>
+                <li><strong>Le menu</strong> - Vous trouverez un fichier menu_tp1.js dans votre répertoire racine. Ce fichier détermine le paramètres d''affichages du menu. Pour changer la position du menu vous devez modifier block_top et block_left . Le menu est très flexible vous pouvez l''afficher ou vous voulez dans l''écran vertical ou horizontal. je vous invite à aller voir la <a title="Info tigra menu" href="http://www.softcomplex.com/products/tigra_menu/docs/">documentation ici</a></li>
                 <li><strong>Le panneau d''administration</strong> - Pour le panneau d''administration utiliser le paramètre CSS .admin {z-index: 100; max-width: 370px; top:0; background: silver; border: thin dotted; padding: 4; position: absolute}</li>
                 <li><strong>Le panneau d''ouverture de session</strong> - Pour positionner le menu d''ouverture de session utiliser le paramètre CSS <br />
                 #signin {position: absolute; background: ivory; top: 150px; right: 60px; z-index: 100; border: thin dotted black; width: 160px}</li>
@@ -4122,12 +4374,12 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings1','<h1 style="text-alig
             <br />
             La structure de base d''un module est : <br />
             <br />
-            <strong>&lt;TABLE cellSpacing=0 cellPadding=0 width="100%" [BORDER] [COLOR]&gt;<br />
-            &#160;&#160;&lt;TR&gt;<br />
-            &#160;&#160; &lt;TD [ALIGN]&gt;&#160;&#160;&#160;&#160;[MODULE]<br />
-            &#160;&#160;&#160;&lt;/TD&gt;<br />
-            &#160;&#160;&lt;/TR&gt;<br />
-            &lt;/TABLE&gt;</strong><br />
+            <strong>&lt;TABLE cellSpacing=0 cellPadding=0 width="100%" [BORDER] [COLOR]><br />
+            &#160;&#160;&lt;TR><br />
+            &#160;&#160; &lt;TD [ALIGN]>&#160;&#160;&#160;&#160;[MODULE]<br />
+            &#160;&#160;&#160;&lt;/TD><br />
+            &#160;&#160;&lt;/TR><br />
+            &lt;/TABLE></strong><br />
             <br />
             Utiliser la fonction "Modifier les paramètres du module" pour faire des modifications.<br />
             <ul type="circle"><br />
@@ -4142,8 +4394,40 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings1','<h1 style="text-alig
         </tr>
         <tr>
             <td>
-            		<table summary="Module Design Table" width="100%" bgcolor="#c1d0e8" border="2" cellpadding="2" cellspacing="0"><tbody><tr><td align="left"><table summary="Module Design Table" width="100%" bgcolor="#c1d0e8" border="2" cellpadding="2" cellspacing="0"><tbody><tr><td align="left"><table class="HeaderCell" width="100%"><tbody><tr><td><span class="ItemTitle">HTML/Texte</span></td></tr></tbody></table></td></tr></tbody></table><table summary="Module Design Table" width="100%" bgcolor="#c1d0e8" border="2" cellpadding="2" cellspacing="0"><tbody><tr><td align="left"><p>&nbsp;</p><h1>[MODULE]</h1><p>&nbsp;</p></td></tr></tbody></table></td></tr></tbody></table>
-
+            <table summary="Module Design Table" width="100%" bgcolor="#c1d0e8" border="2" cellpadding="2" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td align="left">
+                        <table summary="Module Design Table" width="100%" bgcolor="#c1d0e8" border="2" cellpadding="2" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td align="left">
+                                    <table class="HeaderCell" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td><span class="ItemTitle">HTML/Texte</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table summary="Module Design Table" width="100%" bgcolor="#c1d0e8" border="2" cellpadding="2" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td align="left">
+                                    <p>&#160;</p>
+                                    <h1>[MODULE]</h1>
+                                    <p>&#160;</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             </td>
         </tr>
     </tbody>
@@ -4161,20 +4445,62 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings2','<h1 style="text-alig
     <li>Méthode de paiement : Seulement paypal est disponible.</li>
 </ul>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings3','Fonction de paramétrisation du site web.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings3','<h1>Paramètres linguistiques</h1>
+<ol>
+    <li>Choisir la langue par défaut, ainsi que les langues à utiliser.</li>
+    <li>Choisir la langue pour modifier les paramètres spécifiques à chaque langues.
+    <ul>
+        <li>Conditions générales</li>
+        <li>Déclarations de confidentialité</li>
+        <li>Titre du portail</li>
+        <li>Texte de bas de page</li>
+        <li>Description du portail</li>
+        <li>Mots clés</li>
+        <li>Directives d''ouverture d''une session</li>
+        <li>Directives d''inscriptions</li>
+        <li>Informations supplémentaires ajouté au courriel d''inscription</li>
+        <li>Directives pour la création d''un portail démo (si activé par le webmestre seulement)</li>
+    </ul>
+    </li>
+</ol>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings4','Fonction de paramétrisation du site web.', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettings5','Fonction de paramétrisation du site web.', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_SQL','Fonction d''ajout et de modification.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettingsAlias','<h1>Détails de l''hébergement</h1>
+<h2>Le webmestre peut modifier les paramêtres de l''hébergement :</h2>
+<ol>
+    <li>Frais de base pour l''hébergement.</li>
+    <li>L''espace en MB maximal pour le portail. 0 pour un illimité.</li>
+    <li>Le nombre de jours pour le log tu site.</li>
+    <li>Date d''expiration du portail.</li>
+</ol>
+<p>&#160;</p>
+<h2>Alias et nom de domaine</h2>
+<p>Un portail peut avoir plusieurs alias ou nom de domaine. Chaque non de domaine doit être unique sur le serveur web.&#160; Si vous inscrivez un non de domaine déjà utiliser par un autre portail il sera réassigné à ce portail.&#160; Chaque non de domaine peut être désigné pour utiliser le protocol sécurisé SSL.&#160; Assurez vous que cette fonction est activé sur le serveur web.&#160; Si vous activé cette option et que le serveur web n''est pas configuré en conséquence, ceci pourra rendre le portail inopérant.</p>
+<h2>Protocol SSL</h2>
+<p><span style="font-size: larger; color: rgb(255, 0, 0);">IMPORTANT : &#160;</span>Le protocol SSL doit être préalablement installé sur le serveur web. &#160;Aussi que l''option <a class="headertitle" target="_blank" title="modifier option ssl" href="fr.default.aspx?adminpage=72">forcer ssl</a> dans les paramètres d''hébergement doit être activé. &#160;Un certificat SSL ne peut utiliser qu''une adresse IP. &#160;Donc, seulement un certificat SSL ne pourra être utilisé pour une instalation de DotNetZoom. &#160; Si le certificat SSL utilisé est d''un nom de domaine différent que celui du portail, vous devrez cocher l''option sub et ssl pour ce nom de domaine. &#160;<span style="font-size: larger; color: rgb(255, 0, 0); ">Ne cocher l''option ssl que pour un nom de domaine pour lequel un certificat SSL est valide, sinon vous rendrez le portail inopérant.</span></p>', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettingsDemo','<h1>Paramètres pour portail demo</h1>
+<p>L''option démo doit être préalablement activé dans les paramètres d''hébergement. <a target="_blank" title="Modifier les options démo dans les paramètres d''hébergement" class="headertitle" href="fr.default.aspx?adminpage=72">Vous pouvez définir les options de base.</a>   Vous pouvez autoriser la création d''un de démo. Un site de démo peut utiliser un domaine enfant, c''est-à-dire dotnetzoom / votrenom ou un sous-domaine, c''est-à-dire yourname.dotnetzoom. Pour utiliser un sous-domaine Le serveur DNS doit être convigurer en conséquence, sinon le portail demo ainsi crée sera inopérable, &#160;parceque le nouveau sous-domaine ne sera pas disponible dans la table dns.</p><p><b>*Note:</b>  Une fois que qu''un nouveau portail sera créé.  L''utilisateur ainsi que le webmestre recevra un <b>courriel avec un <font color="#ff0000">hyperlien</font></b> pour activer le portail.  Donc il est important que les paramètres SMTP soit activé dans les <a target="_blank" title="Modifier les options SMTP dans les paramètres d''hébergement" class="headertitle" href="fr.default.aspx?adminpage=72">paramètres d''hébergement.</a></p>', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_SQL','<p>Les tables utilisateurs contiennent les données des utilisateurs.</p><p>
+Une table peut contenir jusqu''à 1024 champs dont la somme des tailles n''excède pas 8060 octets. Pour dépasser les 8060 octets il faut utiliser les types de données text, binary et image, leurs valeurs sont stockées dans un espace séparé des autres données. Ces champs ne peuvent pas être inclus dans des index classiques.</p><p>
+La version 2005 de SQL Server, la limite de 8060 octets peut-être dépassée avec tous les types de longueurs variables. Une constante MAXSIZE a été introduite pour définir la taille des champs au maximum adressable par le moteur de base de données (actuellement 2 giga-octets), elle sert à indiquer la longueur maximale des champs de type varchar(max), nvarchar(max), varbinary(max) qui remplacent respectivement les types text, binary et image qui ont été déclarés obsolètes.</p><p>
+Les enregistrements d''une table peuvent être caractérisés par une clef primaire. La clef primaire est toujours indexée sur SQL Server. D''autres contraintes sont également disponibles au niveau des tables tel que : les contraintes uniques, les valeurs par défaut, les contraintes de vérification (check), les clefs étrangères.</p><p>
+Il est possible de définir des procédures stockées. Une procédure stockée est une suite d''instructions qui vont avoir des effets sur la base de données ou qui renvoient des valeurs.</p><p>
+Les procédures stockées sous SQL Server peuvent prendre en paramètre ou retourner des entiers, des chaînes de caractère, des dates, des curseurs, des tables, des tables virtuelles et tout autre type défini dans SQL Server par défaut ou par les utilisateurs.
+Les principaux avantages de l''utilisation des procédures stockées sont : la sécurité accrue, la réutilisation des plans compilés et la possibilité de gérer les dépendances entre le code SQL et les objets du moteur.</p>
+', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Tabs','<h1 style="text-align: center; ">Pages</h1>
 <p>Vous pouvez ajouter, modifier ou changer la hiérarchie des pages par ce menu.</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_TAGFileManagerModule','DisplayHelp_TAGFileManagerModule', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Terms','Les présentes conditions générales constituent l''intégralité de l''entente pour l''utilisation du site web.  Les conditions générales d''utilisation du site web sont régies par les lois de la province du Québec et par les lois fédérales du Canada applicables et doivent être interprétées en vertu de ces lois.  Si vous désirez plus d''information ou d''aide veuillez nous écrire.', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_Terms','<span class="Head">CONDITIONS GÉNÉRALES</span>
+<p>Les présentes conditions générales constituent l''intégralité de l''entente pour l''utilisation du site web.  Les conditions générales d''utilisation du site web sont régies par les lois de la province du Québec et par les lois fédérales du Canada applicables et doivent être interprétées en vertu de ces lois.  Si vous désirez plus d''information ou d''aide veuillez nous écrire.</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_UserInfoModule','<h1 style="text-align: center;">Information membres</h1>
 <p>Le module affiche des informations de base sur les membres du site.</p>
@@ -5133,33 +5459,33 @@ UpdateCountryCodes 'fr','ZM','Zambia'
 GO
 UpdateCountryCodes 'fr','ZW','Zimbabwe'
 GO
-UpdateAdminModuleDefinitions 'fr','99','icon_site_16px.gif','Admin'
+UpdateAdminModuleDefinitions 'fr','99','Admin','Menu pour les fonctions d''administrations'
 GO
-UpdateAdminModuleDefinitions 'fr','14','icon_sitesettings_16px.gif','Paramètres du site'
+UpdateAdminModuleDefinitions 'fr','14','Paramètres du site','Les paramètres du site représentent les options locales pour votre portail. Le module vous permet d''adapter votre portail pour répondre à vos exigences.'
 GO
-UpdateAdminModuleDefinitions 'fr','13','icon_tabs_16px.gif','Pages'
+UpdateAdminModuleDefinitions 'fr','13','Pages','L''administrateur peut contrôler les pages dans le portail. Ce module permet de créer, modifier, supprimer, changer l''ordre et de changer le niveau hiérarchique des pages.'
 GO
-UpdateAdminModuleDefinitions 'fr','12','icon_securityroles_16px.gif','Paramètres de sécurité'
+UpdateAdminModuleDefinitions 'fr','12','Paramètres de sécurité','L''administrateur peut contrôler les profils de sécurité du portail. Le module vous permet d''ajouter, modifier, supprimer et contrôler les profils de sécurités ainsi que leurs attribution aux utilisateurs.'
 GO
-UpdateAdminModuleDefinitions 'fr','72','icon_hostsettings_16px.gif','Paramètres d''hébergement'
+UpdateAdminModuleDefinitions 'fr','72','Paramètres d''hébergement','Le webmestre peut gérer tous les paramètres maitre pour le site d''hébergement.'
 GO
-UpdateAdminModuleDefinitions 'fr','15','icon_users_16px.gif','Gestion usagers'
+UpdateAdminModuleDefinitions 'fr','15','Gestion usagers','Le module sert à gérer les utilisateurs enregistrés. Il vous permet d''ajouter, modifier et supprimer des comptes utilisateurs ainsi que de contrôler leurs profils de sécurité.'
 GO
-UpdateAdminModuleDefinitions 'fr','63','icon_portals_16px.gif','Portails'
+UpdateAdminModuleDefinitions 'fr','63','Portails','Le webmestre peut contrôler les paramètres d''hébergements des portails. Ce module vous permet d''ajouter, modifier et supprimer un portail.'
 GO
-UpdateAdminModuleDefinitions 'fr','65','icon_sql_16px.gif','SQL'
+UpdateAdminModuleDefinitions 'fr','65','SQL','Vous pouvez saisir des requêtes et les exécuter.  Aussi, en utilisant le fureteur, vous pouvez exécuter un fichier script.'
 GO
-UpdateAdminModuleDefinitions 'fr','21','icon_filemanager_16px.gif','Gestion fichiers'
+UpdateAdminModuleDefinitions 'fr','21','Gestion fichiers','Le module sert à gérer les fichiers stockés sur le portail web. Le module vous permet de télécharger, supprimer et de synchroniser la liste des fichiers avec la basse de données SQL. Il fournit également des informations sur la quantité d''espace disque utilisée et disponible.'
 GO
-UpdateAdminModuleDefinitions 'fr','64','icon_moduledefinitions_16px.gif','Gérer les modules'
+UpdateAdminModuleDefinitions 'fr','64','Gérer les modules','Vous pouvez modifier les noms ainsi que les définitions des modules.'
 GO
-UpdateAdminModuleDefinitions 'fr','19','icon_vendors_16px.gif','Fournisseurs'
+UpdateAdminModuleDefinitions 'fr','19','Fournisseurs','Le module sert à gérer les comptes fournisseurs et les oriflammes associés au portail. Ce module vous permet d''ajouter un nouveau, modifier, et supprimer un compte fournisseur.'
 GO
-UpdateAdminModuleDefinitions 'fr','27','icon_sitelog_16px.gif','Statistiques'
+UpdateAdminModuleDefinitions 'fr','27','Statistiques','Le module sert à voir les statistiques d''utilisations de votre portail.  Plus particulièrement, qui utilise le site, quand et comment.'
 GO
-UpdateAdminModuleDefinitions 'fr','28','icon_bulkmail_16px.gif','Courriel'
+UpdateAdminModuleDefinitions 'fr','28','Courriel','Le module sert à envoyer du courriel en bloc aux utilisateurs appartenant à un profil de sécurité particulier.'
 GO
-UpdateAdminModuleDefinitions 'fr','100','icon_language_16px.gif','Language'
+UpdateAdminModuleDefinitions 'fr','100','Language','Section pour localisation et modification des paramètres linguistique'
 GO
 UpdateCurrencies 'fr','CAD','Canadien (CAD)'
 GO

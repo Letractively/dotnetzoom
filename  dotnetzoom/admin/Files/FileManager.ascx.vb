@@ -75,6 +75,7 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             Dim objAdmin As New AdminDB()
+            Dim strFolder As String
 
             If Not (Request.Params("hostpage") Is Nothing) Then
                 strFolder = Request.MapPath(glbSiteDirectory)
@@ -84,11 +85,7 @@ Namespace DotNetZoom
 			
 			
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-			End If
-			SpaceUsed = SpaceUsed / 1048576
+            SpaceUsed = SpaceUsed / 1048576
 			
             If (Request.Params("hostpage") Is Nothing) Then
                     If _portalSettings.HostSpace = 0 Then

@@ -98,7 +98,8 @@ Namespace DotNetZoom
                 	If System.IO.File.Exists(strServerPath & "templates\" & dir.name & "\template.jpg") Then
                 	mImage = System.Drawing.Image.FromFile(strServerPath & "templates\" & dir.name & "\template.jpg")
                 	lWidth = mImage.Width
-                	lHeight = mImage.Height
+                        lHeight = mImage.Height
+                        mImage.Dispose()
 					lblpreview = lblpreview & "<a href=""" & "templates/" & dir.name & "/template.jpg" & """ onmouseover=""" & ReturnGalleryToolTip("/templates/" & dir.name & "/template.jpg", lwidth, lheight) & """ title=""Thème de création d'un site web"" target=""_blank"">" & dir.name & "</a>&nbsp;"
 					end if
         			Next

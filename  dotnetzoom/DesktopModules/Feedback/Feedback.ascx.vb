@@ -103,7 +103,7 @@ Namespace DotNetZoom
 
 
             If txtEMail.Text <> "" Then
-                SendNotification(txtEMail.Text, strSendTo, "", txtSubject.Text, txtBody.Text & vbCrLf & vbCrLf & txtName.Text)
+                SendNotification(_portalSettings.Email, strSendTo, "", txtSubject.Text, GetLanguage("email") & " : " & txtEMail.Text & vbCrLf & vbCrLf & txtBody.Text & vbCrLf & vbCrLf & txtName.Text)
                 lblMessage.Text = "<br>" & GetLanguage("FeedBack_Mail_Send")
                 InitializeForm()
             Else

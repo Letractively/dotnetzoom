@@ -1,4 +1,4 @@
-<%@ Control Language="vb" autoeventwireup="false" Explicit="True" codebehind="Search.ascx.vb" Inherits="DotNetZoom.Search" %>
+<%@ Control Language="vb" autoeventwireup="false" EnableViewState=False Explicit="True" codebehind="Search.ascx.vb" Inherits="DotNetZoom.Search" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:PlaceHolder id="pnlModuleContent" Runat="server">

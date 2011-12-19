@@ -30,6 +30,38 @@ Imports System.IO
 
 Namespace DotNetZoom
 
+    Public Class ISyncFunction
+
+        Dim Del As MyAsyncDelegate
+
+        Public Sub DoIt()
+
+            Del = New MyAsyncDelegate(AddressOf MyWorker)
+            Dim cb As AsyncCallback = New AsyncCallback(AddressOf ImDone)
+            Dim oState As Object
+            Dim ar As IAsyncResult = Del.BeginInvoke(cb, oState)
+
+        End Sub
+
+        Public Delegate Sub MyAsyncDelegate()
+
+        Private Sub ImDone(ByVal ar As System.IAsyncResult)
+            ' I am done
+            ar.AsyncWaitHandle.Close()
+            ' Del.EndInvoke(ar)
+
+        End Sub
+
+        Private Sub MyWorker()
+            ' save to file here
+            Dim objStream As StreamWriter
+            objStream = File.CreateText("ISynch.log")
+            objStream.WriteLine("NewLine" + vbLf)
+            objStream.Close()
+        End Sub
+
+
+    End Class
 
 
     Public Class BasePage
@@ -38,35 +70,35 @@ Namespace DotNetZoom
 
         Public Const VIEW_STATE_FIELD_NAME As String = "__PAGEVIEWSTATE"
 
-		
+
         Private _ModuleCommunicators As New ModuleCommunicators()
         Private _ModuleListeners As New ModuleListeners()
         Private _formatter As LosFormatter = Nothing                    'LosFormatter
-		
-		'//Determine if server side is enabled or not from HostSettings
+
+        '//Determine if server side is enabled or not from HostSettings
 
         Public ReadOnly Property ServerSideEnabled() As Integer
             Get
-               Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			   Dim DefServerSideViewState As String = ""
-			   If portalSettings.GetHostSettings.ContainsKey("ViewState") Then
-			   DefServerSideViewState = portalSettings.GetHostSettings("ViewState").ToString
-			   end if
-				
-            	
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                Dim DefServerSideViewState As String = ""
+                If PortalSettings.GetHostSettings.ContainsKey("ViewState") Then
+                    DefServerSideViewState = PortalSettings.GetHostSettings("ViewState").ToString
+                End If
+
+
                 Select Case DefServerSideViewState
-				Case "M"
-					ServerSideEnabled = 1
-				Case "S"
-					ServerSideEnabled = 2
-				Case else
-				     ServerSideEnabled = 0
-				End Select
+                    Case "M"
+                        ServerSideEnabled = 1
+                    Case "S"
+                        ServerSideEnabled = 2
+                    Case Else
+                        ServerSideEnabled = 0
+                End Select
             End Get
         End Property
-		
-		
-		
+
+
+
         Public ReadOnly Property ModuleCommunicators() As ModuleCommunicators
             Get
                 Return _ModuleCommunicators
@@ -80,88 +112,88 @@ Namespace DotNetZoom
         End Property
 
 
-		
+
         Public Sub New()
-		End Sub 'New
+        End Sub 'New
 
 
-	
-		
-       Protected Overrides Function LoadPageStateFromPersistenceMedium() As Object
-	    
-		Select Case ServerSideEnabled
-		
-		Case 1
-		' en memoire
-		Return LoadViewState()
-		Case 2
-		' SQL
-		Return LoadViewStateSQL()
-		Case else
-		Return MyBase.LoadPageStateFromPersistenceMedium()
-		end Select
+
+
+        Protected Overrides Function LoadPageStateFromPersistenceMedium() As Object
+
+            Select Case ServerSideEnabled
+
+                Case 1
+                    ' en memoire
+                    Return LoadViewState()
+                Case 2
+                    ' SQL
+                    Return LoadViewStateSQL()
+                Case Else
+                    Return MyBase.LoadPageStateFromPersistenceMedium()
+            End Select
         End Function
 
 
         Protected Overrides Sub SavePageStateToPersistenceMedium(ByVal viewState As Object)
 
-		Select Case ServerSideEnabled
-		
-		Case 1
-		' en memoire
-		SaveViewState(viewState)
-		Case 2
-		' SQL
-		SaveViewStateSQL(viewState)
-		Case else
- 		MyBase.SavePageStateToPersistenceMedium(viewState)
-		End Select	 
-		End Sub
+            Select Case ServerSideEnabled
 
-		
-		Private Overloads Function LoadViewStateSQL() As Object
+                Case 1
+                    ' en memoire
+                    SaveViewState(viewState)
+                Case 2
+                    ' SQL
+                    SaveViewStateSQL(viewState)
+                Case Else
+                    MyBase.SavePageStateToPersistenceMedium(viewState)
+            End Select
+        End Sub
 
-		    If (_formatter Is Nothing) Then
+
+        Private Overloads Function LoadViewStateSQL() As Object
+
+            If (_formatter Is Nothing) Then
                 _formatter = New LosFormatter
             End If
-		
+
             If (Request.Form(VIEW_STATE_FIELD_NAME) Is Nothing) Then
                 '//Did not see form field for viewstate, return null to try to continue (could log event...)
                 Exit Function
             End If
-        Dim vsKey As String = Request.Form(VIEW_STATE_FIELD_NAME)
-		
-	       
-         Dim myConnection As New SqlConnection(GetDBConnectionString)
-         Try
-            myConnection.Open()
-            
-            Try
-               Dim myCommand As New SqlCommand("SqlViewStateProvider_GetViewState", myConnection)
-               Try
-                  myCommand.CommandType = CommandType.StoredProcedure
-                  
-                  '	Key
-                  myCommand.Parameters.Add("@vsKey", SqlDbType.NVarChar, 100)
-                  myCommand.Parameters("@vsKey").Value = vsKey
-                  
-                  Dim _viewState As Object = myCommand.ExecuteScalar()
-                  '	Deserialize the view state string into object
-                  Return _formatter.Deserialize(_viewState.ToString())
-               Finally
-                  myCommand.Dispose()
-               End Try
-            Catch ex As Exception
-               Response.Redirect(Request.RawUrl, True)
-               Throw ex
-            End Try
-         Finally
-            myConnection.Dispose()
-         End Try
-      End Function ' LoadViewStateSQL
+            Dim vsKey As String = Request.Form(VIEW_STATE_FIELD_NAME)
 
-		
-		
+
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+            Try
+                myConnection.Open()
+
+                Try
+                    Dim myCommand As New SqlCommand("SqlViewStateProvider_GetViewState", myConnection)
+                    Try
+                        myCommand.CommandType = CommandType.StoredProcedure
+
+                        '	Key
+                        myCommand.Parameters.Add("@vsKey", SqlDbType.NVarChar, 100)
+                        myCommand.Parameters("@vsKey").Value = vsKey
+
+                        Dim _viewState As Object = myCommand.ExecuteScalar()
+                        '	Deserialize the view state string into object
+                        Return _formatter.Deserialize(_viewState.ToString())
+                    Finally
+                        myCommand.Dispose()
+                    End Try
+                Catch ex As Exception
+                    Response.Redirect(Request.RawUrl, True)
+                    Throw ex
+                End Try
+            Finally
+                myConnection.Dispose()
+            End Try
+        End Function ' LoadViewStateSQL
+
+
+
         Private Overloads Function LoadViewState() As Object
 
             Dim lRequestNumber As Long = 0
@@ -175,7 +207,7 @@ Namespace DotNetZoom
                 '//Did not see form field for viewstate, return null to try to continue (could log event...)
                 Exit Function
             End If
-       
+
             '//Make sure it can be converted to request number (in case of corruption)
             Try
                 lRequestNumber = Convert.ToInt64(Request.Form(VIEW_STATE_FIELD_NAME))
@@ -184,10 +216,10 @@ Namespace DotNetZoom
                 Exit Function
             End Try
             '//Get the viewstate for this page
-			 Dim _viewState As String
+            Dim _viewState As String
             _viewState = viewStateSvrMgr.GetViewStateSvrMgr().GetViewState(lRequestNumber)
-            
-		
+
+
             '//If find the viewstate on the server, convert it so ASP.Net can use it
             If (_viewState Is Nothing) Then
                 Exit Function
@@ -196,10 +228,10 @@ Namespace DotNetZoom
 
         End Function
 
-        
-		Private Overloads Sub SaveViewStateSQL(ByVal viewState As Object)
-		
-		    If (_formatter Is Nothing) Then
+
+        Private Overloads Sub SaveViewStateSQL(ByVal viewState As Object)
+
+            If (_formatter Is Nothing) Then
                 _formatter = New LosFormatter
             End If
 
@@ -208,42 +240,42 @@ Namespace DotNetZoom
             Dim _writer As New System.IO.StringWriter(_viewState)
 
             _formatter.Serialize(_writer, viewState)
-		
- 			Dim vsKey As String = ""
-			vsKey = Guid.NewGuid().ToString()
-			            '	Store the view state into database
+
+            Dim vsKey As String = ""
+            vsKey = Guid.NewGuid().ToString()
+            '	Store the view state into database
             Dim myConnection As New SqlConnection(GetDBConnectionString)
             Try
-               myConnection.Open()
-               
-               Dim myCommand As New SqlCommand("SqlViewStateProvider_SaveViewState", myConnection)
-               
-                  myCommand.CommandType = CommandType.StoredProcedure
-                  
-                  '	Key
-                  myCommand.Parameters.Add("@vsKey", SqlDbType.NVarChar, 100)
-                  myCommand.Parameters("@vsKey").Value = vsKey
-                  
-                  '	Serialized ViewState
-                  myCommand.Parameters.Add("@vsValue", SqlDbType.NText, _writer.ToString().Length)
-                  myCommand.Parameters("@vsValue").Value = _writer.ToString()
-                  
-                  myCommand.ExecuteNonQuery()
-               
-                  myCommand.Dispose()
-               
-            Finally
-               myConnection.Dispose()
-            End Try
-         
-            
-         
-            _writer.Close()
-			
-			RegisterHiddenField(VIEW_STATE_FIELD_NAME, vsKey)
+                myConnection.Open()
 
-		End Sub ' SaveViewStateSQL
-		
+                Dim myCommand As New SqlCommand("SqlViewStateProvider_SaveViewState", myConnection)
+
+                myCommand.CommandType = CommandType.StoredProcedure
+
+                '	Key
+                myCommand.Parameters.Add("@vsKey", SqlDbType.NVarChar, 100)
+                myCommand.Parameters("@vsKey").Value = vsKey
+
+                '	Serialized ViewState
+                myCommand.Parameters.Add("@vsValue", SqlDbType.NText, _writer.ToString().Length)
+                myCommand.Parameters("@vsValue").Value = _writer.ToString()
+
+                myCommand.ExecuteNonQuery()
+
+                myCommand.Dispose()
+
+            Finally
+                myConnection.Dispose()
+            End Try
+
+
+
+            _writer.Close()
+
+            RegisterHiddenField(VIEW_STATE_FIELD_NAME, vsKey)
+
+        End Sub ' SaveViewStateSQL
+
         Private Overloads Sub SaveViewState(ByVal viewState As Object)
             If (_formatter Is Nothing) Then
                 _formatter = New LosFormatter
@@ -254,15 +286,15 @@ Namespace DotNetZoom
             Dim _writer As New System.IO.StringWriter(_viewState)
 
             _formatter.Serialize(_writer, viewState)
-			
-	       
+
+
             Dim lRequestNumber As Long
             lRequestNumber = viewStateSvrMgr.GetViewStateSvrMgr().SaveViewState(_viewState.ToString())
 
             '//Need to register the viewstate hidden field (must be present or postback things don't 
             '// work, we use in our case to store the request number)
-            RegisterHiddenField(VIEW_STATE_FIELD_NAME, lRequestNumber.ToString())             
-		    		
+            RegisterHiddenField(VIEW_STATE_FIELD_NAME, lRequestNumber.ToString())
+
 
         End Sub
 
@@ -412,17 +444,31 @@ Namespace DotNetZoom
                 If Not Request.UrlReferrer Is Nothing Then
                     URLReferrer = Request.UrlReferrer.ToString()
                 End If
-                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", "Page_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + Server.GetLastError().ToString, "")
+
+                Dim LastError As Exception
+                Dim ErrMessage As String
+
+                LastError = Server.GetLastError()
+
+                If Not LastError Is Nothing Then
+                    ErrMessage = LastError.Message + vbCrLf
+                    ErrMessage += LastError.StackTrace + vbCrLf
+                    ErrMessage += LastError.Source + vbCrLf
+                Else
+                    ErrMessage = ""
+                End If
+
+                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + ErrMessage, "")
+                If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
+                    ' read script file for version
+                    Dim objStreamReader As StreamReader
+                    objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
+                    Dim strHTML As String = objStreamReader.ReadToEnd
+                    objStreamReader.Close()
+                    Response.Write(strHTML)
+                End If
+                Server.ClearError()
             End If
-            If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
-                ' read script file for version
-                Dim objStreamReader As StreamReader
-                objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
-                Dim strHTML As String = objStreamReader.ReadToEnd
-                objStreamReader.Close()
-                Response.Write(strHTML)
-            End If
-            Server.ClearError()
         End Sub
 
 
@@ -444,6 +490,8 @@ Namespace DotNetZoom
                     End If
                 End If
 
+                ' Dim ISyncLog As New ISyncFunction
+                ' ISyncLog.DoIt()
 
                 ' log visit to site and not a postBack
                 If _portalSettings.SiteLogHistory <> 0 Then
@@ -458,8 +506,7 @@ Namespace DotNetZoom
                         End If
                     End If
                     Dim objAdmin As New AdminDB()
-                    objAdmin.AddSiteLog(_portalSettings.PortalId, UserId, URLReferrer, Request.Url.ToString(), Request.UserAgent, Request.UserHostAddress, Request.UserHostName, _portalSettings.ActiveTab.TabId, AffiliateId)
-
+                    objAdmin.AddSiteLog(_portalSettings.PortalId, UserId, URLReferrer, Request.Url.ToString(), Request.Browser.Browser, Request.UserHostAddress, Request.UserHostName, _portalSettings.ActiveTab.TabId, AffiliateId)
                 End If
 
 

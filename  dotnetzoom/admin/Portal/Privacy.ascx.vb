@@ -8,7 +8,7 @@ Namespace DotNetZoom
         Protected WithEvents lblPrivacy As System.Web.UI.WebControls.Label
         Protected WithEvents pnlRichTextBox As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents Privacy As System.Web.UI.WebControls.PlaceHolder
-        Protected WithEvents FCKeditor1 As FredCK.FCKeditorV2.FCKEditor
+        Protected WithEvents FCKeditor1 As DotNetZoom.FCKEditor
         Protected WithEvents cmdUpdate As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdCancel As System.Web.UI.WebControls.LinkButton
 		Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle

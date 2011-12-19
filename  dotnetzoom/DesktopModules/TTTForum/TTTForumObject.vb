@@ -6,6 +6,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 ' =======================================================================================
 Option Strict On
 
@@ -258,13 +261,28 @@ Namespace DotNetZoom
         End Sub 'New
 
         Protected Overrides Sub CreateObject()
+			Dim _postID As Integer = 0
+			Dim _threadID As Integer = 0
+			Dim ZforumID As Integer = 0
+			Dim _groupID As Integer = 0 
+			Dim _action As String = ""
+			Dim _scope As String = ""
+            
+			try
+			
+			_postID   = Convert.ToInt32(Page.Request.QueryString("postid"))
+			_threadID = Convert.ToInt32(Page.Request.QueryString("threadid"))
+			 ZforumID  = Convert.ToInt32(Page.Request.QueryString("forumid"))
+             _groupID = Convert.ToInt32(Page.Request.QueryString("groupid"))
+             _action  = Page.Request.QueryString("action")
+             _scope   = Page.Request.QueryString("scope")
+			 Catch Exc As System.Exception
+		     If PortalSettings.GetHostSettings("EnableErrorReporting").ToString <> "N" Then
+                  ' SendNotification(PortalSettings.GetHostSettings("HostEmail").toString(), PortalSettings.GetHostSettings("HostEmail").ToString(), "", "Public Class ForumBaseObject - CreateObject()", ControlChars.CrLf + ControlChars.CrLf + Exc.ToString)
+             End If
 
-            Dim _postID As Integer = Convert.ToInt32(Page.Request.QueryString("postid"))
-            Dim _threadID As Integer = Convert.ToInt32(Page.Request.QueryString("threadid"))
-            Dim ZforumID As Integer = Convert.ToInt32(Page.Request.QueryString("forumid"))
-            Dim _groupID As Integer = Convert.ToInt32(Page.Request.QueryString("groupid"))
-            Dim _action As String = Page.Request.QueryString("action")
-            Dim _scope As String = Page.Request.QueryString("scope")
+ 			End Try
+			
             Dim _name As String = ""
 
             Select Case _scope

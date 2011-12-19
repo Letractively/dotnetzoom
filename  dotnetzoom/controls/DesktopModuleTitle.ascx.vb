@@ -48,6 +48,8 @@ Namespace DotNetZoom
         Protected WithEvents cmdEditContent1 As System.Web.UI.WebControls.HyperLink
         Protected WithEvents cmdEditOptions1 As System.Web.UI.WebControls.HyperLink
         Protected WithEvents cmdEditOptions2 As System.Web.UI.WebControls.HyperLink
+        Protected WithEvents cmdEditOptions4 As System.Web.UI.WebControls.HyperLink
+
         Protected WithEvents cmdDisplayModule As System.Web.UI.WebControls.LinkButton
         Protected WithEvents CellEdit As System.Web.UI.HtmlControls.HtmlTableCell
 		Protected WithEvents cellhelp As System.Web.UI.HtmlControls.HtmlTableCell
@@ -66,6 +68,7 @@ Namespace DotNetZoom
 		Protected WithEvents modifier As System.Web.UI.HtmlControls.HtmlGenericControl
 		Protected WithEvents modifierC As System.Web.UI.HtmlControls.HtmlGenericControl
 		Protected WithEvents param As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents param2 As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents haut As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents delete As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents top As System.Web.UI.HtmlControls.HtmlGenericControl
@@ -85,6 +88,7 @@ Namespace DotNetZoom
 		Public DisplayHelp As [String] = Nothing
         Public EditText As [String] = Nothing
         Public EditURL As [String] = Nothing
+        Public OptionsURL As [String] = Nothing
         Public EditIMG As [String] = Nothing
         Public TitleVisible As [Boolean] = True
         Public DisplayOptions As [Boolean] = False
@@ -132,68 +136,68 @@ Namespace DotNetZoom
        ' Display the Module and Content Edit button
        If Not IsNothing(portalModule.ModuleConfiguration) Then
 
-			If not IsAdminTab() and (Request.Params("edit") Is Nothing) and PortalModule.ModuleID > 0 Then
-			'Normal Module
-			
-			pnlModuleTitle.Visible = True            
-            If Not IsNothing(DisplayTitle) Then
-                ' Display Custom Title
-            lblModuleTitle.Text = DisplayTitle
-			else 
-			lblModuleTitle.Text = portalModule.ModuleConfiguration.ModuleTitle
-            End If
-			lblModuleTitle.ID = ""
-			TableTitle.id = ""
-			
-			_Setting = PortalSettings.GetModuleSettings(PortalModule.ModuleID)
-			If _Setting("containerTitleHeaderClass") <> "" then
-			TableTitle.Text = _Setting("containerTitleHeaderClass")
-			else
-			TableTitle.Text = "headertitle"
-			end if
-			
-			If _Setting("containerTitleCSSClass") <> "" then
-			lblModuleTitle.CSSClass = _Setting("containerTitleCSSClass")
-			else
-			lblModuleTitle.CSSClass = "Head"
-			end if
-			If _Setting("TitleContainer") <> "" then
-			Dim arrContainer As Array = SplitContainer(_Setting("TitleContainer"), _portalSettings.UploadDirectory,  IIf(_Setting("containerAlignment") <> "", _Setting("containerAlignment"), ""), IIf(_Setting("containerColor") <> "", _Setting("containerColor"), ""), IIf(_Setting("containerBorder") <> "", _Setting("containerBorder"), ""))
-			Titlebefore.text = arrContainer(0)
-			Titlebefore.Visible = True
-			Titleafter.Text = arrContainer(1)
-			Titleafter.Visible = True
-		 	end if
+                If Not IsAdminTab() And (Request.Params("edit") Is Nothing) And (Request.Params("def") Is Nothing) And portalModule.ModuleId > 0 Then
+                    'Normal Module
 
-						
-                ' check if the Module Title is hidden
-                If portalModule.ModuleConfiguration.ShowTitle = False Then
-                    pnlModuleTitle.Visible = False
-                End If
-                ' check if Personalization is allowed
-                If portalModule.ModuleConfiguration.Personalize = 2 Then
-                   cmdDisplayModule.Enabled = False
-				   rowDisplay.Visible = False
-                End If
+                    pnlModuleTitle.Visible = True
+                    If Not IsNothing(DisplayTitle) Then
+                        ' Display Custom Title
+                        lblModuleTitle.Text = DisplayTitle
+                    Else
+                        lblModuleTitle.Text = portalModule.ModuleConfiguration.ModuleTitle
+                    End If
+                    lblModuleTitle.ID = ""
+                    TableTitle.ID = ""
 
-			       		
-				
-                If portalModule.ModuleConfiguration.IconFile <> "" Then
-                    cmdEditModuleImage.ImageUrl = _portalSettings.UploadDirectory & portalModule.ModuleConfiguration.IconFile
-                    cmdEditModuleImage.Visible = True
-                    cmdEditModuleImage.ToolTip = lblModuleTitle.Text
-                    cmdEditModuleImage.AlternateText = lblModuleTitle.Text
-                End If
+                    _Setting = PortalSettings.GetModuleSettings(portalModule.ModuleId)
+                    If _Setting("containerTitleHeaderClass") <> "" Then
+                        TableTitle.Text = _Setting("containerTitleHeaderClass")
+                    Else
+                        TableTitle.Text = "headertitle"
+                    End If
 
-                Dim blnPreview As Boolean = False
-                If Not Request.Cookies("_Tab_Admin_Preview" & _portalSettings.PortalId.ToString) Is Nothing Then
-                    blnPreview = Boolean.Parse(Request.Cookies("_Tab_Admin_Preview" & _portalSettings.PortalId.ToString).Value)
-                End If
+                    If _Setting("containerTitleCSSClass") <> "" Then
+                        lblModuleTitle.CssClass = _Setting("containerTitleCSSClass")
+                    Else
+                        lblModuleTitle.CssClass = "Head"
+                    End If
+                    If _Setting("TitleContainer") <> "" Then
+                        Dim arrContainer As Array = SplitContainer(_Setting("TitleContainer"), _portalSettings.UploadDirectory, IIf(_Setting("containerAlignment") <> "", _Setting("containerAlignment"), ""), IIf(_Setting("containerColor") <> "", _Setting("containerColor"), ""), IIf(_Setting("containerBorder") <> "", _Setting("containerBorder"), ""))
+                        Titlebefore.Text = arrContainer(0)
+                        Titlebefore.Visible = True
+                        Titleafter.Text = arrContainer(1)
+                        Titleafter.Visible = True
+                    End If
 
-                If (blnPreview = False And (PortalSecurity.IsInRoles(portalModule.ModuleConfiguration.AuthorizedEditRoles) = True _
-                    Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True)) then
-                			
-                    If Not IsNothing(EditText) Then
+
+                    ' check if the Module Title is hidden
+                    If portalModule.ModuleConfiguration.ShowTitle = False Then
+                        pnlModuleTitle.Visible = False
+                    End If
+                    ' check if Personalization is allowed
+                    If portalModule.ModuleConfiguration.Personalize = 2 Then
+                        cmdDisplayModule.Enabled = False
+                        rowDisplay.Visible = False
+                    End If
+
+
+
+                    If portalModule.ModuleConfiguration.IconFile <> "" Then
+                        cmdEditModuleImage.ImageUrl = _portalSettings.UploadDirectory & portalModule.ModuleConfiguration.IconFile
+                        cmdEditModuleImage.Visible = True
+                        cmdEditModuleImage.ToolTip = lblModuleTitle.Text
+                        cmdEditModuleImage.AlternateText = lblModuleTitle.Text
+                    End If
+
+                    Dim blnPreview As Boolean = False
+                    If Not Request.Cookies("_Tab_Admin_Preview" & _portalSettings.PortalId.ToString) Is Nothing Then
+                        blnPreview = Boolean.Parse(Request.Cookies("_Tab_Admin_Preview" & _portalSettings.PortalId.ToString).Value)
+                    End If
+
+                    If (blnPreview = False And (PortalSecurity.IsInRoles(portalModule.ModuleConfiguration.AuthorizedEditRoles) = True _
+                        Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True)) Then
+
+                        If Not IsNothing(EditText) Then
                             pnlModuleTitle.Visible = True
                             If IsNothing(EditIMG) Then
                                 cmdEditContent.Text = "<img  src=""" & glbPath & "images/edit.gif"" alt=""*"" style=""border-width:0px;""> " & EditText
@@ -212,7 +216,7 @@ Namespace DotNetZoom
                             End If
 
                             If DisplayOptions Then
-                                cmdEditOptions.NavigateUrl = cmdEditContent.NavigateUrl & "&options=1"
+
                                 cmdEditOptions.Text = cmdEditOptions.Text & GetLanguage("paramêtres")
                                 If OptionsText = Nothing Then
                                     cmdEditOptions.ToolTip = GetLanguage("title_ShowParam")
@@ -223,7 +227,36 @@ Namespace DotNetZoom
                                 cmdEditOptions.Visible = True
                                 param.Visible = True
                                 rowAdmin1.Visible = True
+                                If Not IsNothing(OptionsURL) Then
+                                    cmdEditOptions.NavigateUrl = OptionsURL & IIf(InStr(1, OptionsURL, "?") <> 0, "&", "?") & "tabid=" & tabId & "&mid=" + portalModule.ModuleId.ToString()
+                                Else
+                                    cmdEditOptions.NavigateUrl = cmdEditOptions.NavigateUrl & "&options=1"
+                                End If
+
+
                             End If
+
+                            If DisplayOptions2 Then
+
+                                cmdEditOptions4.Text = cmdEditOptions4.Text & GetLanguage("paramêtres")
+                                If OptionsText2 = Nothing Then
+                                    cmdEditOptions4.ToolTip = GetLanguage("title_ShowParam")
+                                Else
+                                    cmdEditOptions4.ToolTip = OptionsText2
+                                End If
+
+                                cmdEditOptions4.Visible = True
+                                param2.Visible = True
+                                rowAdmin1.Visible = True
+                                If Not IsNothing(Options2URL) Then
+                                    cmdEditOptions4.NavigateUrl = Options2URL & IIf(InStr(1, Options2URL, "?") <> 0, "&", "?") & "tabid=" & tabId & "&mid=" + portalModule.ModuleId.ToString()
+                                Else
+                                    cmdEditOptions4.NavigateUrl = cmdEditOptions4.NavigateUrl & "&options=2"
+                                End If
+
+
+                            End If
+
 
 
                         End If
@@ -377,6 +410,8 @@ Namespace DotNetZoom
                         If cmdEditModule.Visible Then objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(0, 1, "&nbsp;" & cmdEditModule.Text & "&nbsp;&nbsp;&nbsp;", cmdEditModule.ResolveClientUrl(cmdEditModule.NavigateUrl)))
                         If cmdEditContent.Visible Then objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(0, 2, "&nbsp;" & cmdEditContent.Text & "&nbsp;&nbsp;&nbsp;", cmdEditContent.ResolveClientUrl(cmdEditContent.NavigateUrl)))
                         If cmdEditOptions.Visible Then objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(0, 3, "&nbsp;" & cmdEditOptions.Text & "&nbsp;&nbsp;&nbsp;", cmdEditOptions.ResolveClientUrl(cmdEditOptions.NavigateUrl)))
+                        If cmdEditOptions4.Visible Then objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(0, 3, "&nbsp;" & cmdEditOptions4.Text & "&nbsp;&nbsp;&nbsp;", cmdEditOptions4.ResolveClientUrl(cmdEditOptions4.NavigateUrl)))
+
                         If cmdModuleTop.Visible Then
                             objMenuItem = New Solpart.WebControls.SPMenuItemNode(ctlMenu.AddMenuItem(0, 4, "&nbsp;" & cmdModuleTop.Text & "&nbsp;&nbsp;&nbsp;", GetClientScriptURL("4")))
                             objMenuItem.RunAtServer = True

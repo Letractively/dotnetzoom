@@ -75,11 +75,7 @@ Namespace DotNetZoom
             End If
 
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-			End If
-			SpaceUsed = SpaceUsed / 1048576
+            SpaceUsed = SpaceUsed / 1048576
 			
 			If (((SpaceUsed) <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Or (Not (Request.Params("hostpage") Is Nothing)) Then
 			else
@@ -224,10 +220,6 @@ Namespace DotNetZoom
 			end if
 			
 			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-			If SpaceUsed = 0 then
-			SpaceUsed = objAdmin.GetFolderSizeRecursive(strFolder)
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-			End If
 
                 'Gets the file name
                 strFileName = System.IO.Path.GetFileName(cmdBrowse.PostedFile.FileName).Tolower()
@@ -246,7 +238,7 @@ Namespace DotNetZoom
                         'Save Uploaded file to server
                         Try
                             If File.Exists(strFileNamePath) Then
-							SpaceUsed = SpaceUsed - FileLen(strFileNamePath)
+							SpacedUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
                             File.Delete(strFileNamePath)
                             End If
                             cmdBrowse.PostedFile.SaveAs(strFileNamePath)
@@ -345,7 +337,7 @@ Namespace DotNetZoom
 
                                             If InStr(1, "," & portalSettings.GetHostSettings("FileExtensions").ToString, "," & strExtension) <> 0 Or  Not (Request.Params("hostpage") Is Nothing) Then
                                                 If File.Exists(strFileNamePath) Then
-												SpaceUsed = SpaceUsed - FileLen(strFileNamePath)
+												SpacedUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
                                                 File.Delete(strFileNamePath)
 												End If
                                                 Dim objFileStream As FileStream = File.Create(strFileNamePath)
@@ -363,7 +355,7 @@ Namespace DotNetZoom
 												If RootFolder = strFolder then
                                                 AddFile(strFileNamePath, strExtension)
 												end if
-												SpaceUsed = SpaceUsed + FileLen(strFileNamePath)
+												SpaceUsed = SpaceUsed + New FileInfo(strFileNamePath).Length
                                             Else
                                                 ' restricted file type
 								           lblMessage.Text += "<br>" & replace(GetLanguage("FileExtNotAllowed"), "{fileext}", strFileName)
@@ -379,7 +371,7 @@ Namespace DotNetZoom
                                 objZipInputStream.Close()
 
                                 ' delete the zip file
-								SpaceUsed = SpaceUsed - FileLen(strFileNamePath)
+								SpacedUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
                                 File.Delete(strSaveFileNamePath)
 								Return SpaceUsed
 		
@@ -428,9 +420,10 @@ Namespace DotNetZoom
             Dim objAdmin As New AdminDB()
 
             If Not (Request.Params("hostpage") Is Nothing) Then
-                objAdmin.AddFile(-1, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+                objAdmin.AddFile(-1, strFileName, strExtension, New FileInfo(strFileNamePath).Length, strWidth, strHeight, strContentType)
+
             Else
-                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, FileLen(strFileNamePath), strWidth, strHeight, strContentType)
+                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, New FileInfo(strFileNamePath).Length, strWidth, strHeight, strContentType)
             End If
 
         End Sub

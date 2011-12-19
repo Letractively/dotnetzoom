@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -41,8 +44,8 @@ Namespace DotNetZoom
         Private mRootPath As String = ""
         Private mRootURL As String = DefaultRootURL
         Private mThumbFolder As String = DefaultThumbFolder
-		' Ajout par rene boulard 2003-04-24 pour image folder
-		Private mResFolder As String = DefaultResFolder
+        ' Ajout par rene boulard 2003-04-24 pour image folder
+        Private mResFolder As String = DefaultResFolder
         Private mSourceFolder As String = DefaultSourceFolder
         Private mtempFolder As String = DefaultTempFolder
         Private mGalleryTitle As String = DefaultGalleryTitle
@@ -64,9 +67,14 @@ Namespace DotNetZoom
 
         ' Cache Settings
         Private mBuildCacheonStart As Boolean = True
+        Private mCheckboxGPS As Boolean = False
+        Private mGoogleAPI As String = ""
+        Private mCheckboxIndex As Boolean = False
+
+
         Private mFixedSize As Boolean = True
         Private mFixedWidth As Integer = DefaultFixedWidth
-	    Private mQuality As Integer = DefaultQuality
+        Private mQuality As Integer = DefaultQuality
         Private mFixedHeight As Integer = DefaultFixedHeight
         Private mKeepSource As Boolean = False
         Private mSlideshowSpeed As Integer = DefaultSlideshowSpeed
@@ -93,7 +101,7 @@ Namespace DotNetZoom
 
         ' Owner - for User Gallery feature
         Private mOwnerID As Integer = DefaultOwnerID
-        Private mGalleryOwner As GalleryUser
+
 
         ' AllowDownload feature
         Private mAllowDownload As Boolean = True
@@ -136,15 +144,15 @@ Namespace DotNetZoom
                 Return _portalSettings.UploadDirectory & "Album"
             End Get
         End Property
-       
-	   ' Ajout par rene boulard 2003-04-24 pour image folder
-	   
-	   Public Shared ReadOnly Property DefaultResFolder() As String
+
+        ' Ajout par rene boulard 2003-04-24 pour image folder
+
+        Public Shared ReadOnly Property DefaultResFolder() As String
             Get
                 Return "_res"
             End Get
         End Property
-		
+
         Public Shared ReadOnly Property DefaultThumbFolder() As String
             Get
                 Return "_thumbs"
@@ -207,7 +215,7 @@ Namespace DotNetZoom
 
         Public Shared ReadOnly Property DefaultMovieExtensions() As String
             Get
-                Return ".mov;.wmv;.mpg;.avi;.asf;.asx;.mpeg;.mid;.midi;.wav;.aiff;.mp3"
+                Return ".mov;.wmv;.mpg;.avi;.asf;.asx;.mpeg;.mid;.midi;.wav;.aiff;.mp3;.flv"
             End Get
         End Property
 
@@ -219,7 +227,7 @@ Namespace DotNetZoom
 
         Public Shared ReadOnly Property DefaultCategoryValues() As String
             Get
-			    Return GetLanguage("Gal_DefaultCategory")
+                Return GetLanguage("Gal_DefaultCategory")
             End Get
         End Property
 
@@ -240,7 +248,7 @@ Namespace DotNetZoom
                 Return 50
             End Get
         End Property
-		
+
         Public Shared ReadOnly Property DefaultFixedHeight() As Integer
             Get
                 Return 500
@@ -282,34 +290,34 @@ Namespace DotNetZoom
             End Get
         End Property
 
-		
-		
+
+
         Public Shared Function GetGalleryConfig(ByVal ModuleID As Integer) As GalleryConfig
 
             ' Grab reference to the applicationstate object
-            
-			Dim TempKey as String = GetDBname & GalleryConfigCacheKeyPrefix & CStr(ModuleID)
-			Dim context As HttpContext = HttpContext.Current
-			Dim config As GalleryConfig 
-			if Context.Cache(TempKey) is nothing then
-			' Obtain PortalSettings from Current Context
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-            ' If this object has not been instantiated yet, we need to grab it
-            config = New GalleryConfig(ModuleID)
-            Context.Cache.Insert(TempKey, config, DotNetZoom.CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.Tabid, ModuleID), Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-			Else
-			config = CType(Context.Cache(TempKey), GalleryConfig)
+            Dim TempKey As String = GetDBname() & GalleryConfigCacheKeyPrefix & CStr(ModuleID)
+            Dim context As HttpContext = HttpContext.Current
+            Dim config As GalleryConfig 
+            If context.Cache(TempKey) Is Nothing Then
+                ' Obtain PortalSettings from Current Context
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+                ' If this object has not been instantiated yet, we need to grab it
+                config = New GalleryConfig(ModuleID)
+                context.Cache.Insert(TempKey, config, DotNetZoom.CDp(_portalSettings.PortalId, _portalSettings.ActiveTab.TabId, ModuleID), Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
+            Else
+                config = CType(context.Cache(TempKey), GalleryConfig)
             End If
             Return config
 
         End Function
 
         Public Shared Sub ResetGalleryConfig(ByVal ModuleID As Integer)
-			Dim TempKey as String = GetDBName & GalleryConfigCacheKeyPrefix & CStr(ModuleID)
-			Dim context As HttpContext = HttpContext.Current
-			context.Cache.Remove(TempKey)
-			GetGalleryConfig(ModuleID)
+            Dim TempKey As String = GetDBname() & GalleryConfigCacheKeyPrefix & CStr(ModuleID)
+            Dim context As HttpContext = HttpContext.Current
+            context.Cache.Remove(TempKey)
+            ' GetGalleryConfig(ModuleID)
         End Sub
 
 #End Region
@@ -330,7 +338,7 @@ Namespace DotNetZoom
 
         Public ReadOnly Property RootPath() As String
             Get
-                 Return mRootPath
+                Return mRootPath
             End Get
         End Property
 
@@ -346,14 +354,14 @@ Namespace DotNetZoom
             End Get
         End Property
 
-       ' Ajout par rene boulard 2003-04-24 pour image folder		
-	
+        ' Ajout par rene boulard 2003-04-24 pour image folder		
+
         Public ReadOnly Property ResFolder() As String
             Get
                 Return mResFolder
             End Get
         End Property
-		
+
         Public ReadOnly Property SourceFolder() As String
             Get
                 Return mSourceFolder
@@ -375,6 +383,25 @@ Namespace DotNetZoom
         Public ReadOnly Property GalleryDescription() As String
             Get
                 Return mGalleryDescription
+            End Get
+        End Property
+
+
+        Public ReadOnly Property GoogleAPI() As String
+            Get
+                Return mGoogleAPI
+            End Get
+        End Property
+
+        Public ReadOnly Property CheckboxGPS() As Boolean
+            Get
+                Return mCheckboxGPS
+            End Get
+        End Property
+
+        Public ReadOnly Property CheckboxIndex() As Boolean
+            Get
+                Return mCheckboxIndex
             End Get
         End Property
 
@@ -487,13 +514,13 @@ Namespace DotNetZoom
             End Get
         End Property
 
-		
+
         Public ReadOnly Property Quality() As Integer
             Get
                 Return mQuality
             End Get
         End Property
-		
+
         Public ReadOnly Property MaxFileSize() As Integer
             Get
                 Return mMaxFileSize
@@ -562,11 +589,7 @@ Namespace DotNetZoom
             End Get
         End Property
 
-        Public ReadOnly Property GalleryOwner() As GalleryUser
-            Get
-                Return mGalleryOwner
-            End Get
-        End Property
+
 
         Public ReadOnly Property AllowDownload() As Boolean
             Get
@@ -593,7 +616,7 @@ Namespace DotNetZoom
         Shared Sub New()
         End Sub
 
-        Private Sub New(ByVal ModuleID As Integer)
+        Public Sub New(ByVal ModuleID As Integer)
             Dim Path As String
             Dim fileExtension As String
             Dim catValue As String
@@ -617,11 +640,16 @@ Namespace DotNetZoom
                 If System.IO.Directory.Exists(Path) Then
                     mRootPath = Path
                     mIsValidPath = True
-               End If
+                End If
             Catch ex As Exception
             End Try
 
             mGalleryDescription = GetValue(settings("GalleryDescription"), mGalleryDescription)
+            mCheckboxGPS = CBool(GetValue(settings("CheckboxGPS"), CStr(mCheckboxGPS)))
+            mGoogleAPI = GetValue(settings("GoogleAPI"), mGoogleAPI)
+            mCheckboxIndex = CBool(GetValue(settings("CheckboxIndex"), CStr(mCheckboxIndex)))
+
+
             mBuildCacheonStart = CBool(GetValue(settings("BuildCacheOnStart"), CStr(mBuildCacheonStart)))
             mStripWidth = CInt(GetValue(settings("StripWidth"), CStr(mStripWidth)))
             mStripHeight = CInt(GetValue(settings("StripHeight"), CStr(mStripHeight)))
@@ -646,7 +674,6 @@ Namespace DotNetZoom
             mdisplayOption = GetValue(settings("DisplayOption"), mdisplayOption)
 
             mOwnerID = CInt(GetValue(settings("OwnerID"), CStr(mOwnerID)))
-            mGalleryOwner = GalleryUser.GetGalleryUser(mOwnerID)
 
             mFileExtensions = GetValue(settings("FileExtensions"), mFileExtensions)
             ' Iterate through the file extensions and create the collection
@@ -682,7 +709,7 @@ Namespace DotNetZoom
                     If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
                     OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
                     OrElse (Int16.Parse(HttpContext.Current.User.Identity.Name) = mOwnerID) _
-                    OrElse (Not mIsPrivate AndAlso PortalSecurity.IsInRoles(CType(portalSettings.GetEditModuleSettings(ModuleId), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
+                    OrElse (Not mIsPrivate AndAlso PortalSecurity.IsInRoles(CType(PortalSettings.GetEditModuleSettings(ModuleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                         isEditable = True
                     End If
                 End If
@@ -694,7 +721,7 @@ Namespace DotNetZoom
             If mIsValidPath Then
 
                 ' Initialize the root folder object
-                mRootFolder = New GalleryFolder(mGalleryTitle, _
+                mRootFolder = New GalleryFolder("-1", mGalleryTitle, _
                     mRootPath, _
                     mRootURL, _
                     "", _
@@ -708,12 +735,21 @@ Namespace DotNetZoom
                     mGalleryDescription, _
                     mCategoryValues, _
                     mOwnerID, _
-                    mGalleryOwner)
+                    GetValue(settings("latitude"), "0"), _
+                    GetValue(settings("longitude"), "0"), _
+                    GetValue(settings("gpsicon"), "/images/gps/64folder.png"), _
+                    GetValue(settings("gpsiconsize"), "[64,64]"), _
+                    "", _
+                    0)
 
                 ' Build the cache at once if required.
-                ' If BuildCacheonStart Then
+                If BuildCacheonStart Then
                     PopulateAllFolders(mRootFolder)
-                ' End If
+                Else
+                    If Not mRootFolder.IsPopulated Then
+                        mRootFolder.Populate()
+                    End If
+                End If
 
             End If
 

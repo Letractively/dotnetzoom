@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -25,6 +28,7 @@ Namespace DotNetZoom
         Inherits DotNetZoom.PortalModuleControl
 
         Protected WithEvents ctlUsers As TTT_UsersControl
+        Protected WithEvents txtgoogleAPI As System.Web.UI.WebControls.TextBox
         Protected WithEvents lblInfo As System.Web.UI.WebControls.Label
 		Protected WithEvents lblQuota As System.Web.UI.WebControls.Label
         Protected WithEvents RootURL As System.Web.UI.WebControls.TextBox
@@ -45,6 +49,8 @@ Namespace DotNetZoom
         Protected WithEvents btnEditOwner As System.Web.UI.WebControls.Button
         Protected WithEvents txtOwnerID As System.Web.UI.WebControls.TextBox
         Protected WithEvents BuildCacheOnStart As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents CheckboxGPS As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents CheckboxIndex As System.Web.UI.WebControls.CheckBox
         Protected WithEvents pnlAdmin As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents GalleryTitle As System.Web.UI.WebControls.TextBox
         Protected WithEvents Description As System.Web.UI.WebControls.TextBox
@@ -133,6 +139,8 @@ Namespace DotNetZoom
 
                 GalleryTitle.Text = config.GalleryTitle
                 Description.Text = config.GalleryDescription
+                txtgoogleAPI.Text = config.GoogleAPI
+
                 RootURL.Text = config.RootURL
                 If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) Then
                     ' Super User or Admin can modify galery root directory and Quota
@@ -154,11 +162,7 @@ Namespace DotNetZoom
                 Dim objAdmin As New AdminDB()
                 StrFolder = Request.MapPath(config.RootURL)
                 SpaceUsed = objAdmin.GetdirectorySpaceUsed(StrFolder)
-                If SpaceUsed = 0 Then
-                    SpaceUsed = objAdmin.GetFolderSizeRecursive(StrFolder)
-                    objAdmin.AddDirectory(StrFolder, SpaceUsed.ToString())
-                End If
-
+     
                 SpaceUsed = SpaceUsed / 1048576
                 If config.Quota = 0 Then
 
@@ -178,6 +182,10 @@ Namespace DotNetZoom
                 MaxThumbHeight.Text = config.MaximumThumbHeight.ToString
                 BuildCacheOnStart.Checked = (config.BuildCacheonStart = True)
 
+                CheckboxIndex.Checked = (config.CheckboxIndex = True)
+                CheckboxGPS.Checked = (config.CheckboxGPS = True)
+
+
                 chkFixedSize.Checked = config.IsFixedSize
                 FixedWidth.Text = config.FixedWidth.ToString
                 Quality.Text = config.Quality.ToString
@@ -190,7 +198,8 @@ Namespace DotNetZoom
                 chkInfoBule.Checked = config.InfoBule
                 chkDownload.Checked = config.AllowDownload
                 chkAvatarsGallery.Checked = config.IsAvatarsGallery
-                txtOwner.Text = config.GalleryOwner.UserName
+                Dim TGalleryUser As GalleryUser = New GalleryUser(config.OwnerID)
+                txtOwner.Text = TGalleryUser.UserName
                 txtOwnerID.Text = config.OwnerID.ToString
 
                 pnlFixedSize.Visible = chkFixedSize.Checked
@@ -271,13 +280,17 @@ Namespace DotNetZoom
                 Return
             End Try
 
- 
+            Admin.UpdateModuleSetting(ModuleId, "GoogleAPI", txtgoogleAPI.Text)
             admin.UpdateModuleSetting(ModuleId, "GalleryTitle", GalleryTitle.Text)
             admin.UpdateModuleSetting(ModuleId, "GalleryDescription", Description.Text)
             admin.UpdateModuleSetting(ModuleId, "RootURL", RootURL.Text)
             admin.UpdateModuleSetting(ModuleId, "StripWidth", StripWidth.Text)
             admin.UpdateModuleSetting(ModuleId, "StripHeight", StripHeight.Text)
+			If IsNumeric(txtQuota.Text) then
             admin.UpdateModuleSetting(ModuleId, "Quota", txtQuota.Text)
+			Else
+			admin.UpdateModuleSetting(ModuleId, "Quota", "0")
+			end if
             admin.UpdateModuleSetting(ModuleId, "MaxFileSize", txtMaxFileSize.Text)
             admin.UpdateModuleSetting(ModuleId, "MaxThumbWidth", MaxThumbWidth.Text)
             admin.UpdateModuleSetting(ModuleId, "MaxThumbHeight", MaxThumbHeight.Text)
@@ -285,7 +298,12 @@ Namespace DotNetZoom
             admin.UpdateModuleSetting(ModuleId, "MovieExtensions", LCase(MovieExtensions.Text))
             admin.UpdateModuleSetting(ModuleId, "CategoryValues", CategoryValues.Text)
             admin.UpdateModuleSetting(ModuleId, "BuildCacheOnStart", BuildCacheOnStart.Checked.ToString)
-            admin.UpdateModuleSetting(ModuleId, "IsFixedSize", chkFixedSize.Checked.ToString)
+
+            Admin.UpdateModuleSetting(ModuleId, "CheckboxIndex", CheckboxIndex.Checked.ToString)
+            Admin.UpdateModuleSetting(ModuleId, "CheckboxGPS", CheckboxGPS.Checked.ToString)
+
+
+            Admin.UpdateModuleSetting(ModuleId, "IsFixedSize", chkFixedSize.Checked.ToString)
             admin.UpdateModuleSetting(ModuleId, "FixedWidth", FixedWidth.Text)
             admin.UpdateModuleSetting(ModuleId, "Quality", Quality.Text)
             admin.UpdateModuleSetting(ModuleId, "FixedHeight", FixedHeight.Text)
@@ -305,10 +323,14 @@ Namespace DotNetZoom
                 admin.UpdateModuleSetting(ModuleId, "IntegratedForumGroup", ddlForumGroup.SelectedItem.Value.ToString)
             End If
 
-            GalleryConfig.ResetGalleryConfig(ModuleId)
+ 
+            Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
 
-			Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
-			Zrequest.Folder.REPopulate()
+            ' Zrequest.Folder.REPopulate()
+            GalleryConfig.ResetGalleryConfig(ModuleId)
+            Zrequest.Folder.Reset()
+            ClearModuleCache(ModuleId)
+
             ' Redirect back to the portal home page
             Response.Redirect(CType(ViewState("UrlReferrer"), String))
         End Sub
@@ -362,10 +384,9 @@ Namespace DotNetZoom
         Public Sub ListAlbum(ByVal ListControl As DropDownList)
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Dim Zconfig As GalleryConfig = GalleryConfig.GetGalleryConfig(ModuleId)
             lblInfo.Text = ""
 
-            Dim galleryPath As String = Zconfig.RootURL
+            Dim galleryPath As String = config.RootURL
             Dim album As String
 
             Dim physicalPath As String = Server.MapPath(galleryPath)

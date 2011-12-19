@@ -829,6 +829,7 @@ Namespace DotNetZoom
 
 
         Private Sub Options2Create()
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             PlaceHolder1.Visible = False
             PlaceHolder2.Visible = True
             Title1.DisplayHelp = "DisplayHelp_ManageTabsXML"
@@ -859,7 +860,6 @@ Namespace DotNetZoom
             Next I
 
 
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim ObjAdmin As New AdminDB()
             Dim HashL As Hashtable = ObjAdmin.GetAvailablelanguage
 

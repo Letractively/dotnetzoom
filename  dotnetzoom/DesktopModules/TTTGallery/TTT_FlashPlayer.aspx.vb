@@ -10,12 +10,15 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
 Namespace DotNetZoom
     Public Class TTT_GalleryFlashPlayer
-        Inherits System.Web.UI.Page
+        Inherits DotNetZoom.BasePage
         Protected WithEvents lblTitle As System.Web.UI.WebControls.Label
         Protected WithEvents FLight As NetBrick.Web.FlashLight
         Protected WithEvents ErrorMessage As System.Web.UI.WebControls.Label
@@ -38,14 +41,32 @@ Namespace DotNetZoom
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
             GalleryConfig.SetSkinCSS(Page)
+            Dim ModuleID As Integer = Int32.Parse(HttpContext.Current.Request("mid"))
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim _ModuleSettings As New ModuleSettings
+            Dim isinrole As Boolean = False
+            For Each _ModuleSettings In _portalSettings.ActiveTab.Modules
+                If _ModuleSettings.ModuleId = ModuleID Then
+                    If PortalSecurity.IsInRoles(CStr(IIf(_ModuleSettings.AuthorizedViewRoles <> "", _ModuleSettings.AuthorizedViewRoles, _portalSettings.ActiveTab.AuthorizedRoles))) Then
+                        isinrole = True
+                    End If
+                End If
+            Next
+            If Not isinrole Then
+                RegisterBADip(Request.UserHostAddress)
+                Dim Admin As New AdminDB()
+                ErrorMessage.Visible = True
+                ErrorMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "AccessDeniedInfo"), Page)
+            Else
 
-            ErrorMessage.Visible = False
-            If Not Request.Params("media") Is Nothing Then
-                lblTitle.Text = Request.Params("media").ToString
-            End If
+                ErrorMessage.Visible = False
+                If Not Request.Params("media") Is Nothing Then
+                    lblTitle.Text = Request.Params("media").ToString
+                End If
 
-            If Not Request.Params("path") Is Nothing Then
-                FLight.Movie = Request.Params("path").ToString
+                If Not Request.Params("path") Is Nothing Then
+                    FLight.Movie = Request.Params("path").ToString
+                End If
             End If
 
         End Sub

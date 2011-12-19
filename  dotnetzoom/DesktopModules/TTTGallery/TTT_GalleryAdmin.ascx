@@ -81,7 +81,23 @@
     <td class=TTTSubHeader width=200>&nbsp;<%= DotNetZoom.getlanguage("Gal_CacheS") %>:</td>
     <td class=TTTRow align="left" height=25>
 <asp:checkbox id=BuildCacheOnStart CssClass="TTTNormal" runat="server" Checked="True"></asp:checkbox></td></tr>
-		</asp:placeholder>
+
+  <tr>
+    <td class=TTTSubHeader width=200>&nbsp;<%= DotNetZoom.GetLanguage("Gal_GpsS")%>:</td>
+    <td class=TTTRow align="left" height=25>
+    <asp:checkbox id=CheckboxGPS CssClass="TTTNormal" runat="server" Checked="False"></asp:checkbox></td></tr>
+<tr>
+    <td class=TTTSubHeader width=200>&nbsp;<%= DotNetZoom.getlanguage("GoogleAPI") %>:</td>
+    <td class=TTTRow align="left" height=25>
+                <asp:TextBox id="txtgoogleAPI" Width="250px" Columns="30" CssClass="NormalTextBox" Runat="server"></asp:TextBox>
+    </td></tr>
+  <tr>
+    <td class=TTTSubHeader width=200>&nbsp;<%= DotNetZoom.GetLanguage("Gal_IndexS")%>:</td>
+    <td class=TTTRow align="left" height=25>
+<asp:checkbox id=CheckboxIndex CssClass="TTTNormal" runat="server" Checked="False"></asp:checkbox></td></tr>
+		
+        
+        </asp:placeholder>
 		<!--End panel admin settings-->
 		<asp:placeholder id="pnlUser" Runat="server">
 		<!--End panel user settings-->

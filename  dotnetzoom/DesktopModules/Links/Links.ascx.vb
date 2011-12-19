@@ -116,15 +116,26 @@ Namespace DotNetZoom
 		
         Function FormatURL(ByVal Link As String, ByVal ID As Integer) As String
 
+            Dim contenttype As String = ""
+
             If InStr(1, Link, "://") = 0 Then
                 If IsNumeric(Link) Then ' internal tab link
                     Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
                     Link = _portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?tabid=" & Link
+                Else
+                    ' If internal file then put contenttype=application/octet-stream
+                    Dim strExtension As String = Replace(System.IO.Path.GetExtension(Link), ".", "")
+                    Select Case strExtension.ToLower()
+                        Case "kmz", "kml", "gpx" : contenttype = "&contenttype=" + strExtension.ToLower()
+                        Case Else
+                            contenttype = ""
+                    End Select
                 End If
             End If
 
             Dim objSecurity As New PortalSecurity()
-            Dim crypto As String = "tabid=" & TabId & "&table=Links&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+            Dim crypto As String = "tabid=" & TabId & contenttype & "&table=Links&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+
             Return glbPath & GetLanguage("N") & ".default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
 
             ' Return glbPath() & "admin/Portal/LinkClick.aspx?tabid=" & TabId & "&table=Links&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)

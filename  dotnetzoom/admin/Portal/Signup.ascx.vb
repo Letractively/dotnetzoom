@@ -182,8 +182,13 @@ Namespace DotNetZoom
 
 		Private Sub SetTemplateImage()
 				If cboTemplate.SelectedItem.Text <> getlanguage("list_none") Then
-				Dim ImageURL As STring
-    			ImageUrl =  "http://" & HttpContext.Current.Request.ServerVariables("HTTP_HOST") & glbTemplatesDirectory 
+                Dim ImageURL As String
+                If HttpContext.Current.Request.IsSecureConnection Then
+                    ImageURL = "https://"
+                Else
+                    ImageURL = "http://"
+                End If
+                ImageURL += HttpContext.Current.Request.ServerVariables("HTTP_HOST") & glbTemplatesDirectory
     			If Not ImageUrl.EndsWith("/") Then
           			ImageUrl += "/"
    				End If
@@ -438,17 +443,18 @@ Namespace DotNetZoom
                         tempGUID = dr("GUID").ToString
                         TempPortalDir = strServerPath & "Portals\" & dr("GUID").ToString & "\"
                         Dim TempFileName As String
-
+                        Dim ShortFileName As String
                         ' copy all in the template dir to the new portal except template.txt and template.jpg
                         If TempTemplateDir <> strServerPath Then
                             If System.IO.Directory.Exists(TempTemplateDir) Then
                                 Dim fileEntries As String() = System.IO.Directory.GetFiles(TempTemplateDir)
                                 Dim strFileName As String
                                 For Each strFileName In fileEntries
+                                    ShortFileName = strFileName.Substring(strFileName.LastIndexOf("\") + 1)
                                     If InStr(1, strFileName.ToLower, "template.") = 0 Then
-                                        Select Case strFileName.ToLower
-                                            Case "logo.gif", "logo.jpg" : LogoFile = strFileName.ToLower
-                                            Case "bk.gif", "bk.jpg" : BkFile = strFileName.ToLower
+                                        Select Case ShortFileName.ToLower
+                                            Case "logo.gif", "logo.jpg" : LogoFile = ShortFileName.ToLower
+                                            Case "bk.gif", "bk.jpg" : BkFile = ShortFileName.ToLower
                                         End Select
                                         TempFileName = strFileName.Replace(TempTemplateDir, TempPortalDir)
                                         System.IO.File.Copy(strFileName, TempFileName)
@@ -473,9 +479,10 @@ Namespace DotNetZoom
                                  Or (InStr(1, strFileName.ToLower, "menu_tpl1.js") <> 0) Then
                                     If (InStr(1, strFileName.ToLower, ".jpg") <> 0) Or (InStr(1, strFileName.ToLower, ".gif") <> 0) Then
                                         TempFileName = strFileName.Replace(TempTemplateDir, TempPortalDir)
-                                        Select Case strFileName.ToLower
-                                            Case "logo.gif", "logo.jpg" : LogoFile = strFileName.ToLower
-                                            Case "bk.gif", "bk.jpg" : BkFile = strFileName.ToLower
+                                        ShortFileName = strFileName.Substring(strFileName.LastIndexOf("\") + 1)
+                                        Select Case ShortFileName.ToLower
+                                            Case "logo.gif", "logo.jpg" : LogoFile = ShortFileName.ToLower
+                                            Case "bk.gif", "bk.jpg" : BkFile = ShortFileName.ToLower
                                         End Select
                                     Else
                                         TempFileName = strFileName.Replace(TempTemplateDir, TempPortalDir & "\skin\")

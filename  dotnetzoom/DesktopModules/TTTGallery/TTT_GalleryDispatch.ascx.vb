@@ -10,6 +10,9 @@
 ' With ideas & code contributed by: 
 ' JOE BRINKMAN(Jbrinkman), SAM HUNT(Ossy), CLEM MESSERLI(Webguy96), KIMBERLY LAZARSKI(Katse)
 ' RICHARD COX(RichardCox), ALAN VANCE(Favance), ROB FOULK(Robfoulk), KHOI NGUYEN(khoittt)
+' For DotNetZoom - http://www.DotNetZoom.com
+' Copyright (c) 2004-2009
+' by René Boulard ( http://www.reneboulard.qc.ca)'
 '========================================================================================
 Option Strict On
 
@@ -40,14 +43,23 @@ Namespace DotNetZoom
             GallerySlideshow
             GalleryMediaPlayer
             GalleryFlashPlayer
+            GalleryGPS
         End Enum
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             'Put user code to initialize the page here
+            Dim config As GalleryConfig = GalleryConfig.GetGalleryConfig(ModuleId)
+            If config.CheckboxGPS Then
+                _DefaultPage = glbPath & "DeskTopModules/TTTGallery/GPS_Map.ascx"
+            End If
+            If config.IsValidPath Then
+                Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
+            End If
+
             If IsNumeric(Request.Params("mid")) Then
                 If Request.Params("mid") = ModuleId.ToString Then
-                    If IsNumeric(Request.Params("GalleryPage")) Then
-                        Dim GalleryPage As Integer = CInt(Request.Params("GalleryPage"))
+                    If IsNumeric(Request.Params("gallerypage")) Then
+                        Dim GalleryPage As Integer = CInt(Request.Params("gallerypage"))
                         Select Case GalleryPage
                             Case GalleryDesktopType.GalleryMain
                                 _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_Gallery.ascx"
@@ -59,6 +71,9 @@ Namespace DotNetZoom
                                 _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_MediaPlayer.ascx"
                             Case GalleryDesktopType.GalleryFlashPlayer
                                 _DefaultPage = glbPath & "DeskTopModules/TTTGallery/TTT_FlashPlayer.ascx"
+                            Case GalleryDesktopType.GalleryGPS
+                                _DefaultPage = glbPath & "DeskTopModules/TTTGallery/GPS_Map.ascx"
+
                         End Select
                     End If
                 End If

@@ -89,17 +89,33 @@ Namespace DotNetZoom
         End Sub
 
         Public Function FormatURL(ByVal Link As String, ByVal ID As Integer) As String
+            If Link <> String.Empty Then
 
-            If InStr(1, Link, "://") = 0 Then
-                If IsNumeric(Link) Then ' internal tab link
-                    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                    Link = _portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?tabid=" & Link
-                End If
+                Dim contenttype As String = ""
+
+                    If InStr(1, Link, "://") = 0 Then
+                        If IsNumeric(Link) Then ' internal tab link
+                            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                            Link = _portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?tabid=" & Link
+                        Else
+                            ' If internal file then put contenttype=application/octet-stream
+                            Dim strExtension As String = ""
+                            strExtension = Replace(System.IO.Path.GetExtension(Link), ".", "")
+
+                            Select Case strExtension.ToLower()
+                                Case "kmz", "kml", "gpx" : contenttype = "&contenttype=" + strExtension.ToLower()
+                                Case Else
+                                    contenttype = ""
+                            End Select
+
+                        End If
+                    End If
+                    Dim objSecurity As New PortalSecurity()
+                    Dim crypto As String = "tabid=" & TabId & contenttype & "&table=Announcements&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
+                    Return glbPath & GetLanguage("N") & ".default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
+            Else
+                Return ""
             End If
-            Dim objSecurity As New PortalSecurity()
-            Dim crypto As String = "tabid=" & TabId & "&table=Announcements&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
-            Return glbPath & GetLanguage("N") & ".default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
-
         End Function
 
         Public Function FormatDate(ByVal objDate As Date) As String

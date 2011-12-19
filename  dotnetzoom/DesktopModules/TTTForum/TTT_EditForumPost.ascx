@@ -1,5 +1,5 @@
 <%@ Control Language="vb" codebehind="TTT_EditForumPost.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.TTT_EditForumPost" %>
-<%@ Register TagPrefix="FCKeditorV2" Namespace="FredCK.FCKeditorV2" Assembly="FredCK.FCKeditorV2" %>
+<%@ Register TagPrefix="Editor"  Namespace="dotnetzoom" Assembly="DotNetZoom" %>
 <%@ Register TagPrefix="TTT" TagName="ForumNav" Src="TTT_ForumNavigator.ascx" %>
 <script language="JavaScript" type="text/javascript">
 		function OpeniconeWindow(tabid , idParent)
@@ -131,7 +131,7 @@
                                                 <td class="TTTRow" align="left" rowspan="2">
                                                     <asp:textbox id="txtMessage" runat="server" Columns="44" width="390" CssClass="NormalTextBox" TextMode="Multiline" Rows="6"></asp:textbox>
                            							<asp:placeHolder id="RteDeskTop" Runat="Server" Visible="False">
-													<FCKeditorV2:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></FCKeditorV2:FCKeditor>
+													<editor:FCKeditor id="FCKeditor1" BasePath="~/FCKeditor/" runat="server"></editor:FCKeditor>
 													</asp:placeHolder>
                                                 </td>
                                             </tr>

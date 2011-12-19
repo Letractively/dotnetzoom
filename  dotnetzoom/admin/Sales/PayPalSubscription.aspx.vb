@@ -180,9 +180,10 @@ Namespace DotNetZoom
 
                 ' redirect to PayPal
                 strPayPalURL += "&lc=" + HTTPPOSTEncode(GetLanguage("N")) + "&charset=utf-8"
-                Response.Redirect(strPayPalURL, True)
+           
+             Response.Redirect(strPayPalURL, True)
             Else
-                Response.Redirect(Request.UrlReferrer.ToString(), True)
+             Response.Redirect(Request.UrlReferrer.ToString(), True)
             End If
 
         End Sub

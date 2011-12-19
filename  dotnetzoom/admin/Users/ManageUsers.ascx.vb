@@ -123,15 +123,15 @@ Namespace DotNetZoom
                     rowAuthorized.Visible = False
                     cmdDelete.Visible = False
                     cmdManage.Visible = False
-                Else
-                    ' Store URL Referrer to return to portal
-
-                    If Not Request.UrlReferrer Is Nothing And Request.Params("filter") Is Nothing Then
-                        ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-                    Else
-                        ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, GetAdminPage() & "&filter=" & Request.Params("filter"))
-                    End If
                 End If
+                 ' Store URL Referrer to return to portal
+
+                If Not Request.UrlReferrer Is Nothing And Request.Params("filter") Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, GetAdminPage() & "&filter=" & Request.Params("filter"))
+                End If
+
             End If
 
             txtPassword.Attributes.Add("value", txtPassword.Text)

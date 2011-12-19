@@ -75,65 +75,12 @@ Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs
 
 public Function GetBrowserType() As String
 
-Dim agt As String 
-If Request.UserAgent <> "" then
-agt = LCase(Request.UserAgent)
-else
-Return "Aucun"
-end if
 
-
-
-if (agt.indexOf("yahoo! slurp") <> -1) then 
-return "Yahoo! Slurp"
+If Request.Browser.IsMobileDevice then
+Return   Request.Browser.Browser & " (Mobile)"
+Else
+Return   Request.Browser.Browser
 end if
-
-if (agt.indexOf("opera") <> -1) then 
-return agt.substring(agt.indexOf("opera"), agt.Length() - agt.indexOf("opera")) 
-end if
-if (agt.indexOf("staroffice") <> -1) then
-return "Star Office"
-end if
-if (agt.indexOf("beonex") <> -1) then 
-return "Beonex" 
-end if
-if (agt.indexOf("chimera") <> -1) then
-return "Chimera" 
-end if
-if (agt.indexOf("netpositive") <> -1) then 
-return "NetPositive" 
-end if
-if (agt.indexOf("phoenix") <> -1) then 
-return "Phoenix" 
-end if
-if (agt.indexOf("firefox") <> -1) then 
-return agt.substring(agt.indexOf("firefox"), agt.Length() - agt.indexOf("firefox")) 
-end if
-if (agt.indexOf("safari") <> -1) then 
-return "Safari" 
-end if
-if (agt.indexOf("skipstone") <> -1) then 
-return "SkipStone" 
-end if
-if (agt.indexOf("msie") <> -1) then 
-return "Internet Explorer " + Request.Browser.MajorVersion.ToString() + "." + Request.Browser.MinorVersion.ToString()
-end if
-if (agt.indexOf("netscape") <> -1) then 
-return agt.substring(agt.indexOf("netscape"), agt.Length() - agt.indexOf("netscape"))  
-end if
-if (agt.indexOf("mozilla/5.0") <> -1) then 
-return "Mozilla " 
-end if
-if (agt.indexOf("/") <> -1) then
-	if (agt.substring(0,agt.indexOf("/")) <> "mozilla") then 
-	return agt.substring(0,agt.indexOf("/"))
-	 elseif (agt.indexOf(" ") <> -1) then
-		return agt.substring(0,agt.indexOf(" "))
- 			else return "Netscape" 
-	end if
-		else return agt
-end if
-
 End Function		
 		
 		
