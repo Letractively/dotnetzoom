@@ -56,6 +56,7 @@ Namespace DotNetZoom
         Protected WithEvents txtOwnerID As System.Web.UI.WebControls.TextBox
         Protected WithEvents dlFolders As System.Web.UI.WebControls.DataList
         Protected WithEvents UpdateButton As System.Web.UI.WebControls.Button
+        Protected WithEvents MagicFile As System.Web.UI.WebControls.HyperLink
 
 #Region " Web Form Designer Generated Code "
 
@@ -93,11 +94,6 @@ Namespace DotNetZoom
             Zfolder = Zrequest.Folder
             ZFile = CType(Zrequest.Folder.List.Item(Zeditindex), GalleryFile)
 
-            If Not Zfolder.IsPopulated Then
-                Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
-                'Response.Redirect(glbPath & "DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query)
-            End If
-
             If Not Page.IsPostBack Then
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
@@ -122,11 +118,39 @@ Namespace DotNetZoom
 
 
             End If
+            If Not ZFile.Type = IGalleryObjectInfo.ItemType.Image Then
+                MagicFile.NavigateUrl = GetEditIconURL()
+                Dim delim As String = "/"
+                Dim tempRootURL As String = Zconfig.RootURL
+                tempRootURL = tempRootURL.Trim(delim.ToCharArray()) & "/"
+                tempRootURL += Zrequest.Path
+                tempRootURL = tempRootURL.Trim(delim.ToCharArray()) & "/_res"
+                ' Authorized gallery
+                System.Web.HttpContext.Current.Session("UploadPath") = tempRootURL
+                System.Web.HttpContext.Current.Session("ReturnPath") = ViewState("UrlReferrer")
+
+            End If
 
         End Sub
 
+        Private Function GetEditIconURL() As String
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim sb As New StringBuilder()
+            sb.Append(glbPath & "DesktopModules/TTTGallery/magicfile.aspx")
+            sb.Append("?name=")
+            sb.Append(IO.Path.GetFileNameWithoutExtension(ZFile.Name))
+            sb.Append("&tabid=" & CStr(_portalSettings.ActiveTab.TabId))
+            sb.Append("&path=")
+            sb.Append(Zrequest.Path)
+            sb.Append("&mid=")
+            sb.Append(ModuleId)
+            sb.Append("&L=" & GetLanguage("N"))
+            Return sb.ToString
+        End Function
+
         'Private Sub BindData(ByVal Request As GalleryRequest)
         Private Sub BindData()
+
 
             dlFolders.DataSource = Zrequest.FolderPaths
             dlFolders.DataBind()
@@ -138,7 +162,7 @@ Namespace DotNetZoom
                 txtOwner.Text = TGalleryUser.UserName
                 txtOwnerID.Text = .OwnerID.ToString
                 txtTitle.Text = .Title
-				txtSortOrder.Text = .Sort
+                txtSortOrder.Text = .Sort
                 txtDescription.Text = .Description
                 imgFile.ImageUrl = .ThumbNail
             End With
@@ -176,7 +200,7 @@ Namespace DotNetZoom
             End If
 
 
-            Select strExtension.ToLower()
+            Select Case strExtension.ToLower()
                 Case "jpg", "jpeg", "tif", "png"
                     Dim Exif As New ExifWorks(Server.MapPath(ZFile.URL))
                     txtWaterMark.Text = Exif.UserComment

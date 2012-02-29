@@ -91,7 +91,8 @@
 					</table>
 				</td>
 				<td class="TTTRow" valign="middle" align="center" width="150">
-					<asp:Image id="imgFile" Runat="server"></asp:Image></td>
+                <asp:HyperLink ID="magicfile" runat="server">
+					<asp:Image id="imgFile" Runat="server"></asp:Image></asp:HyperLink></td>
                     <td class="TTTRow" valign="middle" align="center">
                         <table><tr><td>
     <asp:Image id="ImgFileIcon" AlternateText="gpsicon" EnableViewState="True" Runat="server"></asp:Image>

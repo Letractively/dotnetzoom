@@ -171,6 +171,25 @@
            <asp:linkbutton id="cmdProcessor" runat="server" cssclass="CommandButton"></asp:linkbutton>
        </td>
    </tr>
+   <tr>
+	     <td colspan="4">
+         <hr noshade="noshade" size="1" />
+  		 </td>
+    </tr>
+   <tr>
+       <td class="SubHead" width="187" align="left">
+	   <a href="https://www.google.com/recaptcha/admin/create" target="_blank"><%= DotNetZoom.GetLanguage("SS_PrivateKey")%></a>:
+	   </td>
+       <td width="188" align="left">
+       <asp:textbox id="txtPrivateKey" runat="server" CssClass="NormalTextBox" MaxLength="50" width="180" ></asp:textbox>
+       </td>
+       <td class="SubHead" width="187" align="left">
+	   <a href="https://www.google.com/recaptcha/admin/create" target="_blank"><%= DotNetZoom.GetLanguage("SS_PublicKey")%></a>:
+	   </td>
+       <td align="left" width="188">
+       <asp:textbox id="txtPublicKey" runat="server" CssClass="NormalTextBox" MaxLength="50" width="180"></asp:textbox>
+       </td>
+   </tr>
   </tbody>
 </table>
 <!-- Fin PlaceHolder Setting2 -->	

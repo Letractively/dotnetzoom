@@ -84,7 +84,7 @@ Namespace DotNetZoom
                     If InStr(1, lblTitle.Text, ".") <> 0 Then
                         StrExtension = Mid(lblTitle.Text, InStrRev(lblTitle.Text, ".")).ToLower
                         Select Case StrExtension.ToLower()
-                            Case ".flv"
+                            Case ".flv", ".mp4"
                                 flv.Visible = True
                             Case ".wmv"
                                 wmv.Visible = True

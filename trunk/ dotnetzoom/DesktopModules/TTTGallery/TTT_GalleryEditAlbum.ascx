@@ -128,7 +128,7 @@
     </td></tr></table>
     </td></tr>
 	<tr align="left">
-		<td Align=Left valign=top><input id="UploadFile" type="file" name="UploadFile" size="65" runat="server" /></td>
+		<td Align=Left valign=top><input id="UploadFile" type="file" name="UploadFile"  size="15" runat="server" /></td>
 		<td Align=Left valign=top><asp:button id="UploadImage" runat="server" /></td>
 	</tr>
 <tr align="left"><td bgcolor="#d7d79f" colspan="3">

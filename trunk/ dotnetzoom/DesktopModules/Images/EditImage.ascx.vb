@@ -48,6 +48,8 @@ Namespace DotNetZoom
         Protected WithEvents txtDescription As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtTitle As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtExif As System.Web.UI.WebControls.TextBox
+        Protected WithEvents ExternalLink As System.Web.UI.WebControls.TextBox
+        Protected WithEvents InfoLink As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtLatLong As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtWidth As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtHeight As System.Web.UI.WebControls.TextBox
@@ -141,7 +143,7 @@ Namespace DotNetZoom
                         If File.Exists(fileName) Then
                             Dim Exif As New ExifWorks(fileName)
                             If CType(settings("Exif"), String) <> "" Then
-                                txtExif.Text = Exif.ToString()
+                                txtExif.Text = CType(settings("Exif"), String)
                             Else
                                 txtExif.Text = Exif.ToString()
                             End If
@@ -207,8 +209,8 @@ Namespace DotNetZoom
                     optGoogleEarth.Checked = CType(settings("optGoogleEarth"), Boolean)
                     optInternalLink.Checked = CType(settings("optInternalLink"), Boolean)
                     optExif.Checked = CType(settings("optExif"), Boolean)
-
-
+                    ExternalLink.Text = CType(settings("ExtLink"), String)
+                    InfoLink.Text = CType(settings("InfoLink"), String)
 
                 End If
 
@@ -283,10 +285,9 @@ Namespace DotNetZoom
             objAdmin.UpdateModuleSetting(ModuleId, "alt", txtAlt.Text)
             objAdmin.UpdateModuleSetting(ModuleId, "fileGPS", cboInternalGPS.SelectedItem.Text)
             objAdmin.UpdateModuleSetting(ModuleId, "link", cboInternalLink.SelectedItem.Value)
-
-                If IsNumeric(txtWidth.Text) Then
-                    objAdmin.UpdateModuleSetting(ModuleId, "width", txtWidth.Text)
-                End If
+            If IsNumeric(txtWidth.Text) Then
+                objAdmin.UpdateModuleSetting(ModuleId, "width", txtWidth.Text)
+            End If
                 If IsNumeric(txtHeight.Text) Then
                     objAdmin.UpdateModuleSetting(ModuleId, "height", txtHeight.Text)
                 End If
@@ -297,18 +298,16 @@ Namespace DotNetZoom
             objAdmin.UpdateModuleSetting(ModuleId, "optGoogleEarth", optGoogleEarth.Checked.ToString)
             objAdmin.UpdateModuleSetting(ModuleId, "optInternalLink", optInternalLink.Checked.ToString)
             objAdmin.UpdateModuleSetting(ModuleId, "optExif", optExif.Checked.ToString)
-
-
-                objAdmin.UpdateModuleSetting(ModuleId, "infobule", txtDescription.Text)
-                objAdmin.UpdateModuleSetting(ModuleId, "latlong", txtLatLong.Text)
-                objAdmin.UpdateModuleSetting(ModuleId, "Artist", txtArtist.Text)
-                objAdmin.UpdateModuleSetting(ModuleId, "Copyright", txtCopyright.Text)
-                objAdmin.UpdateModuleSetting(ModuleId, "Title", txtTitle.Text)
-                objAdmin.UpdateModuleSetting(ModuleId, "Exif", txtExif.Text)
-
-
-                ' Redirect back to the portal home page
-                Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
+            objAdmin.UpdateModuleSetting(ModuleId, "infobule", txtDescription.Text)
+            objAdmin.UpdateModuleSetting(ModuleId, "latlong", txtLatLong.Text)
+            objAdmin.UpdateModuleSetting(ModuleId, "Artist", txtArtist.Text)
+            objAdmin.UpdateModuleSetting(ModuleId, "Copyright", txtCopyright.Text)
+            objAdmin.UpdateModuleSetting(ModuleId, "Title", txtTitle.Text)
+            objAdmin.UpdateModuleSetting(ModuleId, "Exif", txtExif.Text)
+            objAdmin.UpdateModuleSetting(ModuleId, "ExtLink", ExternalLink.Text)
+            objAdmin.UpdateModuleSetting(ModuleId, "InfoLink", InfoLink.Text)
+            ' Redirect back to the portal home page
+            Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
 
 

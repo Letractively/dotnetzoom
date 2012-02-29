@@ -40,11 +40,14 @@ Namespace DotNetZoom
         Protected WithEvents lblInfo As System.Web.UI.WebControls.Literal
         Protected WithEvents BrowserLink As System.Web.UI.WebControls.HyperLink
 
-        Protected WithEvents SlideshowLink As System.Web.UI.WebControls.HyperLink
+
 
         Protected WithEvents lnkAdmin As System.Web.UI.WebControls.HyperLink
 
         Protected WithEvents lnkManager As System.Web.UI.WebControls.HyperLink
+
+        Protected WithEvents ImageBefore As System.Web.UI.WebControls.Literal
+        Protected WithEvents ImageAfter As System.Web.UI.WebControls.Literal
 
         Protected WithEvents lblPageInfo2 As System.Web.UI.WebControls.Literal
         Protected WithEvents lblPageInfo As System.Web.UI.WebControls.Literal
@@ -52,13 +55,11 @@ Namespace DotNetZoom
 
         Private mGalleryAuthority As Boolean = False
         Private mGalleryEdit As Boolean = False
-        Private mAllowDownload As Boolean = False
         Private mForumIntegrate As Boolean = False
         Private ZuserID As Integer = 0
         Private Zrequest As GalleryRequest
-        Private config As GalleryConfig
+        Protected config As GalleryConfig
 	    Private bCanDiscuss As Boolean = False
-        Private bCanView As Boolean = False
 
 #Region " Web Form Designer Generated Code "
 
@@ -77,6 +78,7 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             'Put user code to initialize the page here
+            GalleryConfig.SetFancyBoxCSS(Me.Page)
             Title1.EditText = GetLanguage("editer")
             ClearCache.ToolTip = GetLanguage("Gal_Clear")
             ClearCache.Style.Add("background", "url('" & ForumConfig.DefaultImageFolder() & "forum.gif" & "') no-repeat")
@@ -85,17 +87,18 @@ Namespace DotNetZoom
             UploadImage.ToolTip = GetLanguage("Gal_AddFileTip")
 			lnkAdmin.Text =  getlanguage("Gal_SetUp")
 
+
+
 			lnkManager.Text =  getlanguage("Gal_SetUp1")
 
 			BrowserLink.Text =  getlanguage("Gal_BrowserLink")
 
-			SlideshowLink.Text =  getlanguage("Gal_showLink")
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             System.Web.HttpContext.Current.Session("ReturnPath") = Request.RawUrl
-            Zrequest = New GalleryRequest(ModuleId)
             config = GalleryConfig.GetGalleryConfig(ModuleId)
+            Zrequest = New GalleryRequest(ModuleId)
 
 
 
@@ -152,15 +155,6 @@ Namespace DotNetZoom
                         'Response.Redirect(sb.ToString)
                     End If
                 End If
-                If Not config.RootFolder.IsPopulated Then
-                    Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
-                    'Response.Redirect(glbPath & "DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query & "&mid=" & ModuleId.ToString)
-                End If
-
-                If Not Zrequest.Folder.IsPopulated Then
-                    Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
-                    'Response.Redirect(glbPath & "DesktopModules/TTTGallery/TTT_cache.aspx" & HttpContext.Current.Request.Url.Query & "&mid=" & ModuleId.ToString)
-                End If
 
                 CreateLink()
 
@@ -195,6 +189,38 @@ Namespace DotNetZoom
                     dlStrip.ItemStyle.Width = New WebControls.Unit(Int(100 / config.StripWidth), UnitType.Percentage)
                     dlStrip.DataSource = Zrequest.CurrentItems
                     dlStrip.DataBind()
+
+                    Dim i As Integer
+                    Dim tempstring As String = ""
+                    If Zrequest.Folder.IsBrowsable() AndAlso Zrequest.Folder.List.Count > 0 Then
+
+                        For i = 1 To Zrequest.Folder.List.Count
+
+                            Dim item As IGalleryObjectInfo = Zrequest.Folder.List.Item(i - 1)
+                            tempstring = ""
+                            Select Case item.Type
+                                Case IGalleryObjectInfo.ItemType.Image
+                                    tempstring = "<a rel=""image"" rev=""" + GetItemInfo(item) + """ href=""" + item.URL + """></a>"
+                                Case IGalleryObjectInfo.ItemType.Flash
+                                    tempstring = "<a rel=""flash"" rev=""" + GetItemInfo(item) + """ href=""" + item.URL + """></a>"
+                                Case IGalleryObjectInfo.ItemType.Movie
+                                    Dim StrExtension As String
+                                    StrExtension = Mid(item.Name, InStrRev(item.Name, ".")).ToLower
+                                    Select Case StrExtension.ToLower()
+                                        Case ".flv", ".mp4"
+                                            tempstring = "<a rel=""flash"" rev=""" + GetItemInfo(item) + """ href=""" + "/javascript/player.swf?file=" + item.URL + "&autostart=true" + """></a>"
+                                        Case Else
+                                            tempstring = "<a rel=""movie"" rev=""" + GetItemInfo(item) + """ href=""" + glbPath & "DesktopModules/TTTGallery/TTT_MediaPlayer.aspx?L=" & GetLanguage("N") & "&path=" & item.URL & "&tabid=" & TabId.ToString & "&mid=" & ModuleId.ToString & "&media=" & item.Name + """></a>"
+                                    End Select
+                            End Select
+                            If i < Zrequest.StartItem Then
+                                ImageBefore.Text += tempstring
+                            ElseIf i > Zrequest.EndItem Then
+                                ImageAfter.Text += tempstring
+                            End If
+                        Next i
+                    End If
+
                     Stats.Text = GetStats()
                     Stats.ID = ""
                 Else
@@ -211,14 +237,14 @@ Namespace DotNetZoom
 
         ' Generate all config value once for better performance
         Private Sub GenerateConfig()
-		Dim delim as String = "/"
+            Dim delim As String = "/"
             Dim tempRootURL As String = config.RootURL
-		temprootURL = TempRootURL.Trim(delim.ToCharArray()) & "/"
-		tempRootURL += Zrequest.Path
-		temprootURL = TempRootURL.Trim(delim.ToCharArray()) & "/_res"
+            tempRootURL = tempRootURL.Trim(delim.ToCharArray()) & "/"
+            tempRootURL += Zrequest.Path
+            tempRootURL = tempRootURL.Trim(delim.ToCharArray()) & "/_res"
             ' Authorized gallery
             If ZuserID > 0 Then
-            System.Web.HttpContext.Current.Session("UploadPath") = tempRootURL
+                System.Web.HttpContext.Current.Session("UploadPath") = tempRootURL
                 If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
                    OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
                    OrElse (config.OwnerID = ZuserID) Then
@@ -242,20 +268,13 @@ Namespace DotNetZoom
                 End Try
             End If
 
-            ' Allow download file?
-            mAllowDownload = config.AllowDownload
 
             ' Integrate with forum?
             mForumIntegrate = config.IsIntegrated
 
-            ' Folder contains any image
-            If Zrequest.FirstImageIndex > -1 Then
-                bCanView = True
-            End If
-
         End Sub
 
-		
+
         Protected Function GalleryAuthority() As Boolean
             Return mGalleryAuthority
         End Function
@@ -382,29 +401,16 @@ Namespace DotNetZoom
 
             'Try ' Error handling suggested by Katse to prevent exception after deleting the last image in album
             If Zrequest.Folder.IsBrowsable() AndAlso Zrequest.Folder.BrowsableItems.Count > 0 Then
-
-
                 BrowserLink.NavigateUrl = GetFolderViewerURL(Zrequest.Folder)
-
-                BrowserLink.Visible = True
-
-
+                BrowserLink.Visible = mGalleryEdit
                 BrowserLink.ID = ""
-
-
-                SlideshowLink.NavigateUrl = GetSlideshowURL(Zrequest.Folder)
-
-                SlideshowLink.Visible = True
-
-                SlideshowLink.ID = ""
-
             End If
 
         End Sub
 
         Protected Function CanDownload(ByVal DataItem As Object) As Boolean
             If Not CType(DataItem, IGalleryObjectInfo).IsFolder _
-            AndAlso config.AllowDownload Then
+            AndAlso config.AllowDownload And PortalSecurity.IsInRoles(config.DownloadRoles) Then
                 Return True
             Else
                 Return False
@@ -415,50 +421,49 @@ Namespace DotNetZoom
             Return bCanDiscuss
         End Function
 
-        Protected Function CanView() As Boolean 'for container folder
-            Return bCanView
-        End Function
-
-        Protected Function CanView(ByVal DataItem As Object) As Boolean 'for item
-            If CType(DataItem, IGalleryObjectInfo).IsFolder Then
-                If CType(DataItem, GalleryFolder).BrowsableItems.Count > 0 Then
-                    Return True
-                End If
-            End If
-
-        End Function
 
         Protected Function CanClearCache(ByVal dataItem As Object) As Boolean
             Return CType(dataItem, IGalleryObjectInfo).IsFolder AndAlso mGalleryAuthority
 
         End Function
 
+
+        Protected Function GetItemTitle(ByVal DataItem As Object) As String
+            Dim Item As IGalleryObjectInfo = CType(DataItem, IGalleryObjectInfo)
+            Dim sb As New StringBuilder()
+            If Item.IsFolder Then
+                Dim GalleryItem As GalleryFolder = CType(DataItem, GalleryFolder)
+                If GalleryItem.Size > 0 Then
+                    sb.Append("<br>(" & GalleryItem.Size.ToString & " " & GetLanguage("Gal_Items") & ")")
+                End If
+            End If
+            Return sb.ToString()
+        End Function
+
+
         Protected Function GetItemInfo(ByVal DataItem As Object) As String
             Dim Item As IGalleryObjectInfo = CType(DataItem, IGalleryObjectInfo)
             Dim sb As New StringBuilder()
-
-
             If Item.IsFolder Then
                 Dim GalleryItem As GalleryFolder = CType(DataItem, GalleryFolder)
-                'If Not GalleryItem.IsPopulated Then
-                'GalleryItem.Populate()
-                'End If
-                If GalleryItem.Size > 0 Then
-                    Return "(" & GalleryItem.Size.ToString & " " & GetLanguage("Gal_Items") & ")"
+                If config.DisplayOption = GalleryConfig.GalleryDisplayOption.Description.ToString _
+                    OrElse config.DisplayOption = GalleryConfig.GalleryDisplayOption.FileInfoAndDescription.ToString Then
+                    If Item.Description <> "" Then
+                        Return (Replace(Item.Description, vbCrLf, ""))
+                    End If
                 End If
             ElseIf Not Item.IsFolder Then
-
                 If config.DisplayOption = GalleryConfig.GalleryDisplayOption.Description.ToString _
                 OrElse config.DisplayOption = GalleryConfig.GalleryDisplayOption.FileInfoAndDescription.ToString Then
-                    sb.Append(Replace(Item.Description, vbCrLf, "<br>"))
+                    If Item.Description <> "" Then
+                        sb.Append(Replace(Item.Description, vbCrLf, ""))
+                    Else
+                        sb.Append(Replace(Item.Title, vbCrLf, ""))
+                    End If
                 End If
-
-                If sb.Length > 0 Then
-                    sb.Append("<br>")
-                End If
-
                 If config.DisplayOption = GalleryConfig.GalleryDisplayOption.FileInfo.ToString _
                 OrElse config.DisplayOption = GalleryConfig.GalleryDisplayOption.FileInfoAndDescription.ToString Then
+                    sb.Append(" ")
                     sb.Append(Item.Name)
                     sb.Append(" ")
                     sb.Append(Math.Ceiling(Item.Size / 1024).ToString)
@@ -468,7 +473,9 @@ Namespace DotNetZoom
 
                 Return sb.ToString
 
-            End If
+                End If
+
+                Return ""
 
         End Function
 
@@ -515,18 +522,53 @@ Namespace DotNetZoom
             ' Return CryptoUrl(Item.Thumbnail, config.IsPrivate)
         End Function
 
-        Protected Function GetBrowserURL(ByVal DataItem As Object) As String
+
+        Protected Function GetItemType(ByVal DataItem As Object) As String
+            If CType(DataItem, IGalleryObjectInfo).IsFolder Then
+                Return "album"
+            Else
+                Dim item As GalleryFile = CType(DataItem, GalleryFile)
+
+                Select Case item.Type
+                    Case IGalleryObjectInfo.ItemType.Image
+                        Return "image"
+                    Case IGalleryObjectInfo.ItemType.Flash
+                        Return "flash"
+                    Case IGalleryObjectInfo.ItemType.Movie
+                        Dim StrExtension As String
+                        StrExtension = Mid(item.Name, InStrRev(item.Name, ".")).ToLower
+                        Select Case StrExtension.ToLower()
+                            Case ".flv", ".mp4"
+                                Return "flash"
+                            Case Else
+                                Return "movie"
+                        End Select
+                End Select
+            End If
+            Return "other"
+        End Function
+
+        Protected Function GetImageURL(ByVal DataItem As Object) As String
             If CType(DataItem, IGalleryObjectInfo).IsFolder Then
                 Return GetAlbumURL(DataItem)
             Else
                 Dim item As GalleryFile = CType(DataItem, GalleryFile)
                 Select Case item.Type
                     Case IGalleryObjectInfo.ItemType.Image
-                        Return GetItemURL(DataItem)
+                        Return Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url
                     Case IGalleryObjectInfo.ItemType.Flash
-                        Return Me.GetFlashPlayerURL(DataItem)
+                        Return Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url
                     Case IGalleryObjectInfo.ItemType.Movie
-                        Return GetMediaPlayerURL(DataItem)
+
+                        Dim StrExtension As String
+                        StrExtension = Mid(CType(DataItem, GalleryFile).URL, InStrRev(CType(DataItem, GalleryFile).URL, ".")).ToLower
+                        Select Case StrExtension.ToLower()
+                            Case ".flv", ".mp4"
+                                Return "/javascript/player.swf?file=" + CType(DataItem, GalleryFile).URL + "&autostart=true"
+                            Case Else
+                                Return glbPath & "DesktopModules/TTTGallery/TTT_MediaPlayer.aspx?L=" & GetLanguage("N") & "&path=" & CType(DataItem, GalleryFile).URL & "&tabid=" & TabId.ToString & "&mid=" & ModuleId.ToString & "&media=" & CType(DataItem, GalleryFile).Name
+                        End Select
+
                 End Select
             End If
         End Function
@@ -574,8 +616,7 @@ Namespace DotNetZoom
         End Function
 
         Protected Function GetFolderViewerURL(ByVal DataItem As Object) As String
-            Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser, Zrequest.Folder.GalleryHierarchy, False, "0", "")
-            ' Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser, Zrequest.Folder.GalleryHierarchy, False, "0", "")
+            Return "javascript:DestroyWnd;CreateWnd('" & glbPath & "DesktopModules/TTTGallery/TTT_Viewer.aspx?L=" & GetLanguage("N") & "&path=" & Zrequest.Folder.GalleryHierarchy & "&tabid=" & TabId.ToString & "&mid=" & ModuleId.ToString & "'," & CStr(config.FixedWidth + 40) & "," & CStr(config.FixedHeight + 120) & ",true);"
         End Function
 
         Protected Function GetAlbumURL(ByVal DataItem As Object) As String
@@ -586,13 +627,6 @@ Namespace DotNetZoom
             Return sb.ToString
         End Function
 
-        Protected Function GetItemURL(ByVal DataItem As Object) As String
-            ' modification 2004-07-31 pour ordonner la liste des images
-            Dim viewIndex As Integer = Zrequest.Folder.BrowsableItems.IndexOf(CType(DataItem, IGalleryObjectInfo).Index)
-
-            Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser, Zrequest.Folder.GalleryHierarchy, False, viewIndex.ToString, "")
-            ' Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser, Zrequest.Folder.GalleryHierarchy, False, viewIndex.ToString, "")
-        End Function
 
         ' ajout par rene boulard 2004-04-23 pour modifier icon dans le res repertoire
 
@@ -607,7 +641,6 @@ Namespace DotNetZoom
             sb.Append(Zrequest.Path)
             sb.Append("&mid=")
             sb.Append(ModuleId)
-
             sb.Append("&L=" & GetLanguage("N"))
             Return sb.ToString
         End Function
@@ -642,83 +675,7 @@ Namespace DotNetZoom
             Return sb.ToString
         End Function
 
-        Protected Function GetMediaPlayerURL(ByVal DataItem As Object) As String
-            Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryMediaPlayer, CType(DataItem, GalleryFile).URL, True, "", CType(DataItem, GalleryFile).Name)
-        End Function
 
-        Protected Function GetFlashPlayerURL(ByVal DataItem As Object) As String
-            Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GalleryFlashPlayer, CType(DataItem, GalleryFile).URL, True, "", CType(DataItem, GalleryFile).Name)
-        End Function
-
-        Protected Function GetSlideshowURL(ByVal DataItem As Object) As String
-            Return GetURL(TTT_GalleryDispatch.GalleryDesktopType.GallerySlideshow, CType(DataItem, IGalleryObjectInfo).URL, False, "", "")
-        End Function
-
-        Private Function GetURL( _
-            ByVal GalleryPage As TTT_GalleryDispatch.GalleryDesktopType, _
-            ByVal Path As String, _
-            ByVal IncludeHost As Boolean, _
-            Optional ByVal CurrentItem As String = "", _
-            Optional ByVal Media As String = "") As String
-
-            Dim sb As New StringBuilder()
-
-            If IncludeHost Then
-                ' Path = CryptoUrl(Path, config.IsPrivate)
-            End If
-
-
-            If config.SlideshowPopup Then
-                sb.Append("javascript:DestroyWnd;CreateWnd('" & glbPath & "DesktopModules/TTTGallery/")
-                Select Case GalleryPage
-                    Case TTT_GalleryDispatch.GalleryDesktopType.GalleryBrowser
-                        sb.Append("TTT_Viewer.aspx?L=" & GetLanguage("N") & "&path=")
-                    Case TTT_GalleryDispatch.GalleryDesktopType.GalleryFlashPlayer
-                        sb.Append("TTT_FlashPlayer.aspx?L=" & GetLanguage("N") & "&path=")
-                    Case TTT_GalleryDispatch.GalleryDesktopType.GalleryMediaPlayer
-                        sb.Append("TTT_MediaPlayer.aspx?L=" & GetLanguage("N") & "&path=")
-                    Case TTT_GalleryDispatch.GalleryDesktopType.GallerySlideshow
-                        sb.Append("TTT_SlideShow.aspx?L=" & GetLanguage("N") & "&path=")
-                End Select
-                sb.Append(Path)
-                If Len(CurrentItem) > 0 Then
-                    sb.Append("&currentitem=")
-                    sb.Append(CurrentItem)
-                End If
-                If Len(Media) > 0 Then
-                    sb.Append("&media=")
-                    sb.Append(Media)
-                End If
-                sb.Append("&tabid=")
-                sb.Append(TabId)
-                sb.Append("&mid=")
-                sb.Append(ModuleId.ToString)
-                sb.Append("', ")
-                sb.Append(CStr(config.FixedWidth + 20))
-                sb.Append(", ")
-                sb.Append(CStr(config.FixedHeight + 125))
-                sb.Append(", true);")
-
-            Else
-                sb.Append(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "gallerypage=" & GalleryPage & "&mid=" & ModuleId))
-                sb.Append("&path=")
-                If IncludeHost Then
-                    sb.Append(AddHTTP(Request.ServerVariables("HTTP_HOST")))
-                End If
-                sb.Append(Path)
-                If Len(CurrentItem) > 0 Then
-                    sb.Append("&currentitem=")
-                    sb.Append(CurrentItem)
-                End If
-                If Len(Media) > 0 Then
-                    sb.Append("&media=")
-                    sb.Append(Media)
-                End If
-            End If
-
-            Return sb.ToString
-
-        End Function
 
         Public Function SetImage(ByVal ImageData As String) As String
             Return "<img height=""16"" width=""16"" src=""/images/1x1.gif"" Alt=""*"" style=""border-width:0px; background: url('" & ForumConfig.DefaultImageFolder & "forum.gif') no-repeat; background-position:" & ImageData & ";"">"
@@ -888,11 +845,6 @@ Namespace DotNetZoom
             TmpControl = e.Item.FindControl("btnDownload")
             If Not TmpControl Is Nothing Then
                 CType(TmpControl, ImageButton).ToolTip = GetLanguage("download")
-            End If
-            TmpControl = Nothing
-            TmpControl = e.Item.FindControl("lnkSlideshow")
-            If Not TmpControl Is Nothing Then
-                CType(TmpControl, HyperLink).ToolTip = GetLanguage("Gal_lnkshow")
             End If
             TmpControl = Nothing
             TmpControl = e.Item.FindControl("lnkDiscussion")

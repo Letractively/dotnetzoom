@@ -887,11 +887,11 @@ Namespace DotNetZoom
                     ' If we moved, then we retrieved a result
                     Return iterator.Current.Value()
                 Else
-                    Return "'_blank'" 'Default Value
+                    Return "'_top'" 'Default Value
                 End If
 
             Else
-                Return "'_blank'" 'Default Value
+                Return "'_top'" 'Default Value
             End If
 
         End Function

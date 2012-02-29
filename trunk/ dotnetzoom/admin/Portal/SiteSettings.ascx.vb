@@ -81,7 +81,10 @@ Namespace DotNetZoom
         Protected WithEvents txtPortalAlias As System.Web.UI.WebControls.TextBox
         
         Protected WithEvents txtExpiryDate As System.Web.UI.WebControls.TextBox
-        
+
+        Protected WithEvents txtPublicKey As System.Web.UI.WebControls.TextBox
+        Protected WithEvents txtPrivateKey As System.Web.UI.WebControls.TextBox
+
         Protected WithEvents txtHostSpace As System.Web.UI.WebControls.TextBox
         
         Protected WithEvents txtHostFee As System.Web.UI.WebControls.TextBox
@@ -490,6 +493,10 @@ Namespace DotNetZoom
                 Else
                     txtLogin.Text = CType(Tsettings("loginmessage"), String)
                 End If
+                If Tsettings.ContainsKey("PublicKey") Then
+                    txtPublicKey.Text = CType(Tsettings("PublicKey"), String)
+                    txtPrivateKey.Text = CType(Tsettings("PrivateKey"), String)
+                End If
 
                 If Tsettings.ContainsKey(ddlLanguage.SelectedItem.Value & "_registrationmessage") Then
                     txtRegistration.Text = CType(Tsettings(ddlLanguage.SelectedItem.Value & "_registrationmessage"), String)
@@ -767,7 +774,7 @@ Namespace DotNetZoom
 			ClearPortalCache(intPortalId)
 		
 
-            Dim strLogo As String
+            Dim strLogo As String = ""
             Dim strBackground As String
 
             If Not cboLogo.SelectedItem Is Nothing Then
@@ -808,9 +815,10 @@ Namespace DotNetZoom
             admin.UpdatePortalSetting(intPortalId, ddlLanguage.SelectedItem.Value & "_FooterText", txtFooterText.Text)
             admin.UpdatePortalSetting(intPortalId, ddlLanguage.SelectedItem.Value & "_PortalName", txtPortalName.Text)
 
+            admin.UpdatePortalSetting(intPortalId, "PublicKey", txtPublicKey.Text)
+            admin.UpdatePortalSetting(intPortalId, "PrivateKey", txtPrivateKey.Text)
 
-			
-			admin.UpdatePortalSetting(intPortalId, "flash", txtflash.Text)
+            admin.UpdatePortalSetting(intPortalId, "flash", txtFlash.Text)
 
 			admin.UpdatePortalSetting(intPortalId, "language", ddlSiteLanguage.SelectedItem.Value)
 

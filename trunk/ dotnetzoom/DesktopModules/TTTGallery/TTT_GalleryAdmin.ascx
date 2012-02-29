@@ -194,6 +194,13 @@
 			<td class="TTTRow" align="left" height="25">
 				<asp:checkbox id="chkDownload" CssClass="TTTNormal" runat="server"></asp:checkbox></td>
 		</tr>
+        <tr>
+            <td class="TTTSubHeader" width="200">&nbsp;<%= DotNetZoom.GetLanguage("Gal_AllowDlist")%></td>
+            <td>
+                <asp:checkboxlist id="chkAuthRoles" runat="server" width="300" Font-Size="8pt" Font-Names="Verdana,Arial" cellspacing="0" cellpadding="0" RepeatColumns="2"></asp:checkboxlist>
+            </td>
+        </tr>
+
 		<tr>
 			<td class="TTTSubHeader" width="200">&nbsp;<%= DotNetZoom.getlanguage("Gal_AgAL") %></td>
 			<td class="TTTRow" align="left" height="25">

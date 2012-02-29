@@ -43,8 +43,7 @@ Namespace DotNetZoom
             
 
                 Dim objUsersOnline As UsersOnlineDB = New UsersOnlineDB
-                Dim objSession As SessionTrackerDB = New SessionTrackerDB
-                Dim objUser As UsersDB = New UsersDB
+            Dim objUser As UsersDB = New UsersDB
 
                 Dim GuestCount As Integer = 0
                 Dim MemberCount As Integer = 0

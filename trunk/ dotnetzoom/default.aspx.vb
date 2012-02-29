@@ -422,10 +422,17 @@ Namespace DotNetZoom
                             Throw objException
                         Else
                             If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE", objException.ToString(), "")
+
+                                Dim ErrMessage As String = BuildErrorMessage(Request)
+
+                                If InStr(1, objException.ToString(), "ThreadAbortException") = 0 Then
+                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage + vbCrLf + objException.ToString(), "")
+                                Else
+                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage, "")
+                                End If
                             End If
-                            ContentPane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>"))
-                        End If
+                            ContentPane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>" & vbCrLf & objException.ToString()))
+                            End If
                     End Try
                 End If
                 ' End Edit page
@@ -544,11 +551,17 @@ Namespace DotNetZoom
                                             Throw objException
                                         Else
                                             If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                                                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE", objException.ToString(), "")
+                                                Dim ErrMessage As String = BuildErrorMessage(Request)
+
+                                                If InStr(1, objException.ToString(), "ThreadAbortException") = 0 Then
+                                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage + vbCrLf + objException.ToString(), "")
+                                                Else
+                                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage, "")
+                                                End If
                                             End If
-                                            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
-                                                parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>"))
-                                            End If
+                                        If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
+                                            parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>" & vbCrLf & objException.ToString()))
+                                        End If
                                         End If
                                     End Try
                                 End If

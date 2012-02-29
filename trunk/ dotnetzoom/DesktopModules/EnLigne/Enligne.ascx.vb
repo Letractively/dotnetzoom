@@ -39,9 +39,7 @@ Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs
              Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
 			
-
-
-            IPMessage.Text =  Request.UserHostAddress
+            IPMessage.Text = Request.UserHostAddress
             ServeurMessage.Text = RecupUtime
 			Dim Int32 as integer
 
@@ -55,13 +53,12 @@ Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs
 
 			
 	Message.Text = Int32.ToString()
-
             Try
                 Dim perfAppRestarts As New PerformanceCounter("ASP.NET", "Application Restarts")
                 Dim perfFreeMem As New PerformanceCounter("Memory", "Available MBytes")
 
                 lblAppRestarts.Text = perfAppRestarts.NextValue()
-                lblFreeMem.Text = perfFreeMem.NextValue() & " Mo"
+                lblFreeMem.Text = perfFreeMem.NextValue() & " Mo "
                 perfAppRestarts.Dispose()
 
                 perfFreeMem.Dispose()

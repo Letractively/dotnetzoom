@@ -43,16 +43,25 @@ Private Sub ShowNewOnly()
 
          Dim myEnumerator As IDictionaryEnumerator = _language.GetEnumerator()
          While myEnumerator.MoveNext()
-		 dr = Admin.GetNewlanguage(GetLanguage("N"), myEnumerator.Key.ToString) 
-         If dr.Read Then
-		 If Not dr("New") then
-		 _Newlanguage.Add(myEnumerator.Key,  myEnumerator.Value )
-		 end if
-		 else
-		 _Newlanguage.Add(myEnumerator.Key,  myEnumerator.Value )
-		 end if
-		 dr.Close()
-         End While		  
+            dr = Admin.GetNewlanguage(GetLanguage("N"), myEnumerator.Key.ToString)
+            If dr.Read Then
+                If dr.GetString(2) = "New" Then
+                    _Newlanguage.Add(myEnumerator.Key, myEnumerator.Value)
+                End If
+                
+                
+                If ddlContext.Items.FindByValue(dr.GetString(2)) Is Nothing Then
+                    ddlContext.Items.Add(dr.GetString(2))
+                         
+                End If
+                
+            Else
+                _Newlanguage.Add(myEnumerator.Key, myEnumerator.Value)
+            End If
+            dr.Close()
+        End While
+        ddlContext.SelectedIndex = 0
+        ddlContext.Visible = False
 		 HttpContext.Current.Session("LanguageTable") =  _Newlanguage
 End Sub
 
@@ -87,8 +96,8 @@ Public Sub ShowNew_OnClick(ByVal sender As Object, ByVal e As EventArgs)
 		   end if
 		   end if
 
-		 btnLanguageEditAll.Visible = False
-
+        btnLanguageEditAll.Visible = False
+        btnLanguageEdit.Visible = False
 	End Sub
 	
 Public Sub ShowAll_OnClick(ByVal sender As Object, ByVal e As EventArgs) 
@@ -195,6 +204,7 @@ Public Sub ShowAll_OnClick(ByVal sender As Object, ByVal e As EventArgs)
 		</asp:TemplateColumn>
     </Columns>
 </asp:datagrid>
+<asp:DropDownList ID="ddlContext" runat="server" Width="300"></asp:DropDownList>
 </div>
 </form>
 </body>

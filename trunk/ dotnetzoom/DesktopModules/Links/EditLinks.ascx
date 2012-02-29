@@ -99,7 +99,7 @@
                     &nbsp;<%= DotNetZoom.getlanguage("file_link") %><label for="<%=cboFiles.ClientID%>">:</label>
                 </td>
                 <td>
-                    <asp:DropDownList id="cboFiles" Runat="server" CssClass="NormalTextBox" width="300" DataValueField="Value" DataTextField="Text"></asp:DropDownList>
+                    <asp:DropDownList id="cboFiles" Runat="server" CssClass="NormalTextBox" width="200" DataValueField="Value" DataTextField="Text"></asp:DropDownList>
                     &nbsp;
                     <asp:HyperLink id="cmdUpload" Runat="server" CssClass="CommandButton"></asp:HyperLink>
                 </td>

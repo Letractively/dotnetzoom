@@ -28,7 +28,7 @@
             <td class="SubHead">
                 <label for="<%=cboImage.ClientID%>"><%= DotNetZoom.GetLanguage("Vendor_Banner_Image") %>:</label></td>
             <td>
-                <asp:dropdownlist id="cboImage" runat="server" CssClass="NormalTextBox" DataValueField="Value" DataTextField="Text" Width="390"></asp:dropdownlist>
+                <asp:dropdownlist id="cboImage" runat="server" CssClass="NormalTextBox" DataValueField="Value" DataTextField="Text" Width="200"></asp:dropdownlist>
                 &nbsp; 
                 <asp:HyperLink id="cmdUpload" CssClass="CommandButton" Runat="server"></asp:HyperLink>
             </td>

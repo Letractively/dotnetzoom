@@ -100,7 +100,8 @@ Namespace DotNetZoom
 			end if
 
 
-			chkCookie.Text = getlanguage("Login_Keep")
+            chkCookie.Text = GetLanguage("Login_Keep")
+            chkCookie.Checked = True
 			cmdLogin.Text = getlanguage("Button_Enter")
 			cmdLogin.Tooltip = getlanguage("Button_EnterTooltip")
 			cmdRegister.Text = getlanguage("Button_Register")
@@ -244,6 +245,7 @@ Namespace DotNetZoom
                                 ' Use security system to set the UserID within a client-side Cookie
                                 objUser.UpdateUserIP(userId, Request.UserHostAddress, "")
                                 FormsAuthentication.SetAuthCookie(userId.ToString(), chkCookie.Checked)
+
                                 objUser.UpdateCheckUserSecurity(userId, "", DateTime.Now.AddYears(-30), 0)
                                 ' Reset Session variable
                                 Session.Contents.RemoveAll()

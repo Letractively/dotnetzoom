@@ -57,6 +57,7 @@
 		&nbsp;&nbsp;<asp:hyperlink id="lnkcolor" CssClass="CommandButton" runat="server"></asp:hyperlink>
 		</td>
 	</tr>
+    <tr>
 		<td><label class="SubHead" for="<%=txtBorder.ClientID%>"><%= DotNetZoom.GetLanguage("ms_margin")%>:</label></td>
 		<td><asp:textbox id="txtBorder" CssClass="NormalTextBox" Runat="server" Columns="1"></asp:textbox>
 		</td>

@@ -328,7 +328,7 @@ Namespace DotNetZoom
 						Dim lnk As LinkButton = GetNameLinkButton(e.Item)
  						If not lnk is nothing then
 						Dim incScript As String = String.Format("<script Language=""javascript"">window.top.opener.SetUrl('{0}'); window.top.close() ; window.top.opener.focus() ;</script>", GetFullUrlName(lnk.Text))
-            			Page.RegisterClientScriptBlock("OpenFileManager", incScript)
+                                Page.ClientScript.RegisterClientScriptBlock(Page.GetType, "OpenFileManager", incScript)
 					end if
 						else
 						Dim evt As New FileClickedEventArgs(Root, RelativeDir, CType(e.CommandSource, LinkButton).Text())

@@ -89,6 +89,7 @@ Namespace DotNetZoom
         Protected WithEvents chkDownload As System.Web.UI.WebControls.CheckBox
         Protected WithEvents chkAvatarsGallery As System.Web.UI.WebControls.CheckBox
         Protected WithEvents ddlDisplayOption As System.Web.UI.WebControls.DropDownList
+        Protected WithEvents chkAuthRoles As System.Web.UI.WebControls.CheckBoxList
         Protected config As GalleryConfig
 
 #Region " Web Form Designer Generated Code "
@@ -197,6 +198,46 @@ Namespace DotNetZoom
                 chkPopup.Checked = config.SlideshowPopup
                 chkInfoBule.Checked = config.InfoBule
                 chkDownload.Checked = config.AllowDownload
+                chkAuthRoles.Items.Clear()
+                Dim allItems As New ListItem()
+                allItems.Text = GetLanguage("ms_all_users")
+                allItems.Value = glbRoleAllUsers
+
+
+                Dim unauthItems As New ListItem()
+                unauthItems.Text = GetLanguage("ms_non_authorized")
+                unauthItems.Value = glbRoleUnauthUser
+
+                If InStr(1, config.DownloadRoles, allItems.Value & ";") > 0 Then
+                    allItems.Selected = True
+                End If
+                chkAuthRoles.Items.Add(allItems)
+
+                If InStr(1, config.DownloadRoles, unauthItems.Value & ";") > 0 Then
+                    unauthItems.Selected = True
+                End If
+                chkAuthRoles.Items.Add(unauthItems)
+
+                Dim objUser As New UsersDB()
+
+                Dim ViewRoles As SqlDataReader = objUser.GetPortalRoles(_portalSettings.PortalId, GetLanguage("N"))
+                While ViewRoles.Read()
+
+                    Dim item As New ListItem()
+                    item.Text = CType(ViewRoles("RoleName"), String)
+                    item.Value = ViewRoles("RoleID").ToString()
+
+                    If InStr(1, config.DownloadRoles, item.Value & ";") > 0 Then
+                        item.Selected = True
+                    End If
+
+                    chkAuthRoles.Items.Add(item)
+
+                End While
+
+                ViewRoles.Close()
+
+
                 chkAvatarsGallery.Checked = config.IsAvatarsGallery
                 Dim TGalleryUser As GalleryUser = New GalleryUser(config.OwnerID)
                 txtOwner.Text = TGalleryUser.UserName
@@ -323,7 +364,20 @@ Namespace DotNetZoom
                 admin.UpdateModuleSetting(ModuleId, "IntegratedForumGroup", ddlForumGroup.SelectedItem.Value.ToString)
             End If
 
- 
+
+            Dim item As ListItem
+
+            ' Construct Authorized Download Roles 
+            Dim viewRoles As String = ""
+            For Each item In chkAuthRoles.Items
+                If item.Selected Then
+                    viewRoles = viewRoles & item.Value & ";"
+                End If
+            Next item
+
+            Admin.UpdateModuleSetting(ModuleId, "DownloadRoles", viewRoles)
+
+
             Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
 
             ' Zrequest.Folder.REPopulate()

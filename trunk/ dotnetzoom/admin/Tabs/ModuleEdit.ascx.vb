@@ -10,7 +10,7 @@ Namespace DotNetZoom
 		Public ModuleId As Integer
 		Public TabID  As Integer = Nothing
 		Public ReturnURL As String = Nothing
-
+        Public ItemContainer As Boolean = False
 	
 		Protected WithEvents lblMessage As System.Web.UI.WebControls.Label
         Protected WithEvents cmdUpdate As System.Web.UI.WebControls.LinkButton

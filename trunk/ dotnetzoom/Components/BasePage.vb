@@ -27,39 +27,146 @@ Imports System.Configuration
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.IO
+Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Data.SqlTypes
+Imports System.Reflection
 
 Namespace DotNetZoom
 
     Public Class ISyncFunction
 
         Dim Del As MyAsyncDelegate
+        Private _SessionId As String
+        Private _UserId As Integer
+        Private _Request As HttpRequest
+        Private _portalSettings As PortalSettings
+        Private _DBConnectionString As String
+        Private _PortalUserOnline As Boolean
+
+        Public Property PortalUserOnline() As Boolean
+            Get
+                Return _PortalUserOnline
+            End Get
+            Set(ByVal Value As Boolean)
+                _PortalUserOnline = Value
+            End Set
+        End Property
+
+        Public Property DBConnectionString() As String
+            Get
+                Return _DBConnectionString
+            End Get
+            Set(ByVal Value As String)
+                _DBConnectionString = Value
+            End Set
+        End Property
+
+
+        Public Property SessionID() As String
+            Get
+                Return _SessionId
+            End Get
+            Set(ByVal Value As String)
+                _SessionId = Value
+            End Set
+        End Property
+
+        Public Property UserID() As Integer
+            Get
+                Return _UserId
+            End Get
+            Set(ByVal Value As Integer)
+                _UserId = Value
+            End Set
+        End Property
+
+        Public Property Request() As HttpRequest
+            Get
+                Return _Request
+            End Get
+            Set(ByVal Value As HttpRequest)
+                _Request = Value
+            End Set
+        End Property
+
+        Public Property PortalSetting() As PortalSettings
+            Get
+                Return _portalSettings
+            End Get
+            Set(ByVal Value As PortalSettings)
+                _portalSettings = Value
+            End Set
+        End Property
+        Sub New(ByVal SessionID As String, ByVal UserID As Integer, ByVal Request As HttpRequest, ByVal portalsetting As PortalSettings, ByVal DBConnectionString As String, ByVal PortalUserOnline As Boolean)
+            _SessionId = SessionID
+            _UserId = UserID
+            _Request = Request
+            _portalSettings = portalsetting
+            _DBConnectionString = DBConnectionString
+            _PortalUserOnline = PortalUserOnline
+        End Sub
 
         Public Sub DoIt()
 
             Del = New MyAsyncDelegate(AddressOf MyWorker)
-            Dim cb As AsyncCallback = New AsyncCallback(AddressOf ImDone)
-            Dim oState As Object
-            Dim ar As IAsyncResult = Del.BeginInvoke(cb, oState)
+            Del.BeginInvoke(Nothing, Nothing)
 
         End Sub
 
         Public Delegate Sub MyAsyncDelegate()
 
-        Private Sub ImDone(ByVal ar As System.IAsyncResult)
-            ' I am done
-            ar.AsyncWaitHandle.Close()
-            ' Del.EndInvoke(ar)
+        Private Sub AddSiteLog(ByVal PortalId As Integer, Optional ByVal UserId As Integer = -1, Optional ByVal Referrer As String = "", Optional ByVal URL As String = "", Optional ByVal UserAgent As String = "", Optional ByVal UserHostAddress As String = "", Optional ByVal UserHostName As String = "", Optional ByVal TabId As Integer = -1, Optional ByVal AffiliateId As Integer = -1)
+            Dim myConnection As New SqlConnection(DBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {PortalId, IIf(UserId <> -1, UserId, SqlInt16.Null), IIf(Referrer <> "", Referrer, SqlInt16.Null), IIf(URL <> "", URL, SqlInt16.Null), IIf(UserAgent <> "", UserAgent, SqlInt16.Null), IIf(UserHostAddress <> "", UserHostAddress, SqlInt16.Null), IIf(UserHostName <> "", UserHostName, SqlInt16.Null), IIf(TabId <> -1, TabId, SqlInt16.Null), IIf(AffiliateId <> -1, AffiliateId, SqlInt16.Null)})
+
+            myConnection.Open()
+            myCommand.ExecuteNonQuery()
+            myConnection.Close()
+        End Sub
+
+        Private Sub UpdateSession(ByVal PortalId As Integer, ByVal SessionId As String, ByVal Location As String, ByVal TabId As Integer, ByVal IP As String, ByVal Browser As String, ByVal UserId As Integer)
+
+            ' Create Instance of Connection and Command Object
+            Dim myConnection As New SqlConnection(DBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {PortalId, SessionId, Location, TabId, IP, Browser, IIf(UserId <> -1, UserId, SqlInt16.Null)})
+
+            ' Execute the command
+            myConnection.Open()
+            myCommand.ExecuteNonQuery()
+            myConnection.Close()
 
         End Sub
 
         Private Sub MyWorker()
-            ' save to file here
-            Dim objStream As StreamWriter
-            objStream = File.CreateText("ISynch.log")
-            objStream.WriteLine("NewLine" + vbLf)
-            objStream.Close()
-        End Sub
+            If PortalUserOnline Then
+                UpdateSession(_portalSettings.PortalId, SessionID, _portalSettings.ActiveTab.TabName, _portalSettings.ActiveTab.TabId, Request.UserHostAddress, Request.Browser.Type, UserID)
+            End If
 
+            If _portalSettings.SiteLogHistory <> 0 Then
+                Dim URLReferrer As String = ""
+                If Not Request.UrlReferrer Is Nothing Then
+                    URLReferrer = Request.UrlReferrer.ToString()
+                End If
+                Dim AffiliateId As Integer = -1
+                If Not Request.Params("AffiliateId") Is Nothing Then
+                    If IsNumeric(Request.Params("AffiliateId")) Then
+                        AffiliateId = Int32.Parse(Request.QueryString("AffiliateId"))
+                    End If
+                End If
+                AddSiteLog(_portalSettings.PortalId, UserID, URLReferrer, Request.Url.ToString(), Request.UserAgent, Request.UserHostAddress, Request.UserHostName, _portalSettings.ActiveTab.TabId, AffiliateId)
+            End If
+
+
+        End Sub
 
     End Class
 
@@ -272,7 +379,7 @@ Namespace DotNetZoom
 
             _writer.Close()
 
-            RegisterHiddenField(VIEW_STATE_FIELD_NAME, vsKey)
+            ClientScript.RegisterHiddenField(VIEW_STATE_FIELD_NAME, vsKey)
 
         End Sub ' SaveViewStateSQL
 
@@ -293,21 +400,21 @@ Namespace DotNetZoom
 
             '//Need to register the viewstate hidden field (must be present or postback things don't 
             '// work, we use in our case to store the request number)
-            RegisterHiddenField(VIEW_STATE_FIELD_NAME, lRequestNumber.ToString())
+            ClientScript.RegisterHiddenField(VIEW_STATE_FIELD_NAME, lRequestNumber.ToString())
 
 
         End Sub
 
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
-            If HttpContext.Current.Request.Browser.JavaScript = True Then
-                RegisterClientScriptBlock("dnzscript", "<script type=""text/javascript"" src=""" & glbPath & "javascript/dnzscript.js""></script>")
+            If HttpContext.Current.Request.Browser.EcmaScriptVersion.Major > 0 Then
+                ClientScript.RegisterClientScriptBlock(Me.GetType(), "dnzscript", "<script type=""text/javascript"" src=""" & glbPath & "javascript/dnzscript.js""></script>")
                 If Not Request.Form("scrollLeft") Is Nothing Then
-                    RegisterHiddenField("scrollLeft", Request.Form("scrollLeft"))
-                    RegisterHiddenField("scrollTop", Request.Form("scrollTop"))
+                    ClientScript.RegisterHiddenField("scrollLeft", Request.Form("scrollLeft"))
+                    ClientScript.RegisterHiddenField("scrollTop", Request.Form("scrollTop"))
                 Else
-                    RegisterHiddenField("scrollLeft", String.Empty)
-                    RegisterHiddenField("scrollTop", String.Empty)
+                    ClientScript.RegisterHiddenField("scrollLeft", String.Empty)
+                    ClientScript.RegisterHiddenField("scrollTop", String.Empty)
                 End If
             End If
         End Sub
@@ -440,25 +547,21 @@ Namespace DotNetZoom
 
         Private Sub Page_Error(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Error
             If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                Dim URLReferrer As String = ""
-                If Not Request.UrlReferrer Is Nothing Then
-                    URLReferrer = Request.UrlReferrer.ToString()
-                End If
-
                 Dim LastError As Exception
-                Dim ErrMessage As String
+                Dim ErrorMessage As New StringBuilder
 
                 LastError = Server.GetLastError()
 
                 If Not LastError Is Nothing Then
-                    ErrMessage = LastError.Message + vbCrLf
-                    ErrMessage += LastError.StackTrace + vbCrLf
-                    ErrMessage += LastError.Source + vbCrLf
-                Else
-                    ErrMessage = ""
+                    ErrorMessage.Append(LastError.Message + vbCrLf)
+                    ErrorMessage.Append(LastError.StackTrace + vbCrLf)
+                    ErrorMessage.Append(LastError.Source + vbCrLf)
                 End If
 
-                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + ErrMessage, "")
+                ErrorMessage.Append(BuildErrorMessage(Request))
+
+                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", ErrorMessage.ToString, "")
+
                 If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
                     ' read script file for version
                     Dim objStreamReader As StreamReader
@@ -468,6 +571,7 @@ Namespace DotNetZoom
                     Response.Write(strHTML)
                 End If
                 Server.ClearError()
+                Response.End()
             End If
         End Sub
 
@@ -476,42 +580,25 @@ Namespace DotNetZoom
             If Page.IsPostBack = False Then
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
                 Dim UserId As Integer = -1
+                Dim PortalUserOnline As Boolean = False
                 If Request.IsAuthenticated Then
                     UserId = CType(Context.User.Identity.Name, Integer)
                 End If
 
                 If PortalSettings.GetSiteSettings(_portalSettings.PortalId)("PortalUserOnline") <> "NO" And Not Request.Browser.Crawler Then
-                    ' turn it off if not On the Portal
-                    Dim objSession As New SessionTrackerDB
-                    If (Request.IsAuthenticated) Then
-                        objSession.UpdateSession(_portalSettings.PortalId, Session.SessionID, _portalSettings.ActiveTab.TabName, _portalSettings.ActiveTab.TabId, Request.UserHostAddress, Request.Browser.Type, Int32.Parse(User.Identity.Name))
-                    Else
-                        objSession.UpdateSession(_portalSettings.PortalId, Session.SessionID, _portalSettings.ActiveTab.TabName, _portalSettings.ActiveTab.TabId, Request.UserHostAddress, Request.Browser.Type)
-                    End If
+                    PortalUserOnline = True
                 End If
-
-                ' Dim ISyncLog As New ISyncFunction
-                ' ISyncLog.DoIt()
-
-                ' log visit to site and not a postBack
-                If _portalSettings.SiteLogHistory <> 0 Then
-                    Dim URLReferrer As String = ""
-                    If Not Request.UrlReferrer Is Nothing Then
-                        URLReferrer = Request.UrlReferrer.ToString()
-                    End If
-                    Dim AffiliateId As Integer = -1
-                    If Not Request.Params("AffiliateId") Is Nothing Then
-                        If IsNumeric(Request.Params("AffiliateId")) Then
-                            AffiliateId = Int32.Parse(Request.QueryString("AffiliateId"))
-                        End If
-                    End If
-                    Dim objAdmin As New AdminDB()
-                    objAdmin.AddSiteLog(_portalSettings.PortalId, UserId, URLReferrer, Request.Url.ToString(), Request.Browser.Browser, Request.UserHostAddress, Request.UserHostName, _portalSettings.ActiveTab.TabId, AffiliateId)
+                If PortalUserOnline Or _portalSettings.SiteLogHistory <> 0 Then
+                    Dim ISyncLog As New ISyncFunction(Session.SessionID, UserId, Request, _portalSettings, GetDBConnectionString(), PortalUserOnline)
+                    ISyncLog.DoIt()
                 End If
-
-
             End If
             MyBase.OnInit(e)
+        End Sub
+
+
+        Protected Overrides Sub OnUnload(ByVal e As System.EventArgs)
+            MyBase.OnUnload(e)
         End Sub
 
 

@@ -51,6 +51,85 @@ Namespace DotNetZoom
 
         End Function
 
+        Public Function GetPageAnnouncements(ByVal ModuleId As Integer, ByVal PageSize As Integer, ByVal PageIndex As Integer) As SqlDataReader
+
+            ' Create Instance of Connection and Command Object
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {ModuleId, PageSize, PageIndex})
+
+            ' Execute the command
+            myConnection.Open()
+            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+
+            ' Return the datareader 
+            Return result
+
+        End Function
+
+
+        Public Function GetCommentaire(ByVal AnnouncementID As Integer) As SqlDataReader
+
+            ' Create Instance of Connection and Command Object
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {AnnouncementID})
+
+            ' Execute the command
+            myConnection.Open()
+            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+
+            ' Return the datareader 
+            Return result
+
+        End Function
+
+
+        Public Sub AddCommentaire(ByVal ModuleId As Integer, ByVal AnnouncementID As Integer, ByVal UserName As String, ByVal Title As String, ByVal Body As String)
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+            Dim objSecurity As New PortalSecurity()
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {ModuleId, AnnouncementID, UserName, objSecurity.InputFilter(Title, PortalSecurity.FilterFlag.NoMarkup), objSecurity.InputFilter(Body, PortalSecurity.FilterFlag.NoMarkup)})
+
+            myConnection.Open()
+            myCommand.ExecuteNonQuery()
+            myConnection.Close()
+        End Sub
+
+        Public Sub DeleteCommentaire(ByVal ItemID As Integer)
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {ItemID})
+
+            myConnection.Open()
+            myCommand.ExecuteNonQuery()
+            myConnection.Close()
+        End Sub
+
+        Public Sub DeleteCommentaires(ByVal AnnouncementID As Integer)
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+            ' Generate Command Object based on Method
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {AnnouncementID})
+
+            myConnection.Open()
+            myCommand.ExecuteNonQuery()
+            myConnection.Close()
+        End Sub
 
         Public Function GetSingleAnnouncement(ByVal ItemId As Integer, ByVal ModuleId As Integer) As SqlDataReader
 
@@ -83,6 +162,7 @@ Namespace DotNetZoom
             myConnection.Open()
             myCommand.ExecuteNonQuery()
             myConnection.Close()
+            DeleteCommentaires(ItemID)
         End Sub
 
 

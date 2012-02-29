@@ -1,10 +1,260 @@
 <%@ Import namespace="DotNetZoom" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx"%>
 <%@ Control language="vb" Inherits="DotNetZoom.TTT_Gallery" CodeBehind="TTT_Gallery.ascx.vb" AutoEventWireup="false" %>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+    !window.jQuery && document.write('<script src="javascript\/jquery-1.4.3.min.js"><\/script>');
+ 
+</script>
+<script type="text/javascript" src="/javascript/fancybox_2012-02-01.js"></script>
+
+<style type="text/css">
+#fancybox-buttons {
+	position: fixed;
+	left: 0;
+	width: 100%;
+	z-index: 1005;
+}
+
+#fancybox-buttons.top {
+	top: 10px;
+}
+
+#fancybox-buttons.bottom {
+	bottom: 10px;
+}
+
+#fancybox-buttons ul {
+	display: block;
+	width: 190px;
+	height: 30px;
+	margin: 0 auto;
+	padding: 0;
+	list-style: none;
+	background: #111;
+	-webkit-box-shadow: 0 1px 3px #000,0 0 0 1px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.05);
+	-moz-box-shadow: 0 1px 3px #000,0 0 0 1px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.05);
+	background: #111 -webkit-gradient(linear,0% 0%,0% 100%,from(rgba(255,255,255,.2)),color-stop(.5,rgba(255,255,255,.15)),color-stop(.5,rgba(255,255,255,.1)),to(rgba(255,255,255,.15)));
+	background: #111 -moz-linear-gradient(top,rgba(255,255,255,.2) 0%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.15) 100%);
+	border-radius: 3px;
+}
+
+#fancybox-buttons ul li {
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+#fancybox-buttons a {
+	display: block;
+	width: 30px;
+	height: 30px;
+	text-indent: -9999px;
+	background-image: url('/images/buttons.png');
+	background-repeat: no-repeat;
+	outline: none;
+}
+
+#fancybox-buttons a.btnPrev {
+	background-position: 6px 0;
+}
+
+#fancybox-buttons a.btnNext {
+	background-position: -33px 0;
+	border-right: 1px solid #3e3e3e;
+}
+
+#fancybox-buttons a.btnPlay {
+	background-position: 0 -30px;
+}
+#fancybox-buttons a.btnPlayl {
+	background-position: -57px -30px;
+}
+#fancybox-buttons a.btnPlayOn {
+	background-position: -30px -30px;
+}
+
+#fancybox-buttons a.btnToggle {
+	background-position: 3px -60px;
+	border-left: 1px solid #111;
+	border-right: 1px solid #3e3e3e;
+}
+
+#fancybox-buttons a.btnToggleOn {
+	background-position: -27px -60px;
+}
+
+#fancybox-buttons a.btnClose {
+	border-left: 1px solid #111;
+	background-position: -57px 0px;
+}
+
+#fancybox-buttons a.btnDisabled {
+	opacity : 0.5;
+	cursor: default;
+}
+
+.btnNone {
+    background-position: -30px -30px;
+}
+
+</style>
+
+<script language="JavaScript" type="text/javascript">
+
+    jQuery.noConflict();
+
+    function SetFancyBoxDirection(whatdir) {
+    if (FancyBoxDirectionD == whatdir)
+    {
+    FancyBoxDirection = function(){};
+    clearTimeout(t);FancyBoxDirectionD=0;
+    jQuery('#btnPlay').removeClass('btnNone');
+    jQuery('#btnPlay').addClass('btnPlay');
+    jQuery('#btnPlayl').removeClass('btnNone');
+    jQuery('#btnPlayl').addClass('btnPlayl');
+    jQuery('#btnPlay').removeAttr('title');
+    jQuery('#btnPlay').attr('title', '<%= DotNetZoom.rtesafe(GetLanguage("Gal_lnkshow")) %>');
+    jQuery('#btnPlayl').removeAttr('title');
+    jQuery('#btnPlayl').attr('title', '<%= DotNetZoom.rtesafe(GetLanguage("Gal_lnkshow")) %>');
+    }
+    else {FancyBoxDirectionD = whatdir;}
+
+
+                                   switch (FancyBoxDirectionD)
+                                   {
+                                   case 1:
+                                   jQuery.fancybox.Dnext();
+                                   break;
+                                   case 2:
+                                   jQuery.fancybox.Dprev();
+                                   break;
+                                   }
+    
+    }
+
+    function ToggleFitToScreen(selectedIndex) { if (FancyBoxFitToScreen) {FancyBoxFitToScreen=false}
+                                   else {
+                                   FancyBoxFitToScreen=true;
+                                   } 
+                                   jQuery.fancybox.pos(selectedIndex);
+                                   };
+
+    function ToggleClass() { if (FancyBoxFitToScreen) {
+                                   jQuery('#btnToggle').removeClass('btnToggle');
+                                   jQuery('#btnToggle').addClass('btnToggleOn');
+                                   jQuery('#btnToggle').removeAttr('title');
+                                   jQuery('#btnToggle').attr('title', '<%= DotNetZoom.rtesafe(GetLanguage("MapGoogle_zoom")) %>');
+
+                                   }
+                                   else {}
+                                   switch (FancyBoxDirectionD)
+                                   {
+                                   case 1:
+                                   jQuery('#btnPlay').removeClass('btnPlay');
+                                   jQuery('#btnPlay').addClass('btnNone');
+                                   jQuery('#btnPlay').removeAttr('title');
+                                   jQuery('#btnPlay').attr('title', '<%= DotNetZoom.rtesafe(GetLanguage("Gal_Stop")) %>');
+
+                                   break;
+                                   case 2:
+                                   jQuery('#btnPlayl').removeClass('btnPlayl');
+                                   jQuery('#btnPlayl').addClass('btnNone');
+                                   jQuery('#btnPlayl').removeAttr('title');
+                                   jQuery('#btnPlayl').attr('title', '<%= DotNetZoom.rtesafe(GetLanguage("Gal_Stop")) %>');
+                                   break;
+                                   }
+                                                                    
+                                   };
+
+    var FancyBoxFitToScreen = false;
+    var FancyBoxDirectionD = 0; 
+    var FancyBoxDirection = function(){};
+        jQuery(document).ready(function () {
+        /* Apply fancybox to multiple items */
+        
+        jQuery("a[rel=flash]").fancybox({
+                'padding':10,
+        		'width'	  : <%= config.Fixedwidth %>,
+		        'height'  : <%= config.FixedHeight + 24 %>,
+                'overlayColor': '#fff', 
+                'titleFromAlt' : true,
+                'transitionIn':	'elastic',
+	            'transitionOut'	:'fade',
+	            'speedIn': 250,
+	            'speedOut': 250,
+	            'overlayOpacity':0.3,
+                'type'			: 'swf',
+                'swf'			: {
+			   	        'wmode'		: 'transparent',
+				        'allowfullscreen'	: 'true'
+			                      }
+        });
+
+        jQuery("a[rel=movie]").fancybox({
+                'autoScale' : true,
+		        'width'	  : <%= config.Fixedwidth + 20 %>,
+		        'height'  : <%= config.FixedHeight + 35 %>,
+                'modal'   : false,
+                'showCloseButton' : true,
+                'showNavArrows' : true,
+                'titleFromAlt' : true,
+                'titleFromRev' : true,
+                'autoScale'	: true,
+                'transitionIn':	'elastic',
+	            'transitionOut'	:'fade',
+	            'speedIn': 250,
+	            'speedOut': 250,
+		        'type'	: 'iframe'
+	    });
+
+
+
+        jQuery("a[rel=image]").fancybox({
+            'autoScale'     : false,
+            'margin' : 10,
+            'transitionIn': 'none',
+            'transitionOut': 'none',
+            'titleFromRev' : true,
+            'cyclic': true,
+            'titlePosition': 'over',
+            'titleFormat': function (title, currentArray, currentIndex, currentOpts) {
+                return '<div id="fancybox-title-over"><div id="fancybox-buttons" class="top"><ul><li><a class="btnPrev" title="<%= DotNetZoom.rtesafe(GetLanguage("Gal_Prev")) %>" href="javascript:jQuery.fancybox.prev();SetFancyBoxDirection(0);"></a></li><li><a id="btnPlayl" class="btnPlayl" title="<%= DotNetZoom.rtesafe(GetLanguage("Gal_lnkshow")) %>" href="javascript:SetFancyBoxDirection(2);"></a></li><li><a id="btnPlay" class="btnPlay" title="<%= DotNetZoom.rtesafe(GetLanguage("Gal_lnkshow")) %>" href="javascript:SetFancyBoxDirection(1);"></a></li><li><a class="btnNext" title="<%= DotNetZoom.rtesafe(GetLanguage("Gal_Next")) %>" href="javascript:jQuery.fancybox.next();SetFancyBoxDirection(0);"></a></li><li><a id="btnToggle" class="btnToggle" title="<%= DotNetZoom.rtesafe(GetLanguage("MapGoogle_zoom")) %>" href="javascript:ToggleFitToScreen('+ currentIndex +');"></a></li><li><a class="btnClose" title="<%= DotNetZoom.rtesafe(GetLanguage("Gal_return")) %>" href="javascript:jQuery.fancybox.close();"></a></li></ul></div><table width="100%"><tr><td><%= DotNetZoom.rtesafe(GetLanguage("F_Image")) %> ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? '   ' + title : '') + '</td><td align="right" width="25"></td></tr></table></div>';},
+            'onComplete': function () { t = setTimeout(FancyBoxDirection, <%= Config.SlideshowSpeed %>); ToggleClass(); },
+            'onCleanup': function () { clearTimeout(t); },
+            'onClosed': function (selectedArray, selectedIndex, selectedOptions) {
+                var url = document.URL;
+                var newAdditionalURL = "";
+                var tempArray = url.split("?");
+                var baseURL = tempArray[0];
+                var aditionalURL = tempArray[1];
+                var temp = "";
+                if (aditionalURL) {
+                    var tempArray = aditionalURL.split("&");
+                    for (var i in tempArray) {
+                        if (tempArray[i].indexOf("currentstrip") == -1) {
+                            newAdditionalURL += temp + tempArray[i];
+                            temp = "&";
+                        }
+                    }
+                };
+                var currentstrip = Math.ceil((selectedIndex + 1) / <%= config.ItemsPerStrip %>);
+                var rows_txt = temp + "currentstrip=" + currentstrip;
+                var finalURL = baseURL + "?" + newAdditionalURL + rows_txt;
+                window.location.assign(finalURL)
+            }
+        });
+    });
+</script>
+
+
 <script language="javascript" type="text/javascript" src="<%= dotnetzoom.glbPath + "javascript/popup.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:PlaceHolder ID="pnlModuleContent" Runat="server" EnableViewState="false" >
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
+<asp:literal id="ImageBefore" runat="server" EnableViewState="false" ></asp:literal>
 <table class="TTTBorder" cellspacing="0" cellpadding="0" width="100%">
 <tr>
 <td>
@@ -31,7 +281,6 @@
 <asp:hyperlink id="lnkAdmin" CssClass="CommandButton" runat="server" EnableViewState="false" visible="False"></asp:hyperlink>
 <asp:hyperlink id="lnkManager" CssClass="CommandButton" runat="server" EnableViewState="false" visible="False"></asp:hyperlink>
 <asp:hyperlink id="BrowserLink" CssClass="CommandButton" runat="server" EnableViewState="false" visible="False"></asp:hyperlink>
-<asp:hyperlink id="SlideshowLink" CssClass="CommandButton" runat="server" EnableViewState="false" visible="False"></asp:hyperlink>
 &nbsp;</td>
 </tr>
 </table>
@@ -73,37 +322,13 @@
 <asp:datalist id="dlStrip" runat="server" EnableViewState="<%# ViewStateAllow() %>" cssclass="NormalBold" DataKeyField="Name" RepeatDirection="Horizontal" cellpadding="15" width="100%">
 <ItemStyle horizontalalign="Center" verticalalign="Bottom"></ItemStyle>
 <ItemTemplate>
-<table cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td align="center" valign="top" height="100%">
-<asp:hyperlink id="Thumb" runat="server" EnableViewState="false" onmouseover='<%# GetImageToolTip( Container.DataItem )  %>' navigateurl="<%# GetBrowserURL(Container.DataItem) %>" visible="<%# Not Ctype(Container.DataItem, IGalleryObjectInfo).Thumbnail = string.empty %>">
-<asp:Image ID="ImgThumb" runat="server" AlternateText="*" BorderWidth="0" imageurl="<%# GetThumbnailURL(Container.DataItem) %>"/>
+<div>
+<asp:hyperlink id="Thumb" title="<%# GetItemInfo(Container.DataItem) %>" rev="<%# GetItemInfo(Container.DataItem) %>" rel="<%# GetItemType(Container.DataItem )  %>" runat="server" EnableViewState="false" navigateurl="<%# GetImageURL(Container.DataItem) %>" visible="<%# Not Ctype(Container.DataItem, IGalleryObjectInfo).Thumbnail = string.empty %>">
+<asp:Image ID="ImgThumb" rev="<%# GetItemInfo(Container.DataItem) %>" runat="server" AlternateText="<%# Ctype(Container.DataItem, IGalleryObjectInfo).Name %>" BorderWidth="0" imageurl="<%# GetThumbnailURL(Container.DataItem) %>"/>
 </asp:hyperlink>
-</td>
-</tr>
-</table>
-<table cellpadding="0" cellspacing="0" border="0">
-<tr>
-<td align="center" valign="bottom" height="20">
-<asp:hyperlink id="Name" CssClass="TTTAltHeaderText" runat="server" EnableViewState="false" navigateurl="<%# GetBrowserURL(Container.DataItem) %>"  >
-<%# Ctype(Container.DataItem, IGalleryObjectInfo).Title %>
-</asp:hyperlink>
-<br>
-<span Class="TTTNormal">
-<%# GetItemInfo(Container.DataItem) %>
-</span>
-</td>
-</tr>
-<tr>
-<td align="center" valign="top" height="3"></td>
-</tr>
-<tr>
-<td align="center" valign="top" height="20">
+<div>
 <asp:ImageButton id="Left" runat="server"  height="16" width="16" visible="<%# CanGoLeft(Container.DataItem) %>" CommandName="left" ImageURL="~/images/lt.gif" BorderWidth="0" BorderStyle="none" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>'>
 </asp:ImageButton>
-<asp:hyperlink id="lnkSlideshow" visible="<%# CanView(Container.DataItem) %>" navigateurl="<%# GetSlideshowURL(Container.DataItem) %>"  EnableViewState="false" runat="server">
-<%# SetImage("0px -288px") %>
-</asp:hyperlink>
 <asp:hyperlink id="lnkDiscussion" runat="server" EnableViewState="false" navigateurl="<%# GetForumURL(Container.DataItem) %>" visible="<%# CanDiscuss()%>">
 <%# SetImage("0px -48px") %>
 </asp:hyperlink>
@@ -119,9 +344,12 @@
 </asp:ImageButton>
 <asp:ImageButton id="Right" runat="server"  height="16" width="16" visible="<%# CanGoRight(Container.DataItem)%>" CommandName="right" ImageURL="~/images/rt.gif" BorderWidth="0" BorderStyle="none" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>'>
 </asp:ImageButton>
-</td>
-</tr>
-</table>
+</div>
+<div>
+<%# Ctype(Container.DataItem, IGalleryObjectInfo).Title %>
+<%# GetItemTitle(Container.DataItem)%>
+</div>
+</div>
 </ItemTemplate>
 </asp:datalist>
 </td>
@@ -153,5 +381,6 @@
 </td>
 </tr>
 </table>
+<asp:literal id="ImageAfter" runat="server" EnableViewState="false" ></asp:literal>
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>
 </asp:PlaceHolder>

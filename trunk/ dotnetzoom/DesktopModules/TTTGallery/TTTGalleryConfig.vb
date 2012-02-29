@@ -37,7 +37,7 @@ Namespace DotNetZoom
 
 #Region "Private Vars"
 
-        Private Const GalleryConfigCacheKeyPrefix As String = "GalleryConfig"
+        Private Const GalleryConfigCacheKeyPrefix As String = "G_"
         Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
         ' Root filesystem Path
@@ -105,7 +105,7 @@ Namespace DotNetZoom
 
         ' AllowDownload feature
         Private mAllowDownload As Boolean = True
-
+        Private mDownloadRoles As String = glbRoleUnauthUser & ";"
         ' It's Avatar gallery for Forum module
         Private mIsAvatarsGallery As Boolean = False
 
@@ -127,12 +127,25 @@ Namespace DotNetZoom
             If (Not objCSS Is Nothing) And (objTTTCSS Is Nothing) Then
                 ' put in the ttt.css
                 objLink = New System.Web.UI.LiteralControl("TTTCSS")
-                objLink.Text = "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
+                objLink.Text = vbCrLf + "<link href=""" & _portalSettings.UploadDirectory & "skin/ttt.css"" type=""text/css"" rel=""stylesheet"">"
                 objCSS.Controls.Add(objLink)
             End If
 
         End Sub
 
+        Public Shared Sub SetFancyBoxCSS(ByVal Page As Page)
+            ' Obtain PortalSettings from Current Context
+            Dim objCSS As Control = Page.FindControl("CSS")
+            Dim objfancybox As Control = Page.FindControl("FancyCSS")
+            Dim objLink As System.Web.UI.LiteralControl
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            If (Not objCSS Is Nothing) And (objfancybox Is Nothing) Then
+                ' put in the ttt.css
+                objLink = New System.Web.UI.LiteralControl("FancyCSS")
+                objLink.Text = vbCrLf + "<link href=""" + glbPath + "javascript/fancybox.css"" type=""text/css"" rel=""stylesheet"" media=""screen"">"
+                objCSS.Controls.Add(objLink)
+            End If
+        End Sub
 
 
 
@@ -215,7 +228,7 @@ Namespace DotNetZoom
 
         Public Shared ReadOnly Property DefaultMovieExtensions() As String
             Get
-                Return ".mov;.wmv;.mpg;.avi;.asf;.asx;.mpeg;.mid;.midi;.wav;.aiff;.mp3;.flv"
+                Return ".mov;.wmv;.mpg;.avi;.asf;.asx;.mpeg;.mid;.midi;.wav;.aiff;.mp3;.flv;.mp4"
             End Get
         End Property
 
@@ -298,7 +311,7 @@ Namespace DotNetZoom
 
             Dim TempKey As String = GetDBname() & GalleryConfigCacheKeyPrefix & CStr(ModuleID)
             Dim context As HttpContext = HttpContext.Current
-            Dim config As GalleryConfig 
+            Dim config As GalleryConfig
             If context.Cache(TempKey) Is Nothing Then
                 ' Obtain PortalSettings from Current Context
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -309,6 +322,7 @@ Namespace DotNetZoom
             Else
                 config = CType(context.Cache(TempKey), GalleryConfig)
             End If
+
             Return config
 
         End Function
@@ -597,6 +611,12 @@ Namespace DotNetZoom
             End Get
         End Property
 
+        Public ReadOnly Property DownloadRoles() As String
+            Get
+                Return mDownloadRoles
+            End Get
+        End Property
+
         Public ReadOnly Property IsAvatarsGallery() As Boolean
             Get
                 Return mIsAvatarsGallery
@@ -670,6 +690,7 @@ Namespace DotNetZoom
             mSlideshowPopup = CBool(GetValue(settings("SlideshowPopup"), CStr(mSlideshowPopup)))
             mInfoBule = CBool(GetValue(settings("InfoBule"), CStr(mInfoBule)))
             mAllowDownload = CBool(GetValue(settings("AllowDownload"), CStr(mAllowDownload)))
+            mDownloadRoles = GetValue(settings("DownloadRoles"), CStr(mDownloadRoles))
             mIsAvatarsGallery = CBool(GetValue(settings("IsAvatarsGallery"), CStr(mIsAvatarsGallery)))
             mdisplayOption = GetValue(settings("DisplayOption"), mdisplayOption)
 
@@ -702,20 +723,20 @@ Namespace DotNetZoom
             ' Owner - if it's a private gallery
             ' User with module edit role - if it's a public gallery
 
-            Dim isEditable As Boolean = False
+            'Dim isEditable As Boolean = False
 
-            Try 'BRT: Need Exception Handling
-                If (HttpContext.Current.User.Identity.IsAuthenticated) Then
-                    If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
-                    OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
-                    OrElse (Int16.Parse(HttpContext.Current.User.Identity.Name) = mOwnerID) _
-                    OrElse (Not mIsPrivate AndAlso PortalSecurity.IsInRoles(CType(PortalSettings.GetEditModuleSettings(ModuleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
-                        isEditable = True
-                    End If
-                End If
+            'Try 'BRT: Need Exception Handling
+            'If (HttpContext.Current.User.Identity.IsAuthenticated) Then
+            'If (PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True) _
+            'OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
+            'OrElse (Int16.Parse(HttpContext.Current.User.Identity.Name) = mOwnerID) _
+            'OrElse (Not mIsPrivate AndAlso PortalSecurity.IsInRoles(CType(PortalSettings.GetEditModuleSettings(ModuleID), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
+            'isEditable = True
+            'End If
+            'End If
 
-            Catch Exc As System.Exception
-            End Try
+            'Catch Exc As System.Exception
+            'End Try
 
             ' Only run if we've got a valid filesystem path
             If mIsValidPath Then
@@ -744,10 +765,12 @@ Namespace DotNetZoom
 
                 ' Build the cache at once if required.
                 If BuildCacheonStart Then
+                    'HttpContext.Current.Response.Write("<!--Populate ALL : " + mRootURL + "-->" + vbCrLf)
                     PopulateAllFolders(mRootFolder)
                 Else
                     If Not mRootFolder.IsPopulated Then
-                        mRootFolder.Populate()
+                        'HttpContext.Current.Response.Write("<!--Populate ROOT : " + mRootURL + "-->" + vbCrLf)
+                        'mRootFolder.Populate()
                     End If
                 End If
 
