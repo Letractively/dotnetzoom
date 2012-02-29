@@ -21,7 +21,7 @@
                 &nbsp;<label for="<%=cboInternal.ClientID%>">&nbsp;<%= DotNetZoom.GetLanguage("internal_doc")%>:</label> 
             </td>
             <td>
-                <asp:dropdownlist id="cboInternal" runat="server" Width="390" CssClass="NormalTextBox" DataTextField="Text" DataValueField="Value"></asp:dropdownlist>
+                <asp:dropdownlist id="cboInternal" runat="server" Width="200" CssClass="NormalTextBox" DataTextField="Text" DataValueField="Value"></asp:dropdownlist>
                 &nbsp; 
                 <asp:HyperLink id="cmdUpload" CssClass="CommandButton" Runat="server"></asp:HyperLink>
             </td>

@@ -20,19 +20,19 @@
 ' DEALINGS IN THE SOFTWARE.
 '
 Imports System.IO
+Imports System.Net
+
 Namespace DotNetZoom
 
     Public MustInherit Class Announcements
 
- 		Inherits DotNetZoom.PortalModuleControl
-		
-		Protected WithEvents before As System.Web.UI.WebControls.Literal
-		Protected WithEvents after As System.Web.UI.WebControls.Literal
+        Inherits DotNetZoom.PortalModuleControl
 
-
-        Protected WithEvents lstAnnouncements As System.Web.UI.WebControls.DataList
-		Protected WithEvents rssLink As System.Web.UI.WebControls.HyperLink
-		Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
+        Protected WithEvents AnnData As Announcement
+        Protected WithEvents pnlModuleContent As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents before As System.Web.UI.WebControls.Literal
+        Protected WithEvents after As System.Web.UI.WebControls.Literal
+        Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
 
 
 #Region " Web Form Designer Generated Code "
@@ -50,80 +50,30 @@ Namespace DotNetZoom
 
 #End Region
 
+
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            ' Obtain announcement information from Announcements table
-            ' and bind to the datalist control
-			' Check to see if available in Cache
-			
+            AnnData.ModuleID = ModuleId
+            AnnData.TabId = TabId
+            AnnData.ModuleTitle = ModuleConfiguration.ModuleTitle
+            AnnData.IsEditable = IsEditable
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
+            If Tsettings.ContainsKey("PrivateKey") Then
+                If CType(Tsettings("PrivateKey"), String) <> "" Then
+                    AnnData.Captcha = Not Request.IsAuthenticated
+                End If
+            End If
             Title1.EditText = GetLanguage("add")
             Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
-			Dim objAdmin As New AdminDB()
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			
-			
-			
-			
-			
-			Dim TKey as String = GetDBname & "ModuleID_" & CStr(ModuleId)
-			Dim context As HttpContext = HttpContext.Current
-			Dim content as system.data.DataTable 
-			Content = CType(Context.Cache(TKey), system.data.DataTable)
-            If content Is Nothing Then
-			'	Item not in cache, get it manually    
-			Dim announcements As New AnnouncementsDB()
-			content = AdminDB.ConvertDataReaderToDataTable(announcements.GetAnnouncements(ModuleID))
-            Context.Cache.Insert(TKey, content, CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.Tabid, ModuleID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-  			End If
-			lstAnnouncements.DataSource = content
-            lstAnnouncements.DataBind()
-			lstAnnouncements.ID = ""
-
-	
-            If File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml") Then
-                rssLink.NavigateUrl = _portalSettings.UploadDirectory & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml"
-                rssLink.Visible = True
-                rssLink.ToolTip = GetLanguage("channel_syndicate") & " " & File.GetLastWriteTime(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml").ToString()
-            End If
-
-			
-        End Sub
-
-        Public Function FormatURL(ByVal Link As String, ByVal ID As Integer) As String
-            If Link <> String.Empty Then
-
-                Dim contenttype As String = ""
-
-                    If InStr(1, Link, "://") = 0 Then
-                        If IsNumeric(Link) Then ' internal tab link
-                            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-                            Link = _portalSettings.HTTP & "/" & GetLanguage("N") & ".default.aspx?tabid=" & Link
-                        Else
-                            ' If internal file then put contenttype=application/octet-stream
-                            Dim strExtension As String = ""
-                            strExtension = Replace(System.IO.Path.GetExtension(Link), ".", "")
-
-                            Select Case strExtension.ToLower()
-                                Case "kmz", "kml", "gpx" : contenttype = "&contenttype=" + strExtension.ToLower()
-                                Case Else
-                                    contenttype = ""
-                            End Select
-
-                        End If
-                    End If
-                    Dim objSecurity As New PortalSecurity()
-                    Dim crypto As String = "tabid=" & TabId & contenttype & "&table=Announcements&field=ItemID&id=" & ID.ToString & "&link=" & Server.UrlEncode(Link)
-                    Return glbPath & GetLanguage("N") & ".default.aspx?linkclick=" + Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), crypto))
+            If IsNumeric(Request.Params("add")) Then
+                Title1.DisplayHelp = "DisplayHelp_ReCapchat_" + (Not Request.IsAuthenticated).ToString
+                Title1.DisplayTitle = GetLanguage("AddComment")
             Else
-                Return ""
+                Title1.DisplayHelp = Nothing
+                Title1.DisplayTitle = Nothing
             End If
-        End Function
 
-        Public Function FormatDate(ByVal objDate As Date) As String
-
-            Return FormatAnsiDate(objDate.ToString("yyyy-MM-dd"))
-
-        End Function
-
+        End Sub
     End Class
 
 End Namespace

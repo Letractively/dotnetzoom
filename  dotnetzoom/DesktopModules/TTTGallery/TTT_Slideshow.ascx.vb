@@ -58,14 +58,12 @@ Namespace DotNetZoom
             Dim Zconfig As GalleryConfig = GalleryConfig.GetGalleryConfig(ModuleId)
             Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
             If Not Zconfig.RootFolder.IsPopulated Then
-                Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                 'Response.Redirect(Request.RawUrl)
             End If
 
             If Not Zrequest.Folder.IsPopulated Then
                 ' Zrequest.Folder.Populate()
                 ' Server.Transfer("~/DesktopModules/tttGallery/TTT_cache.aspx")
-                Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                 'Response.Redirect(Request.RawUrl)
             End If
 

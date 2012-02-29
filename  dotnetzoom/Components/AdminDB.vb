@@ -950,22 +950,57 @@ Namespace DotNetZoom
 
         End Function
 
-        Public Function GetTabByFriendLyName(ByVal FriendlyTabName As String, Optional ByVal PortalId As Integer = -1) As SqlDataReader
+        Public Function GetTabByFriendLyName(ByVal FriendlyTabName As String, Optional ByVal PortalId As Integer = -1) As Integer
+
+            Dim TempKey As String = GetDBname() & "T_" & FriendlyTabName & "_" & PortalId.ToString
+            Dim context As HttpContext = HttpContext.Current
+
+
+            If context.Cache(TempKey) Is Nothing Then
+                ' If this object has not been instantiated yet, we need to grab it
+                Dim _settings As Integer
+                ' Create Instance of Connection and Command Object
+                Dim myConnection As New SqlConnection(GetDBConnectionString)
+
+                ' Generate Command Object based on Method
+                Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                    CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                    New Object() {FriendlyTabName, IIf(PortalId <> -1, PortalId, SqlInt16.Null)})
+
+                ' Execute the command
+                myConnection.Open()
+                Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+                If result.Read() Then
+                    _settings = result("TabId")
+                    result.Close()
+                Else
+                    result.Close()
+                    Return -1
+                End If
+
+
+                context.Cache.Insert(TempKey, _settings, CDp(PortalId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.Normal, Nothing)
+                Return _settings
+            Else
+
+                Return context.Cache(TempKey)
+
+            End If
 
             ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(GetDBConnectionString)
+            'Dim myConnection As New SqlConnection(GetDBConnectionString)
 
             ' Generate Command Object based on Method
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {FriendlyTabName, IIf(PortalId <> -1, PortalId, SqlInt16.Null)})
+            'Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+            '   CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+            '   New Object() {FriendlyTabName, IIf(PortalId <> -1, PortalId, SqlInt16.Null)})
 
             ' Execute the command
-            myConnection.Open()
-            Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+            'myConnection.Open()
+            'Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
 
             ' Return the datareader
-            Return result
+            'Return result
 
         End Function
 
@@ -2204,19 +2239,6 @@ Namespace DotNetZoom
             Return result
 
         End Function
-
-        Public Sub AddSiteLog(ByVal PortalId As Integer, Optional ByVal UserId As Integer = -1, Optional ByVal Referrer As String = "", Optional ByVal URL As String = "", Optional ByVal UserAgent As String = "", Optional ByVal UserHostAddress As String = "", Optional ByVal UserHostName As String = "", Optional ByVal TabId As Integer = -1, Optional ByVal AffiliateId As Integer = -1)
-            Dim myConnection As New SqlConnection(GetDBConnectionString)
-
-            ' Generate Command Object based on Method
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {PortalId, IIf(UserId <> -1, UserId, SqlInt16.Null), IIf(Referrer <> "", Referrer, SqlInt16.Null), IIf(URL <> "", URL, SqlInt16.Null), IIf(UserAgent <> "", UserAgent, SqlInt16.Null), IIf(UserHostAddress <> "", UserHostAddress, SqlInt16.Null), IIf(UserHostName <> "", UserHostName, SqlInt16.Null), IIf(TabId <> -1, TabId, SqlInt16.Null), IIf(AffiliateId <> -1, AffiliateId, SqlInt16.Null)})
-
-            myConnection.Open()
-            myCommand.ExecuteNonQuery()
-            myConnection.Close()
-        End Sub
 
         Public Sub AddPayPalIPN(ByVal PayPalID As String, ByVal PortalId As Integer, ByVal UserId As Integer, ByVal RoleID As Integer, ByVal Response As Boolean, ByVal RawData As String, ByVal ItemName As String, ByVal PortalRenew As Boolean)
             Dim myConnection As New SqlConnection(GetDBConnectionString)

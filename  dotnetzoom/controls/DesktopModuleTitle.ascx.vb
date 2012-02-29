@@ -230,7 +230,7 @@ Namespace DotNetZoom
                                 If Not IsNothing(OptionsURL) Then
                                     cmdEditOptions.NavigateUrl = OptionsURL & IIf(InStr(1, OptionsURL, "?") <> 0, "&", "?") & "tabid=" & tabId & "&mid=" + portalModule.ModuleId.ToString()
                                 Else
-                                    cmdEditOptions.NavigateUrl = cmdEditOptions.NavigateUrl & "&options=1"
+                                    cmdEditOptions.NavigateUrl = cmdEditContent.NavigateUrl & "&options=1"
                                 End If
 
 
@@ -251,7 +251,7 @@ Namespace DotNetZoom
                                 If Not IsNothing(Options2URL) Then
                                     cmdEditOptions4.NavigateUrl = Options2URL & IIf(InStr(1, Options2URL, "?") <> 0, "&", "?") & "tabid=" & tabId & "&mid=" + portalModule.ModuleId.ToString()
                                 Else
-                                    cmdEditOptions4.NavigateUrl = cmdEditOptions4.NavigateUrl & "&options=2"
+                                    cmdEditOptions4.NavigateUrl = cmdEditContent.NavigateUrl & "&options=2"
                                 End If
 
 
@@ -550,7 +550,7 @@ Namespace DotNetZoom
                                 If InStr(1, Options2URL, "options=2") <> 0 Then
                                     cmdEditOptions2.NavigateUrl = Options2URL
                                 Else
-                                    cmdEditOptions2.NavigateUrl = Options2URL + "&options=2"
+                                    cmdEditOptions2.NavigateUrl = cmdEditContent1.NavigateUrl + "&options=2"
                                 End If
 
                                 If Options2IMG = Nothing Then

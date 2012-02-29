@@ -37,7 +37,9 @@ Namespace DotNetZoom
         Protected WithEvents txtExpires As System.Web.UI.WebControls.TextBox
         Protected WithEvents valExpires As System.Web.UI.WebControls.CompareValidator
         Protected WithEvents chkSyndicate As System.Web.UI.WebControls.CheckBox
-
+        Protected WithEvents chkComment As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents chkAnonymous As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents txtPager As System.Web.UI.WebControls.TextBox
         Protected WithEvents cmdUpdate As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdCancel As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdDelete As System.Web.UI.WebControls.LinkButton
@@ -58,7 +60,7 @@ Namespace DotNetZoom
         Protected WithEvents cboInternal As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cmdCalendar As System.Web.UI.WebControls.HyperLink
         Protected WithEvents valViewOrder As System.Web.UI.WebControls.CompareValidator
-
+        Protected WithEvents ContainerEdit As DotNetZoom.ItemEdit
         Private itemId As Integer = -1
 
 #Region " Web Form Designer Generated Code "
@@ -106,6 +108,7 @@ Namespace DotNetZoom
             If Page.IsPostBack = False Then
                 ' Store URL Referrer to return to portal
                 ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+
 
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
                 cmdCalendar.NavigateUrl = AdminDB.InvokePopupCal(txtExpires)
@@ -180,18 +183,41 @@ Namespace DotNetZoom
 
                         ' Close the datareader
                         dr.Close()
+                        Dim settings As Hashtable
 
+                        Settings = PortalSettings.GetModuleSettings(ModuleId)
+                        chkComment.Checked = CType(settings(itemId.ToString), Boolean)
+                        chkAnonymous.Checked = CType(settings("Anonymous"), Boolean)
+                        If settings.ContainsKey("Paging") Then
+                            txtPager.Text = CType(settings("Paging"), String)
+                        Else
+                            txtPager.Text = "10"
+                        End If
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
                         Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
+
                 Else
                     cmdDelete.Visible = False
                     pnlAudit.Visible = False
                 End If
-
-
+                ContainerEdit.ModuleId = ModuleId
+                ContainerEdit.ItemTitle = txtTitle.Text
+                ContainerEdit.ItemBody = txtDescription.Text
+                ContainerEdit.TabID = TabId
             End If
+            If Not chkAnonymous.Checked Then
+                Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
+                If Tsettings.ContainsKey("PrivateKey") Then
+                    If CType(Tsettings("PrivateKey"), String) = "" Then
+                        'warning, need to set up reCapchat
+                        chkAnonymous.ToolTip = GetLanguage("SetUpReCaptcha")
+                    End If
+                End If
+            End If
+
+
 
         End Sub
 
@@ -234,11 +260,34 @@ Namespace DotNetZoom
 
                 Syndicate()
 
+
                 ' Redirect back to the portal home page
                 Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
 
             End If
 
+        End Sub
+
+        Private Sub txtPager_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtPager.TextChanged
+
+            If IsNumeric(txtPager.Text) Then
+                Dim ObjAdmin As New AdminDB
+                ObjAdmin.UpdateModuleSetting(ModuleId, "Paging", txtPager.Text)
+                ClearModuleCache(ModuleId)
+            End If
+
+        End Sub
+
+        Private Sub chkComment_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkComment.CheckedChanged
+            Dim ObjAdmin As New AdminDB
+            ObjAdmin.UpdateModuleSetting(ModuleId, itemId.ToString, chkComment.Checked.ToString)
+            ClearModuleCache(ModuleId)
+        End Sub
+
+        Private Sub chkAnonymous_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkAnonymous.CheckedChanged
+            Dim ObjAdmin As New AdminDB
+            ObjAdmin.UpdateModuleSetting(ModuleId, "Anonymous", chkAnonymous.Checked.ToString)
+            ClearModuleCache(ModuleId)
         End Sub
 
 
@@ -252,10 +301,10 @@ Namespace DotNetZoom
 
         Private Sub cmdDelete_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDelete.Click
 
-			' Reset Cache
-			
-			ClearModuleCache(ModuleId)
-		
+            ' Reset Cache
+
+            ClearModuleCache(ModuleId)
+
             If itemId <> -1 Then
                 Dim objAnnouncements As New AnnouncementsDB()
                 objAnnouncements.DeleteAnnouncement(itemId)
@@ -276,9 +325,9 @@ Namespace DotNetZoom
         '****************************************************************
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
-			' Reset Cache
-			
-			ClearModuleCache(ModuleId)
+            ' Reset Cache
+
+            ClearModuleCache(ModuleId)
 
             Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
@@ -313,24 +362,24 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             Dim objAnnouncements As New AnnouncementsDB()
-			Dim objAdmin As New AdminDB()
+            Dim objAdmin As New AdminDB()
             Dim dr As SqlDataReader = objAnnouncements.GetAnnouncements(ModuleId)
             CreateRSS(dr, "Title", "URL", "CreatedDate", "Syndicate", GetPortalDomainName(_portalSettings.PortalAlias, Request), Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
             dr.Close()
-			lblSyndicate.Visible = File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
+            lblSyndicate.Visible = File.Exists(Request.MapPath(_portalSettings.UploadDirectory) & objAdmin.convertstringtounicode(ModuleConfiguration.ModuleTitle) & ".xml")
         End Sub
 
         Private Sub cmdSyndicate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdSyndicate.Click
             Syndicate()
-	     End Sub
+        End Sub
 
         Private Sub chkLog_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkLog.CheckedChanged
 
             If chkLog.Checked Then
                 Dim objAdmin As New AdminDB()
                 grdLog.DataSource = objAdmin.GetClicks("Announcements", itemId)
-				grdLog.Columns(0).HeaderText = GetLanguage("header_date")
-				grdLog.Columns(1).HeaderText = GetLanguage("header_who")
+                grdLog.Columns(0).HeaderText = GetLanguage("header_date")
+                grdLog.Columns(1).HeaderText = GetLanguage("header_who")
                 grdLog.DataBind()
 
                 grdLog.Visible = True

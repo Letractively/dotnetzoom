@@ -96,7 +96,37 @@ Namespace DotNetZoom
             Return Split(strContainer, "[MODULE]")
        End function		 
 		 
-		 
+        Public Function BuildErrorMessage(ByVal Request As HttpRequest) As String
+
+            Try
+                Dim ErrorMessage As New StringBuilder
+                Dim loop1, loop2 As Integer
+                Dim arr1(), arr2() As String
+                Dim coll As System.Collections.Specialized.NameValueCollection
+                ErrorMessage.Append(vbCrLf & "URL : " & Request.RawUrl & vbCrLf)
+                ErrorMessage.Append("HttpMethod : " & Request.HttpMethod & vbCrLf)
+                Dim encodedString As String = New StreamReader(Request.InputStream).ReadToEnd()
+                ErrorMessage.Append("InputStream : " & encodedString & vbCrLf)
+
+                ' Load ServerVariable collection into NameValueCollection object.
+                ErrorMessage.Append("ServerVariables : " & vbCrLf)
+                coll = Request.ServerVariables
+                ' Get names of all keys into a string array.
+                arr1 = coll.AllKeys
+                For loop1 = 0 To arr1.GetUpperBound(0)
+                    arr2 = coll.GetValues(loop1) ' Get all values under this key.
+                    ErrorMessage.Append("Key: " & arr1(loop1) & vbCrLf)
+                    For loop2 = 0 To arr2.GetUpperBound(0)
+                        If loop2 > 0 Then ErrorMessage.Append(" -> ")
+                        ErrorMessage.Append(arr2(loop2))
+                    Next loop2
+                    ErrorMessage.Append(vbCrLf)
+                Next loop1
+                Return ErrorMessage.ToString
+            Catch ex As Exception
+                Return ""
+            End Try
+        End Function
 		
 		Public Sub RegisterBADip(ByVal BadIP as String)
 		Dim TempTime As integer = 1
@@ -125,7 +155,8 @@ Namespace DotNetZoom
         SendNotification(portalSettings.GetHostSettings("HostEmail"), _portalSettings.Email, portalSettings.GetHostSettings("HostEmail"), GetLanguage("Bad_IP"), BadIP )
 		End Try
 		HttpContext.Current.Response.redirect("/", true)
-		end if
+            End If
+
 		end sub
 		
         Public Sub EditDenied()
@@ -220,7 +251,7 @@ Namespace DotNetZoom
 
         Public Sub CheckSecureSSL(ByVal Page As Page, ByVal ToSecure As Boolean)
             If Not HttpContext.Current.Request.IsSecureConnection And ToSecure Then
-                If HttpContext.Current.Request.Browser.JavaScript = True Then
+                If HttpContext.Current.Request.Browser.EcmaScriptVersion.Major > 0 Then
                     Dim ssl As String = "<SCRIPT type=""text/javascript"" language=""JavaScript""><!--" + vbCrLf
                     ssl += "var answer = confirm(""" + RTESafe(GetLanguage("ssl")) + """)" + vbCrLf
                     ssl += "if (answer){" + vbCrLf
@@ -229,14 +260,14 @@ Namespace DotNetZoom
                     ssl += "{" + vbCrLf
                     ssl += "}" + vbCrLf
                     ssl += "--></SCRIPT>"
-                    Page.RegisterClientScriptBlock("ssl", ssl)
+                    Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "ssl", ssl)
                 End If
             ElseIf HttpContext.Current.Request.IsSecureConnection And Not ToSecure Then
-                If HttpContext.Current.Request.Browser.JavaScript = True Then
+                If HttpContext.Current.Request.Browser.EcmaScriptVersion.Major > 0 Then
                     Dim ssl As String = "<SCRIPT type=""text/javascript"" language=""JavaScript""><!--" + vbCrLf
                     ssl += "alert(""" + RTESafe(GetLanguage("nossl")) + """)" + vbCrLf
                     ssl += "--></SCRIPT>"
-                    Page.RegisterClientScriptBlock("ssl", ssl)
+                    Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "ssl", ssl)
                 End If
             End If
         End Sub
@@ -2086,7 +2117,7 @@ Namespace DotNetZoom
         'set focus to any control
         Public Sub SetFormFocus(ByVal control As Control)
             If Not control.Page Is Nothing Then
-                If control.Page.Request.Browser.JavaScript = True Then
+                If control.Page.Request.Browser.EcmaScriptVersion.Major > 1 Then
                     ' Create JavaScript
                     Dim sb As New System.Text.StringBuilder()
                     sb.Append("<script language='JavaScript' type='text/javascript'>")
@@ -2094,7 +2125,7 @@ Namespace DotNetZoom
                     sb.Append(ControlChars.Lf)
                     sb.Append(" document.")
                     ' Find the Form
-                    Dim objParent As control = control.Parent
+                    Dim objParent As Control = control.Parent
                     While Not TypeOf objParent Is System.Web.UI.HtmlControls.HtmlForm
                         objParent = objParent.Parent
                     End While

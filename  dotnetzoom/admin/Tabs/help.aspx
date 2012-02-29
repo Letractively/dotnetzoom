@@ -20,7 +20,9 @@ end if
                     cmdEdit.Text = GetLanguage("modifier")
                 End If
 	end if
-end if
+        End If
+        
+
 end sub
     Private Sub SetFckEditor()
         Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -98,7 +100,7 @@ function Cancel()
 </asp:placeholder>	
 <asp:placeholder id="pnlhelp" Runat="server" Visible="True">
 <div align="center">
-<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<table class="master" cellpadding="10" cellspacing="0" border="0" width="100%">
 	<tr>
 	<td align="right" valign="top" class="normal"><a href="javascript:Cancel();" title="<%= DotNetZoom.GetLanguage("return") %>"><%= DotNetZoom.GetLanguage("return") %></a>
     </td>

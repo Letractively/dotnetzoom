@@ -94,7 +94,7 @@ Namespace DotNetZoom
                     imageSrc = _portalSettings.UploadDirectory & imageSrc
 
                     If CType(Settings("optExif"), Boolean) And CType(Settings("Exif"), String) <> "" Then
-                        infoExif.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("Exif"), String)))
+                        infoExif.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("Exif"), String), "250"))
                         infoExif.Visible = True
                     End If
                     If CType(Settings("secure"), Boolean) Then
@@ -116,19 +116,19 @@ Namespace DotNetZoom
 
                 If CType(Settings("position"), Boolean) And CType(Settings("latlong"), String) <> "" Then
                     GoogleMap.Visible = True
-                    GoogleMap.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("latlong"), String)))
+                    GoogleMap.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ShowOnMap")))
                     GoogleMapURL = """javascript:DestroyWnd;CreateWnd('" + CType(Settings("latlong"), String) + "',640,640,false)"""
                     Page.RegisterClientScriptBlock("POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
                 End If
 
                 If CType(Settings("optGoogleEarth"), Boolean) And CType(Settings("fileGPS"), String) <> "" Then
                     GoogleEarth.Visible = True
-                    GoogleEarth.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("fileGPS"), String)))
+                    GoogleEarth.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("DownloadFile")))
                     cmdSendKML.CommandArgument = CType(Settings("fileGPS"), String)
                 End If
-                If CType(Settings("optInternalLink"), Boolean) And CType(Settings("link"), String) <> "-1" Then
+                If CType(Settings("optInternalLink"), Boolean) And (CType(Settings("ExtLink"), String) <> "" Or CType(Settings("link"), String) <> "-1") Then
                     Link.Visible = True
-                    If IsNumeric(CType(Settings("link"), String)) Then
+                    If CType(Settings("link"), String) <> "-1" And IsNumeric(CType(Settings("link"), String)) Then
                         Dim objAdmin As New AdminDB()
                         Dim dr As SqlDataReader = objAdmin.GetTabById(CType(Settings("link"), Integer), GetLanguage("N"))
                         Dim Objtab As New TabStripDetails()
@@ -139,9 +139,18 @@ Namespace DotNetZoom
                             Objtab.FriendlyTabName = IIf(IsDBNull(dr("FriendlyTabName")), "", dr("FriendlyTabName"))
                         End While
                         dr.Close()
-                        Link.Attributes.Add("onmouseover", ReturnToolTip(FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ssl, Objtab.ShowFriendly, CType(Settings("link"), String))))
                         LinkURL = FormatFriendlyURL(Objtab.FriendlyTabName, Objtab.ssl, Objtab.ShowFriendly, CType(Settings("link"), String))
+                    Else
+                        LinkURL = CType(Settings("ExtLink"), String)
                     End If
+                    If CType(Settings("InfoLink"), String) <> "" Then
+                        Link.Attributes.Add("onmouseover", ReturnToolTip(CType(Settings("InfoLink"), String)))
+                    Else
+                        Link.Attributes.Add("onmouseover", ReturnToolTip(LinkURL))
+                    End If
+
+
+
                 End If
 
 
@@ -173,8 +182,6 @@ Namespace DotNetZoom
         Private Sub cmdSendKML_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdSendKML.Click
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
-
             Dim FileName As String = _portalSettings.UploadDirectory + cmdSendKML.CommandArgument
             Dim strExtension As String = Replace(System.IO.Path.GetExtension(cmdSendKML.CommandArgument), ".", "")
             If InStr(1, "," & glbGoogleEarthTypes, "," & strExtension.ToLower) <> 0 Then

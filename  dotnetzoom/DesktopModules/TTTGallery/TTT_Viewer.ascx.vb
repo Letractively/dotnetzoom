@@ -58,14 +58,12 @@ Namespace DotNetZoom
             Zconfig = GalleryConfig.GetGalleryConfig(ModuleId)
             Zrequest = New GalleryViewerRequest(ModuleId)
             If Not Zconfig.RootFolder.IsPopulated Then
-                Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                 'Response.Redirect(Request.RawUrl)
             End If
 
             If Not Zrequest.Folder.IsPopulated Then
                 ' Zrequest.Folder.Populate()
                 ' Server.Transfer("~/DesktopModules/tttGallery/TTT_cache.aspx")
-                Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                 'Response.Redirect(Request.RawUrl)
             End If
 
@@ -135,7 +133,7 @@ Namespace DotNetZoom
                     End If
                     Exif.Dispose()
                     If Zrequest.CurrentItem.Description <> "" Then
-                        Image.Attributes.Add("onmouseover", ReturnToolTip("<pre>" & Zrequest.CurrentItem.Description & "</pre>"))
+                        Image.Attributes.Add("onmouseover", ReturnToolTip(Zrequest.CurrentItem.Description))
                     End If
                 End If
             End If
@@ -171,11 +169,11 @@ Namespace DotNetZoom
             If (lWidth > Zrequest.GalleryConfig.FixedWidth Or lHeight > Zrequest.GalleryConfig.FixedHeight) Or (lWidth < Zrequest.GalleryConfig.FixedWidth And lHeight < Zrequest.GalleryConfig.FixedHeight) Then
                 sRatio = (lHeight / lWidth)
                 If sRatio > 1 Then ' Bounded by height
-                    newWidth = CShort(Zrequest.GalleryConfig.FixedWidth / sRatio)
+                    newWidth = CShort(Zrequest.GalleryConfig.FixedHeight / sRatio)
                     newHeight = Zrequest.GalleryConfig.FixedHeight
                 Else 'Bounded by width
                     newWidth = Zrequest.GalleryConfig.FixedWidth
-                    newHeight = CShort(Zrequest.GalleryConfig.FixedHeight * sRatio)
+                    newHeight = CShort(Zrequest.GalleryConfig.FixedWidth * sRatio)
                 End If
             End If
             Image.Width = Unit.Pixel(CInt(newWidth))

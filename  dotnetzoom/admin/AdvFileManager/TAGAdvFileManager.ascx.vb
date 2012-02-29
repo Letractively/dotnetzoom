@@ -45,14 +45,14 @@ Namespace DotNetZoom
 
             'Put user code to initialize the page here
 			Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("dialog.js"))
-			Page.RegisterClientScriptBlock("FileManager", incScript)
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 			Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
 			retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
-			retScript &= vbTab & Page.GetPostBackEventReference(imgRefresh) & ";" & vbCrLf & "}" & vbCrLf
+            retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(imgRefresh, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
 			retScript &= "--></script>"
-			Page.RegisterClientScriptBlock("FileManagerRefresh", retScript)
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
 
 			imgDelete.Attributes.Add("onClick", "JavaScript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
   			Dim click As String = String.Format("openDialog('{0}', 600, 200, retVal);return false", ResolveUrl("TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabID)), imgRefresh.ClientID)

@@ -214,7 +214,7 @@ Namespace DotNetZoom
 			' file too large
             Session("message") += "<br>" & GetLanguage("Gal_NoSpaceLeft")
 			End If
-			RegisterClientScriptBlock("ClientScript", "<script language=""JavaScript"">handleOK()</Script>")
+            ClientScript.RegisterClientScriptBlock(Page.GetType, "ClientScript", "<script language=""JavaScript"">handleOK()</Script>")
 		End Sub
 		
         Private Sub AddFile(ByVal strFileNamePath As String, ByVal strExtension As String, Optional ByVal strContentType As String = "")

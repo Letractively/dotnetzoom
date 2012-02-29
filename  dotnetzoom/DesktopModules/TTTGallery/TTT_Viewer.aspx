@@ -82,7 +82,7 @@
 			<table Runat="server" id="table" class="TTTBorder" cellSpacing="0" cellPadding="0" align="center">
 				<tr>
                     <td class="TTTHeader" valign="middle" align="left" height="28">
-                    <asp:imagebutton id="Delete" runat="server" EnableViewState="false" visible="True" height="16" width="16" ImageURL="~/images/1x1.gif" style="height:16px;width:16px;border-width:0px;border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -32px;"></asp:imagebutton>
+                    <asp:imagebutton id="Delete" runat="server" EnableViewState="false" visible="True" height="16" width="16" ImageURL="~/images/1x1.gif" style="height:16px;width:16px;border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position: 0px -32px;"></asp:imagebutton>
                     <asp:imagebutton id="Edit" runat="server" EnableViewState="false" visible="True" height="16" width="16" imageurl="~/images/1x1.gif" style="border-width:0px; background: url('/images/ttt/forum.gif') no-repeat; background-position:0px -128px;"></asp:imagebutton>
                     </td>
 					<td class="TTTHeader" valign="middle" align="center" height="28"><asp:label id="Album" CssClass="TTTHeaderText" Runat="server"></asp:label></td>

@@ -52,8 +52,12 @@ Public Class TTT_EditGallery
         If Not Request.IsAuthenticated Then
             EditDenied()
         End If
-
-
+        Dim config As GalleryConfig
+        config = GalleryConfig.GetGalleryConfig(ModuleId)
+        Dim helpfile As String = ""
+        If config.CheckboxGPS Then
+            helpfile = "_gps"
+        End If
         If IsNumeric(Request.Params("editpage")) Then
             Dim editType As Integer = CInt(Request.Params("editpage"))
             Select Case editType
@@ -67,6 +71,7 @@ Public Class TTT_EditGallery
                     _editPage = glbPath & "DeskTopModules/TTTGallery/TTT_GalleryAdmin.ascx"
                     Title1.DisplayHelp = "DisplayHelp_GalleryAdmin"
             End Select
+            Title1.DisplayHelp += helpfile
         End If
 
         Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)

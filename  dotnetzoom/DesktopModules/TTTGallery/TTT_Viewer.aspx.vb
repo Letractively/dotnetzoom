@@ -108,14 +108,12 @@ Namespace DotNetZoom
                 Zconfig = GalleryConfig.GetGalleryConfig(ModuleID)
                 Zrequest = New GalleryViewerRequest(ModuleID)
                 If Not Zconfig.RootFolder.IsPopulated Then
-                    Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                     'Response.Redirect(Request.RawUrl)
                 End If
 
                 If Not Zrequest.Folder.IsPopulated Then
                     ' Zrequest.Folder.Populate()
                     ' Server.Transfer("~/DesktopModules/tttGallery/TTT_cache.aspx")
-                    Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                     'Response.Redirect(Request.RawUrl)
                 End If
 
@@ -148,11 +146,11 @@ Namespace DotNetZoom
 
 
                 If Zrequest.GalleryConfig.CheckboxGPS Then
-                    ReturnTo.NavigateUrl = "javascript:window.top.close();window.top.opener.focus();"
+                    ReturnTo.NavigateUrl = "javascript:parent.jQuery.fancybox.close();"
                     ReturnTo.ToolTip = GetLanguage("Gal_MapReturn")
                     FocusTo.ImageUrl = glbPath & "images/up.gif"
-                    FocusTo.ToolTip = GetLanguage("Gal_MapFocus")
-                    FocusTo.NavigateUrl = "javascript:window.top.opener.focus();window.top.opener.location.href = 'javascript:GV_Center_On_Marker(\'" + Zrequest.CurrentItem.Name + "\', {zoom: 15, open_info_window : true});'"
+                    FocusTo.ToolTip = GetLanguage("Gal_MapFocus")    
+                    FocusTo.NavigateUrl = "javascript:parent.jQuery.fancybox.close();parent.location.href='javascript:GV_Center_On_Marker(\'" + Zrequest.CurrentItem.Name + "\',{zoom:14,open_info_window:true});'"
                     FocusTo.Visible = True
                 Else
                     ReturnTo.ToolTip = GetLanguage("Gal_return")
@@ -190,7 +188,7 @@ Namespace DotNetZoom
                         End If
                         Exif.Dispose()
                         If Zrequest.CurrentItem.Description <> "" Then
-                            Image.Attributes.Add("onmouseover", ReturnToolTip("<pre>" & Zrequest.CurrentItem.Description & "</pre>"))
+                            Image.Attributes.Add("onmouseover", ReturnToolTip(Zrequest.CurrentItem.Description))
                         End If
                     End If
                 End If
@@ -203,10 +201,6 @@ Namespace DotNetZoom
                 lblInfo.Text = Replace(lblInfo.Text, "{albumnum}", Zrequest.Folder.BrowsableItems.Count.ToString())
                 lblInfo.Text = Replace(lblInfo.Text, "{imgname}", Zrequest.CurrentItem.Name)
                 lblInfo.Text = Replace(lblInfo.Text, "{imgsize}", Math.Ceiling(Zrequest.CurrentItem.Size / 1024).ToString)
-                If Zrequest.GalleryConfig.CheckboxGPS Then
-                    lblInfo.ToolTip = GetLanguage("Gal_MapFocus")
-                    lblInfo.Text = "<a href=""javascript:window.top.opener.focus();window.top.opener.location.href = 'javascript:GV_Center_On_Marker(\'" + Zrequest.CurrentItem.Name + "\', {zoom: 15, open_info_window : true});'"">" + lblInfo.Text + "</a>"
-                End If
                 End If
 
                 If Not Page.IsPostBack Then
@@ -232,11 +226,11 @@ Namespace DotNetZoom
             If (lWidth > Zrequest.GalleryConfig.FixedWidth Or lHeight > Zrequest.GalleryConfig.FixedHeight) Or (lWidth < Zrequest.GalleryConfig.FixedWidth And lHeight < Zrequest.GalleryConfig.FixedHeight) Then
                 sRatio = (lHeight / lWidth)
                 If sRatio > 1 Then ' Bounded by height
-                    newWidth = CShort(Zrequest.GalleryConfig.FixedWidth / sRatio)
+                    newWidth = CShort(Zrequest.GalleryConfig.FixedHeight / sRatio)
                     newHeight = Zrequest.GalleryConfig.FixedHeight
                 Else 'Bounded by width
                     newWidth = Zrequest.GalleryConfig.FixedWidth
-                    newHeight = CShort(Zrequest.GalleryConfig.FixedHeight * sRatio)
+                    newHeight = CShort(Zrequest.GalleryConfig.FixedWidth * sRatio)
                 End If
             End If
             Image.Width = Unit.Pixel(CInt(newWidth))
@@ -269,14 +263,12 @@ Namespace DotNetZoom
                 Zconfig = GalleryConfig.GetGalleryConfig(ModuleID)
                 Zrequest = New GalleryViewerRequest(ModuleID)
                 If Not Zconfig.RootFolder.IsPopulated Then
-                    Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                     'Response.Redirect(Request.RawUrl)
                 End If
 
                 If Not Zrequest.Folder.IsPopulated Then
                     ' Zrequest.Folder.Populate()
                     ' Server.Transfer("~/DesktopModules/tttGallery/TTT_cache.aspx")
-                    Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
                     'Response.Redirect(Request.RawUrl)
                 End If
             End If

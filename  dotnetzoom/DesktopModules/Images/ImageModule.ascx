@@ -12,11 +12,11 @@
 	        <ul>
 	        <li class="folder" style="z-index: 1"><asp:image id="Image1" runat="server" EnableViewState="false" />
 	            <ul>
-	            <li id="GoogleEarth" runat="server" EnableViewState="false" visible="false" class="items"><asp:LinkButton id="cmdSendKML" runat="server" ><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> Google Earth</asp:LinkButton></li>
-	            <li id="GoogleMap" runat="server" EnableViewState="false" visible="false" class="items"><a href=<%= GoogleMapURL %>><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> Google Map</a></li>
-	            <li id="Info" runat="server" EnableViewState="false" visible="false" class="items"><a href=""><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> Information</a></li>
-	            <li id="infoExif" runat="server" EnableViewState="false" visible="false" class="items"><a href=""><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> Exif</a></li>
-	            <li id="Link" runat="server" EnableViewState="false" visible="false" class="items"><a href=<%= LinkURL %>><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> Link</a></li>
+	            <li id="GoogleEarth" runat="server" EnableViewState="false" visible="false" class="items"><asp:LinkButton id="cmdSendKML" runat="server" ><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> <%= DotNetZoom.GetLanguage("Img_GPX")%></asp:LinkButton></li>
+	            <li id="GoogleMap" runat="server" EnableViewState="false" visible="false" class="items"><a href=<%= GoogleMapURL %>><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> <%= DotNetZoom.GetLanguage("Img_Map")%></a></li>
+	            <li id="Info" runat="server" EnableViewState="false" style="cursor: help;" visible="false" class="items"><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> <%= DotNetZoom.GetLanguage("Img_Info")%></li>
+	            <li id="infoExif" runat="server" EnableViewState="false" style="cursor: help;" visible="false" class="items"><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> <%= DotNetZoom.GetLanguage("Img_Exif")%></li>
+	            <li id="Link" runat="server" EnableViewState="false" visible="false" class="items"><a href=<%= LinkURL %>><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> <%= DotNetZoom.GetLanguage("Img_Link")%></a></li>
 	            </ul>
 	        </li>
 	        </ul>

@@ -465,9 +465,9 @@ Namespace DotNetZoom
 
 
                         If StringFileName <> "" Then
-                            Dim result As SqlDataReader = objAdmin.GetTabByFriendLyName(StringFileName, PortalNumber)
-                            If result.Read() Then
-                                tabId = result("TabId")
+                            Dim result As Integer = objAdmin.GetTabByFriendLyName(StringFileName, PortalNumber)
+                            If result > -1 Then
+                                tabId = result
                                 Dim TempQuerystring As String = context.Request.QueryString.ToString()
                                 If Request.Params("tabid") Is Nothing Then
                                     If TempQuerystring = "" Then
@@ -481,12 +481,10 @@ Namespace DotNetZoom
                                 'not a tab in data base
                                 'see if file exist otherwise send 404
                                 If Not IO.File.Exists(Server.MapPath(Request.Path)) Then
-                                    result.Close()
-											SendHttpException("404", "Not Found", Request)
+                                    SendHttpException("404", "Not Found", Request)
                                 End If
 
                             End If
-                            result.Close()
                         End If
                     Else
                         HttpContext.Current.RewritePath(glbPath() + "default.aspx", String.Empty, HttpContext.Current.Request.QueryString.ToString())
@@ -664,8 +662,19 @@ Namespace DotNetZoom
             End If
         End Sub
 
-        Sub Application_Start(ByVal Sender As Object, ByVal E As EventArgs)
+        Sub Application_End(ByVal Sender As Object, ByVal E As EventArgs)
+            Try
+                Dim objStream As StreamWriter
+                objStream = File.AppendText(Application("log"))
+                objStream.WriteLine("Application End : " + DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss"))
+                objStream.Close()
+            Catch
+            End Try
 
+        End Sub
+
+        Sub Application_Start(ByVal Sender As Object, ByVal E As EventArgs)
+            Application("log") = Server.MapPath("/Startup.log")
             Application("throttle") = ConfigurationSettings.AppSettings("throttle")
             Application("cryptokey") = ConfigurationSettings.AppSettings("cryptokey")
             If Application("cryptokey") Is Nothing Then
@@ -679,10 +688,9 @@ Namespace DotNetZoom
 
                 Try
                     Dim objStream As StreamWriter
-                    objStream = File.CreateText(Server.MapPath("test.log"))
-                    objStream.WriteLine("test")
+                    objStream = File.AppendText(Server.MapPath("/Startup.log"))
+                    objStream.WriteLine("Application Init : " + DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss"))
                     objStream.Close()
-                    File.Delete(Server.MapPath("test.log"))
                 Catch
                     ' does not have permission to create file on root
                     Application("error403") = Server.MapPath("") & "<br>"
@@ -691,8 +699,19 @@ Namespace DotNetZoom
 
             Else
                 Application("DoValidation") = "Startup"
+                Try
+                    Dim objStream As StreamWriter
+                    objStream = File.AppendText(Server.MapPath("/Startup.log"))
+                    objStream.WriteLine("Application Start : " + DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss"))
+                    objStream.Close()
+                Catch
+                End Try
 
             End If
+            'Clear all Cache on StartUp just in Case
+            For Each de As DictionaryEntry In HttpContext.Current.Cache
+                HttpContext.Current.Cache.Remove(de.Key.ToString())
+            Next de
         End Sub
 
         Public Sub WriteSetting(ByVal InFile As String, ByVal key As String, ByVal value As String)
@@ -713,7 +732,7 @@ Namespace DotNetZoom
                 End If
                 doc.Save(getConfigFilePath(InFile))
             Catch
-            	 SendHttpException("403", "Forbidden", Request, getConfigFilePath(InFile))
+                SendHttpException("403", "Forbidden", Request, getConfigFilePath(InFile))
 
             End Try
         End Sub
@@ -794,28 +813,23 @@ Namespace DotNetZoom
         End Sub
 
         Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
-        	 	If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-			    Dim URLReferrer As String = ""
-                If Not Request.UrlReferrer Is Nothing Then
-                    URLReferrer = Request.UrlReferrer.ToString()
-                End If
 
-
+            If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
                 Dim LastError As Exception
-                Dim ErrMessage As String
+                Dim ErrorMessage As String
 
-               LastError = Server.GetLastError()
+                LastError = Server.GetLastError()
 
-               If Not LastError Is Nothing Then
-                  ErrMessage = LastError.Message + vbCrLf
-                 ErrMessage += LastError.StackTrace + vbCrLf
-                ErrMessage += LastError.Source + vbCrLf
-                Else
-                   ErrMessage = ""
+                If Not LastError Is Nothing Then
+                    ErrorMessage += (LastError.Message + vbCrLf)
+                    ErrorMessage += (LastError.StackTrace + vbCrLf)
+                    ErrorMessage += (LastError.Source + vbCrLf)
                 End If
 
-                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Application_Error", HttpContext.Current.Items("RequestURL") + vbCrLf + URLReferrer + vbCrLf + Request.UserAgent + vbCrLf + Request.UserHostAddress + vbCrLf + ErrMessage, "")
-                 If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
+                ErrorMessage += BuildErrorMessage(Request)
+
+                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", ErrorMessage.ToString, "")
+                If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
                     ' read script file for version
                     Dim objStreamReader As StreamReader
                     objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
@@ -826,6 +840,7 @@ Namespace DotNetZoom
                 Server.ClearError()
                 Response.End()
             End If
+
         End Sub
 
 

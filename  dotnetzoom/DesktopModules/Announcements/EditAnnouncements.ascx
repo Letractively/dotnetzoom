@@ -1,9 +1,12 @@
 <%@ Control Language="vb" codebehind="EditAnnouncements.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.EditAnnouncements" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
+<%@ Register TagPrefix="Portal" TagName="ItemEdit" Src="~/admin/tabs/ItemEdit.ascx" %>
 
 <script language="javascript" type="text/javascript"  src="<%=dotnetzoom.glbpath + "controls/PopupCalendar.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
+
+
 <table cellspacing="0" cellpadding="0" width="750">
     <tbody>
         <tr valign="top">
@@ -22,6 +25,43 @@
                 <asp:textbox id="txtDescription" runat="server" Columns="44" width="390" CssClass="NormalTextBox" Rows="6" TextMode="Multiline"></asp:textbox>
                 <br>
                 <asp:requiredfieldvalidator id="valDescription" runat="server" CssClass="NormalRed" ControlToValidate="txtDescription"  Display="Dynamic"></asp:requiredfieldvalidator>
+            </td>
+        </tr>
+        <tr>
+            <td class="SubHead">
+                <label for="<%=chkComment.ClientID%>"><%= DotNetZoom.GetLanguage("BB_AllowComments")%>:</label></td>
+            <td>
+                <asp:checkbox id="chkComment"  AutoPostBack="true" CssClass="NormalTextBox" Runat="server"></asp:checkbox>
+            </td>
+        </tr>
+        <tr>
+            <td class="SubHead">
+                <label for="<%=chkAnonymous.ClientID%>"><%= DotNetZoom.GetLanguage("BB_AllowAnonyme")%>:</label></td>
+            <td>
+                <asp:checkbox id="chkAnonymous"  AutoPostBack="true" CssClass="NormalTextBox" Runat="server"></asp:checkbox>
+            </td>
+        </tr>
+        <tr>
+            <td class="SubHead">
+                <label for="<%=txtPager.ClientID%>"><%= DotNetZoom.GetLanguage("BB_NumItems")%>:</label></td>
+            <td>
+                <asp:textbox id="txtPager"  AutoPostBack="true" runat="server"  MaxLength="3" width="20" CssClass="NormalTextBox" TextMode="SingleLine"></asp:textbox>
+            </td>
+        </tr>
+        <tr>
+            <td class="SubHead" valign="top" width="300">
+            <%= DotNetZoom.GetLanguage("ms_contener")%>:
+			</td>
+            <td>
+                <table cellspacing="0" cellpadding="4" border="0" width="400">
+                    <tbody>
+					<tr>
+					<td colspan="3">
+					<portal:ItemEdit id="ContainerEdit" runat="server"></portal:ItemEdit>
+					</td>
+					</tr>
+                    </tbody>
+                </table>
             </td>
         </tr>
         <tr valign="top">
@@ -54,7 +94,7 @@
                 <label for="<%=cboFile.ClientID%>"><%= DotNetZoom.GetLanguage("label_File") %>:</label> 
             </td>
             <td>
-                <asp:dropdownlist id="cboFile" runat="server" CssClass="NormalTextBox" Width="390" DataTextField="Text" DataValueField="Value"></asp:dropdownlist>
+                <asp:dropdownlist id="cboFile" runat="server" CssClass="NormalTextBox" Width="200" DataTextField="Text" DataValueField="Value"></asp:dropdownlist>
                 &nbsp; 
                 <asp:hyperlink id="cmdUpload" CssClass="CommandButton" Runat="server"></asp:hyperlink>
             </td>

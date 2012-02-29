@@ -446,6 +446,10 @@ Namespace DotNetZoom
 
             ' Init the root folder            
             Zfolder = ZgalleryConfig.RootFolder
+            If Not Zfolder.IsPopulated Then
+                'HttpContext.Current.Response.Write("<!--Populate RootFolder : " + Zfolder.Path + "-->" + vbCrLf)
+                Zfolder.Populate()
+            End If
 
             ' Create the root path information
             newFolderDetail = New FolderDetail()
@@ -454,7 +458,6 @@ Namespace DotNetZoom
 
             ' Logic to determine path structure
             If Not _path Is Nothing Then
-
                 Try
                     ' Split the input into distinct paths
                     paths = Split(_path, "/")

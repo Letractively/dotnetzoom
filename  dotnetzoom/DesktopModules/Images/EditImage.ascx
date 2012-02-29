@@ -10,7 +10,7 @@
                 &nbsp;<%= DotNetZoom.GetLanguage("image_iternal")%>&nbsp;: 
             </td>
             <td class="Normal">
-                <asp:dropdownlist id="cboInternal"  AutoPostBack="true" runat="server" CssClass="NormalTextBox" Width="300" DataValueField="Value" DataTextField="Text"></asp:dropdownlist>
+                <asp:dropdownlist id="cboInternal"  AutoPostBack="true" runat="server" CssClass="NormalTextBox" Width="200" DataValueField="Value" DataTextField="Text"></asp:dropdownlist>
                 &nbsp; 
                 <asp:HyperLink id="cmdUpload" Runat="server" CssClass="CommandButton"></asp:HyperLink>
             </td>
@@ -29,7 +29,7 @@
                 &nbsp;</td>
         </tr>
         <tr valign="top">
-            <td class="SubHead" colspan="2">
+            <td class="SubHead">
                 <asp:Checkbox id="optSecure" Runat="server" ></asp:Checkbox>&nbsp;<%= DotNetZoom.GetLanguage("image_Secure")%>            
             </td><td><%= DotNetZoom.GetLanguage("image_Secure_info")%></td>
         </tr>
@@ -88,7 +88,20 @@
                  <asp:dropdownlist id="cboInternalLink"  AutoPostBack="false" runat="server" CssClass="NormalTextBox" Width="300" DataValueField="TabId" DataTextField="TabName"></asp:dropdownlist>
             </td>
         </tr>
-
+        <tr valign="top">
+            <td class="SubHead">
+               <%= DotNetZoom.GetLanguage("img_ExtLink")%>:
+            <td>
+                <asp:TextBox id="ExternalLink" runat="server" cssclass="NormalTextBox" Columns="75"></asp:TextBox>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td class="SubHead">
+               <%= DotNetZoom.GetLanguage("img_linkinfo")%>:
+            <td>
+                <asp:TextBox id="InfoLink" runat="server" cssclass="NormalTextBox" Columns="75"></asp:TextBox>
+            </td>
+        </tr>
 
          <tr valign="top">
             <td class="SubHead">

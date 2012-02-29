@@ -380,15 +380,9 @@ Namespace DotNetZoom
 
         Private Sub CheckPopulate()
             If Not Zconfig.RootFolder.IsPopulated Then
-                Zrequest.Folder.LogEvent("Config not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
-                'Zconfig.RootFolder.Populate()
-                'Response.Redirect(Request.RawUrl)
             End If
 
             If Not Zrequest.Folder.IsPopulated Then
-                Zrequest.Folder.LogEvent("Folder not populated -> PostBack : " + Page.IsPostBack.ToString + vbCrLf)
-                'Zrequest.Folder.Populate()
-                'Response.Redirect(Request.RawUrl)
             End If
 
         End Sub
@@ -853,7 +847,7 @@ Namespace DotNetZoom
                                 Dim item As String
 
                                 items = System.IO.Directory.GetFiles(Zrequest.Folder.Path, "*.gpx")
-                                Dim EventToLog As String = fileName + vbCrLf
+
                                 Dim SaveExif As Boolean = False
                                 Dim TempLatLong As LatLong = Nothing
                                 Dim TempDate As Date
@@ -881,8 +875,7 @@ Namespace DotNetZoom
                                     If TempLatLong.Latitude <> "" Then
                                         Dim directory As String = Zrequest.Folder.Path
                                         ' Put Sort in the XML
-                                        EventToLog += " LatLong   : " + TempLatLong.Latitude + "," + TempLatLong.Longitude + vbCrLf
-
+                                        
 
                                         selItem.Latitude = TempLatLong.Latitude
                                         selItem.Longitude = TempLatLong.Longitude
@@ -900,8 +893,6 @@ Namespace DotNetZoom
 
 
 
-                                EventToLog += "Exif Date : " + Exif.DateTimeOriginal.ToString + vbCrLf
-                                EventToLog += "Used Date : " + TempDate.ToString + vbCrLf
                                 If TempDate <> Exif.DateTimeOriginal And SaveExif Then
                                     Exif.DateTimeOriginal = TempDate
                                     Exif.DateTimeDigitized = TempDate
@@ -916,7 +907,7 @@ Namespace DotNetZoom
                                     Exif.Dispose()
                                 End If
 
-                                Zrequest.Folder.LogEvent(EventToLog)
+
 
 
                                 BindChildItems()
@@ -1842,7 +1833,7 @@ Namespace DotNetZoom
                                 Dim item As String
 
                                 items = System.IO.Directory.GetFiles(Zrequest.Folder.Path, "*.gpx")
-                                Dim EventToLog As String = fileName + vbCrLf
+
                                 Dim SaveExif As Boolean = False
                                 Dim TempLatLong As LatLong = Nothing
                                 Dim TempDate As Date
@@ -1866,7 +1857,7 @@ Namespace DotNetZoom
                                         If TempLatLong.Latitude <> "" Then
                                             Dim directory As String = Zrequest.Folder.Path
                                             ' Put Sort in the XML
-                                            EventToLog += " LatLong   : " + TempLatLong.Latitude + "," + TempLatLong.Longitude + vbCrLf
+
                                             selItem.Latitude = TempLatLong.Latitude
                                             selItem.Longitude = TempLatLong.Longitude
                                             selItem.Sort = TempDate.ToString("yyyy\-MM\-dd HH\:mm\:ss")
@@ -1876,8 +1867,6 @@ Namespace DotNetZoom
                                     End If
                                 End If
 
-                                EventToLog += "Exif Date : " + Exif.DateTimeOriginal.ToString + vbCrLf
-                                EventToLog += "Used Date : " + TempDate.ToString + vbCrLf
                                 If TempDate <> Exif.DateTimeOriginal And SaveExif Then
                                     Exif.DateTimeOriginal = TempDate
                                     Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
@@ -1889,7 +1878,7 @@ Namespace DotNetZoom
                                 Else
                                     Exif.Dispose()
                                 End If
-                                Zrequest.Folder.LogEvent(EventToLog)
+
                         End Select
                     End If
                 End If

@@ -44,6 +44,6 @@
 <br>
 <img height="15" width="17" src="/images/1x1.gif" Alt="mem" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -45px;">
 &nbsp;
-<span class="normal"><%= DotNetZoom.GetLanguage("cache_memory_used")%>&nbsp;:&nbsp;</span><span class="normal" style="color:Blue;"><%=Cache.Count.ToString()%></span>
+<span class="normal"><%= DotNetZoom.GetLanguage("cache_memory_used")%>&nbsp;:&nbsp;</span><span class="normal" style="color:Blue;"><%=Cache.Count.ToString()%> / <%=(Cache.EffectivePrivateBytesLimit / 1048576).ToString%>mb / <%=Cache.EffectivePercentagePhysicalMemoryLimit.ToString%>%</span>
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>
 </asp:PlaceHolder>

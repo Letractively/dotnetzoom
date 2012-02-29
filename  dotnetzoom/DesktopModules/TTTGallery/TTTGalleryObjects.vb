@@ -142,7 +142,6 @@ Namespace DotNetZoom
         Private _link As String
         Private _type As IGalleryObjectInfo.ItemType
         Private _ownerID As Integer = 0
-        Private _isEditable As Boolean = False
         Private _IsFolder As Boolean = False
 
 #End Region
@@ -1045,38 +1044,41 @@ Namespace DotNetZoom
 
         Public Sub Reset()
             Me.Clear()
-            If File.Exists(BuildPath(New String(1) {Me.Path, "_metadata.dat"}, "\", False, True)) Then
-                IO.File.Delete(BuildPath(New String(1) {Me.Path, "_metadata.dat"}, "\", False, True))
-            End If
+
+            Dim item As FileInfo
+            Dim dirInfo As New DirectoryInfo(Me.Path)
+            Dim items As FileInfo() = dirInfo.GetFiles("*.dat")
+            For Each item In items
+                ' LogEvent("Delete : " + Name + vbCrLf)
+                item.Delete()
+            Next
             If File.Exists(BuildPath(New String(1) {Me.Path, "_sorteddata.xml"}, "\", False, True)) Then
                 IO.File.Delete(BuildPath(New String(1) {Me.Path, "_sorteddata.xml"}, "\", False, True))
             End If
-            If File.Exists(BuildPath(New String(1) {Me.Path, "_cache.dat"}, "\", False, True)) Then
-                IO.File.Delete(BuildPath(New String(1) {Me.Path, "_cache.dat"}, "\", False, True))
-            End If
-            LogEvent("Reset : ")
-            'Me.Populate()
         End Sub
 
         Public Sub LogEvent(ByVal What As String)
-            'Dim objStream As StreamWriter
-            'Dim FileName As String
-            'FileName = "_" + Year(Now()).ToString + "-" + Month(Now).ToString + "-" + Day(Now).ToString + ".log"
-            'objStream = File.AppendText(BuildPath(New String(1) {_galleryConfig.RootPath, FileName}, "\", False, True))
-            'objStream.WriteLine(DateTime.Now.ToString() & "  " & What & Me.Path)
-            'objStream.Close()
+            Dim objStream As StreamWriter
+            Dim FileName As String
+            FileName = "_" + Year(Now()).ToString + "-" + Month(Now).ToString + "-" + Day(Now).ToString + ".log"
+            objStream = File.AppendText(BuildPath(New String(1) {_galleryConfig.RootPath, FileName}, "\", False, True))
+            objStream.WriteLine(DateTime.Now.ToString() & " : " & What & ControlChars.CrLf)
+            objStream.Close()
         End Sub
 
 
         Public Sub Populate()
+
 
             ' Populates the folder object with the info from XML file
 
             ' (in case someone decides to call this again without clearing the data first)
             _list.Clear()
 
+            'HttpContext.Current.Response.Write("<!--Populate : " + Me.Path + "-->" + vbCrLf)
+
             If File.Exists(BuildPath(New String(1) {Me.Path, "_sorteddata.xml"}, "\", False, True)) Then
-                LogEvent("Populate from DAT : ")
+
                 Dim StrExtension As String
                 Dim xmlDoc As New XmlDocument()
                 Dim FileNode As XmlNode
@@ -1161,7 +1163,7 @@ Namespace DotNetZoom
 
 
             Else
-                LogEvent("Populate from XML : ")
+
                 Dim items() As String
                 Dim item As String
                 Dim sort As String
@@ -1497,8 +1499,8 @@ Namespace DotNetZoom
                         Dim What As IGalleryObjectInfo = metaData.CompleteInfo(name)
                         What.OwnerID = fileOwnerID
                         What.Sort = TempSort
-                        What.Latitude = mlatitude
-                        What.Longitude = mlongitude
+                        'What.Latitude = mlatitude
+                        'What.Longitude = mlongitude
                         What.IsFolder = True
                         GalleryXML.SaveGalleryData(_path, What)
                     End If
