@@ -215,6 +215,7 @@
         jQuery("a[rel=image]").fancybox({
             'autoScale'     : false,
             'margin' : 10,
+            'type'	: 'image',
             'transitionIn': 'none',
             'transitionOut': 'none',
             'titleFromRev' : true,
@@ -273,7 +274,8 @@
 <asp:imagebutton id="ClearCache" runat="server" EnableViewState="false" visible="False" height="16" width="16" ImageURL="~/images/1x1.gif" style="border-width:0px;"></asp:imagebutton>
 <asp:imagebutton id="SubAlbum" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/Admin/AdvFileManager/Images/NewFolder.gif" style="border-width:0px"></asp:imagebutton>
 <asp:imagebutton id="UploadImage" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/Admin/AdvFileManager/Images/Upload.gif" style="border-width:0px"></asp:imagebutton>
-</td>
+<asp:imagebutton id="UploadReturn" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/images/save.gif" style="border-width:0px"></asp:imagebutton></td>
+
 <td class="TTTHeader" valign="middle" style="white-space: nowrap;" align="right" height="28">
 <font color="#ff0000">
 <asp:Literal id="lblInfo" runat="server" EnableViewState="false"  Visible="False" />
@@ -340,6 +342,9 @@
 </asp:hyperlink>
 <asp:ImageButton id="btnDownload" runat="server"  height="16" width="16" visible="<%# CanDownload(Container.DataItem) %>" CommandName="edit" ImageURL="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>' style='<%# GetImageStyle("0px -96px") %>'>
 </asp:ImageButton>
+<asp:hyperlink id="lnkGoogleMap" runat="server" EnableViewState="false" navigateurl="<%# GetMapURL(Container.DataItem) %>" visible="<%# CanShowMap(Container.DataItem)%>">
+<asp:image height="16" width="16" runat="server" id="g"  imageurl="~/images/gps/40Earth.png"></asp:image>
+</asp:hyperlink>
 <asp:ImageButton id="Delete" runat="server"  height="16" width="16" visible="<%# ItemAuthority(Container.DataItem) %>" CommandName="delete" ImageURL="~/images/1x1.gif" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>'  style='<%# GetImageStyle("0px -32px") %>'>
 </asp:ImageButton>
 <asp:ImageButton id="Right" runat="server"  height="16" width="16" visible="<%# CanGoRight(Container.DataItem)%>" CommandName="right" ImageURL="~/images/rt.gif" BorderWidth="0" BorderStyle="none" CommandArgument='<%# CType(DataBinder.Eval(Container.DataItem, "Index"), String) %>'>

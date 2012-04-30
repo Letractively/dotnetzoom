@@ -13,7 +13,7 @@
 	   <td align="center" valign="middle">
 	   <span class='<asp:literal id="ItemTitle" runat="server" />'><%= DotNetZoom.getlanguage("Label_enter") %></span>
 	   </td>
-	   <td align="right" valign="middle"><a title="<%= DotNetZoom.GetLanguage("admin_menu_hide")%>" href="javascript:toggleBox('signin',0)" >
+	   <td runat="server" id="exitTD" align="right" valign="middle"><a title="<%= DotNetZoom.GetLanguage("admin_menu_hide")%>" href="javascript:toggleBox('signin',0)" >
 	   <img height="14" width="14" border="0" src="/images/1x1.gif" Alt="ca" title="<%= DotNetZoom.GetLanguage("Signin_hide")%>" style=" background: url('/images/uostrip.gif') no-repeat; background-position: 0px -333px;"></a>
 	   </td>
 	   </tr>

@@ -96,7 +96,7 @@ Namespace DotNetZoom
                 If cmdBrowseScript.PostedFile.FileName <> "" Then
 				   Dim objStreamReader As StreamReader
 				   strFileName = System.IO.Path.GetFileName(cmdBrowseScript.PostedFile.FileName)
-                   strFileNamePath = Request.MapPath("~/database/") & strFileName
+                    strFileNamePath = Request.MapPath(glbPath + "database/") & strFileName
                     strExtension = ""
                     If InStr(1, strFileNamePath, ".") Then
                         strExtension = Mid(strFileNamePath, InStrRev(strFileNamePath, ".") + 1).ToLower

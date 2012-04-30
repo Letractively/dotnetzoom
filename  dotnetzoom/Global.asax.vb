@@ -29,7 +29,7 @@ Imports System.Data.SqlClient
 Imports System.Collections
 Imports System.Data.SqlTypes
 Imports System.Reflection
-Imports System.Configuration
+Imports System.Web.Configuration
 Imports System.Collections.Specialized
 
 
@@ -45,16 +45,16 @@ Namespace DotNetZoom
             ' Reset the application and start over
             Dim strWebConfig As String
             Dim objStreamReader As StreamReader
-            objStreamReader = File.OpenText(Server.MapPath("web.config"))
+            objStreamReader = File.OpenText(Server.MapPath("~/web.config"))
             strWebConfig = objStreamReader.ReadToEnd
             objStreamReader.Close()
             Try
                 Dim objStream As StreamWriter
-                objStream = File.CreateText(Server.MapPath("web.config"))
+                objStream = File.CreateText(Server.MapPath("~/web.config"))
                 objStream.WriteLine(strWebConfig)
                 objStream.Close()
             Catch
-				SendHttpException("403", "Forbidden", Request, Server.MapPath("web.config"))
+                SendHttpException("403", "Forbidden", Request, Server.MapPath("~/web.config"))
             End Try
         End Sub
 
@@ -104,18 +104,18 @@ Namespace DotNetZoom
 
             ' for each build version up to the current version, perform the necessary upgrades
             If intBuild > -2 Then
-	            While intBuild < ApplicationVersion
+                'update database
+                While intBuild < ApplicationVersion
                     intBuild += 1
                     ' verify script has not already been run
                     context.Cache.Remove(TempKey)
 
                     If Not DotNetZoom.PortalSettings.FindVersion(intBuild) Then
-
                         ' database upgrade
-                        If File.Exists(Server.MapPath("Database\1.0." & intBuild.ToString & ".sql")) Then
+                        If File.Exists(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql")) Then
                             ' read script file for version
                             Dim objStreamReader As StreamReader
-                            objStreamReader = File.OpenText(Server.MapPath("Database\1.0." & intBuild.ToString & ".sql"))
+                            objStreamReader = File.OpenText(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql"))
                             Dim strScript As String = objStreamReader.ReadToEnd
                             objStreamReader.Close()
 
@@ -125,35 +125,35 @@ Namespace DotNetZoom
                             ' delete script file once executed
                             Try
 
-                                File.Delete(Server.MapPath("Database\1.0." & intBuild.ToString & ".sql"))
+                                File.Delete(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql"))
 
                             Catch
                                 ' could not delete the script file
-                                Application("error403") += "<br>" & Server.MapPath("Database\1.0." & intBuild.ToString & ".sql")
+                                Application("error403") += "<br>" & Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql")
                             End Try
 
                             ' log the results
                             Try
                                 Dim objStream As StreamWriter
-                                objStream = File.CreateText(Server.MapPath("Database\1.0." & intBuild.ToString & ".log"))
+                                objStream = File.CreateText(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log"))
                                 objStream.WriteLine(strSQLExceptions)
                                 objStream.Close()
                             Catch
                                 ' does not have permission to create the log file
                                 ' Response.Redirect("403-3.htm", True)
-                                Application("error403") += "<br>" & Server.MapPath("Database\1.0." & intBuild.ToString & ".log")
+                                Application("error403") += "<br>" & Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log")
 
                             End Try
                         Else
                             ' script file does not exist for version ( this is mandatory for every version )
                             Try
                                 Dim objStream As StreamWriter
-                                objStream = File.CreateText(Server.MapPath("Database\1.0." & intBuild.ToString & ".log"))
-                                objStream.WriteLine("Upgrade Error. Could Not Locate " & Server.MapPath("Database\1.0." & intBuild.ToString & ".sql") & " Database Upgrade Script.")
+                                objStream = File.CreateText(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log"))
+                                objStream.WriteLine("Upgrade Error. Could Not Locate " & Server.MapPath(glbPath + "Database/1.0." & intBuild.ToString & ".sql") & " Database Upgrade Script.")
                                 objStream.Close()
                             Catch
                                 ' does not have permission to create the log file
-                                Application("error403") += "<br>" & Server.MapPath("Database\1.0." & intBuild.ToString & ".log")
+                                Application("error403") += "<br>" & Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log")
                             End Try
                             Exit Sub
                         End If
@@ -161,6 +161,45 @@ Namespace DotNetZoom
                     End If
 
                 End While
+                'update Language file
+                Dim items() As String
+                Dim item As String
+                items = System.IO.Directory.GetFiles(Server.MapPath("~/Database/"), "language_??.sql")
+                For Each item In items
+
+                    Dim objStreamReader As StreamReader
+                    objStreamReader = File.OpenText(item)
+                    Dim strScript As String = objStreamReader.ReadToEnd
+                    objStreamReader.Close()
+
+                    ' execute SQL installation script
+                    Dim strSQLExceptions As String = objAdmin.ExecuteSQLScript(strScript)
+
+                    ' delete script file once executed
+                    Try
+
+                        File.Delete(item)
+
+                    Catch
+                        ' could not delete the script file
+                        Application("error403") += "<br>" & item
+                    End Try
+
+                    ' log the results
+                    Try
+                        Dim objStream As StreamWriter
+                        objStream = File.CreateText(item.Replace(".sql", ".log"))
+                        objStream.WriteLine(strSQLExceptions)
+                        objStream.Close()
+                    Catch
+                        ' does not have permission to create the log file
+                        ' Response.Redirect("403-3.htm", True)
+                        Application("error403") += "<br>" & item.Replace(".sql", ".log")
+
+                    End Try
+                Next
+
+
             End If
             Application("DoValidation") = "ok"
         End Sub
@@ -199,6 +238,76 @@ Namespace DotNetZoom
 
 
             Dim context As HttpContext = HttpContext.Current
+            Dim StrExtension As String = ""
+
+            Dim filePath As String = context.Request.FilePath
+            If InStrRev(filePath, "/controls/crypto.ashx") > 0 Then
+                Dim CryptoText As String = Left(filePath, InStrRev(filePath, "/controls/crypto.ashx") - 1)
+                CryptoText = Right(CryptoText, CryptoText.Length - glbPath.Length)
+                Dim objSecurity As New DotNetZoom.PortalSecurity()
+                Dim dnPath As String
+                dnPath = objSecurity.DecryptRijndael(context.Application("cryptokey"), CryptoText)
+                Try
+                    Dim dnFile As System.IO.FileInfo = New System.IO.FileInfo(context.Request.MapPath(dnPath))
+                    'Get If-Modified-Since header from request.
+                    Dim sIfModifiedSince As String = context.Request.Headers("If-Modified-Since")
+                    Dim IfModifiedSince As Date = DateTime.Now()
+                    'Convert the header To date.
+                    If sIfModifiedSince <> String.Empty Then
+                        IfModifiedSince = DateTime.Parse(sIfModifiedSince)
+                    End If
+
+                    'Get a time when the file was last modified.
+                    Dim LastModified As Date = dnFile.LastWriteTime
+
+                    'round the date To seconds.
+                    LastModified = New Date(LastModified.Year, LastModified.Month, LastModified.Day, _
+                    LastModified.Hour, LastModified.Minute, LastModified.Second)
+                    If LastModified <> IfModifiedSince Then '200 OK - file was modified.
+                        StrExtension = Replace(System.IO.Path.GetExtension(dnFile.Name), ".", "")
+                        ' Only send a file if proper extension
+                        If InStr(1, "," & DotNetZoom.PortalSettings.GetHostSettings("FileExtensions").ToString.ToUpper, "," & StrExtension.ToUpper) <> 0 Then
+                            context.Response.AddHeader("Content-Length", dnFile.Length.ToString)
+                            Dim strContentType As String = "application/octet-stream"
+                            Select Case StrExtension.ToLower()
+                                Case "txt" : strContentType = "text/plain"
+                                Case "htm", "html" : strContentType = "text/html"
+                                Case "rtf" : strContentType = "text/richtext"
+                                Case "jpg", "jpeg" : strContentType = "image/jpeg"
+                                Case "gif" : strContentType = "image/gif"
+                                Case "bmp" : strContentType = "image/bmp"
+                                Case "png" : strContentType = "image/png"
+                                Case "mpg", "mpeg" : strContentType = "video/mpeg"
+                                Case "avi" : strContentType = "video/avi"
+                                Case "wmv" : strContentType = "video/x-ms-wmv"
+                                Case "pdf" : strContentType = "application/pdf"
+                                Case "doc", "dot" : strContentType = "application/msword"
+                                Case "csv", "xls", "xlt" : strContentType = "application/x-msexcel"
+                                Case "flv" : strContentType = "video/x-flv"
+                            End Select
+                            context.Response.ContentType = strContentType
+                            context.Response.Cache.SetLastModified(dnFile.LastWriteTimeUtc)
+                            context.Response.Cache.SetExpires(DateTime.Now.AddDays(365))
+                            context.Response.WriteFile(dnPath)
+                            context.Response.StatusCode = 200
+                            context.Response.End()
+                        Else
+                            context.Response.StatusCode = "404"
+                            context.Response.StatusDescription = "Not Found"
+                            context.Response.End()
+                        End If
+                    Else '304 - file is Not modified.
+                        context.Response.StatusCode = "304"
+                        context.Response.StatusDescription = "Not Modified"
+                        context.Response.End()
+                    End If
+                Catch
+
+                End Try
+
+            End If
+
+
 
             If Not Application("throttle") Is Nothing Then
                 Dim Trootle As Integer = CType(context.Cache(Request.UserHostAddress), Integer)
@@ -225,10 +334,9 @@ Namespace DotNetZoom
 
 
            Dim StrPhysicalPath As String = context.Request.PhysicalPath
-           Dim StrExtension As String = ""
             If InStr(1, StrPhysicalPath, ".") Then
-               StrExtension = Mid(StrPhysicalPath, InStrRev(StrPhysicalPath, ".")).ToLower
-           End If
+                StrExtension = Mid(StrPhysicalPath, InStrRev(StrPhysicalPath, ".")).ToLower
+            End If
 
            If StrExtension <> ".axd" Then
 
@@ -303,7 +411,7 @@ Namespace DotNetZoom
                         Else
                             Dim intVersion As Integer
                             For intVersion = (DatabaseVersion + 1) To ApplicationVersion
-                                If Not File.Exists(Server.MapPath("Database\1.0." & intVersion.ToString & ".sql")) Then
+                                If Not File.Exists(Server.MapPath("~/Database/1.0." & intVersion.ToString & ".sql")) Then
                                     strMessage += "<br>1.0." & intVersion.ToString & ".sql"
                                 Else
                                     strSql += "<br>1.0." & intVersion.ToString & ".sql"
@@ -335,13 +443,18 @@ Namespace DotNetZoom
                     End If
                 End If
 
-
-                ' check if linkclick
-                If Not (Request.Params("linkclick") Is Nothing) Then
+                If Not (Request.Params("crypto") Is Nothing) Then
+                    ' check if crypto
                     Dim objSecurity As New DotNetZoom.PortalSecurity()
-                    Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("linkclick"))
-                   context.Items.Add("linkclick", Request.Params("linkclick"))
+                    Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("crypto"))
                     HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
+                Else
+                    If Not (Request.Params("linkclick") Is Nothing) Then
+                        Dim objSecurity As New DotNetZoom.PortalSecurity()
+                        Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("linkclick"))
+                        context.Items.Add("linkclick", Request.Params("linkclick"))
+                        HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
+                    End If
                 End If
 
                 ' get tabId from querystring
@@ -349,10 +462,17 @@ Namespace DotNetZoom
                     If Request.Params("tabid") <> "" Then
                         If IsNumeric(Request.Params("tabid")) Then
                             tabId = Int32.Parse(Request.Params("tabid"))
-                       Else
+                        Else
                             Response.End()
                         End If
-                   End If
+                    End If
+                End If
+
+                ' check params
+                If Not Request.Params("mid") Is Nothing Then
+                    If Not IsNumeric(Request.Params("mid")) Then
+                        Response.End()
+                    End If
                 End If
 
 
@@ -375,8 +495,8 @@ Namespace DotNetZoom
                 End If
 
                 ' tabId uniquely identifies a Portal
-               If PortalAlias Is Nothing Then
-                   If tabId <> 0 Then
+                If PortalAlias Is Nothing Then
+                    If tabId <> 0 Then
                         PortalAlias = PortalSettings.GetPortalByTab(tabId, DomainName)
                     End If
                 End If
@@ -400,7 +520,7 @@ Namespace DotNetZoom
                     If InStr(1, TempLanguageCode, ".") <> 0 Then
                         TempLanguageCode = Left(TempLanguageCode, InStrRev(TempLanguageCode, ".") - 1)
                     Else
-                       If Not Request.Params("L") Is Nothing Then
+                        If Not Request.Params("L") Is Nothing Then
                             TempLanguageCode = Request.Params("L")
                         Else
                             TempLanguageCode = ""
@@ -438,10 +558,10 @@ Namespace DotNetZoom
 
                     ' Put in fckeditor language
 
-                   If Not LanguageHash.ContainsKey("fckeditor_language") Then
+                    If Not LanguageHash.ContainsKey("fckeditor_language") Then
                         If InStr(1, "ar;bg;bs;ca;cs;da;de;el;en;en-au;en-uk;eo;es;et;eu;fa;fi;fo;fr;gl;he;hi;hr;hu;it;ja;ko;lt;lv;mn;ms;nl;no;pl;pt;pt-br;ro;ru;sk;sl;sr;sr-latn;sv;th;tr;uk;vi;zh;zh-cn;", TempLanguage & ";") Then
                             LanguageHash.Add("fckeditor_language", TempLanguage)
-                       Else
+                        Else
                             LanguageHash.Add("fckeditor_language", "auto")
                         End If
                     End If
@@ -499,40 +619,40 @@ Namespace DotNetZoom
 
                     If _settings Is Nothing Then
                         ' If this object has not been instantiated yet, we need to grab it
-                       _settings = New PortalSettings(tabId, PortalAlias, Request.ApplicationPath, TempLanguage)
-                       context.Cache.Insert(TempKey, _settings, CDp(PortalNumber, tabId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Normal, Nothing)
-                       ' See if the Portal Directory Exist  if not create it
+                        _settings = New PortalSettings(tabId, PortalAlias, Request.ApplicationPath, TempLanguage)
+                        context.Cache.Insert(TempKey, _settings, CDp(PortalNumber, tabId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Normal, Nothing)
+                        ' See if the Portal Directory Exist  if not create it
                         If Not System.IO.Directory.Exists(Request.MapPath(_settings.UploadDirectory)) Then
                             'Create the new directory and put in files
-                             Try
- 	                             System.IO.Directory.CreateDirectory(Request.MapPath(_settings.UploadDirectory))
-                                 Dim fileEntries As String() = System.IO.Directory.GetFiles(GetAbsoluteServerPath(Request) + "templates\base\")
-                                 Dim TempFileName As String
-                                 Dim strFileName As String
-                                 For Each strFileName In fileEntries
-                                     If InStr(1, strFileName.ToLower, "template.") = 0 Then
-                                         TempFileName = strFileName.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory))
-                                         System.IO.File.Copy(strFileName, TempFileName)
-                                     End If
-                                 Next strFileName
-                                 Dim StrFolder As String
-                                 For Each StrFolder In System.IO.Directory.GetDirectories(GetAbsoluteServerPath(Request) + "templates\base\")
-                                     CopyFileRecursively(StrFolder, StrFolder.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory)))
-                                 Next
-                             Catch
+                            Try
+                                System.IO.Directory.CreateDirectory(Request.MapPath(_settings.UploadDirectory))
+                                Dim fileEntries As String() = System.IO.Directory.GetFiles(GetAbsoluteServerPath(Request) + "templates\base\")
+                                Dim TempFileName As String
+                                Dim strFileName As String
+                                For Each strFileName In fileEntries
+                                    If InStr(1, strFileName.ToLower, "template.") = 0 Then
+                                        TempFileName = strFileName.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory))
+                                        System.IO.File.Copy(strFileName, TempFileName)
+                                    End If
+                                Next strFileName
+                                Dim StrFolder As String
+                                For Each StrFolder In System.IO.Directory.GetDirectories(GetAbsoluteServerPath(Request) + "templates\base\")
+                                    CopyFileRecursively(StrFolder, StrFolder.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory)))
+                                Next
+                            Catch
                                 ClearHostCache()
-            					 SendHttpException("403", "Forbidden", Request, Request.MapPath(_settings.UploadDirectory))
-                             End Try
-                         End If
+                                SendHttpException("403", "Forbidden", Request, Request.MapPath(_settings.UploadDirectory))
+                            End Try
+                        End If
 
                     End If
-                   context.Items.Add("PortalSettings", _settings)
+                    context.Items.Add("PortalSettings", _settings)
                 Else
                     ' alias does not exist in database
-            		 SendHttpException("404", "Not Found", Request)
+                    SendHttpException("404", "Not Found", Request)
 
                 End If ' End PortalNumber <> -1 
-           End If
+            End If
         End Sub
 
 
@@ -663,24 +783,17 @@ Namespace DotNetZoom
         End Sub
 
         Sub Application_End(ByVal Sender As Object, ByVal E As EventArgs)
-            Try
-                Dim objStream As StreamWriter
-                objStream = File.AppendText(Application("log"))
-                objStream.WriteLine("Application End : " + DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss"))
-                objStream.Close()
-            Catch
-            End Try
-
         End Sub
 
         Sub Application_Start(ByVal Sender As Object, ByVal E As EventArgs)
-            Application("log") = Server.MapPath("/Startup.log")
-            Application("throttle") = ConfigurationSettings.AppSettings("throttle")
-            Application("cryptokey") = ConfigurationSettings.AppSettings("cryptokey")
+            Application("SetContext") = WebConfigurationManager.AppSettings("SetContext")
+            Application("throttle") = WebConfigurationManager.AppSettings("throttle")
+            Application("cryptokey") = WebConfigurationManager.AppSettings("cryptokey")
             If Application("cryptokey") Is Nothing Then
                 Application("cryptokey") = Membership.GeneratePassword(16, 7)
+                WriteSetting("web", "cryptokey", Application("cryptokey"))
             End If
-            If ConfigurationSettings.AppSettings("ConnectionString") = "SERVER=sqlexpress;Database=dotnetzoom;User ID=sa;Password=password;Trusted_Connection=False;" Then
+            If WebConfigurationManager.AppSettings("ConnectionString") = "SERVER=sqlexpress;Database=dotnetzoom;User ID=sa;Password=password;Trusted_Connection=False;" Then
                 ' Site was not set up yet send Startup
                 ' Check if can write to disk
                 Application("dostartup") = "ok"
@@ -688,25 +801,17 @@ Namespace DotNetZoom
 
                 Try
                     Dim objStream As StreamWriter
-                    objStream = File.AppendText(Server.MapPath("/Startup.log"))
+                    objStream = File.AppendText(Server.MapPath("~/Startup.log"))
                     objStream.WriteLine("Application Init : " + DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss"))
                     objStream.Close()
                 Catch
                     ' does not have permission to create file on root
-                    Application("error403") = Server.MapPath("") & "<br>"
+                    Application("error403") = Server.MapPath("~/") & "<br>"
                 End Try
 
 
             Else
                 Application("DoValidation") = "Startup"
-                Try
-                    Dim objStream As StreamWriter
-                    objStream = File.AppendText(Server.MapPath("/Startup.log"))
-                    objStream.WriteLine("Application Start : " + DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss"))
-                    objStream.Close()
-                Catch
-                End Try
-
             End If
             'Clear all Cache on StartUp just in Case
             For Each de As DictionaryEntry In HttpContext.Current.Cache
@@ -752,7 +857,7 @@ Namespace DotNetZoom
             Return System.Web.HttpContext.Current.Server.MapPath(InFile & ".config")
         End Function
 
-        Private Function CreateDataBase(ByVal ConnectionString As String, ByVal DataBase As String)
+        Private Function CreateDataBase(ByVal ConnectionString As String, ByVal DataBase As String) As Boolean
             ' Create Instance of Connection and Command Object
             Dim myConnection As New SqlConnection(ConnectionString)
             ' check if Can Connect to database
@@ -806,19 +911,18 @@ Namespace DotNetZoom
         End Function
 
         Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
-
         End Sub
 
         Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)
         End Sub
 
         Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
+            Dim LastError As Exception
+            LastError = Server.GetLastError.GetBaseException()
 
             If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                Dim LastError As Exception
-                Dim ErrorMessage As String
+                Dim ErrorMessage As String = String.Empty
 
-                LastError = Server.GetLastError()
 
                 If Not LastError Is Nothing Then
                     ErrorMessage += (LastError.Message + vbCrLf)
@@ -826,21 +930,22 @@ Namespace DotNetZoom
                     ErrorMessage += (LastError.Source + vbCrLf)
                 End If
 
-                ErrorMessage += BuildErrorMessage(Request)
+                ' ErrorMessage += BuildErrorMessage(Request)
 
                 SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", ErrorMessage.ToString, "")
-                If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
-                    ' read script file for version
-                    Dim objStreamReader As StreamReader
-                    objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
-                    Dim strHTML As String = objStreamReader.ReadToEnd
-                    objStreamReader.Close()
-                    Response.Write(strHTML)
-                End If
-                Server.ClearError()
-                Response.End()
             End If
 
+            If File.Exists(Server.MapPath("/erreur" + GetLanguage("N") + ".htm")) Then
+                ' read script file for version
+                Dim objStreamReader As StreamReader
+                objStreamReader = File.OpenText(Server.MapPath("/erreur" + GetLanguage("N") + ".htm"))
+                Dim strHTML As String = objStreamReader.ReadToEnd
+                objStreamReader.Close()
+                Response.Write(strHTML)
+            End If
+            LogErrorMessage(Request, LastError)
+            Server.ClearError()
+            Response.End()
         End Sub
 
 

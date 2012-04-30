@@ -682,7 +682,7 @@ Namespace DotNetZoom
             Dim LongResult As SqlDataReader = objAdmin.GetlonglanguageSettings(Session("language"))
 
             Dim objStream As StreamWriter
-            objStream = File.CreateText(Server.MapPath("Database\language_" & Session("language") & ".sql"))
+            objStream = File.CreateText(Server.MapPath(glbPath + "Database/language_" & Session("language") & ".sql"))
 
 
             Dim TempLanguageCode As String = Session("language")
@@ -788,7 +788,7 @@ Namespace DotNetZoom
 
 
             Dim NewobjStream As StreamWriter
-            NewobjStream = File.CreateText(Server.MapPath("Database\new_" & Session("language") & ".sql"))
+            NewobjStream = File.CreateText(Server.MapPath(glbPath + "Database/new_" & Session("language") & ".sql"))
 
 
 
@@ -876,7 +876,7 @@ Namespace DotNetZoom
             objStream.WriteLine("GO")
             objStream.WriteLine("SET ANSI_NULLS ON")
             objStream.Close()
-            lblMessage.Text = GetLanguage("ScriptGenerated") & " " & Server.MapPath("Database\language_" & Session("language") & ".sql")
+            lblMessage.Text = GetLanguage("ScriptGenerated") & " " & Server.MapPath(glbPath + "Database/language_" & Session("language") & ".sql")
             Try
 
             Catch

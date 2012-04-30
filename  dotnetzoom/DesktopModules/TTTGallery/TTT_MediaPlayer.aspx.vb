@@ -51,46 +51,44 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             GalleryConfig.SetSkinCSS(Page)
-
-            Dim ModuleID As Integer = Int32.Parse(HttpContext.Current.Request("mid"))
-
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Dim _ModuleSettings As New ModuleSettings
-            Dim isinrole As Boolean = False
-            For Each _ModuleSettings In _portalSettings.ActiveTab.Modules
-                If _ModuleSettings.ModuleId = ModuleID Then
-                    If PortalSecurity.IsInRoles(CStr(IIf(_ModuleSettings.AuthorizedViewRoles <> "", _ModuleSettings.AuthorizedViewRoles, _portalSettings.ActiveTab.AuthorizedRoles))) Then
-                        isinrole = True
-                    End If
-                End If
-            Next
-            If Not isinrole Then
-                RegisterBADip(Request.UserHostAddress)
-                Dim Admin As New AdminDB()
-                ErrorMessage.Visible = True
-                ErrorMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "AccessDeniedInfo"), Page)
-            Else
+            If Not Request.Params("mid") Is Nothing Then
+                If IsNumeric(Request.Params("mid")) Then
+                    Dim ModuleID As Integer
+                    ModuleID = Int32.Parse(HttpContext.Current.Request("mid"))
 
 
-
-                Zconfig = GalleryConfig.GetGalleryConfig(Int32.Parse(Request.Params("mid")))
-
-
-
- 
-                If Not Request.Params("media") Is Nothing Then
-                    lblTitle.Text = Request.Params("media").ToString
-                    Dim StrExtension As String = lblTitle.Text
-                    If InStr(1, lblTitle.Text, ".") <> 0 Then
-                        StrExtension = Mid(lblTitle.Text, InStrRev(lblTitle.Text, ".")).ToLower
-                        Select Case StrExtension.ToLower()
-                            Case ".flv", ".mp4"
-                                flv.Visible = True
-                            Case ".wmv"
-                                wmv.Visible = True
-                            Case Else
-                                mpg.Visible = True
-                        End Select
+                    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                    Dim _ModuleSettings As New ModuleSettings
+                    Dim isinrole As Boolean = False
+                    For Each _ModuleSettings In _portalSettings.ActiveTab.Modules
+                        If _ModuleSettings.ModuleId = ModuleID Then
+                            If PortalSecurity.IsInRoles(CStr(IIf(_ModuleSettings.AuthorizedViewRoles <> "", _ModuleSettings.AuthorizedViewRoles, _portalSettings.ActiveTab.AuthorizedRoles))) Then
+                                isinrole = True
+                            End If
+                        End If
+                    Next
+                    If Not isinrole Then
+                        RegisterBADip(Request.UserHostAddress)
+                        Dim Admin As New AdminDB()
+                        ErrorMessage.Visible = True
+                        ErrorMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "AccessDeniedInfo"), Page)
+                    Else
+                        Zconfig = GalleryConfig.GetGalleryConfig(ModuleID)
+                        If Not Request.Params("media") Is Nothing Then
+                            lblTitle.Text = Request.Params("media").ToString
+                            Dim StrExtension As String = lblTitle.Text
+                            If InStr(1, lblTitle.Text, ".") <> 0 Then
+                                StrExtension = Mid(lblTitle.Text, InStrRev(lblTitle.Text, ".")).ToLower
+                                Select Case StrExtension.ToLower()
+                                    Case ".flv", ".mp4"
+                                        flv.Visible = True
+                                    Case ".wmv"
+                                        wmv.Visible = True
+                                    Case Else
+                                        mpg.Visible = True
+                                End Select
+                            End If
+                        End If
                     End If
                 End If
             End If
@@ -98,21 +96,7 @@ Namespace DotNetZoom
         End Sub
 
         Public Function MovieURL() As String
-            Try
-			If InStr(1, Request.Params("path"), "controls/img.aspx?") > 0 Then
-            Dim objSecurity As New DotNetZoom.PortalSecurity()
-			Dim dnPath As String = Mid(Request.Params("path"), InStrRev(Request.Params("path"), "?") + 1)
-			ErrorMessage.Text = dnPath + "<br>"
-			ErrorMessage.Text = ErrorMessage.Text + objSecurity.Decrypt(Application("cryptokey").ToString(), dnPath)
-			Return objSecurity.Decrypt(Application("cryptokey").ToString(), dnPath)
-			else
-			Return Request.Params("path")
-			end if
-			Catch Exc As System.Exception
-                ' ErrorMessage.Text = Exc.Message
-                ' ErrorMessage.Visible = True
-                Return ""
-            End Try
+            Return Request.Params("path")
         End Function
 
     End Class

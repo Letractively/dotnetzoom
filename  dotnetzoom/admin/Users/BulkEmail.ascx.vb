@@ -39,7 +39,7 @@ Namespace DotNetZoom
 		Protected WithEvents TableSendTo As System.Web.UI.HtmlControls.HtmlTable
 		Protected WithEvents TableMessage As System.Web.UI.HtmlControls.HtmlTable
 		Protected WithEvents SendTo As System.Web.UI.WebControls.Literal
-		
+        Protected WithEvents UploadReturn As System.Web.UI.WebControls.ImageButton
         Protected WithEvents pnlBasicTextBox As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents pnlRichTextBox As System.Web.UI.WebControls.PlaceHolder
 		Protected WithEvents FCKeditor1 As DotNetZoom.FCKEditor
@@ -92,12 +92,11 @@ Namespace DotNetZoom
                 cboRoles.DataBind()
                 dr.Close()
                 cboRoles.Items.Insert(0, New ListItem(GetLanguage("list_none"), "-1"))
-                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
 
-                Dim FileList As ArrayList
-                FileList = GetFileList(_portalSettings.PortalId)
-                cboAttachment.DataSource = FileList
-                cboAttachment.DataBind()
+                'Put user code to initialize upload here
+
+                SetUpUpload()
+
                 SetFckEditor()
 
 
@@ -114,6 +113,31 @@ Namespace DotNetZoom
                     pnlRichTextBox.Visible = True
                 End If
             End If
+        End Sub
+
+        Private Sub SetUpUpload()
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            UploadReturn.Visible = True
+            UploadReturn.Style.Add("display", "none")
+            cmdUpload.NavigateUrl = "#"
+            SetUpModuleUpload(Request.MapPath(_portalSettings.UploadDirectory), PortalSettings.GetHostSettings("FileExtensions").ToString(), False)
+            Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
+            Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
+            retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+            retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
+            retScript &= "--></script>"
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), UploadReturn.ClientID)
+            cmdUpload.Attributes.Add("onclick", click)
+            Dim FileList As ArrayList
+            FileList = GetFileList(_portalSettings.PortalId)
+            cboAttachment.DataSource = FileList
+            cboAttachment.DataBind()
+        End Sub
+
+        Private Sub UploadReturn_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadReturn.Click
+            SetUpUpload()
         End Sub
 
 		Private Sub SetFckEditor()

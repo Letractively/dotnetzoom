@@ -52,7 +52,6 @@ Namespace DotNetZoom
         '*******************************************************
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-		
             Title1.EditText = GetLanguage("upload")
             Title1.OptionsText = GetLanguage("F_cmdSynchronize") + "<br>" + GetLanguage("F_Update")
             Title1.EditIMG = "<img  src=""" & glbPath & "admin/advfileManager/images/upload.gif"" alt=""*"" style=""border-width:0px;"">"

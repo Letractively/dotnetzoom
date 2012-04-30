@@ -266,6 +266,8 @@
 <asp:DropDownList id="cboUpgrade" CssClass="NormalTextBox" Runat="server"></asp:DropDownList>
 &nbsp; 
 <asp:LinkButton id="cmdUpgrade" CssClass="CommandButton" Runat="server"></asp:LinkButton>
+&nbsp; 
+<asp:LinkButton id="cmdDeleteLog" cssclass="OtherTabs" Runat="server"></asp:LinkButton>
 <br>
 <br>
 <asp:Label id="lblUpgrade" runat="server" cssclass="Normal"></asp:Label>

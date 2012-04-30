@@ -21,6 +21,7 @@ Imports DotNetZoom
 Imports DotNetZoom.TTTUtils
 Imports System.Text
 Imports ICSharpCode.SharpZipLib.Zip
+Imports ICSharpCode.SharpZipLib.Core
 
 Namespace DotNetZoom
     Public Class TTT_GalleryEditAlbum
@@ -81,15 +82,11 @@ Namespace DotNetZoom
         Protected WithEvents pnlAddFolder As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents pnlAdd As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents pnlAdd1 As System.Web.UI.WebControls.PlaceHolder
-        Protected WithEvents lblfileTitle As System.Web.UI.WebControls.Label
-        Protected WithEvents lblFileType As System.Web.UI.WebControls.Label
         Protected WithEvents txtFileDescription As System.Web.UI.WebControls.TextBox
         Protected WithEvents ddCategories3 As System.Web.UI.WebControls.DropDownList
-        Protected WithEvents btnAdd As System.Web.UI.WebControls.ImageButton
         Protected WithEvents lstFiles As System.Web.UI.WebControls.ListBox
         Protected WithEvents btnFileClose As System.Web.UI.WebControls.Button
         Protected WithEvents pnlAddFile As System.Web.UI.WebControls.PlaceHolder
-        Protected WithEvents htmlUploadFile As System.Web.UI.HtmlControls.HtmlInputFile
         Protected WithEvents UploadFile As System.Web.UI.HtmlControls.HtmlInputFile
 
         Protected WithEvents txtOwnerID As System.Web.UI.WebControls.TextBox
@@ -234,15 +231,22 @@ Namespace DotNetZoom
             EditMapOptions.ToolTip = GetLanguage("Gal_SetUpMap")
 			CancelButton.ToolTip = GetLanguage("Gal_CancelTip")
 			UpdateButton.ToolTip = GetLanguage("Gal_UpdateTip")
-			btnAdd.ToolTip = GetLanguage("Gal_btnAddTip")
-            btnAdd.AlternateText = GetLanguage("Gal_btnAddAlt")
             txtNewAlbum.ToolTip = GetLanguage("Gal_Name_Valid")
             txtNewAlbumValidator.ErrorMessage = GetLanguage("Gal_Name_Not_Valid")
+
 			grdUpload.Columns(1).HeaderText = GetLanguage("Gal_Name")
 			grdUpload.Columns(2).HeaderText = GetLanguage("Gal_TitleI")
 			grdUpload.Columns(3).HeaderText = GetLanguage("Gal_Desc")
-			grdUpload.Columns(4).HeaderText = GetLanguage("Gal_Cat")
-			grdDir.Columns(1).HeaderText = GetLanguage("Gal_Album")
+            grdUpload.Columns(4).HeaderText = GetLanguage("Gal_Cat")
+            grdUpload.Columns(5).HeaderText = "<input type=""image"" name=""UploadImages" + grdUpload.ClientID + """ id=""UploadImages" + grdUpload.ClientID + """ title=""" + GetLanguage("upload") + """ src=""/images/save.gif"" onclick=""" + Page.ClientScript.GetPostBackEventReference(btnFileUpload, String.Empty) & ";toggleBox('UploadImages" + grdUpload.ClientID + "',0);toggleBox('rotation1',1);"" style=""height:20px;width:20px;border-width:0px"">"
+            grdUpload.Columns(6).HeaderText = "<img id=""rotation1"" src=""/images/rotation.gif"" style=""visibility:hidden; left: -27px; position: relative"" alt=""*"" width=""20"" height=""20"">"
+            'btnAdd.Attributes.Add("onclick", "toggleBox('" + btnAdd.ClientID + "',0);toggleBox('rotation',1)")
+            '<img id="rotation" src="/images/rotation.gif" style="visibility:hidden; left: -20px; position: relative" alt="*" width="32" height="32">
+            'btnAdd.ToolTip = GetLanguage("Gal_btnAddTip")
+            'btnAdd.AlternateText = GetLanguage("Gal_btnAddAlt")
+
+
+            grdDir.Columns(1).HeaderText = GetLanguage("Gal_Album")
 			grdDir.Columns(2).HeaderText = GetLanguage("Gal_Prop")
 			grdDir.Columns(3).HeaderText = GetLanguage("Gal_TitleI")
 			grdDir.Columns(4).HeaderText = GetLanguage("Gal_Cat")
@@ -268,7 +272,6 @@ Namespace DotNetZoom
             '     _path = Request.Params("path")
             ' End If
 
-            btnAdd.Attributes.Add("onclick", "toggleBox('" + btnAdd.ClientID + "',0);toggleBox('rotation',1)")
 
             Zconfig = GalleryConfig.GetGalleryConfig(ZmoduleID)
             Zrequest = New GalleryRequest(ZmoduleID)
@@ -286,7 +289,6 @@ Namespace DotNetZoom
 
             With Zfolder
                 lblAlbumTitle.Text = Replace(GetLanguage("Gal_AddF"), "{folderURL}", Zfolder.URL & "/")
-                lblfileTitle.Text = Replace(GetLanguage("Gal_AddFF"), "{folderURL}", Zfolder.URL & "/")
             End With
 
             Authorize()
@@ -370,12 +372,8 @@ Namespace DotNetZoom
                         PopulateMapOptions()
                     End If
                 End If
-
-
-
-
+                MakeUploadCollection()
             End If
-
         End Sub
 
         Private Sub CheckPopulate()
@@ -394,8 +392,39 @@ Namespace DotNetZoom
                    OrElse (PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True) _
                    OrElse (Zconfig.OwnerID = ZuserID) OrElse Zfolder.OwnerID = ZuserID Then
                     ZGalleryAuthority = True
+                    'set up Upload Panel
+                    Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
+                    Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
+                    Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
+                    retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+                    retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(ClearCache, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
+                    retScript &= "--></script>"
+                    Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+
+                    Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)), UploadImage2.ClientID)
+                    UploadImage2.Attributes.Add("onclick", click)
+
+
+                    Dim _UploadInfo As New UploadInfo
+                    _UploadInfo.PortalID = _portalSettings.PortalId
+                    _UploadInfo.UserID = (New Utility).GetUserID()
+                    _UploadInfo.ModuleID = ModuleId
+                    _UploadInfo.MaxFile = 15
+                    _UploadInfo.MultiFile = True
+                    _UploadInfo.IsGall = True
+                    _UploadInfo.UploadDirectory = Zrequest.Folder.Path + "\_upload\"
+                    Dim TempExt As String = Replace(Zconfig.FileExtensions, ".", "") + ";" + Replace(Zconfig.MovieExtensions, ".", "") + ";zip"
+                    TempExt = Replace(TempExt, ";", ",")
+                    _UploadInfo.Extension = TempExt
+                    _UploadInfo.Name = Nothing
+                    _UploadInfo.Comment = Nothing
+                    _UploadInfo.Type = Nothing
+                    _UploadInfo.Unzip = True
+                    _UploadInfo.CUnzip = False
+                    Session("UploadInfo") = _UploadInfo
                 Else
                     ZGalleryAuthority = False
+                    Session("UploadInfo") = Nothing
                 End If
             End If
 
@@ -479,7 +508,7 @@ Namespace DotNetZoom
                 Dim items() As String
                 Dim item As String
                 Dim slImage As FolderDetail
-                items = System.IO.Directory.GetFiles(Request.MapPath("/images/gps/"))
+                items = System.IO.Directory.GetFiles(Request.MapPath(glbPath + "images/gps/"))
                 Dim slImages As New ArrayList()
                 Dim strExtension As String
 
@@ -603,9 +632,9 @@ Namespace DotNetZoom
 
         Private Sub BuildStringInfo()
 
-            lblFileType.Text = Replace(GetLanguage("Gal_FileInfo"), "{fileext}", Replace(Zrequest.GalleryConfig.FileExtensions, ";", " "))
-            lblFileType.Text = Replace(lblFileType.Text, "{movieext}", Replace(Zrequest.GalleryConfig.MovieExtensions, ";", " "))
-            lblFileType.Text = Replace(lblFileType.Text, "{MaxFileSize}", Zrequest.GalleryConfig.MaxFileSize.ToString)
+            'lblFileType.Text = Replace(GetLanguage("Gal_FileInfo"), "{fileext}", Replace(Zrequest.GalleryConfig.FileExtensions, ";", " "))
+            'lblFileType.Text = Replace(lblFileType.Text, "{movieext}", Replace(Zrequest.GalleryConfig.MovieExtensions, ";", " "))
+            'lblFileType.Text = Replace(lblFileType.Text, "{MaxFileSize}", Zrequest.GalleryConfig.MaxFileSize.ToString)
             strFolderInfo = Replace(GetLanguage("Gal_FileInfo1"), "{FileItemsCount}", Zrequest.FileItems.Count.ToString)
             strFolderInfo = Replace(strFolderInfo, "{SubAlbumItems}", Zrequest.SubAlbumItems.Count.ToString)
 
@@ -1165,104 +1194,31 @@ Namespace DotNetZoom
         End Function
 
 
-        Private Function Unzip(ByVal ZipEntry As ZipEntry, ByVal InputStream As ZipInputStream, ByVal TempDir As String) As String
-            Dim strFileName As String
-            Dim strFileNamePath As String
-
-            Try
-                strFileName = Path.GetFileName(ZipEntry.Name)
-
-                If strFileName <> "" Then
-                    strFileNamePath = Path.Combine(TempDir, strFileName)
-
-                    If File.Exists(strFileNamePath) Then
-                        ' _SpaceUsed -= New FileInfo(strFileNamePath).Length
-                        File.Delete(strFileNamePath)
-                    End If
-
-                    Dim objFileStream As FileStream = File.Create(strFileNamePath)
-                    Dim intSize As Integer = 2048
-                    Dim arrData(2048) As Byte
-
-                    intSize = InputStream.Read(arrData, 0, arrData.Length)
-                    While intSize > 0
-                        objFileStream.Write(arrData, 0, intSize)
-                        intSize = InputStream.Read(arrData, 0, arrData.Length)
-                    End While
-
-                    objFileStream.Close()
-                    ' _SpaceUsed += New FileInfo(strFileNamePath).Length
-                    Return strFileName
-
-                End If
-
-            Catch Exc As System.Exception
-                lblFileInfo.Text += "<br>" + Exc.Message
-            End Try
-
-        End Function
 
 
-        Private Sub UnzipUploadedFile(FileToUnzip As String, TempDir As String)
-            Dim objZipInputStream As New ZipInputStream(File.OpenRead(FileToUnzip))
-            Dim objZipEntry As ZipEntry
-            Dim ZipKeepSource As String = ""
-            objZipEntry = objZipInputStream.GetNextEntry
-            ZipKeepSource = BuildPath(New String(1) {Zrequest.Folder.Path, Zconfig.SourceFolder}, "\", False, False)
+        Private Sub MakeUploadCollection()
+            ' Put the file in collection
+            If Directory.Exists(Zrequest.Folder.Path + "\_upload\") Then
 
-            Try
-                If Not Directory.Exists(ZipKeepSource) Then
-                    Directory.CreateDirectory(ZipKeepSource)
-                End If
-            Catch Exc As System.Exception
-                lblFileInfo.Text += "<br>" + Exc.Message
-            End Try
+                Dim items() As String
+                Dim item As String
+                Dim name As String
 
-
-
-            While Not objZipEntry Is Nothing
-
-                Try 'Save unzip file
-                    Dim unzipFile As String = Unzip(objZipEntry, objZipInputStream, TempDir).ToLower()
-
-                    Dim strExtension As String = ""
-                    Dim AlbumFilePath As String = ""
-                    Dim UnzipFilePath As String = Path.Combine(TempDir, unzipFile)
-                    If InStr(1, unzipFile, ".") > 0 Then
-                        strExtension = Path.GetExtension(unzipFile)
-                    End If
-
-                    'Check Valid Type here
-
-
-                    If Zconfig.IsValidImageType(strExtension) Then
-                        AlbumFilePath = Path.Combine(ZipKeepSource, unzipFile)
-                    ElseIf Zconfig.IsValidMovieType(strExtension) _
-                    OrElse Zconfig.IsValidFlashType(strExtension) Then
-                        AlbumFilePath = Path.Combine(Zrequest.Folder.Path, unzipFile)
-                    End If
-                    If AlbumFilePath <> "" And Not File.Exists(AlbumFilePath) Then
-                        File.Copy(UnzipFilePath, AlbumFilePath)
-                    End If
-                    'Delete unzip file
-                    Try
-                        File.Delete(UnzipFilePath)
-                    Catch Exc As System.Exception
-                        lblFileInfo.Text += "<br>" + Exc.Message
-
-                    End Try
-
-                    ' Put the file in collection
+                items = System.IO.Directory.GetFiles(Zrequest.Folder.Path + "\_upload\")
+                GalleryUploadCollection.ResetList(Zfolder, ZmoduleID)
+                ZuploadCollection = GalleryUploadCollection.GetList(Zfolder, ZmoduleID)
+                For Each item In items
+                    name = IO.Path.GetFileName(item)
                     Dim UploadFile As New GalleryUploadFile
-                    Dim TempUnzipFile As New System.IO.FileInfo(AlbumFilePath)
+                    Dim TempUploadFile As New System.IO.FileInfo(item)
 
                     With UploadFile
-                        .Name = Path.GetFileName(AlbumFilePath.ToLower)
-                        .FileName = TempUnzipFile.FullName
-                        .uploadFilePath = TempUnzipFile.FullName
-                        .ContentType = TempUnzipFile.Extension
+                        .Name = Path.GetFileName(item)
+                        .FileName = TempUploadFile.FullName
+                        .uploadFilePath = TempUploadFile.FullName
+                        .ContentType = TempUploadFile.Extension
                         .WaterMark = txtWaterMark.Text
-                        .ContentLength = CInt(TempUnzipFile.Length)
+                        .ContentLength = CInt(TempUploadFile.Length)
                         .ModuleID = ZmoduleID
                         .Title = txtFileTitle.Text
                         .Description = txtFileDescription.Text
@@ -1273,124 +1229,38 @@ Namespace DotNetZoom
                     ' Check file valid size & type
                     Dim validationInfo As String = UploadFile.ValidationInfo(ZmoduleID)
                     If Len(validationInfo) > 0 Then
-                        lblFileInfo.Text += validationInfo
-                        Return
-                    End If
-
-                    'Check file exists
-                    If (Not ZuploadCollection.FileExists(UploadFile.Name)) Then
-                        Dim uploadPath As String
-                        ZuploadCollection.Add(UploadFile)
-                    Else
-                        lblFileInfo.Text += "<br>" + UploadFile.Name + " " + GetLanguage("Gal_FileOEN")
-
-                    End If
-
-                    ' end the file in collection
-
-
-
-                Catch Exc As System.Exception
-                    lblFileInfo.Text += "<br>" + Exc.Message
-                End Try
-
-                objZipEntry = objZipInputStream.GetNextEntry
-
-            End While
-
-            'Delete zip file
-            Try
-                File.Delete(FileToUnzip)
-            Catch Exc As System.Exception
-                lblFileInfo.Text += "<br>" + Exc.Message
-            End Try
-
-        End Sub
-
-
-
-
-
-
-        Private Sub btnAdd_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles btnAdd.Click
-
-
-
-            If CheckQuota() Then
-                'Retreive file upload collection
-                SaveInfoinCollection()
-                'UnZip Now
-                ZuploadCollection = GalleryUploadCollection.GetList(Zfolder, ZmoduleID)
-                Dim UploadFile As New GalleryUploadFile
-
-                With UploadFile
-                    .Name = Path.GetFileName(htmlUploadFile.PostedFile.FileName.ToLower)
-                    .FileName = htmlUploadFile.PostedFile.FileName.ToLower
-                    .ContentType = htmlUploadFile.PostedFile.ContentType
-                    .ContentLength = htmlUploadFile.PostedFile.ContentLength
-                    .ModuleID = ZmoduleID
-                    .Title = txtFileTitle.Text
-                    .Description = txtFileDescription.Text
-                    .Categories = ddCategories3.SelectedItem.Value
-                    .OwnerID = ZuserID
-                    .WaterMark = txtWaterMark.Text
-                End With
-
-                txtFileTitle.Text = ""
-                txtFileDescription.Text = ""
-                ddCategories.ClearSelection()
-
-                ' Check file valid size & type
-                Dim validationInfo As String = UploadFile.ValidationInfo(ZmoduleID)
-                If Len(validationInfo) > 0 Then
-                    lblFileInfo.Text = validationInfo
-                    Return
-                End If
-                Dim uploadPath As String
-                'Check file exists
-                If (Not ZuploadCollection.FileExists(UploadFile.Name)) Then
-
-
- 
-
-                    If UploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
-                        uploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, Zrequest.GalleryConfig.TempFolder}, "\", False, False)
+                        File.Delete(item)
+                        lblFileInfo.Text += validationInfo + "<br>"
                     Else
                         ZuploadCollection.Add(UploadFile)
-                        If Not Zrequest.GalleryConfig.IsFixedSize Or UploadFile.Type = IGalleryObjectInfo.ItemType.Flash Or UploadFile.Type = IGalleryObjectInfo.ItemType.Movie Then
-                            uploadPath = Zrequest.Folder.Path
-                        Else
-                            uploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, Zrequest.GalleryConfig.SourceFolder}, "\", False, False)
-                        End If
                     End If
-                    UploadFile.uploadFilePath = Path.Combine(uploadPath, UploadFile.Name)
-
-                    Try
-                        If Not Directory.Exists(uploadPath) Then
-                            Directory.CreateDirectory(uploadPath)
-                        End If
-                        htmlUploadFile.PostedFile.SaveAs(UploadFile.uploadFilePath)
-                        ' Add file size to Quota
-                        UpdateFolderSize(Zrequest.GalleryConfig, htmlUploadFile.PostedFile.ContentLength)
-                    Catch Exc As System.Exception
-                        lblFileInfo.Text += "<br>" + Exc.Message
-                        Return
-                    End Try
-                Else
-                    lblFileInfo.Text = GetLanguage("Gal_FileOEN")
-                    Return
+                Next
+                ' end the file in collection
+                If ZuploadCollection.Count > 0 Then
+                    UploadImage2.Visible = False
+                    ClearCache.Visible = False
+                    SubAlbum.Visible = False
+                    pnlAddFile.Visible = True
+                    pnlAdd1.Visible = False
+                    btnFileUpload.Visible = True
+                    btnFileUpload.Attributes.Add("onclick", "toggleBox('" + btnFileUpload.ClientID + "',0);toggleBox('rotation1',1)")
+                    pnlAddFolder.Visible = False
+                    pnlAlbumDetails.Visible = False
+                    pnlMapOption.Visible = False
+                    pnlContentDir.Visible = False
+                    pnlContentFile.Visible = False
+                    pnlAdd.Visible = False
+                    grdUpload.DataSource = ZuploadCollection
+                    grdUpload.DataBind()
                 End If
-
-                If UploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
-                    UnzipUploadedFile(UploadFile.uploadFilePath, uploadPath)
-                End If
-                ' Reset value & bind to grid
-                grdUpload.DataSource = ZuploadCollection
-                grdUpload.DataBind()
-                btnFileUpload.Visible = True
-                btnFileUpload.Attributes.Add("onclick", "toggleBox('" + btnFileUpload.ClientID + "',0);toggleBox('rotation1',1)")
             End If
+
+
         End Sub
+
+
+
+   
 
         Private Sub grdUpload_ItemCommand(ByVal source As Object, ByVal e As System.Web.UI.WebControls.DataGridCommandEventArgs) Handles grdUpload.ItemCommand
             SaveInfoinCollection()
@@ -1422,15 +1292,21 @@ Namespace DotNetZoom
                     grdUpload.DataBind()
                 Case "save"
                     Me.lblFileInfo.Text = ""
-                    SaveInfoinCollection()
+
                     uploadFile = CType(ZuploadCollection.Item(itemIndex), GalleryUploadFile)
                     ' Update Directory Size
                     UpdateFolderSize(Zrequest.GalleryConfig, ZuploadCollection.Upload(uploadFile.uploadFilePath))
                     If Len(ZuploadCollection.ErrMessage) > 0 Then
                         lblFileInfo.Text = ZuploadCollection.ErrMessage
                     Else
-                        grdUpload.DataSource = ZuploadCollection
-                        grdUpload.DataBind()
+                        If ZuploadCollection.Count = 0 Then
+                            ClearModuleCache(ZmoduleID)
+                            Session("UrlReferrer") = Nothing
+                            Response.Redirect(CType(ViewState("UrlReferrer"), String))
+                        Else
+                            grdUpload.DataSource = ZuploadCollection
+                            grdUpload.DataBind()
+                        End If
                     End If
 
 
@@ -1444,10 +1320,25 @@ Namespace DotNetZoom
                 ' Dim item As DataGridItem
                 Dim I As Integer
                 For I = grdUpload.Items.Count To 1 Step -1
-                    Dim uploadFile As GalleryUploadFile
+                    Dim uploadFile As New GalleryUploadFile
                     uploadFile = CType(ZuploadCollection.Item(I - 1), GalleryUploadFile)
                     uploadFile.Description = GetTextBox(grdUpload.Items(I - 1), "Description").Text
                     uploadFile.Title = GetTextBox(grdUpload.Items(I - 1), "Title").Text
+                    If uploadFile.WaterMark = String.Empty Then
+                        uploadFile.WaterMark = txtWaterMark.Text
+                    End If
+                    If uploadFile.Categories = String.Empty Then
+                        uploadFile.Categories = ddCategories3.SelectedItem.Value
+                    End If
+                    If uploadFile.Description = String.Empty Then
+                        uploadFile.Description = txtFileDescription.Text
+                    End If
+                    If uploadFile.Title = String.Empty Then
+                        uploadFile.Title = txtFileTitle.Text
+                    End If
+                    'ZuploadCollection.Item(I - 1) = uploadFile
+                    'ZuploadCollection.RemoveAt(I - 1)
+                    'ZuploadCollection.Add(uploadFile)
                 Next
             End If
         End Sub
@@ -1474,20 +1365,8 @@ Namespace DotNetZoom
                 Zrequest.Folder.Reset()
                 GalleryConfig.ResetGalleryConfig(ZmoduleID)
                 ClearModuleCache(ZmoduleID)
-                If Not Request.Params("action") Is Nothing Then
-                    Session("UrlReferrer") = Nothing
-                    Response.Redirect(CType(ViewState("UrlReferrer"), String))
-                Else
-                    grdUpload.DataBind() ' Clear old file list
-                    btnFileUpload.Visible = False
-                    Zconfig = New GalleryConfig(ZmoduleID)
-                    Zrequest = New GalleryRequest(ZmoduleID)
-                    Zfolder = Zrequest.Folder
-
-                    CheckPopulate()
-                    BindData()
-                End If
-
+                Session("UrlReferrer") = Nothing
+                Response.Redirect(CType(ViewState("UrlReferrer"), String))
             End If
             UploadImage2.Visible = ZGalleryAuthority
             ClearCache.Visible = ZGalleryAuthority
@@ -1539,6 +1418,8 @@ Namespace DotNetZoom
 
 
         Private Sub UploadImage2_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadImage2.Click
+
+            'Set Up Upload Page
 
             lblInfo.Text = strFolderInfo
 
@@ -1787,6 +1668,12 @@ Namespace DotNetZoom
                 End If
             End If
 
+        End Sub
+
+        Private Sub PostBackEventHandle(ByVal sender As Object, ByVal e As Object) Handles ddCategories3.SelectedIndexChanged, txtFileTitle.TextChanged, txtFileDescription.TextChanged
+            SaveInfoinCollection()
+            grdUpload.DataSource = ZuploadCollection
+            grdUpload.DataBind()
         End Sub
 
         Private Sub ClearCache_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ClearCache.Click

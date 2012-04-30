@@ -42,6 +42,7 @@ Namespace DotNetZoom
         Protected WithEvents cboInternalLink As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cboInternalGPS As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cmdUpload As System.Web.UI.WebControls.HyperLink
+        Protected WithEvents UploadReturn As System.Web.UI.WebControls.ImageButton
         Protected WithEvents txtAlt As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtArtist As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtCopyright As System.Web.UI.WebControls.TextBox
@@ -95,26 +96,22 @@ Namespace DotNetZoom
             End If
 
             EnableControls()
-
+            SetUpUpload(Not Page.IsPostBack)
             If Page.IsPostBack = False Then
                 ' Store URL Referrer to return to portal
                 ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
 
-                ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
-                Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId, glbImageFileTypes)
-                cboInternal.DataSource = FileList
-                cboInternal.DataBind()
 
                 cboInternalLink.DataSource = GetPortalTabs(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), True, True)
                 cboInternalLink.DataBind()
 
 
 
-                Dim FileListGPS As ArrayList = GetFileList(_portalSettings.PortalId, glbGoogleEarthTypes)
-                cboInternalGPS.DataSource = FileListGPS
-                cboInternalGPS.DataBind()
-
+                If ModuleId <> -1 Then
+                    SetUpData()
+                End If
+            Else
+                ' is postback check to see if file change
                 If ModuleId <> -1 Then
 
                     Dim settings As Hashtable
@@ -122,105 +119,199 @@ Namespace DotNetZoom
                     ' Get settings from the database
                     settings = PortalSettings.GetModuleSettings(ModuleId)
 
-                    If cboInternalGPS.Items.Contains(New ListItem(CType(settings("fileGPS"), String))) Then
-                        cboInternalGPS.Items.FindByText(CType(settings("fileGPS"), String)).Selected = True
-                    End If
+                    If cboInternal.Enabled And cboInternal.SelectedIndex > 0 Then
 
-                    If Not cboInternalLink.Items.FindByValue(CType(settings("link"), String)) Is Nothing Then
-                        cboInternalLink.Items.FindByValue(CType(settings("link"), String)).Selected = True
-                    End If
+                        If cboInternal.SelectedItem.Text <> CType(settings("src"), String) Then
 
- 
-                    If InStr(1, CType(settings("src"), String), "://") = 0 Then
-                        fileName = Server.MapPath(_portalSettings.UploadDirectory & CType(settings("src"), String))
-                        optInternal.Checked = True
-                        optExternal.Checked = False
-                        EnableControls()
+                            fileName = Server.MapPath(_portalSettings.UploadDirectory & cboInternal.SelectedItem.Text)
+                            txtExif.Text = ""
+                            txtArtist.Text = ""
+                            txtLatLong.Text = ""
+                            txtCopyright.Text = ""
+                            txtTitle.Text = ""
+                            txtAlt.Text = cboInternal.SelectedValue
+                            txtWidth.Text = ""
+                            txtHeight.Text = ""
+                            txtDescription.Text = ""
 
-                        If cboInternal.Items.Contains(New ListItem(CType(settings("src"), String))) Then
-                            cboInternal.Items.FindByText(CType(settings("src"), String)).Selected = True
-                        End If
-                        If File.Exists(fileName) Then
-                            Dim Exif As New ExifWorks(fileName)
-                            If CType(settings("Exif"), String) <> "" Then
-                                txtExif.Text = CType(settings("Exif"), String)
-                            Else
+                            If File.Exists(fileName) Then
+                                Dim Exif As New ExifWorks(fileName)
                                 txtExif.Text = Exif.ToString()
+                                txtArtist.Text = Exif.Artist
+                                If Exif.Latitude(3) <> String.Empty Then
+                                    txtLatLong.Text = "http://maps.google.com/maps?q=" + Exif.Latitude(3) + "," + Exif.Longitude(3) + "&t=p&z=12&output=embed"
+                                End If
+                                txtCopyright.Text = Exif.Copyright
+                                txtDescription.Text = Exif.Description
+                                txtTitle.Text = Exif.Title
+                                Exif.Dispose()
                             End If
-                            txtArtist.Text = Exif.Artist
-                            ' http://maps.google.com/maps/api/staticmap?center=46.52,-72.55&markers=color:blue|label:X|46.52,-72.55&zoom=10&size=640x640&maptype=terrain&sensor=true
-                            txtLatLong.Text = "http://maps.google.com/maps/api/staticmap?center=" + Exif.Latitude(3) + "," + Exif.Longitude(3) + "&markers=color:blue|label:X|" + Exif.Latitude(3) + "," + Exif.Longitude(3) + "&zoom=10&size=640x640&maptype=terrain&sensor=true"
-                            txtCopyright.Text = Exif.Copyright
-                            txtDescription.Text = Exif.Description
-                            txtTitle.Text = Exif.Title
-                            Exif.Dispose()
+                            If txtArtist.Text = "" Then
+                                Dim objUser As New UsersDB()
+                                Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
+
+                                ' Read first row from database
+                                If dr.Read() Then
+                                    txtArtist.Text = dr("FirstName").ToString
+                                    txtArtist.Text += " " & dr("LastName").ToString
+                                End If
+                                dr.Close()
+                            ElseIf txtArtist.Text = "" Then
+                                txtArtist.Text = CType(settings("Artist"), String)
+                            End If
+                            If txtCopyright.Text = "" Then
+                                txtCopyright.Text = GetDomainName(Request)
+                            End If
+                        Else
+                            txtArtist.Text = CType(settings("Artist"), String)
+                            txtCopyright.Text = CType(settings("Copyright"), String)
+                            txtTitle.Text = CType(settings("Title"), String)
+                            txtDescription.Text = CType(settings("infobule"), String)
+                            txtLatLong.Text = CType(settings("latlong"), String)
+                            txtAlt.Text = CType(settings("alt"), String)
+                            txtWidth.Text = CType(settings("width"), String)
+                            txtHeight.Text = CType(settings("height"), String)
+                            ExternalLink.Text = CType(settings("ExtLink"), String)
+                            InfoLink.Text = CType(settings("InfoLink"), String)
                         End If
-                    Else
-                        optInternal.Checked = False
-                        optExternal.Checked = True
-                        EnableControls()
-                        txtExternal.Text = CType(settings("src"), String)
                     End If
-
-
-                    If txtArtist.Text = "" And CType(settings("Artist"), String) = "" Then
-                        Dim objUser As New UsersDB()
-                        Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
-
-                        ' Read first row from database
-                        If dr.Read() Then
-                            txtArtist.Text = dr("FirstName").ToString
-                            txtArtist.Text += " " & dr("LastName").ToString
-                        End If
-                        dr.Close()
-                    ElseIf txtArtist.Text = "" Then
-                        txtArtist.Text = CType(settings("Artist"), String)
-                    End If
-
-                    If txtCopyright.Text = "" And CType(settings("Copyright"), String) = "" Then
-                        txtCopyright.Text = GetDomainName(Request)
-                    ElseIf txtCopyright.Text = "" Then
-                        txtCopyright.Text = CType(settings("Copyright"), String)
-                    End If
-
-                    If txtTitle.Text = "" Then
-                        txtTitle.Text = CType(settings("Title"), String)
-                    End If
-
-
-                    If txtDescription.Text = "" Then
-                        txtDescription.Text = CType(settings("infobule"), String)
-                    End If
-
-                    If txtLatLong.Text = "" Then
-                        txtLatLong.Text = CType(settings("latlong"), String)
-                    End If
-
-
-
-                    ' txtLatLong.Text = CType(settings("latlong"), String)
-                    txtAlt.Text = CType(settings("alt"), String)
-                    txtWidth.Text = CType(settings("width"), String)
-                    txtHeight.Text = CType(settings("height"), String)
-                    optInfoBule.Checked = CType(settings("show"), Boolean)
-                    optPosition.Checked = CType(settings("position"), Boolean)
-                    optSecure.Checked = CType(settings("secure"), Boolean)
-
-                    optGoogleEarth.Checked = CType(settings("optGoogleEarth"), Boolean)
-                    optInternalLink.Checked = CType(settings("optInternalLink"), Boolean)
-                    optExif.Checked = CType(settings("optExif"), Boolean)
-                    ExternalLink.Text = CType(settings("ExtLink"), String)
-                    InfoLink.Text = CType(settings("InfoLink"), String)
-
                 End If
+            End If
 
+        End Sub
+
+        Private Sub SetUpData()
+            Dim settings As Hashtable
+            Dim fileName As String
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+            ' Get settings from the database
+            settings = PortalSettings.GetModuleSettings(ModuleId)
+
+            If cboInternalGPS.Items.Contains(New ListItem(CType(settings("fileGPS"), String))) Then
+                cboInternalGPS.Items.FindByText(CType(settings("fileGPS"), String)).Selected = True
+            End If
+
+            If Not cboInternalLink.Items.FindByValue(CType(settings("link"), String)) Is Nothing Then
+                cboInternalLink.Items.FindByValue(CType(settings("link"), String)).Selected = True
+            End If
+
+
+            If InStr(1, CType(settings("src"), String), "://") = 0 Then
+                fileName = Server.MapPath(_portalSettings.UploadDirectory & CType(settings("src"), String))
+                optInternal.Checked = True
+                optExternal.Checked = False
+                EnableControls()
+
+                If cboInternal.Items.Contains(New ListItem(CType(settings("src"), String))) Then
+                    cboInternal.Items.FindByText(CType(settings("src"), String)).Selected = True
+                End If
+                If File.Exists(fileName) Then
+                    Dim Exif As New ExifWorks(fileName)
+                    If CType(settings("Exif"), String) <> "" Then
+                        txtExif.Text = CType(settings("Exif"), String)
+                    Else
+                        txtExif.Text = Exif.ToString()
+                    End If
+                    txtArtist.Text = Exif.Artist
+                    ' http://maps.google.com/maps/api/staticmap?center=46.52,-72.55&markers=color:blue|label:X|46.52,-72.55&zoom=10&size=640x640&maptype=terrain&sensor=true
+                    'txtLatLong.Text = "http://maps.google.com/maps/api/staticmap?center=" + Exif.Latitude(3) + "," + Exif.Longitude(3) + "&markers=color:blue|label:X|" + Exif.Latitude(3) + "," + Exif.Longitude(3) + "&zoom=10&size=640x640&maptype=terrain&sensor=true"
+
+                    If CType(settings("latlong"), String) = String.Empty And Exif.Latitude(3) <> String.Empty Then
+                        txtLatLong.Text = "http://maps.google.com/maps?q=" + Exif.Latitude(3) + "," + Exif.Longitude(3) + "&t=p&z=12&output=embed"
+                    End If
+                    txtCopyright.Text = Exif.Copyright
+                    txtDescription.Text = Exif.Description
+                    txtTitle.Text = Exif.Title
+                    Exif.Dispose()
+                End If
+            Else
+                optInternal.Checked = False
+                optExternal.Checked = True
+                EnableControls()
+                txtExternal.Text = CType(settings("src"), String)
+            End If
+
+
+            If txtArtist.Text = "" And CType(settings("Artist"), String) = "" Then
+                Dim objUser As New UsersDB()
+                Dim dr As SqlDataReader = objUser.GetSingleUser(_portalSettings.PortalId, Int32.Parse(Context.User.Identity.Name))
+
+                ' Read first row from database
+                If dr.Read() Then
+                    txtArtist.Text = dr("FirstName").ToString
+                    txtArtist.Text += " " & dr("LastName").ToString
+                End If
+                dr.Close()
+            ElseIf txtArtist.Text = "" Then
+                txtArtist.Text = CType(settings("Artist"), String)
+            End If
+
+            If txtCopyright.Text = "" And CType(settings("Copyright"), String) = "" Then
+                txtCopyright.Text = GetDomainName(Request)
+            ElseIf txtCopyright.Text = "" Then
+                txtCopyright.Text = CType(settings("Copyright"), String)
+            End If
+
+            If txtTitle.Text = "" Then
+                txtTitle.Text = CType(settings("Title"), String)
+            End If
+
+
+            If txtDescription.Text = "" Then
+                txtDescription.Text = CType(settings("infobule"), String)
+            End If
+
+            If txtLatLong.Text = "" Then
+                txtLatLong.Text = CType(settings("latlong"), String)
             End If
 
 
 
+            ' txtLatLong.Text = CType(settings("latlong"), String)
+            txtAlt.Text = CType(settings("alt"), String)
+            txtWidth.Text = CType(settings("width"), String)
+            txtHeight.Text = CType(settings("height"), String)
+            optInfoBule.Checked = CType(settings("show"), Boolean)
+            optPosition.Checked = CType(settings("position"), Boolean)
+            optSecure.Checked = CType(settings("secure"), Boolean)
+
+            optGoogleEarth.Checked = CType(settings("optGoogleEarth"), Boolean)
+            optInternalLink.Checked = CType(settings("optInternalLink"), Boolean)
+            optExif.Checked = CType(settings("optExif"), Boolean)
+            ExternalLink.Text = CType(settings("ExtLink"), String)
+            InfoLink.Text = CType(settings("InfoLink"), String)
+
         End Sub
 
+        Private Sub SetUpUpload(ByVal SetFile As Boolean)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            UploadReturn.Visible = True
+            UploadReturn.Style.Add("display", "none")
+            cmdUpload.NavigateUrl = "#"
+            SetUpModuleUpload(Request.MapPath(_portalSettings.UploadDirectory), glbImageFileTypes + ",zip," + glbGoogleEarthTypes, False)
+            Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
+            Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
+            retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+            retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
+            retScript &= "--></script>"
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), UploadReturn.ClientID)
+            cmdUpload.Attributes.Add("onclick", click)
+            If SetFile Then
+                Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId, glbImageFileTypes)
+                cboInternal.DataSource = FileList
+                cboInternal.DataBind()
+                Dim FileListGPS As ArrayList = GetFileList(_portalSettings.PortalId, glbGoogleEarthTypes)
+                cboInternalGPS.DataSource = FileListGPS
+                cboInternalGPS.DataBind()
+            End If
+        End Sub
 
+        Private Sub UploadReturn_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadReturn.Click
+            SetUpUpload(True)
+        End Sub
         '****************************************************************
         '
         ' The cmdUpdate_Click event handler on this Page is used to save
@@ -235,7 +326,7 @@ Namespace DotNetZoom
             ' Update settings in the database
             Dim objAdmin As New AdminDB()
             Dim strImage As String
-			Dim fileName as String
+            Dim fileName As String
 
 
             ' Obtain PortalSettings from Current Context
@@ -288,11 +379,11 @@ Namespace DotNetZoom
             If IsNumeric(txtWidth.Text) Then
                 objAdmin.UpdateModuleSetting(ModuleId, "width", txtWidth.Text)
             End If
-                If IsNumeric(txtHeight.Text) Then
-                    objAdmin.UpdateModuleSetting(ModuleId, "height", txtHeight.Text)
-                End If
-                objAdmin.UpdateModuleSetting(ModuleId, "show", optInfoBule.Checked.ToString)
-                objAdmin.UpdateModuleSetting(ModuleId, "position", optPosition.Checked.ToString)
+            If IsNumeric(txtHeight.Text) Then
+                objAdmin.UpdateModuleSetting(ModuleId, "height", txtHeight.Text)
+            End If
+            objAdmin.UpdateModuleSetting(ModuleId, "show", optInfoBule.Checked.ToString)
+            objAdmin.UpdateModuleSetting(ModuleId, "position", optPosition.Checked.ToString)
             objAdmin.UpdateModuleSetting(ModuleId, "secure", optSecure.Checked.ToString)
 
             objAdmin.UpdateModuleSetting(ModuleId, "optGoogleEarth", optGoogleEarth.Checked.ToString)
@@ -307,6 +398,7 @@ Namespace DotNetZoom
             objAdmin.UpdateModuleSetting(ModuleId, "ExtLink", ExternalLink.Text)
             objAdmin.UpdateModuleSetting(ModuleId, "InfoLink", InfoLink.Text)
             ' Redirect back to the portal home page
+            HttpContext.Current.Session("UploadInfo") = Nothing
             Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
 
@@ -320,6 +412,7 @@ Namespace DotNetZoom
         '****************************************************************
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
+            HttpContext.Current.Session("UploadInfo") = Nothing
             Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
 

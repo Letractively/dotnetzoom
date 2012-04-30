@@ -104,10 +104,10 @@ Namespace DotNetZoom
 
 
             Try
-                ' Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, config.IsPrivate)
+                Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, config.IsPrivate)
                 img.Height = CStr(Zrequest.GalleryConfig.FixedHeight + 4)
                 img.Width = CStr(Zrequest.GalleryConfig.FixedWidth + 4)
-                Image.ImageUrl = Zrequest.CurrentItem.URL
+                'Image.ImageUrl = Zrequest.CurrentItem.URL
                 If Zrequest.CurrentItem.Width <> "0" Then
                     CalculatePhotoSize()
                 End If

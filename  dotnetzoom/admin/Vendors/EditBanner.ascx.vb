@@ -30,6 +30,7 @@ Namespace DotNetZoom
         Protected WithEvents cboBannerType As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cboImage As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cmdUpload As System.Web.UI.WebControls.HyperLink
+        Protected WithEvents UploadReturn As System.Web.UI.WebControls.ImageButton
         Protected WithEvents txtURL As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtImpressions As System.Web.UI.WebControls.TextBox
         Protected WithEvents valImpressions As System.Web.UI.WebControls.RequiredFieldValidator
@@ -141,16 +142,8 @@ Namespace DotNetZoom
 				
 				
 				
-                ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&def=Gestion fichiers" & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", "")
-                Dim FileList As ArrayList
-                If Not (Request.Params("hostpage") Is Nothing) Then
-                    FileList = GetFileList(, glbImageFileTypes, False)
-                Else
-                    FileList = GetFileList(_portalSettings.PortalId, glbImageFileTypes, False)
-                End If
-                cboImage.DataSource = FileList
-                cboImage.DataBind()
+                 SetUpUpload()
+
 
                 If BannerId <> -1 Then
 
@@ -182,6 +175,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
+                        HttpContext.Current.Session("UploadInfo") = Nothing
                         Response.Redirect(GetFullDocument() & "?tabid=" & _portalSettings.ActiveTab.TabId & "&" & GetAdminPage() & "&VendorId=" & VendorId & "&def=Fournisseurs", True)
                     End If
 
@@ -202,6 +196,44 @@ Namespace DotNetZoom
 
         End Sub
 
+
+
+
+
+        Private Sub SetUpUpload()
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            UploadReturn.Visible = True
+            UploadReturn.Style.Add("display", "none")
+            cmdUpload.NavigateUrl = "#"
+            Dim TempDir As String = ""
+            If Not (Request.Params("hostpage") Is Nothing) Then
+                TempDir = Request.MapPath(glbSiteDirectory)
+            Else
+                TempDir = Request.MapPath(_portalSettings.UploadDirectory)
+            End If
+            SetUpModuleUpload(TempDir, glbImageFileTypes, Not (Request.Params("hostpage") Is Nothing))
+            Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
+            Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
+            retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+            retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
+            retScript &= "--></script>"
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), UploadReturn.ClientID)
+            cmdUpload.Attributes.Add("onclick", click)
+            Dim FileList As ArrayList
+            If Not (Request.Params("hostpage") Is Nothing) Then
+                FileList = GetFileList(, glbImageFileTypes, False)
+            Else
+                FileList = GetFileList(_portalSettings.PortalId, glbImageFileTypes, False)
+            End If
+            cboImage.DataSource = FileList
+            cboImage.DataBind()
+        End Sub
+
+        Private Sub UploadReturn_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadReturn.Click
+            SetUpUpload()
+        End Sub
 
         '****************************************************************
         '
@@ -232,6 +264,7 @@ Namespace DotNetZoom
                 End If
 
                 ' Redirect back to the portal home page
+                HttpContext.Current.Session("UploadInfo") = Nothing
                 Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
 
             End If
@@ -254,6 +287,7 @@ Namespace DotNetZoom
                 objVendor.DeleteBanner(BannerId)
 
                 ' Redirect back to the portal home page
+                HttpContext.Current.Session("UploadInfo") = Nothing
                 Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
             End If
 
@@ -270,6 +304,7 @@ Namespace DotNetZoom
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
             ' Redirect back to the portal home page
+            HttpContext.Current.Session("UploadInfo") = Nothing
             Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
 

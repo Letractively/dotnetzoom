@@ -55,17 +55,16 @@ Namespace DotNetZoom
             Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
 
 			imgDelete.Attributes.Add("onClick", "JavaScript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
-  			Dim click As String = String.Format("openDialog('{0}', 600, 200, retVal);return false", ResolveUrl("TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabID)), imgRefresh.ClientID)
+            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), imgRefresh.ClientID)
 			imgUpload.Attributes.Add("onclick", click)
 			If Session("message") <> "" then
 				lblerror.text = Session("message")
 				Session("message") = ""
 			end if
-
-			If Not Page.IsPostBack then
-			DirPanel.Visible = False
-			AdminPanel.Visible = True
-			end if
+            If Not Page.IsPostBack Then
+                DirPanel.Visible = False
+                AdminPanel.Visible = True
+            End If
 			InitToolbar()
 		End Sub
 
@@ -84,6 +83,7 @@ Namespace DotNetZoom
                 imgUpload.Visible = False
                 imgRename.Visible = False
                 imgDelete.Visible = False
+                Session("UploadInfo") = Nothing
             End If
 
             imgParentDir.ToolTip = GetLanguage("F_ParentDir")
@@ -105,76 +105,76 @@ Namespace DotNetZoom
             imgDelete.Enabled = True
         End Sub
 
-		Private Sub imgParentDir_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgParentDir.Click
-			FileExp.NavigateParentDir()
-		End Sub
+    Private Sub imgParentDir_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgParentDir.Click
+        FileExp.NavigateParentDir()
+    End Sub
 
-		Private Sub FileExp_DirChanged(ByVal sender As Object, ByVal e As DotNetZoom.DirChangedEventArgs) Handles FileExp.DirChanged
-			If e.IsRoot Then
-				imgParentDir.Enabled = False
-			Else
-				imgParentDir.Enabled = True
-			End If
-		End Sub
+    Private Sub FileExp_DirChanged(ByVal sender As Object, ByVal e As DotNetZoom.DirChangedEventArgs) Handles FileExp.DirChanged
+        If e.IsRoot Then
+            imgParentDir.Enabled = False
+        Else
+            imgParentDir.Enabled = True
+        End If
+    End Sub
 
-		Private Sub FileExp_FileClicked(ByVal sender As Object, ByVal e As DotNetZoom.FileClickedEventArgs) Handles FileExp.FileClicked
-            
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            Dim objSecurity As New PortalSecurity()
-            Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), e.FullFileName))
+    Private Sub FileExp_FileClicked(ByVal sender As Object, ByVal e As DotNetZoom.FileClickedEventArgs) Handles FileExp.FileClicked
 
-            Response.Redirect(ResolveUrl("TAGFileDownload.aspx") & "?File=" & crypto & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId))
-		    
-		End Sub
+        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+        Dim objSecurity As New PortalSecurity()
+        Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), e.FullFileName))
 
-		Private Sub imgRefresh_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgRefresh.Click
-			FileExp.Refresh()
-		End Sub
+        Response.Redirect(ResolveUrl("TAGFileDownload.aspx") & "?File=" & crypto & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId))
 
-		Private Sub imgDelete_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDelete.Click
-			FileExp.DeleteSelected()
-		End Sub
+    End Sub
 
-		Private Sub imgDownload_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDownload.Click
-			FileExp.DownloadFile()
-		End Sub
+    Private Sub imgRefresh_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgRefresh.Click
+        FileExp.Refresh()
+    End Sub
 
-		Private Sub imgRename_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgRename.Click
-			FileExp.EditFileFolderName()
-		End Sub
+    Private Sub imgDelete_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDelete.Click
+        FileExp.DeleteSelected()
+    End Sub
 
-		Private Sub imgDirOK_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDirOK.Click
-			If DirCreate.Text <> "" then
-			' need to check for char
-		
-			If IsNotAlpha(DirCreate.Text) then
-			lblerror.Text = GetLanguage("Gal_AlbumNo")
-			Dim Admin As New AdminDB()
-			DirCreate.Text = Admin.convertstringtounicode(DirCreate.Text)
-			else
-			FileExp.CreateNewFolder( DirCreate.Text)
-			DirPanel.Visible = False
-			AdminPanel.Visible = True
-			end if
-			Else
-			lblerror.Text = GetLanguage("Need_Directory_Name") 
-			end if
-		End Sub
+    Private Sub imgDownload_Click(ByVal sender As System.Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDownload.Click
+        FileExp.DownloadFile()
+    End Sub
 
-		Private Sub imgDirCancel_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDirCancel.Click
-			DirCreate.Text = ""
-			lblerror.Text = ""
-			DirPanel.Visible = False
-			AdminPanel.Visible = True
-		End Sub
-		
-		
-		
-		Private Sub imgNewFolder_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgNewFolder.Click
-		DirPanel.Visible = True
-		AdminPanel.Visible = False
-		DirCreate.Text = GetLanguage("New_Directory")
-		lblerror.Text = ""
-		End Sub
+    Private Sub imgRename_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgRename.Click
+        FileExp.EditFileFolderName()
+    End Sub
+
+    Private Sub imgDirOK_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDirOK.Click
+        If DirCreate.Text <> "" Then
+            ' need to check for char
+
+            If IsNotAlpha(DirCreate.Text) Then
+                lblerror.Text = GetLanguage("Gal_AlbumNo")
+                Dim Admin As New AdminDB()
+                DirCreate.Text = Admin.convertstringtounicode(DirCreate.Text)
+            Else
+                FileExp.CreateNewFolder(DirCreate.Text)
+                DirPanel.Visible = False
+                AdminPanel.Visible = True
+            End If
+        Else
+            lblerror.Text = GetLanguage("Need_Directory_Name")
+        End If
+    End Sub
+
+    Private Sub imgDirCancel_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgDirCancel.Click
+        DirCreate.Text = ""
+        lblerror.Text = ""
+        DirPanel.Visible = False
+        AdminPanel.Visible = True
+    End Sub
+
+
+
+    Private Sub imgNewFolder_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles imgNewFolder.Click
+        DirPanel.Visible = True
+        AdminPanel.Visible = False
+        DirCreate.Text = GetLanguage("New_Directory")
+        lblerror.Text = ""
+    End Sub
 	End Class
 End Namespace

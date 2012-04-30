@@ -58,6 +58,7 @@
                 <asp:dropdownlist id="cboAttachment" runat="server" CssClass="NormalTextBox" DataTextField="Text" DataValueField="Value" Width="200px"></asp:dropdownlist>
                 &nbsp; 
                 <asp:HyperLink id="cmdUpload" CssClass="CommandButton" Runat="server"></asp:HyperLink>
+                <asp:imagebutton id="UploadReturn" runat="server" EnableViewState="false" visible="False" height="16" width="16" imageurl="~/images/save.gif" style="border-width:0px"></asp:imagebutton>
             </td>
         </tr>
         <tr valign="top">

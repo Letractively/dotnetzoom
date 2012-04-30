@@ -727,7 +727,7 @@ Namespace DotNetZoom
 			
 		   ' write WhereClause
            ' Dim objStream As StreamWriter
-           ' objStream = File.CreateText(httpContext.Current.Request.MapPath("search.log"))
+            ' objStream = File.CreateText(httpContext.Current.Request.MapPath(glbPath + "database/search.log"))
            ' objStream.WriteLine(WhereClause + vbcrlf + forumID)
            ' objStream.Close()
 			

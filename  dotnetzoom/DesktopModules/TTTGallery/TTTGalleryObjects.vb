@@ -23,6 +23,7 @@ Imports System.Threading
 Imports DotNetZoom
 Imports DotNetZoom.TTTUtils
 Imports ICSharpCode.SharpZipLib.Zip
+Imports ICSharpCode.SharpZipLib.Core
 Imports System.Drawing
 Imports System.Web.Caching
 
@@ -1466,8 +1467,9 @@ Namespace DotNetZoom
                     Dim InnerList As XmlElement = TempDoc.DocumentElement
                     If (InnerList.HasAttribute("name")) Then
                         ' search in file system
-                        If (Not IO.File.Exists(IO.Path.Combine(Me.Path, InnerList.GetAttribute("name"))) And Not System.IO.Directory.Exists(IO.Path.Combine(Me.Path, InnerList.GetAttribute("name")))) And Not _galleryConfig.IsValidFileType(LCase(New FileInfo(IO.Path.Combine(Me.Path, InnerList.GetAttribute("name"))).Extension)) Then
+                        If (Not IO.File.Exists(IO.Path.Combine(Me.Path, InnerList.GetAttribute("name"))) And Not System.IO.Directory.Exists(IO.Path.Combine(Me.Path, InnerList.GetAttribute("name")))) Then
                             GalleryXML.DeleteMetaData(Me.Path, InnerList.GetAttribute("name"))
+                            ' _galleryConfig.IsValidFileType(LCase(New FileInfo(IO.Path.Combine(Me.Path, InnerList.GetAttribute("name"))).Extension)) 
                         End If
                     End If
                 Next i

@@ -204,10 +204,10 @@ Namespace DotNetZoom
                 End If
 
                 If Not Page.IsPostBack Then
-                'Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, config.IsPrivate)
+                Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, Zrequest.GalleryConfig.IsPrivate)
                 img.Height = CStr(Zrequest.GalleryConfig.FixedHeight + 4)
                 img.Width = CStr(Zrequest.GalleryConfig.FixedWidth + 4)
-                Image.ImageUrl = Zrequest.CurrentItem.URL
+                'Image.ImageUrl = Zrequest.CurrentItem.URL
                 If Zrequest.CurrentItem.Width <> "0" Then
                     CalculatePhotoSize()
                 End If
@@ -337,7 +337,7 @@ Namespace DotNetZoom
             Dim items() As String
             Dim item As String
             Dim slImage As FolderDetail
-            items = System.IO.Directory.GetFiles(Request.MapPath("/images/gps/"))
+            items = System.IO.Directory.GetFiles(Request.MapPath(glbPath + "images/gps/"))
             Dim slImages As New ArrayList()
             Dim strExtension As String
 
@@ -347,7 +347,7 @@ Namespace DotNetZoom
                 If Zconfig.IsValidImageType(strExtension) Then
                     slImage = New FolderDetail()
                     slImage.Name = IO.Path.GetFileName(item)
-                    slImage.URL = "/images/gps/" + IO.Path.GetFileName(item)
+                    slImage.URL = glbPath + "images/gps/" + IO.Path.GetFileName(item)
                     slImages.Add(slImage)
                 End If
             Next

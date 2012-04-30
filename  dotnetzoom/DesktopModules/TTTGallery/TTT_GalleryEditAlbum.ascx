@@ -735,20 +735,15 @@
 					<td >
 						<table id="tbAddFile" cellSpacing="1" cellPadding="1" width="100%" border="0">
 							<tr>
-								<td class="TTTSubHeader" width="120"></td>
-								<td class="TTTAltHeader" align="left" height="28">&nbsp;
-									<asp:label id="lblfileTitle" runat="server" CssClass="TTTAltHeader" ></asp:label></td>
+								<td  colspan="2" class="TTTSubHeader" align="center" height="28">
+                                <%= DotNetZoom.getlanguage("Gal_FileUpInfo") %>
+								</td>
 							</tr>
- 
-							<tr>
-								<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_FileType") %>:</td>
-								<td class="TTTRow" align="left" height="22">
-									<asp:label id="lblFileType" runat="server" CssClass="TTTRow"></asp:label></td>
-							</tr>
+
 							<tr>
 								<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_TitleI") %>:</td>
 								<td class="TTTRow" align="left" height="22">
-									<asp:textbox id="txtFileTitle" runat="server" CssClass="NormalTextBox" Width="50%"></asp:textbox></td>
+									<asp:textbox id="txtFileTitle" runat="server"  AutoPostBack="true" CssClass="NormalTextBox" Width="50%"></asp:textbox></td>
 							</tr>
                             <tr>
 							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.GetLanguage("WaterMark")%></td>
@@ -759,28 +754,20 @@
 							<tr>
 								<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_Desc") %>:</td>
 								<td class="TTTRow" align="left" height="22">
-									<asp:textbox id="txtFileDescription" TextMode="MultiLine" runat="server" CssClass="NormalTextBox" Width="98%"></asp:textbox></td>
+									<asp:textbox id="txtFileDescription" AutoPostBack="true" TextMode="MultiLine" runat="server" CssClass="NormalTextBox" Width="98%"></asp:textbox></td>
 							</tr>
 							<tr>
 								<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_Cat") %>:</td>
 								<td class="TTTRow" style="white-space: nowrap;" align="left">
-									<asp:DropDownList ID="ddCategories3" runat=server></asp:DropDownList></td>
+									<asp:DropDownList ID="ddCategories3" AutoPostBack="true" runat=server></asp:DropDownList></td>
                             </tr>
 							<tr>
-								<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_File") %>:</td>
-								<td class="TTTRow" align="left" style="white-space: nowrap;" height="22">
-									<INPUT class="NormalTextBox" id="htmlUploadFile" type="file" size="112" name="loFile" runat="server" />
-									&nbsp;&nbsp;&nbsp;<asp:imagebutton id="btnAdd" runat="server" CommandName="add" ImageUrl="~/Admin/AdvFileManager/Images/Upload.gif" BorderWidth="0" BorderStyle="none"></asp:imagebutton>&nbsp;&nbsp;
-									<img id="rotation" src="/images/rotation.gif" style="visibility:hidden; left: -20px; position: relative" alt="*" width="32" height="32">
-									<br><asp:Label id="lblFileInfo" runat="server" CssClass="TTTNormal" ForeColor="Red"></asp:Label>&nbsp;
+								<td  colspan="2" class="TTTSubHeader" align="left" style="white-space: nowrap;" height="22">
+						         <asp:Label id="lblFileInfo" runat="server" CssClass="TTTNormal" ForeColor="Red"></asp:Label>
 								</td>
 							</tr>
 							<tr>
-								<td class="TTTSubHeader" width="120"></td>
-								<td class="TTTRow" align="center">&nbsp;<%= DotNetZoom.getlanguage("Gal_FileUpInfo") %></td>
-							</tr>
-							<tr>
-								<td class="TTTSubHeader" width="120"></td>
+								<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_File") %>:</td>
 								<td class="TTTRow" align="left">
 									<asp:datagrid id="grdUpload" runat="server" width="100%" CellSpacing="0" CellPadding="3" BorderWidth="1" BorderColor="#D1D7DC" AutoGenerateColumns="False" DataKeyField="FileName">
 										<Columns>

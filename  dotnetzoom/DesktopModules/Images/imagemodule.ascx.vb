@@ -99,8 +99,8 @@ Namespace DotNetZoom
                     End If
                     If CType(Settings("secure"), Boolean) Then
                         Dim objSecurity As New PortalSecurity()
-                        Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), imageSrc))
-                        imgImage.ImageUrl = glbPath + "controls/img.aspx?" & crypto
+                        imgImage.ImageUrl = objSecurity.EncryptURL(Application("cryptokey"), imageSrc)
+                        'imgImage.ImageUrl = glbPath + "controls/img.ashx?" & crypto
                     Else
                         imgImage.ImageUrl = imageSrc
                     End If
@@ -118,7 +118,7 @@ Namespace DotNetZoom
                     GoogleMap.Visible = True
                     GoogleMap.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ShowOnMap")))
                     GoogleMapURL = """javascript:DestroyWnd;CreateWnd('" + CType(Settings("latlong"), String) + "',640,640,false)"""
-                    Page.RegisterClientScriptBlock("POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
+                    Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
                 End If
 
                 If CType(Settings("optGoogleEarth"), Boolean) And CType(Settings("fileGPS"), String) <> "" Then

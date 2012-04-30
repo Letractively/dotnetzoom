@@ -38,7 +38,6 @@ Namespace DotNetZoom
 #Region "Private Vars"
 
         Private Const GalleryConfigCacheKeyPrefix As String = "G_"
-        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
         ' Root filesystem Path
         Private mRootPath As String = ""

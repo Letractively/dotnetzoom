@@ -61,10 +61,7 @@ Namespace DotNetZoom
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 			' Obtain PortalSettings from Current Context
              Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
- 			
-			Dim _language As HashTable = HttpContext.Current.Items("Language")
-			Title1.EditText = _Language("editer")
+            Title1.EditText = GetLanguage("editer")
 
             ' Obtain the selected item from the HtmlText table
 			

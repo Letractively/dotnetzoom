@@ -80,19 +80,7 @@ Namespace DotNetZoom
         End Sub
 
         Public Function MovieURL() As String
-            Try
-			If InStr(1, Request.Params("path"), "controls/img.aspx?") > 0 Then
-            Dim objSecurity As New DotNetZoom.PortalSecurity()
-			Dim dnPath As String = Mid(Request.Params("path"), InStrRev(Request.Params("path"), "?") + 1)
-			Return objSecurity.Decrypt(Application("cryptokey").ToString(), dnPath)
-			else
-			Return Request.Params("path")
-			end if
-			Catch Exc As System.Exception
-                ErrorMessage.Text = Exc.Message
-                ErrorMessage.Visible = True
-                Return ""
-            End Try
+            Return Request.Params("path")
         End Function
 
         Private Sub btnBack_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnBack.Click

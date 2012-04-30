@@ -42,7 +42,7 @@ Private Function GetTPL() As String
 							If Not File.Exists(SkinFileName) then
 							SkinFileName = Server.MapPath(_portalSettings.UploadDirectory & "skin/menu_tpl1.js")
  								If Not File.Exists(SkinFileName) then
-                            SkinFileName = Request.MapPath("/javascript/menu_tpl1.js")
+                            SkinFileName = Request.MapPath(glbPath + "javascript/menu_tpl1.js")
 								end if
 							end if
 						end if
@@ -73,7 +73,7 @@ Private Function GetTPL() As String
 							If Not File.Exists(SkinFileName) then
 							SkinFileName = Server.MapPath(_portalSettings.UploadDirectory & "skin/menu_tpl1.js")
 								If Not File.Exists(SkinFileName) then
-                            SkinFileName = Request.MapPath("/javascript/menu_tpl1.js")
+                            SkinFileName = Request.MapPath(glbPath + "javascript/menu_tpl1.js")
 								end if
 							end if
 						strPageHTML = Context.Cache(SkinFileName)

@@ -21,7 +21,19 @@
 '
 
 Imports ICSharpCode.SharpZipLib.Zip
+Imports ICSharpCode.SharpZipLib.Core
 Imports System.IO
+Imports System.Runtime.Serialization
+Imports System.Runtime.Serialization.Formatters.Binary
+Imports System.Xml.Serialization
+Imports System.Web.Script.Serialization
+Imports System.Text
+Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Data.SqlTypes
+Imports System.Reflection
+Imports System.Web.Configuration
+
 
 Namespace DotNetZoom
 
@@ -32,22 +44,17 @@ Namespace DotNetZoom
         Protected WithEvents chkUploadRoles As System.Web.UI.WebControls.CheckBoxList
         Protected WithEvents cmdUpdate As System.Web.UI.WebControls.LinkButton
         Protected WithEvents options As System.Web.UI.WebControls.PlaceHolder
-		Protected WithEvents Upload As System.Web.UI.WebControls.PlaceHolder
-    	Protected WithEvents cmdCancelOptions As System.Web.UI.WebControls.LinkButton		
-		
+        Protected WithEvents Upload As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents cmdCancelOptions As System.Web.UI.WebControls.LinkButton
+
         Protected WithEvents CanUpload As System.Web.UI.WebControls.PlaceHolder
-        Protected WithEvents cmdBrowse As System.Web.UI.HtmlControls.HtmlInputFile
-        Protected WithEvents lstFiles As System.Web.UI.WebControls.ListBox
-        Protected WithEvents cmdAdd As System.Web.UI.WebControls.LinkButton
-        Protected WithEvents cmdRemove As System.Web.UI.WebControls.LinkButton
         Protected WithEvents chkUnzip As System.Web.UI.WebControls.CheckBox
-        
-        Protected WithEvents cmdCancel As System.Web.UI.WebControls.LinkButton
+        Protected WithEvents cmdCancel As System.Web.UI.WebControls.HyperLink
         Protected WithEvents lblMessage As System.Web.UI.WebControls.Label
-		Protected WithEvents lblRootDir As System.Web.UI.WebControls.Label
-		Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
-        Public Shared arrFiles As ArrayList = New ArrayList()
-		
+        Protected WithEvents lblRootDir As System.Web.UI.WebControls.Label
+        Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
+        Private obj As New UploadInfo()
+        Private Zrequest As GalleryRequest
 #Region " Web Form Designer Generated Code "
 
         'This call is required by the Web Form Designer.
@@ -59,9 +66,20 @@ Namespace DotNetZoom
             'CODEGEN: This method call is required by the Web Form Designer
             'Do not modify it using the code editor.
             InitializeComponent()
-			
-			Dim SpaceUsed As Double
-			Dim strFolder As STring 
+
+            If Not IsNothing(Session("UploadInfo")) And Request.IsAuthenticated Then
+                obj = Session("UploadInfo")
+            Else
+                AccessDenied()
+            End If
+
+
+            If Not PortalSecurity.IsSuperUser And obj.IsHost Then
+                AccessDenied()
+            End If
+
+            Dim SpaceUsed As Double
+            Dim strFolder As String
 
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -74,15 +92,23 @@ Namespace DotNetZoom
                 strFolder = Request.MapPath(_portalSettings.UploadDirectory)
             End If
 
-			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
+            SpaceUsed = objAdmin.GetdirectorySpaceUsed(strFolder)
             SpaceUsed = SpaceUsed / 1048576
-			
-			If (((SpaceUsed) <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Or (Not (Request.Params("hostpage") Is Nothing)) Then
-			else
-			CanUpload.Visible = False
-			lblMessage.Text = GetLanguage("Gal_PortalQuota2")
-			end If        
-		
+
+            If (((SpaceUsed) <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Or (Not (Request.Params("hostpage") Is Nothing)) Then
+            Else
+                CanUpload.Visible = False
+                lblMessage.Text = GetLanguage("Gal_PortalQuota2")
+            End If
+
+
+            If obj.IsGall Then
+                If Not CheckQuota() Then
+                    CanUpload.Visible = False
+                End If
+            End If
+
+
         End Sub
 
 #End Region
@@ -98,20 +124,33 @@ Namespace DotNetZoom
 
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Title1.DisplayHelp = "DisplayHelp_WebUpload"
-			cmdCancelOptions.Text = GetLanguage("annuler")
-		    cmdSynchronize.Text = GetLanguage("F_cmdSynchronize")
-			cmdUpdate.Text = GetLanguage("F_Update")
+
+            Dim objCSS As Control = Page.FindControl("CSS")
+            Dim objuploadifyCSS As Control = Page.FindControl("uploadifyCSS")
+            Dim objLink As System.Web.UI.LiteralControl
+
+
+            If (Not objCSS Is Nothing) And (objuploadifyCSS Is Nothing) Then
+                ' put in the xxx.css
+                objLink = New System.Web.UI.LiteralControl("uploadifyCSS")
+                objLink.Text = "<link href=""" & glbPath() & "admin/files/uploadify.css"" rel=""stylesheet"" type=""text/css"" />"
+                objCSS.Controls.Add(objLink)
+            End If
+
+            Title1.DisplayHelp = "DisplayHelp_WebUpload"
+            cmdCancelOptions.Text = GetLanguage("annuler")
+            cmdSynchronize.Text = GetLanguage("F_cmdSynchronize")
+            cmdUpdate.Text = GetLanguage("F_Update")
 
 
             Dim objAdmin As New AdminDB()
 
             Dim tmpUploadRoles As String = ""
-            If Not CType( portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String) Is Nothing Then
-                tmpUploadRoles = CType( portalSettings.GetSiteSettings(_portalSettings.PortalID)("uploadroles"), String)
+            If Not CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String) Is Nothing Then
+                tmpUploadRoles = CType(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("uploadroles"), String)
             End If
 
-			          
+
             If Request.IsAuthenticated = False Then
                 EditDenied()
             End If
@@ -130,9 +169,9 @@ Namespace DotNetZoom
                 Else
                     ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 End If
+                Session("UrlReferrer") = ViewState("UrlReferrer")
+                chkUnzip.Checked = False
 
-
-                lstFiles.Visible = False
                 If Request.Params("options") <> "" Then
 
                     If Not PortalSecurity.IsInRole(_portalSettings.AdministratorRoleId.ToString) Or Not IsAdminTab() Then
@@ -169,13 +208,6 @@ Namespace DotNetZoom
                     options.Visible = False
                 End If
 
-                ' initialize file list
-                arrFiles.Clear()
-                chkUnzip.Checked = True
-                chkUnzip.Text = "<label for=""" & chkUnzip.ClientID & """>" & GetLanguage("UnZipFile") & "</label>"
-                cmdAdd.Text = GetLanguage("upload")
-                cmdRemove.Text = GetLanguage("cmdRemove")
-                cmdRemove.Visible = False
                 chkUnzip.Text = GetLanguage("F_UnzipFile")
                 cmdCancel.Text = GetLanguage("return")
                 If Session("RootDir") <> "" Then
@@ -184,255 +216,146 @@ Namespace DotNetZoom
                     lblRootDir.Text = "/" + Replace(lblRootDir.Text, "\", "/")
                 End If
             End If
-
+            cmdCancel.NavigateUrl = CType(Session("UrlReferrer"), String)
         End Sub
-
-        Private Sub cmdAdd_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdAdd.Click
-            ' Obtain PortalSettings from Current Context
-            ' Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			
-            If Page.IsPostBack Then
-               If cmdBrowse.PostedFile.FileName <> "" Then
-            Dim strFileName As String
-            Dim strFileNamePath As String
-            Dim strExtension As String = ""
-            lblMessage.Text = ""
-			' Rene Boulard validation de télécharger
-			Dim StrFolder as String
-			Dim RootFolder As String
-			Dim SpaceUsed as Double			
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+        Private Function CheckQuota() As Boolean
+            ' SendToLog("CheckQuota", Context)
+            CheckQuota = True
+            Zrequest = New GalleryRequest(obj.ModuleID)
+            Dim StrFolder As String
+            Dim SpaceUsed As Double
             Dim objAdmin As New AdminDB()
-
-			
-
-			
-            If Not (Request.Params("hostpage") Is Nothing) Then
-                strFolder = Request.MapPath(glbSiteDirectory)
-            Else
-                strFolder = Request.MapPath(_portalSettings.UploadDirectory)
-            End If
-
-			If Session("RootDir") <> "" then
-			RootFolder = Session("RootDir") & Session("RelativeDir") & "\" 
-			else
-			RootFolder = strFolder
-			end if
-			
-			SpaceUsed = objAdmin.GetDirectorySpaceUsed(strFolder)
-
-                'Gets the file name
-                strFileName = System.IO.Path.GetFileName(cmdBrowse.PostedFile.FileName).Tolower()
-
-                If ((((SpaceUsed + cmdBrowse.PostedFile.ContentLength) / 1048576) <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Or (Not (Request.Params("hostpage") Is Nothing)) Then
-
-                    
-                     strFileNamePath = RootFolder & strFileName
-
-                    strExtension = ""
-                    If InStr(1, strFileNamePath, ".") Then
-                        strExtension = Mid(strFileNamePath, InStrRev(strFileNamePath, ".") + 1).ToLower
-                    End If
-
-                    If InStr(1, "," & portalSettings.GetHostSettings("FileExtensions").ToString, "," & strExtension) <> 0 Or Not (Request.Params("hostpage") Is Nothing) Then
-                        'Save Uploaded file to server
-                        Try
-                            If File.Exists(strFileNamePath) Then
-							SpacedUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
-                            File.Delete(strFileNamePath)
-                            End If
-                            cmdBrowse.PostedFile.SaveAs(strFileNamePath)
-							SpaceUsed = SpaceUsed + cmdBrowse.PostedFile.ContentLength
-						If strExtension = "zip" And chkUnzip.Checked = True Then
-						SpaceUsed = UnZipFile(strFileNamePath ,  RootFolder, StrFolder, SpaceUsed) 
-                        Else
-						lstFiles.Items.Add(strFileName)
-						cmdRemove.Visible = True
-						lstFiles.Visible = True
-					    If RootFolder = strFolder then
-                        AddFile(strFileNamePath, strExtension, cmdBrowse.PostedFile.ContentType)
-						end if
-                    End If
-						
-						
-                        Catch
-                            ' save error - can happen if the security settings are incorrect
-                            lblMessage.Text += "<br>" & GetLanguage("WriteError")
-                        End Try
-                    Else
-                    ' restricted file type
-		            lblMessage.Text += "<br>" & replace(GetLanguage("FileExtNotAllowed"), "{fileext}", strFileName)
-					lblMessage.Text = replace(lblMessage.Text, "{allowedext}", " ( *." & Replace(portalSettings.GetHostSettings("FileExtensions").ToString, ",", ", *.") & " ).")
-                    End If
-                Else ' file too large
-				lblMessage.Text += "<br>" & GetLanguage("Gal_NoSpaceLeft")
+            StrFolder = HttpContext.Current.Request.MapPath(Zrequest.GalleryConfig.RootURL)
+            SpaceUsed = objAdmin.GetdirectorySpaceUsed(StrFolder) / 1048576
+            If Zrequest.GalleryConfig.Quota <> 0 Then
+                lblMessage.Text = "<p>" & GetLanguage("Gal_QuotaInfo1") + "</p>"
+                lblMessage.Text = Replace(lblMessage.Text, "{Quota}", Format(Zrequest.GalleryConfig.Quota, "#,##0.00"))
+                lblMessage.Text = Replace(lblMessage.Text, "{SpaceUsed}", Format(SpaceUsed, "#,##0.00"))
+                lblMessage.Text = Replace(lblMessage.Text, "{SpaceLeft}", Format(Zrequest.GalleryConfig.Quota - SpaceUsed, "#,##0.00"))
+                If ((SpaceUsed) >= Zrequest.GalleryConfig.Quota) Then
+                    lblMessage.Text += "<p>" & GetLanguage("Gal_QuotaInfo2") + "</p>"
+                    Return False
                 End If
-
-			Session("dt") = Nothing
-			objAdmin.AddDirectory( strFolder, SpaceUsed )
-            End If
-		 end if
-        End Sub
-
-        Private Sub cmdRemove_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdRemove.Click
-			Dim StrFolder as String
-			Dim RootFolder As String
-			Dim strFileNamePath As String
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		
-            If Not (Request.Params("hostpage") Is Nothing) Then
-                strFolder = Request.MapPath(glbSiteDirectory)
             Else
-                strFolder = Request.MapPath(_portalSettings.UploadDirectory)
+                lblMessage.Text = "<p>" + Replace(GetLanguage("Gal_QuotaInfo"), "{SpaceUsed}", Format(SpaceUsed, "#,##0.00")) + "</p>"
             End If
-
-			If Session("RootDir") <> "" then
-			RootFolder = Session("RootDir") & Session("RelativeDir") & "\" 
-			else
-			RootFolder = strFolder
-			end if
-			strFileNamePath = RootFolder & lstFiles.SelectedItem.Text
-            If File.Exists(strFileNamePath) Then
-               File.Delete(strFileNamePath)
+        End Function
+        Public Function SetMaxSize() As String
+            'SendToLog("SetMaxSize", Context)
+            ' System.Configuration.ConfigurationManager()
+            Dim instance As Object = ConfigurationManager.GetSection("system.web/httpRuntime")
+            'Dim instance As Object = Config.GetSection("system.web/httpRuntime")
+            instance = CType(instance, HttpRuntimeSection)
+            Dim MaxSize As Integer = instance.MaxRequestLength * 1024
+            If obj.IsGall Then
+                If MaxSize > Zrequest.GalleryConfig.MaxFileSize * 1024 Then
+                    MaxSize = Zrequest.GalleryConfig.MaxFileSize * 1024
+                End If
             End If
-
-
-            If lstFiles.Items.Count <> 0 Then
-                lstFiles.Items.Remove(lstFiles.SelectedItem.Text)
-				If lstFiles.Items.Count = 0 then
-					cmdRemove.Visible = False
-					lstFiles.Visible = False
-				end if
+            Return MaxSize.ToString
+        End Function
+        Public Function GetFileMaxSize() As String
+            'SendToLog("GetFileMaxSize", Context)
+            'Dim Config As System.Configuration.Configuration = WebConfigurationManager.OpenWebConfiguration("~")
+            Dim instance As Object = ConfigurationManager.GetSection("system.web/httpRuntime")
+            instance = CType(instance, HttpRuntimeSection)
+            Dim MaxSize As Integer = instance.MaxRequestLength
+            If obj.IsGall Then
+                If MaxSize > Zrequest.GalleryConfig.MaxFileSize Then
+                    MaxSize = Zrequest.GalleryConfig.MaxFileSize
+                End If
             End If
+            Dim DmaxSize As Double
+            DmaxSize = MaxSize / 1024
+            Return GetLanguage("Gal_MaxFileSize").Replace("{MaxFileSize}", Format(DmaxSize, "#,##0.00"))
+        End Function
+
+        Public Function GetFileType() As String
+            'SendToLog("GetFileType", Context)
+            Dim TempExtString As String = ""
+            Dim TempExt() As String
+            Dim i As Integer
+            TempExt = Split(obj.Extension, ",")
+            For i = 0 To TempExt.Length - 1
+                TempExtString += "*." + TempExt(i)
+                If i < TempExt.Length - 1 Then TempExtString += ";"
+            Next
+            Return TempExtString
+        End Function
+
+        Public Function GetMulti() As String
+            'SendToLog("GetMulti", Context)
+            Return obj.MultiFile.ToString.ToLower
+        End Function
+
+        Public Function GetQueueLimit() As String
+            'SendToLog("GetQueueLimit", Context)
+            Return obj.MaxFile.ToString
+        End Function
+
+        Public Function GetMaxQueue() As String
+            'SendToLog("GetMaxQueue", Context)
+            Return GetLanguage("MaxQueue").Replace("{MaxQueue}", GetQueueLimit)
+        End Function
+
+ 
+ 
+
+        Public Function GetPathCrypTo() As String
+            'SendToLog("GetPathCrypto", Context)
+            ' chkUnzip.AutoPostBack = obj.CUnzip
+            ' chkUnzip.Enabled = obj.CUnzip
+            ' chkUnzip.Checked = obj.Unzip
+
+
+            Dim builder As New StringBuilder()
+            Dim s As New XmlSerializer(obj.[GetType]())
+            Using writer As New StringWriter(builder)
+                s.Serialize(writer, obj)
+            End Using
+            Dim myInfo As String = builder.ToString()
+            Dim serializer As New JavaScriptSerializer()
+            Dim Json As String = serializer.Serialize(obj)
+
+
+
+            Dim vsKey As String = ""
+            vsKey = Guid.NewGuid().ToString()
+            '	Store the view state into database
+            Dim myConnection As New SqlConnection(GetDBConnectionString)
+            Try
+                myConnection.Open()
+
+                Dim myCommand As New SqlCommand("SqlViewStateProvider_SaveViewState", myConnection)
+
+                myCommand.CommandType = CommandType.StoredProcedure
+
+                '	Key
+                myCommand.Parameters.Add("@vsKey", SqlDbType.NVarChar, 100)
+                myCommand.Parameters("@vsKey").Value = vsKey
+
+                '	Serialized ViewState
+                myCommand.Parameters.Add("@vsValue", SqlDbType.NText, Json.Length)
+                myCommand.Parameters("@vsValue").Value = Json
+
+                myCommand.ExecuteNonQuery()
+
+                myCommand.Dispose()
+
+            Finally
+                myConnection.Dispose()
+            End Try
+
+            Return vsKey
+        End Function
+
+        Private Sub chkUnzip_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkUnzip.CheckedChanged
+            If obj.CUnzip Then
+                obj.Unzip = chkUnzip.Checked
+            End If
+            Session("UploadInfo") = obj
         End Sub
 
-
-		Private Function UnZipFile(ByVal strFileNamePath As STring, ByVal RootFolder As String, ByVal StrFolder As String, ByVal SpaceUsed as Double) As Double
-		
-            Dim strExtension As String = ""
-           
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
-		                  		
-                                ' save zip file name
-                                Dim strSaveFileNamePath As String = strFileNamePath
-
-                                Dim objZipEntry As ZipEntry
-								Dim objZipInputStream As New ZipInputStream(File.OpenRead(strFileNamePath))
-                                objZipEntry = objZipInputStream.GetNextEntry
-                                While Not objZipEntry Is Nothing
-                                    If ((((SpaceUsed + objZipEntry.Size) / 1048576) <= _portalSettings.HostSpace) Or _portalSettings.HostSpace = 0) Or (Not (Request.Params("hostpage") Is Nothing)) Then
-                                        strFileName = Path.GetFileName(objZipEntry.Name)
-										lstFiles.Items.Add(strFileName)
-										cmdRemove.Visible = True
-										lstFiles.Visible = True
-
-                                        If strFileName <> "" Then
-                                            strFileNamePath = RootFolder & strFileName
-                                            
-                                            strExtension = ""
-                                            If InStr(1, strFileNamePath, ".") Then
-                                                strExtension = Mid(strFileNamePath, InStrRev(strFileNamePath, ".") + 1).ToLower
-                                            End If
-
-                                            If InStr(1, "," & portalSettings.GetHostSettings("FileExtensions").ToString, "," & strExtension) <> 0 Or  Not (Request.Params("hostpage") Is Nothing) Then
-                                                If File.Exists(strFileNamePath) Then
-												SpacedUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
-                                                File.Delete(strFileNamePath)
-												End If
-                                                Dim objFileStream As FileStream = File.Create(strFileNamePath)
-
-                                                Dim intSize As Integer = 2048
-                                                Dim arrData(2048) As Byte
-
-                                                intSize = objZipInputStream.Read(arrData, 0, arrData.Length)
-                                                While intSize > 0
-                                                    objFileStream.Write(arrData, 0, intSize)
-                                                    intSize = objZipInputStream.Read(arrData, 0, arrData.Length)
-                                                End While
-
-                                                objFileStream.Close()
-												If RootFolder = strFolder then
-                                                AddFile(strFileNamePath, strExtension)
-												end if
-												SpaceUsed = SpaceUsed + New FileInfo(strFileNamePath).Length
-                                            Else
-                                                ' restricted file type
-								           lblMessage.Text += "<br>" & replace(GetLanguage("FileExtNotAllowed"), "{fileext}", strFileName)
-											lblMessage.Text = replace(lblMessage.Text, "{allowedext}", " ( *." & Replace(portalSettings.GetHostSettings("FileExtensions").ToString, ",", ", *.") & " ).")
-                                            End If
-                                        End If
-                                    Else ' file too large
-									lblMessage.Text += "<br>" & GetLanguage("Gal_NoSpaceLeft")
-                                    End If
-
-                                    objZipEntry = objZipInputStream.GetNextEntry
-                                End While
-                                objZipInputStream.Close()
-
-                                ' delete the zip file
-								SpacedUsed = SpaceUsed - New FileInfo(strFileNamePath).Length
-                                File.Delete(strSaveFileNamePath)
-								Return SpaceUsed
-		
-		End Function
-		
-        Private Sub AddFile(ByVal strFileNamePath As String, ByVal strExtension As String, Optional ByVal strContentType As String = "")
-
-            ' Obtain PortalSettings from Current Context
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-
-            Dim strFileName As String = Path.GetFileName(strFileNamePath)
-
-            If strContentType = "" Then
-                Select Case strExtension.ToLower()
-                    Case "txt" : strContentType = "text/plain"
-                    Case "htm", "html" : strContentType = "text/html"
-                    Case "rtf" : strContentType = "text/richtext"
-                    Case "jpg", "jpeg" : strContentType = "image/jpeg"
-                    Case "gif" : strContentType = "image/gif"
-                    Case "bmp" : strContentType = "image/bmp"
-                    Case "mpg", "mpeg" : strContentType = "video/mpeg"
-                    Case "avi" : strContentType = "video/avi"
-                    Case "pdf" : strContentType = "application/pdf"
-                    Case "doc", "dot" : strContentType = "application/msword"
-                    Case "csv", "xls", "xlt" : strContentType = "application/x-msexcel"
-                    Case Else : strContentType = "application/octet-stream"
-                End Select
-            End If
-
-            Dim imgImage As System.Drawing.Image
-            Dim strWidth As String = ""
-            Dim strHeight As String = ""
-
-            If InStr(1, glbImageFileTypes, strExtension) Then
-                Try
-                    imgImage = System.Drawing.Image.FromFile(strFileNamePath)
-                    strHeight = imgImage.Height
-                    strWidth = imgImage.Width
-                    imgImage.Dispose()
-                Catch
-                    ' error loading image file
-                    strContentType = "application/octet-stream"
-                End Try
-            End If
-
-            Dim objAdmin As New AdminDB()
-
-            If Not (Request.Params("hostpage") Is Nothing) Then
-                objAdmin.AddFile(-1, strFileName, strExtension, New FileInfo(strFileNamePath).Length, strWidth, strHeight, strContentType)
-
-            Else
-                objAdmin.AddFile(_portalSettings.PortalId, strFileName, strExtension, New FileInfo(strFileNamePath).Length, strWidth, strHeight, strContentType)
-            End If
-
-        End Sub
-
-        Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-            Response.Redirect(CType(Viewstate("UrlReferrer"), String), True)
-        End Sub
-
-		
         Private Sub cmdUpdate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdate.Click
 
             Dim admin As New AdminDB()
@@ -455,8 +378,8 @@ Namespace DotNetZoom
                 End If
             End If
 
-            admin.UpdatePortalSetting(_PortalSettings.PortalID, "uploadroles", UploadRoles)
-			
+            admin.UpdatePortalSetting(_portalSettings.PortalId, "uploadroles", UploadRoles)
+
         End Sub
 
         Private Sub cmdSynchronize_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdSynchronize.Click
@@ -472,13 +395,14 @@ Namespace DotNetZoom
             End If
 
         End Sub
-	
-	
+
+
         Private Sub cmdCancelOptions_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancelOptions.Click
-			  Response.Redirect(CType(Viewstate("UrlReferrer"), String), True)        
-        End Sub			
-		
-		
+            Session("UploadInfo") = Nothing
+            Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
+        End Sub
+
+
     End Class
 
 End Namespace

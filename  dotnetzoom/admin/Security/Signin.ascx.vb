@@ -36,6 +36,7 @@ Namespace DotNetZoom
         Protected WithEvents txtUsername As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtPassword As System.Web.UI.WebControls.TextBox
         Protected WithEvents rowVerification1 As System.Web.UI.HtmlControls.HtmlTableRow
+        Protected WithEvents ExitTD As System.Web.UI.HtmlControls.HtmlTableCell
         Protected WithEvents txtVerification As System.Web.UI.WebControls.TextBox
         Protected WithEvents chkCookie As System.Web.UI.WebControls.CheckBox
         Protected WithEvents cmdLogin As System.Web.UI.WebControls.Button
@@ -68,6 +69,7 @@ Namespace DotNetZoom
 			Help.ToolTip = getlanguage("title_enter")
 			Help.Visible = True
             help.NavigateUrl = "javascript:var m = window.open('" + glbHTTP() + "admin/tabs/help.aspx?help=DisplayHelp_Signin&TabId=" & _portalSettings.ActiveTab.TabId & "&L=" & GetLanguage("N") & "', 'help', 'width=640,height=400,left=100,top=100,titlebar=0,scrollbars=1,menubar=0,status=0,location=0,resizable=1');m.focus();"
+            ExitTD.Visible = Not Request.Params("showlogin") Is Nothing
 
      		Dim _Setting As HashTable = PortalSettings.GetSiteSettings(_portalSettings.PortalID)
 			If _Setting("loginModuleContainer") <> "" then
@@ -115,6 +117,13 @@ Namespace DotNetZoom
             txtPassword.Attributes.Add("value", txtPassword.Text)
 
             If Page.IsPostBack = False Then
+                ' Store URL Referrer to return to portal
+                If Not Request.UrlReferrer Is Nothing Then
+                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                Else
+                    ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                End If
+
                 Try
                     SetFormFocus(txtUsername)
                 Catch
@@ -262,8 +271,10 @@ Namespace DotNetZoom
                                         TempQuerystring = TempQuerystring.Replace("&showlogin=1", "")
                                         TempQuerystring = TempQuerystring.Replace("showlogin=1&", "")
                                         TempQuerystring = TempQuerystring.Replace("?showlogin=1", "")
+                                        Response.Redirect(GetFullDocument(_portalSettings.ActiveTab.ssl) & "?" & TempQuerystring, True)
+                                    Else
+                                        Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
                                     End If
-                                    Response.Redirect(GetFullDocument(_portalSettings.ActiveTab.ssl) & "?" & TempQuerystring, True)
                                 End If
                             Else
                                 lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)

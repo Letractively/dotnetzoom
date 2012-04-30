@@ -61,6 +61,7 @@ Namespace DotNetZoom
 
         Protected WithEvents cboUpgrade As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cmdUpgrade As System.Web.UI.WebControls.LinkButton
+        Protected WithEvents cmdDeleteLog As System.Web.UI.WebControls.LinkButton
         Protected WithEvents lblUpgrade As System.Web.UI.WebControls.Label
 		Protected WithEvents ddlTimeserver As System.Web.UI.WebControls.Label
 		Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
@@ -244,12 +245,13 @@ Namespace DotNetZoom
                 txtSMTPServerPassword.Text = ""
             End If
             txtFileExtensions.Text = PortalSettings.GetHostSettings("FileExtensions").ToString
-
-            Dim intVersion As Integer
-            For intVersion = 0 To ApplicationVersion
-                cboUpgrade.Items.Add("1.0." & intVersion.ToString)
+            Dim dirInfo As New DirectoryInfo(Server.MapPath(glbPath + "Database/"))
+            Dim items() As FileInfo
+            items = DirInfo.GetFiles("*.log")
+            For Each item In items
+                cboUpgrade.Items.Add(item.Name.Remove(item.Name.Length - 4, 4))
             Next
-
+            cmdDeleteLog.Text = "<img height=""14"" width=""14"" border=""0"" src=""" & glbPath & "images/1x1.gif""  title="""" onmouseover=""" & ReturnToolTip(GetLanguage("delete")) & """ Alt=""ca"" style="" background: url('" & glbPath & "images/uostrip.gif') no-repeat; background-position: 0px -333px;"">"
         End Sub
 
         Private Sub Update_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click
@@ -329,11 +331,23 @@ Namespace DotNetZoom
 
         Private Sub cmdUpgrade_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdUpgrade.Click
 
-            If File.Exists(Server.MapPath("Database\" & cboUpgrade.SelectedItem.Text & ".log")) Then
+            If File.Exists(Server.MapPath(glbPath + "Database/" & cboUpgrade.SelectedItem.Text & ".log")) Then
                 Dim objStreamReader As StreamReader
-                objStreamReader = File.OpenText(Server.MapPath("Database\" & cboUpgrade.SelectedItem.Text & ".log"))
+                objStreamReader = File.OpenText(Server.MapPath(glbPath + "Database/" & cboUpgrade.SelectedItem.Text & ".log"))
                 lblUpgrade.Text = Replace(objStreamReader.ReadToEnd, ControlChars.Lf, "<br>")
                 objStreamReader.Close()
+            Else
+                lblUpgrade.Text = GetLanguage("HS_NoLog")
+            End If
+
+        End Sub
+
+        Private Sub cmdDeleteLog_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdDeleteLog.Click
+
+            If File.Exists(Server.MapPath(glbPath + "Database/" & cboUpgrade.SelectedItem.Text & ".log")) Then
+                File.Delete(Server.MapPath(glbPath + "Database/" & cboUpgrade.SelectedItem.Text & ".log"))
+                lblUpgrade.Text = GetLanguage("delete") + " - " + cboUpgrade.SelectedItem.Text
+                cboUpgrade.SelectedItem.Enabled = False
             Else
                 lblUpgrade.Text = GetLanguage("HS_NoLog")
             End If

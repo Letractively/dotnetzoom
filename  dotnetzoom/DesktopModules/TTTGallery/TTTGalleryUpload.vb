@@ -23,6 +23,7 @@ Imports System.Web.UI.WebControls
 Imports DotNetZoom
 Imports DotNetZoom.TTTUtils
 Imports ICSharpCode.SharpZipLib.Zip
+Imports ICSharpCode.SharpZipLib.Core
 Imports System.Drawing
 
 
@@ -129,7 +130,8 @@ Namespace DotNetZoom
 			Dim ZipKeepSourcePath As String
             Dim UploadFilePath As String = ""
             Dim albumFilePath As String
-			Dim ThumbFilePath As String
+            Dim ThumbFilePath As String
+            Dim SourceFilePath As String
             Dim IStobeResized As Boolean
             Dim i As Integer
 			Dim NumberOfFile As Integer = 0
@@ -176,6 +178,7 @@ Namespace DotNetZoom
                         End If
                         albumFilePath = Path.Combine(_album.Path, uploadFile.Name.ToLower())
                         ThumbFilePath = Path.Combine(_album.Path, ZgalleryConfig.ThumbFolder & "\" & uploadFile.Name.ToLower())
+                        SourceFilePath = Path.Combine(_album.Path, ZgalleryConfig.SourceFolder & "\" & uploadFile.Name.ToLower())
                         ' Do upload - create folder if not exists then upload file
                         Try
                             If Not Directory.Exists(uploadPath) Then
@@ -198,12 +201,15 @@ Namespace DotNetZoom
                                     ' Delete File Size
                                     _SpaceUsed -= New FileInfo(uploadFile.uploadFilePath).Length
                                     File.Delete(uploadFile.uploadFilePath)
+                                Else
+                                    System.IO.File.Move(uploadFile.uploadFilePath, SourceFilePath)
                                 End If
 
                             Catch Exc As System.Exception
                                 _errMessage += "<br>" + Exc.Message
                             End Try
-
+                        Else
+                            System.IO.File.Move(uploadFile.uploadFilePath, albumFilePath)
                         End If ' Resize
 
                         ' Update XMLData - except Zip file
@@ -234,7 +240,7 @@ Namespace DotNetZoom
 
                             Dim Latitude As String = "0"
                             Dim Longitude As String = "0"
-                            Dim TempSort As String = uploadFile.Name
+                            Dim TempSort As String = uploadFile.Name.ToLower()
                             Select Case uploadFile.Extension.ToLower()
                                 Case ".jpg", ".jpeg", ".tif", ".png"
                                     Dim Exif As New ExifWorks(albumFilePath)
@@ -274,7 +280,7 @@ Namespace DotNetZoom
                             End If
                             Dim What As New DataInfo
                             ' IGalleryObjectInfo()
-                            What.Name = uploadFile.Name
+                            What.Name = uploadFile.Name.ToLower()
                             What.Title = uploadFile.Title
                             What.Description = uploadFile.Description
                             What.Categories = uploadFile.Categories

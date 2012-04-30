@@ -20,6 +20,10 @@
                 <asp:dropdownlist id="cboXML" runat="server" Width="390" DataValueField="Value" DataTextField="Text" CssClass="NormalTextBox"></asp:dropdownlist>
                 &nbsp; 
                 <asp:HyperLink id="cmdUpload1" Runat="server" CssClass="CommandButton"></asp:HyperLink>
+                   <asp:ImageButton ID="UploadReturn" runat="server" EnableViewState="false" Visible="False"
+                        Height="16" Width="16" ImageUrl="~/images/save.gif" Style="border-width: 0px">
+                    </asp:ImageButton>
+ 
             </td>
         </tr>
         <tr valign="top">

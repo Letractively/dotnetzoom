@@ -114,9 +114,6 @@ Namespace DotNetZoom
             End If
             ' Language to Use
             If Not Page.IsPostBack Then
-                If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
-                    PutInLogin()
-                End If
                 Dim HashL As Hashtable = objAdmin.GetAvailablelanguage
                 For Each de As DictionaryEntry In HashL
                     Dim itemL As New ListItem()
@@ -131,10 +128,6 @@ Namespace DotNetZoom
                     ddlLanguage.Items.FindByText(GetLanguage("language")).Selected = True
                 Else
                     ddlLanguage.SelectedIndex = 0
-                End If
-            Else
-                If ViewState("login") = "True" Then
-                    PutInLogin()
                 End If
             End If
 
@@ -546,56 +539,15 @@ Namespace DotNetZoom
             Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
         End Sub
 
-        Private Sub PutInLogin()
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            ViewState("login") = "True"
-            Dim objModule As PortalModuleControl = CType(CType(Me.Page, BasePage).LoadModule("~/Admin/Security/SignIn.ascx"), PortalModuleControl)
-            Dim objPane As Control = Page.FindControl("contentpane")
-
-            If Not objModule Is Nothing Then
-                objModule.ID = "SignIn"
-                Dim LoginContainer As String = "<div id=""signin"">[MODULE]</div>"
-
-                If PortalSettings.GetSiteSettings(_portalSettings.PortalId).ContainsKey("logincontainer") Then
-                    LoginContainer = "<div id=""signin"" style=""z-index: 4"">" & PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainer") & "</div>"
-                End If
-                Dim arrContainer As Array = SplitContainer(LoginContainer, _portalSettings.UploadDirectory, IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment") <> "", PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerAlignment"), ""), IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor") <> "", PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerColor"), ""), IIf(PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder") <> "", PortalSettings.GetSiteSettings(_portalSettings.PortalId)("logincontainerBorder"), ""))
-                Dim pnlafter As New System.Web.UI.LiteralControl()
-                Dim pnlbefore As New System.Web.UI.LiteralControl()
-                pnlbefore.Text = arrContainer(0)
-                objPane.Controls.AddAt(0, pnlbefore)
-                pnlafter.Text = arrContainer(1)
-                objPane.Controls.AddAt(1, objModule)
-                objPane.Controls.AddAt(2, pnlafter)
-            End If
-        End Sub
 
         Private Sub cmdLogin_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdLogin.Click
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-            If Request.Params("def") = "Edit Access Denied" Or Request.Params("def") = "Access Denied" Then
-                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1"), True)
-            Else
-                If HttpContext.Current.Request.IsSecureConnection And _portalSettings.SSL Then
-                    PutInLogin()
-                Else
-                    ' if page not SSL and Must SSL then redirect
-                    Dim TempQuerystring As String = Context.Request.QueryString.ToString()
-                    If Request.Params("showlogin") Is Nothing Then
-                        If TempQuerystring = "" Then
-                            TempQuerystring = "showlogin=1"
-                        Else
-                            TempQuerystring = TempQuerystring & "&showlogin=1"
-                        End If
-                    End If
-                    Response.Redirect(GetFullDocument(_portalSettings.SSL) & "?" & TempQuerystring, True)
-                End If
-            End If
+            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Login"), True)
         End Sub
 
         Private Sub cmdLogOff_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdLogOff.Click
             LogOffUser()
             ' Redirect browser back to portal home page
-
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString), True)

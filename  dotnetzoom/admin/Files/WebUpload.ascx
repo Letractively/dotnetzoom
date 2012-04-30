@@ -2,6 +2,7 @@
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
+
 <asp:placeHolder id="Upload" runat="server">
 <table cellspacing="0" cellpadding="0" >
     <tbody>
@@ -16,51 +17,63 @@
         <td>
         </td>
 		</tr>
-        <tr>
-            <td colspan="2">
-                &nbsp;</td>
-        </tr>
+        <tr><td colspan="2">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script language="JavaScript" type="text/javascript">
+        !window.jQuery && document.write('<script src="javascript\/jquery-1.4.3.min.js"><\/script>');
+    </script>
+	<script type="text/javascript" src="/javascript/swfobject.js"></script>
+	<script type="text/javascript" src="/javascript/jquery.uploadify.v2.1.4.js"></script> 
+           <div class="demo">
+                <asp:FileUpload ID="FileUpload1" runat="server"/>
+				<br />
+				<a href="#" Class="CommandButton" id="startUploadLink"><%= DotNetZoom.GetLanguage("upload")%></a>&nbsp; |&nbsp;
+				<a href="#" Class="CommandButton" id="clearQueueLink"><%= DotNetZoom.GetLanguage("cmdRemove")%></a>&nbsp; |&nbsp;
+                <asp:HyperLink id="cmdCancel" runat="server" Cssclass="CommandButton"></asp:Hyperlink>
+                <p>
+                <asp:CheckBox id="chkUnzip" autopostback=true Runat="server" CssClass="Normal" Textalign="Right"></asp:CheckBox>
+                </p>
+            </div>
+     </td></tr>
+        <script type="text/javascript">
+    oO = [];
+    oO.queue = '<%=DotNetZoom.RTESafe(GetMaxQueue)%>';
+    oO.c = '<%=DotNetZoom.RTESafe(DotNetZoom.GetLanguage("OK"))%>';
+    oO.r = '<%=DotNetZoom.RTESafe(DotNetZoom.GetLanguage("ReplaceFile"))%> ';
+    oO.e = ' <%=DotNetZoom.RTESafe(DotNetZoom.GetLanguage("error"))%>';
+    oO.fs = ' <%=DotNetZoom.RTESafe(GetFileMaxSize)%>';
 
-		<tr>
-		<td class="SubHead" align="left">
-        <label for="<%=cmdBrowse.ClientID%>"><%= DotNetZoom.GetLanguage("F_UploadFile") %>&nbsp;:&nbsp;</label> 
-		</td>
-		    <td align="left">
-                <input id="cmdBrowse" type="file" size="50" runat="server" />&nbsp;&nbsp;<asp:LinkButton id="cmdAdd" Runat="server" CssClass="CommandButton"></asp:LinkButton>
-			</td>
-        </tr>
-        <tr>
-		<td>
-		 &nbsp;
-		</td>
-        <td class="SubHead">
-        <asp:CheckBox id="chkUnzip"  Runat="server" CssClass="Normal" Textalign="Right"></asp:CheckBox>
-		</td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td align="left" colspan="2">
-                <label style="DISPLAY: none" for="<%=lstFiles.ClientID%>"><%= DotNetZoom.GetLanguage("F_UploadFileList") %></label> 
-                <asp:ListBox id="lstFiles" Visible="False" Runat="server" CssClass="NormalTextBox" Width="500px" Rows="5"></asp:ListBox>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td align="left">
-                <asp:LinkButton id="cmdRemove" Runat="server" CssClass="CommandButton"></asp:LinkButton>
-             &nbsp;   
-            </td>
-            <td align="left">
-             <asp:LinkButton id="cmdCancel" runat="server" Cssclass="CommandButton"></asp:LinkButton>
-            </td>
-        </tr>
-		</asp:placeHolder>
+    $(document).ready(function () {
+        $("#<%=FileUpload1.ClientID%>").uploadify({
+            'uploader': '/javascript/uploadify.swf',
+            'script': '/admin/files/UploadVB.ashx',
+            'checkScript' : '/admin/files/CheckVB.ashx',
+            'cancelImg': '/images/cancel.gif',
+            'folder': '<%=GetPathCrypTo%>',
+            'queueSizeLimit': <%=GetQueueLimit%>,
+            'buttonText': '<%=DotNetZoom.RTESafe(DotNetZoom.GetLanguage("label_SelectFile"))%>',
+            'fileExt': '<%=GetFileType%>',
+            'fileDesc': '<%=GetFileType%>',
+            'sizeLimit': '<%=SetMaxSize%>',
+            'multi': '<%=GetMulti%>'
+        });
+
+        $("#startUploadLink").click(function () {
+            $('#<%=FileUpload1.ClientID%>').uploadifyUpload();
+            return false;
+        });
+
+        $("#clearQueueLink").click(function () {
+            $("#<%=FileUpload1.ClientID%>").uploadifyClearQueue();
+            return false;
+        });
+    });
+
+        </script>
+        
+
+
+ 		</asp:placeHolder>
         <tr>
             <td align="justify" colspan="2">
                 <asp:Label id="lblMessage" runat="server" cssclass="NormalRed" width="400" enableviewstate="False"></asp:Label></td>

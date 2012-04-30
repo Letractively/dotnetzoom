@@ -1,7 +1,7 @@
 <%@ Control Language="vb" Inherits="DotNetZoom.Contacts" codebehind="Contacts.ascx.vb" autoeventwireup="false" Explicit="True" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <portal:title id="Title1" runat="server"></portal:title>
-<asp:PlaceHolder id="pnlModuleContent" Runat="server">
+<asp:PlaceHolder EnableViewState="false" id="pnlModuleContent" Runat="server">
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <asp:datagrid id="grdContacts" runat="server" gridlines="none" AutoGenerateColumns="false" EnableViewState="false" CellPadding="4">
 <Columns>
