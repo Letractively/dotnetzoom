@@ -68,10 +68,9 @@ Namespace DotNetZoom
                     Else
                         FCKeditor1.Value = objAdmin.GetSinglelonglanguageSettings(Language, "PortalPrivacy", _portalSettings.PortalId)
                     End If
-                    Dim _language As Hashtable = HttpContext.Current.Items("Language")
-                    cmdUpdate.Text = _language("enregistrer")
+                    cmdUpdate.Text = GetLanguage("enregistrer")
                     cmdUpdate.CommandArgument = Language
-                    cmdCancel.Text = _language("return")
+                    cmdCancel.Text = GetLanguage("return")
                     cmdCancel.Attributes.Add("onClick", "javascript:window.close();")
                     pnlRichTextBox.Visible = True
                     SetFckEditor()

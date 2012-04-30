@@ -20,7 +20,7 @@
 ' DEALINGS IN THE SOFTWARE.
 '
 Imports System
-Imports System.Configuration
+Imports System.Web.Configuration
 Imports System.IO
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -51,8 +51,8 @@ Namespace DotNetZoom
         Public Const AssemblyTitle As String =  "DotNetZoom"
 		Public Const AssemblyProduct AS String = "http://www.DotNetZoom.com"
         Public Const AssemblyCopyright As String = "Les codes sources du portail sont copyrights © 2002-2003 par DotNetNuke et 2004-YYYY par DotNetZoom. tous droits réservés"
-        Public Const AssemblyVersion As String = "1.0.3"
-		Public Const ApplicationVersion As integer = 3
+        Public Const AssemblyVersion As String = "1.0.5"
+        Public Const ApplicationVersion As Integer = 5
 
 
         Public Const glbRoleAllUsers As String = "-1"
@@ -61,6 +61,7 @@ Namespace DotNetZoom
 
         Public Const glbImageFileTypes As String = "jpg,jpeg,jpe,gif,bmp,png"
         Public Const glbGoogleEarthTypes As String = "kml,kmz,gpx,gdb"
+        Public Const glbModuleFileTypes As String = "xml,dll,css,skin,js,htm,html,ascx,aspx,ashx,txt,swf,sql"
 
         Public ReadOnly Property glbSiteDirectory() As String
             Get
@@ -87,6 +88,49 @@ Namespace DotNetZoom
         End Property
 
 
+        <Serializable()> _
+        Public Class UploadInfo
+            Public PortalID As Integer = 0
+            Public UserID As Integer = 0
+            Public ModuleID As Integer = 0
+            Public MaxFile As Integer = 0
+            Public MultiFile As Boolean = False
+            Public IsGall As Boolean = False
+            Public IsHost As Boolean = False
+            Public UploadDirectory As [String] = Nothing
+            Public Extension As [String] = Nothing
+            Public UnzipExtension As [String] = Nothing
+            Public Name As [String] = Nothing
+            Public Comment As [String] = Nothing
+            Public Type As [String] = Nothing
+            Public Unzip As Boolean = False
+            Public CUnzip As Boolean = True
+        End Class
+
+        Public Sub SetUpModuleUpload(ByVal Directory As String, ByVal Extension As String, ByVal IsHost As Boolean, Optional ByVal ZipIt As Boolean = False, Optional ByVal UnzipExtension As String = Nothing)
+            Dim _UploadInfo As New UploadInfo
+            _UploadInfo.UploadDirectory = Directory
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            _UploadInfo.PortalID = _portalSettings.PortalId
+            _UploadInfo.UserID = (New Utility).GetUserID()
+            _UploadInfo.ModuleID = 0
+            _UploadInfo.MaxFile = 15
+            _UploadInfo.MultiFile = True
+            _UploadInfo.IsGall = False
+            _UploadInfo.IsHost = IsHost
+            _UploadInfo.Extension = Extension
+            If UnzipExtension = Nothing Then
+                _UploadInfo.UnzipExtension = Extension
+            Else
+                _UploadInfo.UnzipExtension = UnzipExtension
+            End If
+            _UploadInfo.Name = Nothing
+            _UploadInfo.Comment = Nothing
+            _UploadInfo.Type = Nothing
+            _UploadInfo.Unzip = ZipIt
+            _UploadInfo.CUnzip = Not ZipIt
+            HttpContext.Current.Session("UploadInfo") = _UploadInfo
+        End Sub
 
        Public function SplitContainer( ByVal strContainer As String, ByVal strUploadDirectory As String, Optional ByVal strAlignment As String = "", Optional ByVal strColor As String = "", Optional ByVal strBorder As String = "") as array
 			If strContainer.IndexOf("[MODULE]") = -1 then strContainer = "[MODULE]" 
@@ -95,7 +139,19 @@ Namespace DotNetZoom
             strContainer = Replace(strContainer, "[BORDER]", IIf(strBorder <> "", " border=""" & strBorder & """", ""))
             Return Split(strContainer, "[MODULE]")
        End function		 
-		 
+
+        Public Sub LogErrorMessage(ByVal Request As HttpRequest, ByVal Erreur As Exception)
+            Try
+                Dim objStream As StreamWriter
+                objStream = File.AppendText(Request.MapPath(glbPath + "database/erreur.log"))
+                objStream.WriteLine(DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss") + " Erreur : " + Erreur.Message)
+                objStream.WriteLine(Request.HttpMethod + " : " + Request.Url.OriginalString)
+                objStream.WriteLine(Erreur.StackTrace + " <--|")
+                objStream.Close()
+            Catch
+            End Try
+        End Sub
+
         Public Function BuildErrorMessage(ByVal Request As HttpRequest) As String
 
             Try
@@ -127,77 +183,77 @@ Namespace DotNetZoom
                 Return ""
             End Try
         End Function
-		
-		Public Sub RegisterBADip(ByVal BadIP as String)
-		Dim TempTime As integer = 1
-		If HttpContext.Current.Cache(BadIP) Is Nothing Then
-        HttpContext.Current.Cache.Insert(BadIP, TempTime, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.normal, nothing)
-		else
-		TempTime = HttpContext.Current.Cache(BadIP) + 1
-		HttpContext.Current.Cache(BadIP) = TempTime
-		End If
-		If tempTime > 10 then 
-		HttpContext.Current.Application(BadIP) = DateTime.Now.AddHours(1)
-		Dim StrBody As New StringBuilder()
-		Dim UserId As Integer = -1
-        If HttpContext.Current.Request.IsAuthenticated Then
-        UserId = CType(HttpContext.Current.User.Identity.Name, Integer)
-	    End If
-		Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		try
-		if HttpContext.Current.Request.UrlReferrer Is Nothing then
-		strBody.AppendFormat(GetLanguage("Bad_IPTXT"), BadIP, "*" , HttpContext.Current.Request.Url.ToString(), HttpContext.Current.Request.UserAgent, UserID.ToString())
-		else
-		strBody.AppendFormat(GetLanguage("Bad_IPTXT"), BadIP, HttpContext.Current.Request.UrlReferrer.ToString() , HttpContext.Current.Request.Url.ToString(), HttpContext.Current.Request.UserAgent, UserID.ToString())
-        end if
-		SendNotification(portalSettings.GetHostSettings("HostEmail"), _portalSettings.Email, portalSettings.GetHostSettings("HostEmail"), GetLanguage("Bad_IP"), strBody.ToString)
-    	Catch objException As Exception
-        SendNotification(portalSettings.GetHostSettings("HostEmail"), _portalSettings.Email, portalSettings.GetHostSettings("HostEmail"), GetLanguage("Bad_IP"), BadIP )
-		End Try
-		HttpContext.Current.Response.redirect("/", true)
+
+        Public Sub RegisterBADip(ByVal BadIP As String)
+            Dim TempTime As Integer = 1
+            If HttpContext.Current.Cache(BadIP) Is Nothing Then
+                HttpContext.Current.Cache.Insert(BadIP, TempTime, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Normal, Nothing)
+            Else
+                TempTime = HttpContext.Current.Cache(BadIP) + 1
+                HttpContext.Current.Cache(BadIP) = TempTime
+            End If
+            If TempTime > 10 Then
+                HttpContext.Current.Application(BadIP) = DateTime.Now.AddHours(1)
+                Dim StrBody As New StringBuilder()
+                Dim UserId As Integer = -1
+                If HttpContext.Current.Request.IsAuthenticated Then
+                    UserId = CType(HttpContext.Current.User.Identity.Name, Integer)
+                End If
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                Try
+                    If HttpContext.Current.Request.UrlReferrer Is Nothing Then
+                        StrBody.AppendFormat(GetLanguage("Bad_IPTXT"), BadIP, "*", HttpContext.Current.Request.Url.ToString(), HttpContext.Current.Request.UserAgent, UserId.ToString())
+                    Else
+                        StrBody.AppendFormat(GetLanguage("Bad_IPTXT"), BadIP, HttpContext.Current.Request.UrlReferrer.ToString(), HttpContext.Current.Request.Url.ToString(), HttpContext.Current.Request.UserAgent, UserId.ToString())
+                    End If
+                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), _portalSettings.Email, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("Bad_IP"), StrBody.ToString)
+                Catch objException As Exception
+                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), _portalSettings.Email, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("Bad_IP"), BadIP)
+                End Try
+                HttpContext.Current.Response.Redirect("/", True)
             End If
 
-		end sub
-		
+        End Sub
+
         Public Sub EditDenied()
-        	 HttpContext.Current.Response.Redirect(GetDocument() & "&def=Edit Access Denied", True)
+            HttpContext.Current.Response.Redirect(GetDocument() & "&def=Edit Access Denied", True)
         End Sub
 
         Public Sub AccessDenied()
-				HttpContext.Current.Response.Redirect(GetDocument() & "&def=Access Denied", True)
+            HttpContext.Current.Response.Redirect(GetDocument() & "&def=Access Denied", True)
         End Sub
 
         Public Sub LogOffUser()
             ' Log User Off from Cookie Authentication System
             ' Reset Session variable
-		   	  FormsAuthentication.SignOut()
+            FormsAuthentication.SignOut()
             ' expire cookies
-             HttpContext.Current.Response.Cookies("portalid").Value = Nothing
-             HttpContext.Current.Response.Cookies("portalid").Path = "/"
-             HttpContext.Current.Response.Cookies("portalid").Expires = DateTime.Now.AddYears(-30)
-             HttpContext.Current.Response.Cookies("portalroles").Value = Nothing
-             HttpContext.Current.Response.Cookies("portalroles").Path = "/"
-             HttpContext.Current.Response.Cookies("portalroles").Expires = DateTime.Now.AddYears(-30)
+            HttpContext.Current.Response.Cookies("portalid").Value = Nothing
+            HttpContext.Current.Response.Cookies("portalid").Path = "/"
+            HttpContext.Current.Response.Cookies("portalid").Expires = DateTime.Now.AddYears(-30)
+            HttpContext.Current.Response.Cookies("portalroles").Value = Nothing
+            HttpContext.Current.Response.Cookies("portalroles").Path = "/"
+            HttpContext.Current.Response.Cookies("portalroles").Expires = DateTime.Now.AddYears(-30)
         End Sub
 
-		Public Sub ClearHostCache()
-		HttpContext.Current.Cache.Remove(GetDBName)
-		end sub
+        Public Sub ClearHostCache()
+            HttpContext.Current.Cache.Remove(GetDBname)
+        End Sub
 
-		Public Sub ClearPortalCache(ByVal PortalId As integer)
-		HttpContext.Current.Cache.Remove(GetDBname & "P_" & PortalID.ToString)
-		end sub
+        Public Sub ClearPortalCache(ByVal PortalId As Integer)
+            HttpContext.Current.Cache.Remove(GetDBname() & "P_" & PortalId.ToString)
+        End Sub
 
-		Public Sub ClearTabCache(ByVal TabId As integer)
-		HttpContext.Current.Cache.Remove(GetDBname & "T_" & TabId.ToString)
-		end sub
-		
-		Public Sub ClearModuleCache(ByVal ModuleId As Integer)
-		HttpContext.Current.Cache.Remove(GetDBname & "M_" & ModuleID.ToString)
-		end sub
-		
+        Public Sub ClearTabCache(ByVal TabId As Integer)
+            HttpContext.Current.Cache.Remove(GetDBname() & "T_" & TabId.ToString)
+        End Sub
 
-        Public Sub SetEditor(ByVal FCKeditor1 As FCKeditor)
+        Public Sub ClearModuleCache(ByVal ModuleId As Integer)
+            HttpContext.Current.Cache.Remove(GetDBname() & "M_" & ModuleId.ToString)
+        End Sub
+
+
+        Public Sub SetEditor(ByVal FCKeditor1 As Fckeditor)
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             If GetLanguage("fckeditor_language") <> "auto" Then
@@ -208,33 +264,34 @@ Namespace DotNetZoom
                 FCKeditor1.SkinPath = _portalSettings.UploadDirectory & "skin/fckeditor/"
                 FCKeditor1.EditorAreaCSS = _portalSettings.UploadDirectory & "skin/fckeditor/fck_editorarea.css"
                 FCKeditor1.StylesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fckstyles.xml"
+                FCKeditor1.TemplatesXmlPath = _portalSettings.UploadDirectory & "skin/fckeditor/fcktemplates.xml"
             End If
         End Sub
 
-		Public Function CDp( ByVal PortalId As Integer, Optional ByVal TabId As Integer = 0,Optional ByVal ModuleId As Integer = 0) as CacheDependency
-	    Dim dependencyKey(3) As String
-		Dim context As HttpContext = HttpContext.Current
-  	    dependencyKey(0) = GetDBname
-		dependencyKey(1) = GetDBname & "P_" & PortalID.ToString
-		dependencyKey(2) = GetDBname & "T_" & TabID.ToString
-		dependencyKey(3) = GetDBname & "M_" & ModuleID.ToString
-		If Context.Cache(dependencyKey(0)) is nothing then
-		Context.Cache.Insert(dependencyKey(0), portalsettings.GetVersion(), Nothing)
-		end if
+        Public Function CDp(ByVal PortalId As Integer, Optional ByVal TabId As Integer = 0, Optional ByVal ModuleId As Integer = 0) As CacheDependency
+            Dim dependencyKey(3) As String
+            Dim context As HttpContext = HttpContext.Current
+            dependencyKey(0) = GetDBname()
+            dependencyKey(1) = GetDBname() & "P_" & PortalId.ToString
+            dependencyKey(2) = GetDBname() & "T_" & TabId.ToString
+            dependencyKey(3) = GetDBname() & "M_" & ModuleId.ToString
+            If context.Cache(dependencyKey(0)) Is Nothing Then
+                context.Cache.Insert(dependencyKey(0), PortalSettings.GetVersion(), Nothing)
+            End If
 
-		If Context.Cache(dependencyKey(1)) is nothing then
-		Context.Cache.Insert(dependencyKey(1), DateTime.Now(), Nothing)
-		end if
-		If Context.Cache(dependencyKey(2)) is nothing then
-		Context.Cache.Insert(dependencyKey(2), DateTime.Now(), Nothing)
-		end if
-		If Context.Cache(dependencyKey(3)) is nothing then
-		Context.Cache.Insert(dependencyKey(3), DateTime.Now(), Nothing)
-		end if	
-	
-		Dim dependency As new CacheDependency(Nothing, dependencyKey)
-		Return Dependency
-		end function	
+            If context.Cache(dependencyKey(1)) Is Nothing Then
+                context.Cache.Insert(dependencyKey(1), DateTime.Now(), Nothing)
+            End If
+            If context.Cache(dependencyKey(2)) Is Nothing Then
+                context.Cache.Insert(dependencyKey(2), DateTime.Now(), Nothing)
+            End If
+            If context.Cache(dependencyKey(3)) Is Nothing Then
+                context.Cache.Insert(dependencyKey(3), DateTime.Now(), Nothing)
+            End If
+
+            Dim dependency As New CacheDependency(Nothing, dependencyKey)
+            Return dependency
+        End Function
 
         ' returns the absolute server path to the root ( ie. D:\Inetpub\wwwroot\directory\ )
         Public Function GetAbsoluteServerPath(ByVal Request As HttpRequest) As String
@@ -304,9 +361,9 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             SendNotification = ""
             Dim mail As New MailMessage()
-			
-			strBody = Replace(strBody, "src=""/", "src=""http://" + HttpContext.Current.Request.ServerVariables("HTTP_HOST") + "/")
-			
+
+            strBody = Replace(strBody, "src=""/", "src=""http://" + HttpContext.Current.Request.ServerVariables("HTTP_HOST") + "/")
+
             mail.From = strFrom
             mail.To = strTo
             If strBcc <> "" Then
@@ -330,19 +387,19 @@ Namespace DotNetZoom
             End If
 
             ' external SMTP server
-            If portalSettings.GetHostSettings("SMTPServer") <> "" Then
-                SmtpMail.SmtpServer = portalSettings.GetHostSettings("SMTPServer")
-				If portalSettings.GetHostSettings("SMTPServerUser") <> "" then 
-				Mail.Fields("http://schemas.microsoft.com/cdo/configuration/smtpserver") = portalSettings.GetHostSettings("SMTPServer")
-			    Mail.Fields("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25
-			    Mail.Fields("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
-			    Mail.Fields("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = 1
-			    Mail.Fields("http://schemas.microsoft.com/cdo/configuration/sendusername") = portalSettings.GetHostSettings("SMTPServerUser")
-			    Mail.Fields("http://schemas.microsoft.com/cdo/configuration/sendpassword") = portalSettings.GetHostSettings("SMTPServerPassword")
-				end if 			
+            If PortalSettings.GetHostSettings("SMTPServer") <> "" Then
+                SmtpMail.SmtpServer = PortalSettings.GetHostSettings("SMTPServer")
+                If PortalSettings.GetHostSettings("SMTPServerUser") <> "" Then
+                    mail.Fields("http://schemas.microsoft.com/cdo/configuration/smtpserver") = PortalSettings.GetHostSettings("SMTPServer")
+                    mail.Fields("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25
+                    mail.Fields("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
+                    mail.Fields("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = 1
+                    mail.Fields("http://schemas.microsoft.com/cdo/configuration/sendusername") = PortalSettings.GetHostSettings("SMTPServerUser")
+                    mail.Fields("http://schemas.microsoft.com/cdo/configuration/sendpassword") = PortalSettings.GetHostSettings("SMTPServerPassword")
+                End If
             End If
 
-			
+
             Try
                 SmtpMail.Send(mail)
             Catch objException As Exception
@@ -590,7 +647,7 @@ Namespace DotNetZoom
             Dim arrFileList As New ArrayList()
 
             If NoneSpecified Then
-                arrFileList.Add(New FileItem("", getlanguage("list_none")))
+                arrFileList.Add(New FileItem("", GetLanguage("list_none")))
             End If
 
             Dim objAdmin As New AdminDB()
@@ -650,14 +707,14 @@ Namespace DotNetZoom
         End Function
 
         ' format an email address including link
-        Public Function FormatEmail(ByVal Email As Object, ByVal Page As Page, Optional ByVal Name As String = "", Optional ByVal Subject As String = "" ) As String
+        Public Function FormatEmail(ByVal Email As Object, ByVal Page As Page, Optional ByVal Name As String = "", Optional ByVal Subject As String = "") As String
 
             If Not IsDBNull(Email) Then
                 If Trim(Email.ToString()) <> "" Then
                     If InStr(1, Email.ToString(), "@") Then
-						Dim arrEmail As Array
-        				arrEmail = Split(Email.ToString(), "@")
-						FormatEmail =  "<script type=""text/javascript"" language=""Javascript"">protect(""" + arrEMail(0) + """, """ + arrEMail(1) + """, """ + iif(Name = "", replace(Email.ToString(),"@" , "<!-- nospan -->&" & "#64;"  & "<!-- spamnot -->"), Name) + """, """ + replace(urlEncode(Subject), "'", "%27") + """);</script>"
+                        Dim arrEmail As Array
+                        arrEmail = Split(Email.ToString(), "@")
+                        FormatEmail = "<script type=""text/javascript"" language=""Javascript"">protect(""" + arrEmail(0) + """, """ + arrEmail(1) + """, """ + IIf(Name = "", Replace(Email.ToString(), "@", "<!-- nospan -->&" & "#64;" & "<!-- spamnot -->"), Name) + """, """ + Replace(UrlEncode(Subject), "'", "%27") + """);</script>"
 
                     Else
                         FormatEmail = Email.ToString()
@@ -691,7 +748,7 @@ Namespace DotNetZoom
             If blnNoneSpecified Then
                 objPortalTab = New TabItem()
                 objPortalTab.TabId = -1
-                objPortalTab.TabName = getlanguage("list_none")
+                objPortalTab.TabName = GetLanguage("list_none")
                 objPortalTab.TabOrder = 0
                 objPortalTab.ParentId = -2
                 arrPortalTabs.Add(objPortalTab)
@@ -712,7 +769,7 @@ Namespace DotNetZoom
                     objPortalTab.TabName = strIndent & objTab.TabName
                     objPortalTab.TabOrder = objTab.TabOrder
                     objPortalTab.ParentId = objTab.ParentId
-                    arrPortalTabs.add(objPortalTab)
+                    arrPortalTabs.Add(objPortalTab)
                 End If
             Next
 
@@ -720,9 +777,9 @@ Namespace DotNetZoom
 
         End Function
 
-        public Function formatansidate(ByVal DateExp As String) as String
-                     Dim Resulttodo as String = left(DateExp, 10)
-                         Formatansidate = Resulttodo
+        Public Function formatansidate(ByVal DateExp As String) As String
+            Dim Resulttodo As String = Left(DateExp, 10)
+            formatansidate = Resulttodo
         End Function
 
 
@@ -732,29 +789,29 @@ Namespace DotNetZoom
             Return strDate
         End Function
 
-		' ajout par Rene Boulard pour avoir le differenciel heure entre serveur et utilisateur
-       Public Function GetTimeDiff(ByVal UserTime As Integer) As Integer
-       Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		Dim TempTimeZone As integer
+        ' ajout par Rene Boulard pour avoir le differenciel heure entre serveur et utilisateur
+        Public Function GetTimeDiff(ByVal UserTime As Integer) As Integer
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim TempTimeZone As Integer
 
-		If (UserTime = -99) or (UserTime < -720) or (UserTime > 840) then
-		If portalSettings.GetHostSettings.ContainsKey("TimeZone") Then
-		UserTime = portalSettings.GetHostSettings("TimeZone")
-		end if
-		end if
-	
-		If portalSettings.GetHostSettings.ContainsKey("TimeZone") Then
-		TempTimeZone = portalSettings.GetHostSettings("TimeZone")
-		else
-		TempTimeZone = 0
-		Usertime = 0
-		end if
+            If (UserTime = -99) Or (UserTime < -720) Or (UserTime > 840) Then
+                If PortalSettings.GetHostSettings.ContainsKey("TimeZone") Then
+                    UserTime = PortalSettings.GetHostSettings("TimeZone")
+                End If
+            End If
 
-        Return UserTime - TempTimeZone
+            If PortalSettings.GetHostSettings.ContainsKey("TimeZone") Then
+                TempTimeZone = PortalSettings.GetHostSettings("TimeZone")
+            Else
+                TempTimeZone = 0
+                UserTime = 0
+            End If
+
+            Return UserTime - TempTimeZone
         End Function
 
-		
-		
+
+
 
         ' returns a SQL Server compatible date
         Public Function GetMediumDate(ByVal strDate As String) As String
@@ -762,7 +819,7 @@ Namespace DotNetZoom
             If strDate <> "" Then
                 Dim datDate As Date = CDate(strDate)
                 Dim strYear As String = Year(datDate)
-                Dim strMonth As String = Monthname( Month( datDate ), True )
+                Dim strMonth As String = MonthName(Month(datDate), True)
                 Dim strDay As String = Day(datDate)
                 strDate = strDay & "-" & strMonth & "-" & strYear
             End If
@@ -773,8 +830,19 @@ Namespace DotNetZoom
 
         ' returns a boolean value whether the tab is an admin tab
         Public Function IsAdminTab() As Boolean
-        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		Return Not (HttpContext.Current.Request.Params("adminpage") Is Nothing) and PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True
+            If HttpContext.Current.Items("IsAdmin") Is Nothing Then
+                Dim ItIs As Boolean = False
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                    If Not IsNothing(HttpContext.Current.Request.Params("adminpage")) Then
+                        ItIs = True
+                    End If
+                End If
+                HttpContext.Current.Items("IsAdmin") = ItIs
+                Return ItIs
+            Else
+                Return CType(HttpContext.Current.Items("IsAdmin"), Boolean)
+            End If
         End Function
 
 
@@ -857,9 +925,9 @@ Namespace DotNetZoom
 
             Return ResultString
         End Function
-		
-		
-		
+
+
+
         Public Function CreateXLM(ByVal TModuleID As Integer) As String
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -1109,14 +1177,14 @@ Namespace DotNetZoom
                         If IsNumeric(dr("URL").ToString) Then
                             strRSS += "         <link>" & DomainName & "/default.aspx?tabid=" & dr(URLField).ToString & "</link>" & ControlChars.CrLf
                         Else
-						    If dr("URL").ToString <> "" then
-                            strRSS += "         <link>" & strRelativePath & dr(URLField).ToString & "</link>" & ControlChars.CrLf
-							else
-							strRSS += "         <link>" & DomainName & "</link>" & ControlChars.CrLf
-							end if
+                            If dr("URL").ToString <> "" Then
+                                strRSS += "         <link>" & strRelativePath & dr(URLField).ToString & "</link>" & ControlChars.CrLf
+                            Else
+                                strRSS += "         <link>" & DomainName & "</link>" & ControlChars.CrLf
+                            End If
                         End If
                     Else
-                        strRSS += "         <link>" & HTMLEncode(dr(URLField).ToString) & "</link>" & ControlChars.CrLf
+                        strRSS += "         <link>" & HtmlEncode(dr(URLField).ToString) & "</link>" & ControlChars.CrLf
                     End If
                     strRSS += "         <description>" & _portalSettings.PortalName & " " & GetMediumDate(dr(CreatedDateField).ToString) & "</description>" & ControlChars.CrLf
                     strRSS += "     </item>" & ControlChars.CrLf
@@ -1160,11 +1228,11 @@ Namespace DotNetZoom
             Dim strRSS As String = ""
 
             While dr.Read()
-                    strRSS += "      <item>" & ControlChars.CrLf
-                    strRSS += "         <title><![CDATA["  & GetMediumDate(dr(CreatedDateField).ToString) & " " & GetLanguage("F_Auteur") & " : " & dr(DescriptionField).ToString & " " & GetLanguage("F_Object") & " : " & dr(TitleField).ToString & "]]></title>" & ControlChars.CrLf
-                    strRSS += "         <link>" & HTMLEncode(dr(URLField).ToString) & "</link>" & ControlChars.CrLf
-                    strRSS += "         <description><![CDATA[" & HtmlDecode(dr("Body").ToString) & "]]></description>" & ControlChars.CrLf
-                    strRSS += "     </item>" & ControlChars.CrLf
+                strRSS += "      <item>" & ControlChars.CrLf
+                strRSS += "         <title><![CDATA[" & GetMediumDate(dr(CreatedDateField).ToString) & " " & GetLanguage("F_Auteur") & " : " & dr(DescriptionField).ToString & " " & GetLanguage("F_Object") & " : " & dr(TitleField).ToString & "]]></title>" & ControlChars.CrLf
+                strRSS += "         <link>" & HtmlEncode(dr(URLField).ToString) & "</link>" & ControlChars.CrLf
+                strRSS += "         <description><![CDATA[" & HtmlDecode(dr("Body").ToString) & "]]></description>" & ControlChars.CrLf
+                strRSS += "     </item>" & ControlChars.CrLf
             End While
             dr.Close()
 
@@ -1173,7 +1241,7 @@ Namespace DotNetZoom
                     "<rss version=""2.0"" xmlns:wfw=""http://wellformedweb.org/CommentAPI/"" xmlns:slash=""http://purl.org/rss/1.0/modules/slash/"">" & ControlChars.CrLf & _
                     "  <channel>" & ControlChars.CrLf & _
                     "     <title>" & _portalSettings.PortalName & "</title>" & ControlChars.CrLf & _
-                    "     <link>" & GetPortalDomainName(_portalSettings.PortalAlias, Request) &  "</link>" & ControlChars.CrLf & _
+                    "     <link>" & GetPortalDomainName(_portalSettings.PortalAlias, Request) & "</link>" & ControlChars.CrLf & _
                     "     <description>" & _portalSettings.PortalName & " " & ForumName & "</description>" & ControlChars.CrLf & _
                     "     <language>" & GetLanguage("N") & "</language>" & ControlChars.CrLf & _
                     "     <copyright>" & _portalSettings.FooterText & "</copyright>" & ControlChars.CrLf & _
@@ -1192,145 +1260,146 @@ Namespace DotNetZoom
                 End If
             End If
 
-        End Sub		
-		
+        End Sub
+
 
 
         ' returns the database connection string
         Public Function GetDBConnectionString() As String
 
-			if HTTPContext.Current.Items("ConnectionString") is nothing then
+            If HttpContext.Current.Items("ConnectionString") Is Nothing Then
                 Dim DomainName As String = GetDomainName(HttpContext.Current.Request).ToLower()
                 Dim URL() As String
                 Dim intURL As Integer
                 URL = Split(DomainName, ".")
-			  ' strip the www or subdomain
-	   			if URL.GetUpperBound(0) > 0 then
-	   				For intURL = 0 To (URL.GetUpperBound(0))
-	   				If DomainName.Length > 5 then
-                            If Not ConfigurationSettings.AppSettings(DomainName) Is Nothing Then
-                                HttpContext.Current.Items("ConnectionString") = ConfigurationSettings.AppSettings(DomainName)
+                ' strip the www or subdomain
+                If URL.GetUpperBound(0) > 0 Then
+                    For intURL = 0 To (URL.GetUpperBound(0))
+                        If DomainName.Length > 5 Then
+
+                            If Not WebConfigurationManager.AppSettings(DomainName) Is Nothing Then
+                                HttpContext.Current.Items("ConnectionString") = WebConfigurationManager.AppSettings(DomainName)
                                 Exit For
                             End If
-	   				DomainName =  replace(DomainName,  url(intURL) & "." , "")
-	   				end if
-       		 		Next intURL
-	   			end if
-		
-				if HTTPContext.Current.Items("ConnectionString") is nothing then
-                    HttpContext.Current.Items("ConnectionString") = ConfigurationSettings.AppSettings("connectionString")
-	    	 	end if
-			End If
-		Return HTTPContext.Current.Items("ConnectionString")
+                            DomainName = Replace(DomainName, URL(intURL) & ".", "")
+                        End If
+                    Next intURL
+                End If
+
+                If HttpContext.Current.Items("ConnectionString") Is Nothing Then
+                    HttpContext.Current.Items("ConnectionString") = WebConfigurationManager.AppSettings("connectionString")
+                End If
+            End If
+            Return HttpContext.Current.Items("ConnectionString")
         End Function
 
         Public Function GetDBname() As String
-		if HTTPContext.Current.Items("DBName") is nothing then
-			Dim TempName As String = GetDBConnectionString.tolower()
-			TempName = Replace(TempName, "catalog", "database")
-			Dim ResultString As String = "Portal"
-			Try
- 			Dim RegexObj As New Regex("database=\b[A-Z0-9_a-z][A-Z0-9_a-z][A-Z0-9_a-z]{1,40}\b;", RegexOptions.IgnoreCase)
-			ResultString = RegexObj.Match(TempName).Value
- 			ResultString = Replace(ResultString, "database=", "")
-			ResultString = Replace(ResultString, ";", "")
-			Catch ex As ArgumentException
-			'Syntax error in the regular expression
-			End Try
-			HTTPContext.Current.Items("DBName") = ResultString
-		 End if	
-			Return HTTPContext.Current.Items("DBName")
+            If HttpContext.Current.Items("DBName") Is Nothing Then
+                Dim TempName As String = GetDBConnectionString.ToLower()
+                TempName = Replace(TempName, "catalog", "database")
+                Dim ResultString As String = "Portal"
+                Try
+                    Dim RegexObj As New Regex("database=\b[A-Z0-9_a-z][A-Z0-9_a-z][A-Z0-9_a-z]{1,40}\b;", RegexOptions.IgnoreCase)
+                    ResultString = RegexObj.Match(TempName).Value
+                    ResultString = Replace(ResultString, "database=", "")
+                    ResultString = Replace(ResultString, ";", "")
+                Catch ex As ArgumentException
+                    'Syntax error in the regular expression
+                End Try
+                HttpContext.Current.Items("DBName") = ResultString
+            End If
+            Return HttpContext.Current.Items("DBName")
         End Function
 
-		
-		Public Function ReturnGalleryToolTip(ByVal Url As String, optional ByVal Width As String = "", optional ByVal Height As String = "") As String
-		url = replace(url, "~/", "")
-		If InStr(1, Url.ToLower, ".jpg") <> 0 or InStr(1, Url.ToLower, ".gif") <> 0 or InStr(1, Url.ToLower, ".bmp") <> 0 or InStr(1, Url.ToLower, ".png") <> 0 or InStr(1, Url.ToLower, ".tif") <> 0 then
-		Dim TempWidth as integer = 0
-		Dim TempHeight as integer = 0
-		Dim SRatio As double 
-		Dim OptionalString as String = ""
-		If Width <> "" and Height <> "" then
-		TempWidth = Ctype(Width, integer)
-		TempHeight = CType(Height, integer)
-	     If Not (TempWidth <= 250 AndAlso TempHeight <= 250) Then
-                    sRatio = (TempHeight / TempWidth)
-                    If sRatio > 1 Then ' Bounded by height
-					    TempWidth = CShort(250 / sRatio)
-                        TempHeight = 250
-                    Else 'Bounded by width
-                        TempWidth = 250
-                        TempHeight = CShort(250 * sRatio)
+
+        Public Function ReturnGalleryToolTip(ByVal Url As String, Optional ByVal Width As String = "", Optional ByVal Height As String = "") As String
+            Url = Replace(Url, "~/", "")
+            If InStr(1, Url.ToLower, ".jpg") <> 0 Or InStr(1, Url.ToLower, ".gif") <> 0 Or InStr(1, Url.ToLower, ".bmp") <> 0 Or InStr(1, Url.ToLower, ".png") <> 0 Or InStr(1, Url.ToLower, ".tif") <> 0 Then
+                Dim TempWidth As Integer = 0
+                Dim TempHeight As Integer = 0
+                Dim SRatio As Double
+                Dim OptionalString As String = ""
+                If Width <> "" And Height <> "" Then
+                    TempWidth = CType(Width, Integer)
+                    TempHeight = CType(Height, Integer)
+                    If Not (TempWidth <= 250 AndAlso TempHeight <= 250) Then
+                        SRatio = (TempHeight / TempWidth)
+                        If SRatio > 1 Then ' Bounded by height
+                            TempWidth = CShort(250 / SRatio)
+                            TempHeight = 250
+                        Else 'Bounded by width
+                            TempWidth = 250
+                            TempHeight = CShort(250 * SRatio)
+                        End If
                     End If
- 		End If
-		OptionalString = " Width=" & TempWidth.ToString & " Height=" & TempHeight.ToString & " "
-		end if
-		Return ReturnToolTip("<img src='" & Url & "' " & OptionalString & " alt='*' border=0>", TempWidth.ToString(), "Oui")
-		else
-		Return ReturnToolTip(Url)
-		end if
+                    OptionalString = " Width=" & TempWidth.ToString & " Height=" & TempHeight.ToString & " "
+                End If
+                Return ReturnToolTip("<img src='" & Url & "' " & OptionalString & " alt='*' border=0>", TempWidth.ToString(), "Oui")
+            Else
+                Return ReturnToolTip(Url)
+            End If
         End Function
 
-		
-		
-	Public ReadOnly Property ReturnToolTip(ByVal strKeyValue As String, optional ByVal Width As String = "", optional ByVal Sticky As String = "") As String
-            Get
-			if strKeyValue <> "" then
-			Dim ToolWidth As String = Width
-			If ToolWidth = ""  then
-			Select Case strKeyValue.length
-			case 0 
-			ToolWidth = "10"
-			case  1 to 30  
-			ToolWidth = (strKeyValue.length * 7)
-			case  31 to 50  
-			ToolWidth = "210"
-			case   51 to 200  
-			ToolWidth = "250"
-			case   201 to 500     
-			ToolWidth = "400"
-			case   501 to 2000    
-			ToolWidth = "500"
-			case else
-			ToolWidth = "600"
-			end select
-			end if
-			If Sticky = "" then
-			   Return "this.T_WIDTH="& ToolWidth & ";return escape('" & RTESafe(strKeyValue) & "')"
-			else
-			Return "this.T_STICKY=true;this.T_WIDTH="& ToolWidth & ";return escape('" & RTESafe(strKeyValue) & "')"
-			end if
- 		   Return "this.T_WIDTH="& ToolWidth & ";return escape('" & RTESafe(strKeyValue) & "')"
-            end if
-			End Get
-	End Property
-		
-	
-		Public function IsNotAlpha(ByVal strToCheck As String)	as Boolean
-		Dim FoundMatch As Boolean
-		Try
-			FoundMatch = Regex.IsMatch(strToCheck, "[^a-zA-Z0-9 -_]")
-		Catch ex As ArgumentException
-		'Syntax error in the regular expression
-		End Try	
-		IsNotAlpha = FoundMatch
-		End function	
 
-		Public function RTESafe(ByVal strText As String) as string
-			'returns safe code for preloading in the RTE
-			dim tmpString as string
-			tmpString = trim(strText)
- 			tmpString = tmpString.replace("\'", "[ESCAPE]")
- 			tmpString = tmpString.replace("\", "\\")
-			tmpString = tmpString.replace("'", "\'")
+
+        Public ReadOnly Property ReturnToolTip(ByVal strKeyValue As String, Optional ByVal Width As String = "", Optional ByVal Sticky As String = "") As String
+            Get
+                If strKeyValue <> "" Then
+                    Dim ToolWidth As String = Width
+                    If ToolWidth = "" Then
+                        Select Case strKeyValue.Length
+                            Case 0
+                                ToolWidth = "10"
+                            Case 1 To 30
+                                ToolWidth = (strKeyValue.Length * 7)
+                            Case 31 To 50
+                                ToolWidth = "210"
+                            Case 51 To 200
+                                ToolWidth = "250"
+                            Case 201 To 500
+                                ToolWidth = "400"
+                            Case 501 To 2000
+                                ToolWidth = "500"
+                            Case Else
+                                ToolWidth = "600"
+                        End Select
+                    End If
+                    If Sticky = "" Then
+                        Return "this.T_WIDTH=" & ToolWidth & ";return escape('" & RTESafe(strKeyValue) & "')"
+                    Else
+                        Return "this.T_STICKY=true;this.T_WIDTH=" & ToolWidth & ";return escape('" & RTESafe(strKeyValue) & "')"
+                    End If
+                    Return "this.T_WIDTH=" & ToolWidth & ";return escape('" & RTESafe(strKeyValue) & "')"
+                End If
+            End Get
+        End Property
+
+
+        Public Function IsNotAlpha(ByVal strToCheck As String) As Boolean
+            Dim FoundMatch As Boolean
+            Try
+                FoundMatch = Regex.IsMatch(strToCheck, "[^a-zA-Z0-9 -_]")
+            Catch ex As ArgumentException
+                'Syntax error in the regular expression
+            End Try
+            IsNotAlpha = FoundMatch
+        End Function
+
+        Public Function RTESafe(ByVal strText As String) As String
+            'returns safe code for preloading in the RTE
+            Dim tmpString As String
+            tmpString = Trim(strText)
+            tmpString = tmpString.Replace("\'", "[ESCAPE]")
+            tmpString = tmpString.Replace("\", "\\")
+            tmpString = tmpString.Replace("'", "\'")
             tmpString = tmpString.Replace("""", "&quot;")
-			'replace carriage returns & line feeds & tab and ff
-			tmpString = replace(tmpString, chr(11), "\t")
-			tmpString = replace(tmpString, chr(10), "\n")
-			tmpString = replace(tmpString, chr(13), "\r")
-			tmpString = replace(tmpString, chr(12), "\f")
-			RTESafe = tmpString
-		end function				
+            'replace carriage returns & line feeds & tab and ff
+            tmpString = Replace(tmpString, Chr(11), "\t")
+            tmpString = Replace(tmpString, Chr(10), "\n")
+            tmpString = Replace(tmpString, Chr(13), "\r")
+            tmpString = Replace(tmpString, Chr(12), "\f")
+            RTESafe = tmpString
+        End Function
 
         Public Function ModToEntity(ByVal strText As String) As String
             'returns safe code for preloading in the RTE
@@ -1411,9 +1480,9 @@ Namespace DotNetZoom
             End If
             Return ""
         End Function
-		
+
         Function GetDocument() As String
-		    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim TempURL As String = _portalSettings.HTTP
             If Not TempURL.EndsWith("/") Then
                 TempURL += "/"
@@ -1424,9 +1493,9 @@ Namespace DotNetZoom
             Else
                 TempURL += GetLanguage("N") & ".default.aspx?tabid=" & _portalSettings.ActiveTab.TabId.ToString
             End If
-	
+
             Return TempURL
-        End Function 
+        End Function
 
         Function GetFullDocument(Optional ByVal SSL As Boolean = False) As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -1448,7 +1517,7 @@ Namespace DotNetZoom
             End If
             Return TempURL
         End Function
-		
+
         Function FormatFriendlyURL(ByVal TabName As String, ByVal SSL As Boolean, ByVal UseTabName As Boolean, ByVal TabId As String, Optional ByVal Options As String = "", Optional ByVal strLangCode As String = "", Optional ByVal amp As String = "&") As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim ServerPath As String
@@ -1488,29 +1557,29 @@ Namespace DotNetZoom
             End If
         End Function
 
-		Public function TrueFalse(ByVal WhatIs As Boolean) As String
-		If WhatIs then
-		Return GetLanguage("True")
-		else
-		Return GetLanguage("False")
-		end if
-		end Function
-		
-		Public function SafeRTE(ByVal strText As String) as string
-			'returns safe code for preloading in the RTE
-			dim tmpString as string
-			tmpString = trim(strText)
-			tmpString = tmpString.replace("\'", "'")
-			tmpString = tmpString.replace("[ESCAPE]", "\'")	
-	
-			'replace carriage returns & line feeds & tab and ff
-			tmpString = replace(tmpString, "\t" , chr(11))
-			tmpString = replace(tmpString, "\n" , chr(10))
-			tmpString = replace(tmpString,  "\r", chr(13))
-			tmpString = replace(tmpString, "\f" , chr(12))
-			SafeRTE = tmpString
-		end function				
-		
+        Public Function TrueFalse(ByVal WhatIs As Boolean) As String
+            If WhatIs Then
+                Return GetLanguage("True")
+            Else
+                Return GetLanguage("False")
+            End If
+        End Function
+
+        Public Function SafeRTE(ByVal strText As String) As String
+            'returns safe code for preloading in the RTE
+            Dim tmpString As String
+            tmpString = Trim(strText)
+            tmpString = tmpString.Replace("\'", "'")
+            tmpString = tmpString.Replace("[ESCAPE]", "\'")
+
+            'replace carriage returns & line feeds & tab and ff
+            tmpString = Replace(tmpString, "\t", Chr(11))
+            tmpString = Replace(tmpString, "\n", Chr(10))
+            tmpString = Replace(tmpString, "\r", Chr(13))
+            tmpString = Replace(tmpString, "\f", Chr(12))
+            SafeRTE = tmpString
+        End Function
+
         ' uses recursion to search the control hierarchy for a specific control based on controlname
         Public Function FindControlRecursive(ByVal objControl As Control, ByVal strControlName As String) As Control
             If objControl.Parent Is Nothing Then
@@ -1533,7 +1602,7 @@ Namespace DotNetZoom
 
         End Sub
 
-		Public Function DisplayCountrycode(ByVal hostIPAddress As String) As String
+        Public Function DisplayCountrycode(ByVal hostIPAddress As String) As String
             Dim _CountryLookup As DotNetNuke.CountryLookup
             Dim context As HttpContext = HttpContext.Current
 
@@ -1547,141 +1616,142 @@ Namespace DotNetZoom
             Return _UserCountryCode
         End Function
 
-		Public Function DisplayCountryName(ByVal hostIPAddress As String) As String
-				Dim _CountryLookup As DotNetNuke.CountryLookup
-				Dim context As HttpContext = HttpContext.Current
-				'Check to see if we are using the Cached
-				'version of the GeoIPData file
+        Public Function DisplayCountryName(ByVal hostIPAddress As String) As String
+            Dim _CountryLookup As DotNetNuke.CountryLookup
+            Dim context As HttpContext = HttpContext.Current
+            'Check to see if we are using the Cached
+            'version of the GeoIPData file
             CheckGeoIPData()
-				_CountryLookup = New DotNetNuke.CountryLookup(CType(Context.Cache.Get("GeoIPData"), System.IO.MemoryStream))
- 
-				Dim _UserCountryName As String = _CountryLookup.LookupCountryName(hostIPAddress)
-				Return _UserCountryName 
-		End Function
+            _CountryLookup = New DotNetNuke.CountryLookup(CType(context.Cache.Get("GeoIPData"), System.IO.MemoryStream))
 
-		Public Function IPConvert(IPAddress As Object) As Object
+            Dim _UserCountryName As String = _CountryLookup.LookupCountryName(hostIPAddress)
+            Return _UserCountryName
+        End Function
 
-	    Dim x       As Integer
-    	Dim Pos     As Integer
-    	Dim PrevPos As Integer
-    	Dim Num     As Integer
+        Public Function IPConvert(IPAddress As Object) As Object
 
-	    If IsNumeric(IPAddress) Then
-    	    IPConvert = "0.0.0.0"
-        	For x = 1 To 4
-            	Num = Int(IPAddress / 256 ^ (4 - x))
-            	IPAddress = IPAddress - (Num * 256 ^ (4 - x))
-            		If Num > 255 Then
-                		IPConvert = "0.0.0.0"
-                	Exit Function
-            		End If
+            Dim x As Integer
+            Dim Pos As Integer
+            Dim PrevPos As Integer
+            Dim Num As Integer
 
-            	If x = 1 Then
-                	IPConvert = Num
-            	Else
-        	        IPConvert = IPConvert & "." & Num
-    	        End If
-	        Next
-	    ElseIf UBound(Split(IPAddress, ".")) = 3 Then
-	'   	     On Error Resume Next
-    	    	For x = 1 To 4
-        	    Pos = InStr(PrevPos + 1, IPAddress, ".", 1)
-            	If x = 4 Then Pos = Len(IPAddress) + 1
-				If IsNumeric(Mid(IPAddress, PrevPos + 1, Pos - PrevPos - 1)) Then
-            	Num = Int(Mid(IPAddress, PrevPos + 1, Pos - PrevPos - 1))
-            	If Num > 255 Then
-                	IPConvert = "0"
-                	Exit Function
-            	End If
-            PrevPos = Pos
-            IPConvert = ((Num Mod 256) * (256 ^ (4 - x))) + IPConvert
-			else
-            IPConvert = "0"
-            Exit Function
-			end if
-    	    Next
-	    End If
+            If IsNumeric(IPAddress) Then
+                IPConvert = "0.0.0.0"
+                For x = 1 To 4
+                    Num = Int(IPAddress / 256 ^ (4 - x))
+                    IPAddress = IPAddress - (Num * 256 ^ (4 - x))
+                    If Num > 255 Then
+                        IPConvert = "0.0.0.0"
+                        Exit Function
+                    End If
 
-	End Function
+                    If x = 1 Then
+                        IPConvert = Num
+                    Else
+                        IPConvert = IPConvert & "." & Num
+                    End If
+                Next
+            ElseIf UBound(Split(IPAddress, ".")) = 3 Then
+                '   	     On Error Resume Next
+                For x = 1 To 4
+                    Pos = InStr(PrevPos + 1, IPAddress, ".", 1)
+                    If x = 4 Then Pos = Len(IPAddress) + 1
+                    If IsNumeric(Mid(IPAddress, PrevPos + 1, Pos - PrevPos - 1)) Then
+                        Num = Int(Mid(IPAddress, PrevPos + 1, Pos - PrevPos - 1))
+                        If Num > 255 Then
+                            IPConvert = "0"
+                            Exit Function
+                        End If
+                        PrevPos = Pos
+                        IPConvert = ((Num Mod 256) * (256 ^ (4 - x))) + IPConvert
+                    Else
+                        IPConvert = "0"
+                        Exit Function
+                    End If
+                Next
+            End If
 
-	Public Sub CopyFileRecursively(ByVal strRoot As String, ByVal ToStrRoot As String)
-		    If strRoot <> "" Then
+        End Function
+
+        Public Sub CopyFileRecursively(ByVal strRoot As String, ByVal ToStrRoot As String)
+            If strRoot <> "" Then
                 Dim strFolder As String
                 If System.IO.Directory.Exists(strRoot) Then
-					If Not System.IO.Directory.Exists(TostrRoot) Then
-		                System.IO.Directory.CreateDirectory(TostrRoot)
-					End IF
-                Dim fileEntries As String() = System.IO.Directory.GetFiles(strRoot)
-				Dim strFileName As String
-                For Each strFileName In fileEntries
-				If not System.IO.File.Exists(strFileName.replace(strRoot, ToStrRoot)) then
-				' Only copy if file does not exist
-				System.IO.File.Copy(strFileName, strFileName.replace(strRoot, ToStrRoot))
-				End If
-                Next strFileName
- 
-                For Each strFolder In System.IO.Directory.GetDirectories(strRoot)
-				' StrFolder - StrRoot + ToStrRoot
-                CopyFileRecursively(strFolder, strFolder.replace(strRoot, ToStrRoot))
-                Next
-               End If
+                    If Not System.IO.Directory.Exists(ToStrRoot) Then
+                        System.IO.Directory.CreateDirectory(ToStrRoot)
+                    End If
+                    Dim fileEntries As String() = System.IO.Directory.GetFiles(strRoot)
+                    Dim strFileName As String
+                    For Each strFileName In fileEntries
+                        If Not System.IO.File.Exists(strFileName.Replace(strRoot, ToStrRoot)) Then
+                            ' Only copy if file does not exist
+                            System.IO.File.Copy(strFileName, strFileName.Replace(strRoot, ToStrRoot))
+                        End If
+                    Next strFileName
+
+                    For Each strFolder In System.IO.Directory.GetDirectories(strRoot)
+                        ' StrFolder - StrRoot + ToStrRoot
+                        CopyFileRecursively(strFolder, strFolder.Replace(strRoot, ToStrRoot))
+                    Next
+                End If
             End If
-     End Sub
+        End Sub
 
-	Public Function ProcessLanguage(ByVal Item As String, Optional ByVal Page As Page = Nothing) As String
-	If Item <> "" then
- 	Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-	item = Regex.Replace(item, "{PortalName}" , _portalSettings.PortalName, RegexOptions.IgnoreCase)
-	item = Regex.Replace(item, "{Year}" , Year(Now()).Tostring, RegexOptions.IgnoreCase)
-	If Not Page is Nothing then
-	Dim arrEmail As Array
-	If _portalSettings.Email.IndexOf("@") > 1 then 
-        arrEmail = Split(_portalSettings.Email, "@")
-		item = Regex.Replace( item, "{AdministratorEmail}" ,  "<script type=""text/javascript"" language=""Javascript"">protect(""" + arrEMail(0) + """, """ + arrEMail(1) + """, """ + _portalSettings.PortalName + """);</script>", RegexOptions.IgnoreCase)
+        Public Function ProcessLanguage(ByVal Item As String, Optional ByVal Page As Page = Nothing) As String
+            If Item <> "" Then
+                Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                Item = Regex.Replace(Item, "{PortalName}", _portalSettings.PortalName, RegexOptions.IgnoreCase)
+                Item = Regex.Replace(Item, "{Year}", Year(Now()).ToString, RegexOptions.IgnoreCase)
+                If Not Page Is Nothing Then
+                    Dim arrEmail As Array
+                    If _portalSettings.Email.IndexOf("@") > 1 Then
+                        arrEmail = Split(_portalSettings.Email, "@")
+                        Item = Regex.Replace(Item, "{AdministratorEmail}", "<script type=""text/javascript"" language=""Javascript"">protect(""" + arrEmail(0) + """, """ + arrEmail(1) + """, """ + _portalSettings.PortalName + """);</script>", RegexOptions.IgnoreCase)
 
-	End if
+                    End If
 
-	If portalSettings.GetHostSettings("HostEmail").IndexOf("@") > 1 then 
-        arrEmail = Split(portalSettings.GetHostSettings("HostEmail"), "@")
-		item = Regex.Replace( item, "{HostEmail}" ,  "<script type=""text/javascript"" language=""Javascript"">protect(""" + arrEMail(0) + """, """ + arrEMail(1) + """, """ + portalSettings.GetHostSettings("HostTitle").ToString + """);</script>", RegexOptions.IgnoreCase)
+                    If PortalSettings.GetHostSettings("HostEmail").IndexOf("@") > 1 Then
+                        arrEmail = Split(PortalSettings.GetHostSettings("HostEmail"), "@")
+                        Item = Regex.Replace(Item, "{HostEmail}", "<script type=""text/javascript"" language=""Javascript"">protect(""" + arrEmail(0) + """, """ + arrEmail(1) + """, """ + PortalSettings.GetHostSettings("HostTitle").ToString + """);</script>", RegexOptions.IgnoreCase)
 
-	End if
-	else
-	item = Regex.Replace(item, "{HostEmail}" , portalSettings.GetHostSettings("HostEmail"), RegexOptions.IgnoreCase)
-	item = Regex.Replace(item, "{AdministratorEmail}" , _portalSettings.Email, RegexOptions.IgnoreCase)
-	End if
+                    End If
+                Else
+                    Item = Regex.Replace(Item, "{HostEmail}", PortalSettings.GetHostSettings("HostEmail"), RegexOptions.IgnoreCase)
+                    Item = Regex.Replace(Item, "{AdministratorEmail}", _portalSettings.Email, RegexOptions.IgnoreCase)
+                End If
 
-	
-	
-	if (Regex.IsMatch(item, "{Date}", RegexOptions.IgnoreCase) = true) then
-	if GetLanguage("culturecode") <> "" then
-	System.Threading.Thread.CurrentThread.CurrentCulture = New System.Globalization.CultureInfo(GetLanguage("culturecode"), False)
-	end if
-	Dim myDTFI As System.Globalization.DateTimeFormatInfo = New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.Name, False).DateTimeFormat
-	item = Regex.Replace(item, "{Date}" , Format(Now().AddMinutes(GetTimeDiff(_portalSettings.TimeZone)),  myDTFI.LongDatePattern), RegexOptions.IgnoreCase)
-    End if
-                Item = Regex.Replace(Item, "{httplogin}", FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "showlogin=1"), RegexOptions.IgnoreCase)
+
+
+                If (Regex.IsMatch(Item, "{Date}", RegexOptions.IgnoreCase) = True) Then
+                    If GetLanguage("culturecode") <> "" Then
+                        System.Threading.Thread.CurrentThread.CurrentCulture = New System.Globalization.CultureInfo(GetLanguage("culturecode"), False)
+                    End If
+                    Dim myDTFI As System.Globalization.DateTimeFormatInfo = New System.Globalization.CultureInfo(System.Globalization.CultureInfo.CurrentCulture.Name, False).DateTimeFormat
+                    Item = Regex.Replace(Item, "{Date}", Format(Now().AddMinutes(GetTimeDiff(_portalSettings.TimeZone)), myDTFI.LongDatePattern), RegexOptions.IgnoreCase)
+                End If
+                Item = Regex.Replace(Item, "{httplogin}", FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Login"), RegexOptions.IgnoreCase)
                 Item = Regex.Replace(Item, "{httpregister}", FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), RegexOptions.IgnoreCase)
-	end if
-	Return item
-	end function
-	 
-	 
-	 Public Function GetLanguage(ByVal Item As String) As String
-	 If item is Nothing then return "Nothing"
-	 Dim _language As HashTable = HttpContext.Current.Items("Language")
-	 If _language is Nothing then return "Nothing Language"
-	 Dim TempString As STring
-	    If _language.ContainsKey(item) Then
-            TempString = _language(item)
-        Else
-		    if Item = "culturecode" then
-			TempString = "fr-ca"
-			else
+            End If
+            Return Item
+        End Function
+
+
+        Public Function GetLanguage(ByVal Item As String) As String
+            If Item Is Nothing Then Return "Nothing"
+            Dim _language As Hashtable = HttpContext.Current.Items("Language")
+            If _language Is Nothing Then Return "Nothing Language"
+            Dim TempString As String
+            If _language.ContainsKey(Item) Then
+                TempString = _language(Item)
+                If Item = "N" Then Return TempString
+            Else
+                If Item = "culturecode" Then
+                    TempString = "fr-ca"
+                Else
                     TempString = "-" + Item + "-"
                     If _language.ContainsKey("N") Then
                         Dim Admin As New AdminDB()
-                        Admin.UpdatelanguageContext(_language("N"), Item, Item, "New")
+                        Admin.UpdatelanguageContext(_language("N"), Item, "-" + Item + "-", "New")
                     End If
                     If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" And _language.ContainsKey("N") Then
                         Dim TempMessage As String
@@ -1692,102 +1762,128 @@ Namespace DotNetZoom
                         End If
                         SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail"), "", Item, TempMessage, "")
                     End If
+                End If
+            End If
+
+            Try
+                If PortalSecurity.IsSuperUser Then
+                    Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                    Dim Zpagelanguage As Hashtable
+                    If Not HttpContext.Current.Session("LanguageTable") Is Nothing Then
+                        Zpagelanguage = HttpContext.Current.Session("LanguageTable")
+                    Else
+                        Zpagelanguage = New Hashtable()
                     End If
-        End If
+                    If Zpagelanguage(Item) Is Nothing And Not Item = "language" And Not Item = "N" And Not Item = "culturecode" Then
+                        Zpagelanguage.Add(Item, TempString)
+                    End If
+                    HttpContext.Current.Session("LanguageTable") = Zpagelanguage
+                End If
+            Catch objException As Exception
 
-	try	 
-	 If PortalSecurity.IsSuperUser then
-	 	Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		     Dim Zpagelanguage As HashTable
-    		 If not HttpContext.Current.Session("LanguageTable") is nothing then
-				Zpagelanguage = HttpContext.Current.Session("LanguageTable")
-			 else
-       			Zpagelanguage = New Hashtable()
-			 end if
-			 If Zpagelanguage(item) is nothing and not item = "language" and not item = "N" and not item = "culturecode" then
-	         Zpagelanguage.Add(Item, TempString)
-			 end if
-			 HttpContext.Current.Session("LanguageTable") =  Zpagelanguage
-	end if
-    Catch objException As Exception
-    
-	end try
-	   	Return TempString
-	   
-	 end function
-	
-	Public Function GetAdminPage() As String
-	Return iif(HttpContext.Current.Request.Params("adminpage") Is Nothing, "", "adminpage=" & HttpContext.Current.Request.Params("adminpage")) & iif(HttpContext.Current.Request.Params("hostpage") Is Nothing, "", "&hostpage=" & HttpContext.Current.Request.Params("hostpage"))
-	end function
-	 
-	 Public Function FindUserLanguage(ByVal DefaultLanguage As String, ByVal ProposedLanguage As String, ByVal AuthLanguage As String) As String
-		'find language by elimination
-		
-			Dim Strlanguage As String= ""
-			Dim LanguageHsh As New Hashtable()
-			Dim objAdmin As New AdminDB()
-			Dim TempKey as String = GetDBname & "Alanguage"
-			Dim context As HttpContext = HttpContext.Current
-			Dim _Alanguage as Hashtable
-            _Alanguage = CType(Context.Cache(TempKey), Hashtable)
+            End Try
+            If Not HttpContext.Current.Application("SetContext") Is Nothing Then
+                Dim TempArray As ArrayList = CType(HttpContext.Current.Application("ArrayLanguage" + _language("N")), ArrayList)
+                If IsNothing(TempArray) Then
+                    TempArray = New ArrayList
+                End If
 
-             If _Alanguage Is Nothing Then
-            ' If this object has not been instantiated yet, we need to grab it
-            _Alanguage = New Hashtable()
-			end if
-			' see if the proposed language can be used
-				If ProposedLanguage <> "" then
-                strlanguage = ProposedLanguage.ToLower
-				if InStr(1, AuthLanguage, Strlanguage & ";") or AuthLanguage = "" then
-					If _Alanguage(strlanguage) = "OK" then
-					return ProposedLanguage
-					end if
-					If _Alanguage(strlanguage) is nothing then
-						LanguageHsh = objAdmin.GetlanguageSettings(strlanguage)
-						If LanguageHsh.count > 0 then
-							_Alanguage.Add(strlanguage, "OK")
-							Context.Cache.insert(TempKey, _Alanguage, Nothing)
-							Return strLanguage
-						else
-						_Alanguage.Add(strlanguage, "NO")
-	 					Context.Cache.insert(TempKey, _Alanguage, Nothing)
-						end if
-					end if
-				end if
-				end if			
-			
+                If Not TempArray.Contains(Item) Then
+                    TempArray.Add(Item)
+                    HttpContext.Current.Application("ArrayLanguage" + _language("N")) = TempArray
+                    Dim stackFrame As New Diagnostics.StackFrame(1)
+                    Dim TempData As String = stackFrame.GetMethod.ReflectedType.Name
+                    If InStrRev(stackFrame.GetMethod.ReflectedType.Name, "_as") = TempData.Length - 4 Then
+                        TempData = Left(TempData, InStrRev(TempData, "_as") - 1)
+                        TempData = Mid(TempData, InStrRev(TempData, "_") + 1)
+                    End If
+                    TempData = Mid(TempData, InStrRev(TempData, "_") + 1)
+                    Dim objAdmin As New AdminDB()
+                    Dim TempScript As String = "SetlanguageContext '" + _language("N") + "','" + Item + "','" + TempData.ToLower + "' "
+                    TempData = objAdmin.ExecuteSQLScript(TempScript)
+                    If TempData <> "" Then
+                        Dim objStream As StreamWriter
+                        objStream = File.AppendText(HttpContext.Current.Request.MapPath(glbPath + "database/language.log"))
+                        objStream.WriteLine(Item + " - " + TempData)
+                        objStream.Close()
+                    End If
+                End If
+            End If
+            Return TempString
+        End Function
+
+        Public Function GetAdminPage() As String
+            Return IIf(HttpContext.Current.Request.Params("adminpage") Is Nothing, "", "adminpage=" & HttpContext.Current.Request.Params("adminpage")) & IIf(HttpContext.Current.Request.Params("hostpage") Is Nothing, "", "&hostpage=" & HttpContext.Current.Request.Params("hostpage"))
+        End Function
+
+        Public Function FindUserLanguage(ByVal DefaultLanguage As String, ByVal ProposedLanguage As String, ByVal AuthLanguage As String) As String
+            'find language by elimination
+
+            Dim Strlanguage As String = ""
+            Dim LanguageHsh As New Hashtable()
+            Dim objAdmin As New AdminDB()
+            Dim TempKey As String = GetDBname() & "Alanguage"
+            Dim context As HttpContext = HttpContext.Current
+            Dim _Alanguage As Hashtable
+            _Alanguage = CType(context.Cache(TempKey), Hashtable)
+
+            If _Alanguage Is Nothing Then
+                ' If this object has not been instantiated yet, we need to grab it
+                _Alanguage = New Hashtable()
+            End If
+            ' see if the proposed language can be used
+            If ProposedLanguage <> "" Then
+                Strlanguage = ProposedLanguage.ToLower
+                If InStr(1, AuthLanguage, Strlanguage & ";") Or AuthLanguage = "" Then
+                    If _Alanguage(Strlanguage) = "OK" Then
+                        Return ProposedLanguage
+                    End If
+                    If _Alanguage(Strlanguage) Is Nothing Then
+                        LanguageHsh = objAdmin.GetlanguageSettings(Strlanguage)
+                        If LanguageHsh.Count > 0 Then
+                            _Alanguage.Add(Strlanguage, "OK")
+                            context.Cache.Insert(TempKey, _Alanguage, Nothing)
+                            Return Strlanguage
+                        Else
+                            _Alanguage.Add(Strlanguage, "NO")
+                            context.Cache.Insert(TempKey, _Alanguage, Nothing)
+                        End If
+                    End If
+                End If
+            End If
+
             ' The language was set in the querystring so use it first
-            If Not (Context.Request.Params("language") Is Nothing) Then
-				If Context.Request.Params("language") <> "" then
-                strlanguage = Context.Request.Params("language").ToLower
-				if InStr(1, AuthLanguage, Strlanguage & ";") or AuthLanguage = "" then
-					If _Alanguage(strlanguage) = "OK" then
-					return strlanguage
-					end if
-					If _Alanguage(strlanguage) is nothing then
-						LanguageHsh = objAdmin.GetlanguageSettings(strlanguage)
-						If LanguageHsh.count > 0 then
-							_Alanguage.Add(strlanguage, "OK")
-							Context.Cache.insert(TempKey, _Alanguage, Nothing)
-							Return strLanguage
-						else
-						_Alanguage.Add(strlanguage, "NO")
-	 					Context.Cache.insert(TempKey, _Alanguage, Nothing)
-						end if
-					end if
-				end if
-				end if
+            If Not (context.Request.Params("language") Is Nothing) Then
+                If context.Request.Params("language") <> "" Then
+                    Strlanguage = context.Request.Params("language").ToLower
+                    If InStr(1, AuthLanguage, Strlanguage & ";") Or AuthLanguage = "" Then
+                        If _Alanguage(Strlanguage) = "OK" Then
+                            Return Strlanguage
+                        End If
+                        If _Alanguage(Strlanguage) Is Nothing Then
+                            LanguageHsh = objAdmin.GetlanguageSettings(Strlanguage)
+                            If LanguageHsh.Count > 0 Then
+                                _Alanguage.Add(Strlanguage, "OK")
+                                context.Cache.Insert(TempKey, _Alanguage, Nothing)
+                                Return Strlanguage
+                            Else
+                                _Alanguage.Add(Strlanguage, "NO")
+                                context.Cache.Insert(TempKey, _Alanguage, Nothing)
+                            End If
+                        End If
+                    End If
+                End If
             End If
 
             Dim userLang As String()
-			userLang = HttpContext.Current.Request.UserLanguages
+            userLang = HttpContext.Current.Request.UserLanguages
             If Not userLang Is Nothing Then
-                Dim Count As integer
-                For count = 0 To userLang.GetUpperBound(0)
-                    If InStr(1, userLang(count), ";") Then
-                        Strlanguage = Left(userLang(count), InStrRev(userLang(count), ";") - 1).ToLower
+                Dim Count As Integer
+                For Count = 0 To userLang.GetUpperBound(0)
+                    If InStr(1, userLang(Count), ";") Then
+                        Strlanguage = Left(userLang(Count), InStrRev(userLang(Count), ";") - 1).ToLower
                     Else
-                        Strlanguage = userLang(count).Tolower
+                        Strlanguage = userLang(Count).ToLower
                     End If
                     If InStr(1, AuthLanguage, Strlanguage & ";") Or AuthLanguage = "" Then
                         If _Alanguage(Strlanguage) = "OK" Then
@@ -1806,7 +1902,7 @@ Namespace DotNetZoom
                         End If
                     End If
                     If InStr(1, Strlanguage, "-") Then
-                        Strlanguage = Left(userLang(count), InStrRev(userLang(count), "-") - 1).ToLower
+                        Strlanguage = Left(userLang(Count), InStrRev(userLang(Count), "-") - 1).ToLower
                         If InStr(1, AuthLanguage, Strlanguage & ";") Or AuthLanguage = "" Then
                             If _Alanguage(Strlanguage) = "OK" Then
                                 Return Strlanguage
@@ -1824,10 +1920,10 @@ Namespace DotNetZoom
                             End If
                         End If
                     End If
-                Next count
+                Next Count
             End If
-			Return  DefaultLanguage
-	end function
+            Return DefaultLanguage
+        End Function
 
         Private Function IsInTabRoles(ByVal roles As String) As Boolean
 
@@ -2058,8 +2154,8 @@ Namespace DotNetZoom
             End If
             Dim strHTML As String = GetXMLmessage(Errornb, Request)
             If Not ErrorMessage <> "" Then
-               HttpContext.Current.Response.StatusCode = Errornb
-               HttpContext.Current.Response.StatusDescription = Errortxt
+                HttpContext.Current.Response.StatusCode = Errornb
+                HttpContext.Current.Response.StatusDescription = Errortxt
             End If
             strHTML = strHTML.Replace("[errormessage]", ErrorMessage)
             HttpContext.Current.Response.Write(strHTML)
@@ -2069,7 +2165,7 @@ Namespace DotNetZoom
 
         Public Function GetXMLmessage(ByVal Key As String, ByVal Request As HttpRequest) As String
             Dim xmlDoc As New XmlDocument()
-            xmlDoc.Load(Request.MapPath("/dnz.config"))
+            xmlDoc.Load(Request.MapPath(glbPath + "dnz.config"))
             Dim elem As XmlElement = Nothing
             Dim Language As String = ""
             Dim userLang As String()

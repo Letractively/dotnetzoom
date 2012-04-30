@@ -118,14 +118,14 @@ Namespace DotNetZoom
                     For Each item In Zrequest.FileItems
                         image = CType(item, GalleryFile)
                         If image.Type = IGalleryObjectInfo.ItemType.Image Then
-                            'StartImage = CryptoUrl(image.URL, Zrequest.GalleryConfig.IsPrivate)
-                            StartImage = image.URL
+                            StartImage = CryptoUrl(image.URL, Zrequest.GalleryConfig.IsPrivate)
+                            'StartImage = image.URL
                             sb.Append("Pic[")
                             sb.Append(Count)
                             'BRT: sb.Append("] = ')
                             sb.Append("] = """)
-                            'sb.Append(CryptoUrl(image.URL, Zrequest.GalleryConfig.IsPrivate))
-                            sb.Append(image.URL)
+                            sb.Append(CryptoUrl(image.URL, Zrequest.GalleryConfig.IsPrivate))
+                            'sb.Append(image.URL)
                             'BRT: sb.Append("'")
                             sb.Append("""")
                             sb.Append(vbCrLf)

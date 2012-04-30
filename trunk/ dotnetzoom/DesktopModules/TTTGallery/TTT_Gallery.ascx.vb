@@ -33,6 +33,7 @@ Namespace DotNetZoom
         Protected WithEvents ClearCache As System.Web.UI.WebControls.ImageButton
         Protected WithEvents SubAlbum As System.Web.UI.WebControls.ImageButton
         Protected WithEvents UploadImage As System.Web.UI.WebControls.ImageButton
+        Protected WithEvents UploadReturn As System.Web.UI.WebControls.ImageButton
         Protected WithEvents Stats As System.Web.UI.WebControls.Literal
         Protected WithEvents dlPager As System.Web.UI.WebControls.DataList
         Protected WithEvents dlStrip As System.Web.UI.WebControls.DataList
@@ -200,7 +201,7 @@ Namespace DotNetZoom
                             tempstring = ""
                             Select Case item.Type
                                 Case IGalleryObjectInfo.ItemType.Image
-                                    tempstring = "<a rel=""image"" rev=""" + GetItemInfo(item) + """ href=""" + item.URL + """></a>"
+                                    tempstring = "<a rel=""image"" rev=""" + GetItemInfo(item) + """ href=""" + CryptoUrl(item.URL, config.IsPrivate) + """></a>"
                                 Case IGalleryObjectInfo.ItemType.Flash
                                     tempstring = "<a rel=""flash"" rev=""" + GetItemInfo(item) + """ href=""" + item.URL + """></a>"
                                 Case IGalleryObjectInfo.ItemType.Movie
@@ -323,6 +324,27 @@ Namespace DotNetZoom
 
         End Function
 
+        Protected Function CanShowMap(ByVal DataItem As Object) As Boolean
+            If Not CType(DataItem, IGalleryObjectInfo).IsFolder And Not (CType(DataItem, IGalleryObjectInfo).Latitude = String.Empty) Then
+                Return Not (CType(DataItem, IGalleryObjectInfo).Latitude = "0")
+            Else
+                Return False
+            End If
+        End Function
+
+        Protected Function GetMapURL(ByVal DataItem As Object) As String
+
+            Dim TempO As IGalleryObjectInfo = CType(DataItem, IGalleryObjectInfo)
+            If Not TempO.IsFolder And TempO.Latitude <> "0" Then
+                Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
+                'Return "javascript:DestroyWnd;CreateWnd('http://maps.google.com/maps/api/staticmap?center=" + TempO.Latitude + "," + TempO.Longitude + "&markers=color:blue|label:X|" + TempO.Latitude + "," + TempO.Longitude + "&zoom=10&size=640x640&maptype=terrain&sensor=true',640,640,false)"
+                Return "javascript:DestroyWnd;CreateWnd('http://maps.google.com/maps?q=" + TempO.Latitude + "," + TempO.Longitude + "&t=p&z=12&output=embed',640,640,false)"
+            Else
+                Return ""
+            End If
+        End Function
+
+
         Protected Function CanGoRight(ByVal DataItem As Object) As Boolean
 
             If CType(DataItem, IGalleryObjectInfo).Index + 1 < Zrequest.Folder.List.Count And GalleryEdit() Then
@@ -385,6 +407,48 @@ Namespace DotNetZoom
             ClearCache.Visible = True
             SubAlbum.Visible = True
             UploadImage.Visible = True
+            UploadReturn.Visible = True
+            UploadReturn.Style.Add("display", "none")
+            If IO.Directory.Exists(Zrequest.Folder.Path + "\_upload\") Then
+                Dim CurrentDir As IO.DirectoryInfo
+                CurrentDir = New IO.DirectoryInfo(Zrequest.Folder.Path + "\_upload\")
+                If CurrentDir.GetFiles.Length > 0 Then
+                    UploadReturn.Style.Clear()
+                End If
+            End If
+
+
+
+            Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
+            Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
+            retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+            retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
+            retScript &= "--></script>"
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+
+            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)), UploadImage.ClientID)
+            UploadImage.Attributes.Add("onclick", click)
+
+
+            Dim _UploadInfo As New UploadInfo
+            _UploadInfo.PortalID = _portalSettings.PortalId
+            _UploadInfo.UserID = (New Utility).GetUserID()
+            _UploadInfo.ModuleID = ModuleId
+            _UploadInfo.MaxFile = 15
+            _UploadInfo.MultiFile = True
+            _UploadInfo.IsGall = True
+            _UploadInfo.UploadDirectory = Zrequest.Folder.Path + "\_upload\"
+            Dim TempExt As String = Replace(config.FileExtensions, ".", "") + ";" + Replace(config.MovieExtensions, ".", "") + ";zip"
+            TempExt = Replace(TempExt, ";", ",")
+            _UploadInfo.Extension = TempExt
+            _UploadInfo.Name = Nothing
+            _UploadInfo.Comment = Nothing
+            _UploadInfo.Type = Nothing
+            _UploadInfo.Unzip = True
+            _UploadInfo.CUnzip = False
+            Session("UploadInfo") = _UploadInfo
+            Session("RelativeDir") = Zrequest.Folder.GalleryHierarchy
 
 
         End Sub
@@ -518,8 +582,8 @@ Namespace DotNetZoom
 
         Protected Function GetThumbnailURL(ByVal DataItem As Object) As String
             Dim Item As IGalleryObjectInfo = CType(DataItem, IGalleryObjectInfo)
-            Return Item.Thumbnail
-            ' Return CryptoUrl(Item.Thumbnail, config.IsPrivate)
+            'Return Item.Thumbnail
+            Return CryptoUrl(Item.Thumbnail, config.IsPrivate)
         End Function
 
 
@@ -553,9 +617,10 @@ Namespace DotNetZoom
                 Return GetAlbumURL(DataItem)
             Else
                 Dim item As GalleryFile = CType(DataItem, GalleryFile)
+
                 Select Case item.Type
                     Case IGalleryObjectInfo.ItemType.Image
-                        Return Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url
+                        Return CryptoUrl(Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url, config.IsPrivate)
                     Case IGalleryObjectInfo.ItemType.Flash
                         Return Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url
                     Case IGalleryObjectInfo.ItemType.Movie
@@ -724,18 +789,29 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub UploadImage_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadImage.Click
-            Session("UrlReferrer") = Request.RawUrl
-            Response.Redirect(GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy & "&action=addfile")
+            'Session("UrlReferrer") = Request.RawUrl
+            'Response.Redirect(GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy & "&action=addfile")
         End Sub
+
+        Private Sub UploadReturn_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadReturn.Click
+            ' Put the file in collection
+            If IO.Directory.Exists(Zrequest.Folder.Path + "\_upload\") Then
+                Dim items() As String
+                items = System.IO.Directory.GetFiles(Zrequest.Folder.Path + "\_upload\")
+                If items.Length > 0 Then
+                    Session("UrlReferrer") = Request.RawUrl
+                    Response.Redirect(GetFullDocument() & "?edit=control&editpage=" & TTT_EditGallery.GalleryEditType.GalleryEditAlbum & "&mid=" & ModuleId & "&tabid=" & TabId & "&path=" & Zrequest.Folder.GalleryHierarchy)
+                End If
+            End If
+        End Sub
+
 
         Private Sub ClearCache_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ClearCache.Click
             'Zrequest.Folder.Clear()
-
             Zrequest.Folder.REPopulate(config.CheckboxGPS)
             GalleryConfig.ResetGalleryConfig(ModuleId)
             Zrequest.Folder.Reset()
             ClearModuleCache(ModuleId)
-
             UpdateFolderSize(config)
             Response.Redirect(Request.UrlReferrer.ToString)
         End Sub
@@ -845,6 +921,11 @@ Namespace DotNetZoom
             TmpControl = e.Item.FindControl("btnDownload")
             If Not TmpControl Is Nothing Then
                 CType(TmpControl, ImageButton).ToolTip = GetLanguage("download")
+            End If
+            TmpControl = Nothing
+            TmpControl = e.Item.FindControl("lnkGoogleMap")
+            If Not TmpControl Is Nothing Then
+                CType(TmpControl, HyperLink).ToolTip = GetLanguage("ShowOnMap")
             End If
             TmpControl = Nothing
             TmpControl = e.Item.FindControl("lnkDiscussion")

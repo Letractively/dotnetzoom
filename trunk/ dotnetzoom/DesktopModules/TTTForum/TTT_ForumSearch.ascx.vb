@@ -242,7 +242,7 @@ Namespace DotNetZoom
 			
 			
            ' Dim objStream As StreamWriter
-           ' objStream = File.CreateText(Server.MapPath("\ItemClick.log"))
+            ' objStream = File.CreateText(Server.MapPath(glbPath + "database/ItemClick.log"))
            ' objStream.WriteLine(message)
            ' objStream.Close()			
 		

@@ -25,10 +25,15 @@ Namespace DotNetZoom
             '
 			
             InitializeComponent()
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
+            If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
+                'Send back to Login Page
+                Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Login"), True)
+            End If
 
             LinkClick()
 
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim CheckSSL As Boolean = False
 
             If Not Page.IsPostBack And PortalSecurity.IsSuperUser Then
@@ -47,7 +52,7 @@ Namespace DotNetZoom
                     '	Item not in cache, get it manually
                     SkinFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/portaledit.skin")
                     If Not File.Exists(SkinFileName) Then
-                        SkinFileName = Request.MapPath("hostedit.skin")
+                        SkinFileName = Request.MapPath(glbPath + "hostedit.skin")
                     End If
                     strPageHTML = context.Cache(SkinFileName)
                     ' if page not in memory get it
@@ -75,7 +80,7 @@ Namespace DotNetZoom
                     If _portalSettings.ActiveTab.Skin = "" Or Not File.Exists(SkinFileName) Then
                         SkinFileName = Request.MapPath(_portalSettings.UploadDirectory & "skin/portal.skin")
                         If Not File.Exists(SkinFileName) Then
-                            SkinFileName = Request.MapPath("host.skin")
+                            SkinFileName = Request.MapPath(glbPath + "host.skin")
                         End If
                     End If
                     strPageHTML = context.Cache(SkinFileName)
@@ -421,17 +426,7 @@ Namespace DotNetZoom
                         If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
                             Throw objException
                         Else
-                            If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-
-                                Dim ErrMessage As String = BuildErrorMessage(Request)
-
-                                If InStr(1, objException.ToString(), "ThreadAbortException") = 0 Then
-                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage + vbCrLf + objException.ToString(), "")
-                                Else
-                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage, "")
-                                End If
-                            End If
-                            ContentPane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>" & vbCrLf & objException.ToString()))
+                            ContentPane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>"))
                             End If
                     End Try
                 End If
@@ -550,18 +545,9 @@ Namespace DotNetZoom
                                         If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
                                             Throw objException
                                         Else
-                                            If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                                                Dim ErrMessage As String = BuildErrorMessage(Request)
-
-                                                If InStr(1, objException.ToString(), "ThreadAbortException") = 0 Then
-                                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage + vbCrLf + objException.ToString(), "")
-                                                Else
-                                                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "ERROR LOADING MODULE " + _moduleSettings.ModuleId.ToString(), _moduleSettings.DesktopSrc + ErrMessage, "")
-                                                End If
+                                            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
+                                                parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>"))
                                             End If
-                                        If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
-                                            parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>" & vbCrLf & objException.ToString()))
-                                        End If
                                         End If
                                     End Try
                                 End If
@@ -598,10 +584,8 @@ Namespace DotNetZoom
             leftline.Visible = leftPane.Visible
             rightline.Visible = rightPane.Visible
             ' Warning message if required
-            If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
-                CheckSSL = _portalSettings.SSL
-            End If
             CheckSecureSSL(Page, CheckSSL)
+
         End Sub
 		
 

@@ -120,8 +120,7 @@ Namespace DotNetZoom
 
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Dim _language As HashTable = HttpContext.Current.Items("Language")
-			ctlMenu.Visible = False
+            ctlMenu.Visible = False
 			
 			
             tabId = _portalSettings.ActiveTab.TabId

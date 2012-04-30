@@ -120,18 +120,18 @@ txtStyleSheet.Text = objStreamReader.ReadToEnd
 objStreamReader.Close()
 else
 if fileToRead = "skin/portal.skin" then
-if File.Exists(Server.MapPath("/host.skin")) then
-objStreamReader = File.OpenText(Server.MapPath("/host.skin"))
-txtStyleSheet.Text = objStreamReader.ReadToEnd
-objStreamReader.Close()
-end if
+                If File.Exists(Server.MapPath(glbPath + "host.skin")) Then
+                    objStreamReader = File.OpenText(Server.MapPath(glbPath + "host.skin"))
+                    txtStyleSheet.Text = objStreamReader.ReadToEnd
+                    objStreamReader.Close()
+                End If
 end if
 if fileToRead = "skin/portaledit.skin" then
-if File.Exists(Server.MapPath("/hostedit.skin")) then
-objStreamReader = File.OpenText(Server.MapPath("/hostedit.skin"))
-txtStyleSheet.Text = objStreamReader.ReadToEnd
-objStreamReader.Close()
-end if
+                If File.Exists(Server.MapPath(glbPath + "hostedit.skin")) Then
+                    objStreamReader = File.OpenText(Server.MapPath(glbPath + "hostedit.skin"))
+                    txtStyleSheet.Text = objStreamReader.ReadToEnd
+                    objStreamReader.Close()
+                End If
 end if
 end if
 End Sub

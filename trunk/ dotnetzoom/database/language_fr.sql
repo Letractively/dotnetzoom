@@ -17,15 +17,15 @@ insert language (
  )
  values (
    'fr',
-   'Français (France)',
-   'fr-FR',
+   'French (Canada)',
+   'fr-CA',
    'utf-8', 
    'Accueil', 
    'accueil', 
-   'Administrateur', 
-   'Administration du portail', 
-   'Membre', 
-   'Usagers inscrits' 
+   'Administrateurs', 
+   'Administrateurs', 
+   'Membres adhérents', 
+   'Membres adhérents' 
  )
  end
 else
@@ -33,15 +33,15 @@ begin
  update language
  set 
  Language = 'fr',
- Description = 'Français (France)',
- CultureCode = 'fr-FR',
+ Description = 'French (Canada)',
+ CultureCode = 'fr-CA',
  Encoding = 'utf-8', 
    HomePage = 'Accueil', 
    FriendlyHomePage = 'accueil', 
-   AdminRole = 'Administrateur', 
-   AdminRoleDesc = 'Administration du portail', 
-   UserRole = 'Membre', 
-   UserRoleDesc = 'Usagers inscrits' 
+   AdminRole = 'Administrateurs', 
+   AdminRoleDesc = 'Administrateurs', 
+   UserRole = 'Membres adhérents', 
+   UserRoleDesc = 'Membres adhérents' 
  where language = 'fr'
  end
 GO
@@ -74,6 +74,14 @@ GO
 updatelanguagecontext 'fr','address_WebSite','Siteweb', 'Address'
 GO
 updatelanguagecontext 'fr','Demo_Create_Portal','{PortalName} vous offre la possibilité de créer un site web avec {space} d''espace disque pour un période d''essais de {days} jours.  À tout moment si vous désirez avoir de l''aide ou plus d''information S.V.P. me contacter par courriel {AdministratorEmail}', 'AdminMenu'
+GO
+updatelanguagecontext 'fr','admin_StartHost','Début section webmestre', 'AdminMenu'
+GO
+updatelanguagecontext 'fr','admin_StartPortal','Début section portail', 'AdminMenu'
+GO
+updatelanguagecontext 'fr','admin_menu_title','Administration du site web', 'AdminMenu'
+GO
+updatelanguagecontext 'fr','title_TopToolTip','Déplacer le module un niveau supérieur', 'AdminMenu'
 GO
 updatelanguagecontext 'fr','paramêtres','paramètres', 'AdminMenu'
 GO
@@ -113,14 +121,6 @@ updatelanguagecontext 'fr','admin_menu_hide','Faire disparaitre le menu', 'Admin
 GO
 updatelanguagecontext 'fr','admin_hide_info','Faire disparaitre', 'AdminMenu'
 GO
-updatelanguagecontext 'fr','admin_StartHost','Début section webmestre', 'AdminMenu'
-GO
-updatelanguagecontext 'fr','admin_StartPortal','Début section portail', 'AdminMenu'
-GO
-updatelanguagecontext 'fr','admin_menu_title','Administration du site web', 'AdminMenu'
-GO
-updatelanguagecontext 'fr','title_TopToolTip','Déplacer le module un niveau supérieur', 'AdminMenu'
-GO
 updatelanguagecontext 'fr','top','Niveau supérieur', 'AdminMenu'
 GO
 updatelanguagecontext 'fr','title_bottomToolTip','Déplacer le module un niveau inférieur', 'AdminMenu'
@@ -149,7 +149,7 @@ updatelanguagecontext 'fr','label_selectIlink','Choisir un lien Interne', 'Annou
 GO
 updatelanguagecontext 'fr','label_Ilink','&nbsp;Lien interne', 'Announcement'
 GO
-updatelanguagecontext 'fr','label_SelectFile','Choisir un fichier&nbsp;', 'Announcement'
+updatelanguagecontext 'fr','label_SelectFile','Choisir un fichier', 'Announcement'
 GO
 updatelanguagecontext 'fr','label_File','&nbsp;Lien fichier', 'Announcement'
 GO
@@ -174,6 +174,40 @@ GO
 updatelanguagecontext 'fr','label_title','Titre', 'Announcement'
 GO
 updatelanguagecontext 'fr','label_syndicate','*syndication', 'Announcement'
+GO
+updatelanguagecontext 'fr','AddComment','Ajouter un commentaire', 'Announcement'
+GO
+updatelanguagecontext 'fr','BBComment','Commentaires', 'Announcement'
+GO
+updatelanguagecontext 'fr','ANNnotext','Vous devez saisir le texte affiché sur l''image', 'Announcement'
+GO
+updatelanguagecontext 'fr','ANNnotvalid','Votre réponse n''est pas valide essayer de nouveau', 'Announcement'
+GO
+updatelanguagecontext 'fr','RemoveComment','Effacer le commentaire', 'Announcement'
+GO
+updatelanguagecontext 'fr','ItemTitle_class','Class CSS Titre', 'Announcement'
+GO
+updatelanguagecontext 'fr','ItemBody_class','Class CSS Texte', 'Announcement'
+GO
+updatelanguagecontext 'fr','ItemComment_class','Class CSS Commentaire', 'Announcement'
+GO
+updatelanguagecontext 'fr','BB_NumItems','Nombre items à afficher', 'Announcement'
+GO
+updatelanguagecontext 'fr','BB_AllowComments','Permettre commentaires', 'Announcement'
+GO
+updatelanguagecontext 'fr','BB_AllowAnonyme','Permettre les commentaires anonymes', 'Announcement'
+GO
+updatelanguagecontext 'fr','ANN_UpdateTip','Enregistrer votre commentaire', 'Announcement'
+GO
+updatelanguagecontext 'fr','ANN_NeedTitle','Vous devez saisir un objet', 'Announcement'
+GO
+updatelanguagecontext 'fr','ANN_NeedBody','Vous devez saisir un commentaire', 'Announcement'
+GO
+updatelanguagecontext 'fr','BAB_Title','Objet', 'Announcement'
+GO
+updatelanguagecontext 'fr','BAB_Comment','Commentaire', 'Announcement'
+GO
+updatelanguagecontext 'fr','BAB_UserName','Nom', 'Announcement'
 GO
 updatelanguagecontext 'fr','Mail_Add_File','Joindre un fichier', 'BulkEMail'
 GO
@@ -205,24 +239,6 @@ updatelanguagecontext 'fr','request_confirm_unsubscribe','Voulez vous vraiment a
 GO
 updatelanguagecontext 'fr','request_confirm_delete_icone','Voulez vous vraiment effacer l''îcone. Un îcone par défaut sera utilisé, sinon vous pouvez en télécharger un nouveau.', 'Command'
 GO
-updatelanguagecontext 'fr','Cmd_Reload','Actualiser', 'Command'
-GO
-updatelanguagecontext 'fr','New_Directory','Nouveau', 'Command'
-GO
-updatelanguagecontext 'fr','FileExtNotAllowed','<br>L''extension du fichier {fileext} n''est pas autorisé.<br>Vous pouvez seulement utiliser les extensions suivantes :<br>{allowedext}', 'Command'
-GO
-updatelanguagecontext 'fr','UnZipFile','Décompresser le fichier ZIP?', 'Command'
-GO
-updatelanguagecontext 'fr','erase','Effacer', 'Command'
-GO
-updatelanguagecontext 'fr','F_ArticleID','ID article', 'Command'
-GO
-updatelanguagecontext 'fr','approuve','Approuver', 'Command'
-GO
-updatelanguagecontext 'fr','reject','Refuser', 'Command'
-GO
-updatelanguagecontext 'fr','preview','Aperçu', 'Command'
-GO
 updatelanguagecontext 'fr','download','Télécharger', 'Command'
 GO
 updatelanguagecontext 'fr','return','Retour', 'Command'
@@ -245,19 +261,27 @@ updatelanguagecontext 'fr','visualiser','Visualiser', 'Command'
 GO
 updatelanguagecontext 'fr','editer','Editer', 'Command'
 GO
-updatelanguagecontext 'fr','admin_m_add','Ajouter module', 'Command'
+updatelanguagecontext 'fr','Cmd_Reload','Actualiser', 'Command'
 GO
-updatelanguagecontext 'fr','admin_option_hide','Cacher options', 'Command'
+updatelanguagecontext 'fr','New_Directory','Nouveau', 'Command'
 GO
-updatelanguagecontext 'fr','admin_option_show','Voir options', 'Command'
+updatelanguagecontext 'fr','FileExtNotAllowed','<br>L''extension du fichier {fileext} n''est pas autorisé.<br>Vous pouvez seulement utiliser les extensions suivantes :<br>{allowedext}', 'Command'
 GO
-updatelanguagecontext 'fr','admin_tab_add','Ajouter page', 'Command'
+updatelanguagecontext 'fr','UnZipFile','Décompresser le fichier ZIP?', 'Command'
 GO
-updatelanguagecontext 'fr','admin_tab_edit','Modifier page', 'Command'
+updatelanguagecontext 'fr','admin_caches_x','Purger', 'Command'
 GO
-updatelanguagecontext 'fr','admin_txt','Menu admin', 'Command'
+updatelanguagecontext 'fr','admin_delete_tab','Effacer page', 'Command'
 GO
-updatelanguagecontext 'fr','admin_tab_delete','Effacer la page', 'Command'
+updatelanguagecontext 'fr','erase','Effacer', 'Command'
+GO
+updatelanguagecontext 'fr','F_ArticleID','ID article', 'Command'
+GO
+updatelanguagecontext 'fr','approuve','Approuver', 'Command'
+GO
+updatelanguagecontext 'fr','reject','Refuser', 'Command'
+GO
+updatelanguagecontext 'fr','preview','Aperçu', 'Command'
 GO
 updatelanguagecontext 'fr','filemanager_security','<p>Votre profil de sécurité ne vous donne pas accès à cette page.</p><p>Si vous croyez que vous devriez avoir accès à cette page <b>veuillez faire une demande au webmestre du site web {PortalName} </b>', 'Command'
 GO
@@ -283,9 +307,19 @@ updatelanguagecontext 'fr','delete','Supprimer', 'Command'
 GO
 updatelanguagecontext 'fr','syndicate','Contenu en syndication', 'Command'
 GO
-updatelanguagecontext 'fr','admin_caches_x','Purger', 'Command'
+updatelanguagecontext 'fr','admin_m_add','Ajouter module', 'Command'
 GO
-updatelanguagecontext 'fr','admin_delete_tab','Effacer page', 'Command'
+updatelanguagecontext 'fr','admin_option_hide','Cacher options', 'Command'
+GO
+updatelanguagecontext 'fr','admin_option_show','Voir options', 'Command'
+GO
+updatelanguagecontext 'fr','admin_tab_add','Ajouter page', 'Command'
+GO
+updatelanguagecontext 'fr','admin_tab_edit','Modifier page', 'Command'
+GO
+updatelanguagecontext 'fr','admin_txt','Menu admin', 'Command'
+GO
+updatelanguagecontext 'fr','admin_tab_delete','Effacer la page', 'Command'
 GO
 updatelanguagecontext 'fr','OK','OK', 'Command'
 GO
@@ -446,6 +480,12 @@ updatelanguagecontext 'fr','Valid_Date_Format','Vous devez utiliser un format de
 GO
 updatelanguagecontext 'fr','Valid_Boolean','Vous devez utiliser une valeur True/False seulement', 'ErrorMessage'
 GO
+updatelanguagecontext 'fr','need_valid_email','Une adresse de courriel valide est requise.', 'ErrorMessage'
+GO
+updatelanguagecontext 'fr','nossl','Normalement cette page ne devrait pas être chiffrée. Le site Web s''est correctement identifié et les informations saisies sur cette page ne pourront pas facilement être lues lors de leur acheminement. (Cliquer sur OK pour continuer..)', 'ErrorMessage'
+GO
+updatelanguagecontext 'fr','ssl','Normalement cette page devrait être chiffrée. Donc, les informations que vous enverrez et recevrez pourraient éventuellement être lues lors de leur acheminement. (Cliquer sur OK pour aller vers une page sécurisée ...)', 'ErrorMessage'
+GO
 updatelanguagecontext 'fr','need_city_name','Le nom de la ville est requis.', 'ErrorMessage'
 GO
 updatelanguagecontext 'fr','need_telephone','Votre numéro de téléphone est requis.', 'ErrorMessage'
@@ -533,12 +573,6 @@ GO
 updatelanguagecontext 'fr','need_start_date','Une date de début est requise', 'ErrorMessage'
 GO
 updatelanguagecontext 'fr','need_country_name','Le nom du pays est requis!', 'ErrorMessage'
-GO
-updatelanguagecontext 'fr','nossl','Normalement cette page ne devrait pas être chiffrée. Le site Web s''est correctement identifié et les informations saisies sur cette page ne pourront pas facilement être lues lors de leur acheminement. (Cliquer sur OK pour continuer..)', 'ErrorMessage'
-GO
-updatelanguagecontext 'fr','ssl','Normalement cette page devrait être chiffrée. Donc, les informations que vous enverrez et recevrez pourraient éventuellement être lues lors de leur acheminement. (Cliquer sur OK pour aller vers une page sécurisée ...)', 'ErrorMessage'
-GO
-updatelanguagecontext 'fr','need_valid_email','Une adresse de courriel valide est requise.', 'ErrorMessage'
 GO
 updatelanguagecontext 'fr','calendar','Calendrier', 'Events'
 GO
@@ -696,6 +730,10 @@ updatelanguagecontext 'fr','cmdRemove','Effacer', 'File'
 GO
 updatelanguagecontext 'fr','F_UnzipFile','Décompresser fichier ZIP?', 'File'
 GO
+updatelanguagecontext 'fr','MaxQueue','Le file d''attente est pleine, maximum de téléchargement simultané est de {MaxQueue} ', 'File'
+GO
+updatelanguagecontext 'fr','ReplaceFile','Voulez vous remplacer le fichier ', 'File'
+GO
 updatelanguagecontext 'fr','hypHost','Réalisé par {hostname}', 'Footer'
 GO
 updatelanguagecontext 'fr','hypTerms','Conditions générales', 'Footer'
@@ -727,6 +765,24 @@ GO
 updatelanguagecontext 'fr','F_PMSShort','Raccourci', 'Forum'
 GO
 updatelanguagecontext 'fr','F_ForumSearch','Recherche Forums', 'Forum'
+GO
+updatelanguagecontext 'fr','go','Go', 'Forum'
+GO
+updatelanguagecontext 'fr','F_AdminAvatar','Avatars gallerie', 'Forum'
+GO
+updatelanguagecontext 'fr','Quote_Wrote','a écrit', 'Forum'
+GO
+updatelanguagecontext 'fr','F_ToLarge','Le fichier doit être moins de {maxFileSize} KB.', 'Forum'
+GO
+updatelanguagecontext 'fr','F_Stiky','Message à voir', 'Forum'
+GO
+updatelanguagecontext 'fr','F_Today','Aujourd''hui', 'Forum'
+GO
+updatelanguagecontext 'fr','F_Bad_Ext','Seulement les fichiers {fileext} sont autorisés.', 'Forum'
+GO
+updatelanguagecontext 'fr','F_MaxImage','L''image ne peut être plus que {maxHeight} x {maxWidth} pixels.', 'Forum'
+GO
+updatelanguagecontext 'fr','Forum_Replied','Réponse au message', 'Forum'
 GO
 updatelanguagecontext 'fr','F_CheckMail','Me faire parvenir un courriel si un message est ajouté', 'Forum'
 GO
@@ -1192,28 +1248,6 @@ updatelanguagecontext 'fr','F_StatsForum','Statistiques forum', 'Forum'
 GO
 updatelanguagecontext 'fr','F_WhoThere','Qui est la', 'Forum'
 GO
-updatelanguagecontext 'fr','Quote_Wrote','a écrit', 'Forum'
-GO
-updatelanguagecontext 'fr','F_ToLarge','Le fichier doit être moins de {maxFileSize} KB.', 'Forum'
-GO
-updatelanguagecontext 'fr','F_Stiky','Message à voir', 'Forum'
-GO
-updatelanguagecontext 'fr','F_Today','Aujourd''hui', 'Forum'
-GO
-updatelanguagecontext 'fr','F_Bad_Ext','Seulement les fichiers {fileext} sont autorisés.', 'Forum'
-GO
-updatelanguagecontext 'fr','F_MaxImage','L''image ne peut être plus que {maxHeight} x {maxWidth} pixels.', 'Forum'
-GO
-updatelanguagecontext 'fr','Forum_Replied','Réponse au message', 'Forum'
-GO
-updatelanguagecontext 'fr','go','Go', 'Forum'
-GO
-updatelanguagecontext 'fr','F_SelectModerated','Choisir moderateur', 'Forum'
-GO
-updatelanguagecontext 'fr','select_avatar_tooltip','Aller et modifier la gallerie des avatars', 'Forum'
-GO
-updatelanguagecontext 'fr','select_avatar','Avatars gallerie', 'Forum'
-GO
 updatelanguagecontext 'fr','F_VisitWWW','WWW', 'Forum'
 GO
 updatelanguagecontext 'fr','FZuserMSN','MSN', 'Forum'
@@ -1230,13 +1264,17 @@ updatelanguagecontext 'fr','F_SelectAdmin','Adminstration du Forum', 'Forum'
 GO
 updatelanguagecontext 'fr','F_SendEMail','COURRIEL', 'Forum'
 GO
-updatelanguagecontext 'fr','F_AdminAvatar','Avatars gallerie', 'Forum'
-GO
 updatelanguagecontext 'fr','Select_Forum_Search','Choisir un Forum ou une Section pour la recherche', 'Forum'
 GO
 updatelanguagecontext 'fr','Search_SelectAllForum','Choisir tous les forums de la section', 'Forum'
 GO
 updatelanguagecontext 'fr','Search_SelectAllForumGroup','Choisir tous les forums de toutes les sections', 'Forum'
+GO
+updatelanguagecontext 'fr','F_SelectModerated','Choisir moderateur', 'Forum'
+GO
+updatelanguagecontext 'fr','select_avatar_tooltip','Aller et modifier la gallerie des avatars', 'Forum'
+GO
+updatelanguagecontext 'fr','select_avatar','Avatars gallerie', 'Forum'
 GO
 updatelanguagecontext 'fr','Forum_Search','Recherche avancée', 'Forum'
 GO
@@ -1252,9 +1290,163 @@ updatelanguagecontext 'fr','F_SendPMS','MESSAGE', 'Forum'
 GO
 updatelanguagecontext 'fr','F_ImgSettings','Paramètres pour les images', 'Forum'
 GO
+updatelanguagecontext 'fr','Gal_GpsS','Mode géoréférencé', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_IndexS','Activé recherche', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_Name_Valid','Nom alphanumérique de 2 à 12 caratères sans espace', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_Name_Not_Valid','Le non est non valide', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_Latitude','Latitude', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_Longitude','Longitude', 'Gallery'
+GO
+updatelanguagecontext 'fr','MapOptions','Options géoréférencé', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Width','Largeur', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Height','Hauteur', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_FullScreen','Plein écran', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Center','Centre', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Zoom','Zoom initial', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Opacity','Niveau tranparence', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Type','Carte', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_D_Zoom','Zoom avec double click', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_M_Zoom','Zoom avec souris', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_C_Options','Options centrage', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Zoom_Ctl','Contrôle Zoom', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Scale_Ctl','Contrôle échèle', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Center_Coord','Contrôle centre', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Crooshair_Ctl','Contrôle marque centre', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Opacity_Ctl','Contrôle tranparence', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Ctl_Style','Contrôle type de carte', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Ctl_Filter','Contrôle filtre de carte', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Ctl_Excluded','Type de carte', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Legend','Afficher la description', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Legend_Pos','Position', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Legend_Drag','Déplaçable', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Legend_Coll','Fermable', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Mes_Tools','Outils', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Opt','Liste des tracée', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Opt_Pos','Position', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Width','Largeur', 'Gallery'
+GO
 updatelanguagecontext 'fr','Gal_MaxFileKB','Le fichier <b>{FileName}</b> est {FileSize} (KB) mais la taille maximum pour télécharger est de {MaxFileSize} (KB).', 'Gallery'
 GO
-updatelanguagecontext 'fr','Gal_InfoBule','Afficher les info bulles? ', 'Gallery'
+updatelanguagecontext 'fr','Gal_Cont','cliquer pour continuer...', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_CacheGen','La galerie se crée...', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_CacheRed','Si cette page ne vous redirige pas automatiquement,', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MaxFileSize','La taille du fichier doit être moins de {MaxFileSize} (MB)', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_Invalid_FileType','Le type de fichier est invalide', 'Gallery'
+GO
+updatelanguagecontext 'fr','WaterMark','Filigrane', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_InfoBule','Affiché info bules', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_UpdateConf','Mettre à jour la configuration...', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_Select','Choisir', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_SetUpAdmin','Paramètres Admin', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_ImgBaseUrl','URL souche (images)', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Height','Hauteur', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Desc','Description', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Zoom_Lnk','Zoom', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Tlp','Tooltip', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Drag','Déplaçable', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracklist_Col','Fermable', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Default_Mark','Marqueur par défault', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Shadows','Ombre sous le marqueur', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Mark_Link','Ouverture lien', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Info_Width','Largeur POP-UP', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Thumb_Width','Largeur petit POP-UP', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Photo_Size','Grandeur PHOTOs', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Labels_Hide','Cacher titre', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Label_Off','Positionement titre', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Label_Center','Centrer titre', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_D_Direct','Afficher direction', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Garmin_Icon','Icône garmin', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Tracks','Tracées', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Markers','Marqueurs', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_SetUpMap','Paramètres géoréférencé', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MakeTrack','Générer le tracée', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapSettings1','Options d''affichage de la carte', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapSettings2','Outils à afficher sur la carte', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapSettings3','Options de la fenêtre de description', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapSettings4','Options de la fenêtre des tracées', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapSettings5','Options d''affichage des marqueurs', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapSettings6','Création et modification des tracées', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapSettings7','Création et modification de marqueurs', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_UploadGPXFile','Télécharger fichier GPX', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_Div','Nom', 'Gallery'
+GO
+updatelanguagecontext 'fr','Map_SetLatLong','Géoréférencer l''image', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapFocus','Centrer la carte sur l''image', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_MapReturn','Revenir à la carte et fermer la fenêtre', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_return','Revenir à l''album', 'Gallery'
 GO
 updatelanguagecontext 'fr','Gal_btnAddTip','Ajouter à la liste pour télécharger le fichier indiqué ...', 'Gallery'
 GO
@@ -1299,9 +1491,9 @@ updatelanguagecontext 'fr','Gal_Click','Cliquer ici...', 'Gallery'
 GO
 updatelanguagecontext 'fr','Gal_NoSpaceLeft','Vous n''avez plus d''espace disque de disponible pour télécharger ce fichier.', 'Gallery'
 GO
-updatelanguagecontext 'fr','Gal_QuotaInfo2','<br>Vous n''avez plus d''espace disque Album de disponible pour télécharger des fichiers.', 'Gallery'
+updatelanguagecontext 'fr','Gal_QuotaInfo2','Vous n''avez plus d''espace disque Album de disponible pour télécharger des fichiers.', 'Gallery'
 GO
-updatelanguagecontext 'fr','Gal_PortalQuota2','<br>Vous n''avez plus d''espace disque Portail de disponible pour télécharger des fichiers.', 'Gallery'
+updatelanguagecontext 'fr','Gal_PortalQuota2','Vous n''avez plus d''espace disque Portail de disponible pour télécharger des fichiers.', 'Gallery'
 GO
 updatelanguagecontext 'fr','Gal_PortalQuota1','Espace Portail ( Maximum: <b>{Quota}MB</b>  Utilisée: <b>{SpaceUsed}MB</b>  Disponible: <b>{SpaceLeft}MB</b>', 'Gallery'
 GO
@@ -1342,14 +1534,6 @@ GO
 updatelanguagecontext 'fr','Gal_Edit','Modifier...', 'Gallery'
 GO
 updatelanguagecontext 'fr','Gal_SOwner','Choisir le propriétaire de la galerie...', 'Gallery'
-GO
-updatelanguagecontext 'fr','Gal_UpdateConf','Mettre à jour la configuration...', 'Gallery'
-GO
-updatelanguagecontext 'fr','Gal_Select','Choisir', 'Gallery'
-GO
-updatelanguagecontext 'fr','Gal_SetUpAdmin','Paramètres Admin', 'Gallery'
-GO
-updatelanguagecontext 'fr','Gal_ImgBaseUrl','URL souche (images)', 'Gallery'
 GO
 updatelanguagecontext 'fr','Gal_Quota','Quota en (MB)', 'Gallery'
 GO
@@ -1491,15 +1675,11 @@ updatelanguagecontext 'fr','Gal_FFilm','Film', 'Gallery'
 GO
 updatelanguagecontext 'fr','Gal_DefaultCategory','Image;Film;Musique;Flash', 'Gallery'
 GO
-updatelanguagecontext 'fr','Gal_MaxFileSize','La taille du fichier doit être moins de {MaxFileSize} (KB)', 'Gallery'
+updatelanguagecontext 'fr','True','Vrai', 'Global'
 GO
-updatelanguagecontext 'fr','Gal_Invalid_FileType','Le type de fichier est invalide', 'Gallery'
+updatelanguagecontext 'fr','False','Faux', 'Global'
 GO
-updatelanguagecontext 'fr','Gal_Cont','cliquer pour continuer...', 'Gallery'
-GO
-updatelanguagecontext 'fr','Gal_CacheGen','La galerie se crée...', 'Gallery'
-GO
-updatelanguagecontext 'fr','Gal_CacheRed','Si cette page ne vous redirige pas automatiquement,', 'Gallery'
+updatelanguagecontext 'fr','Membership_Serv','Services aux membres', 'Global'
 GO
 updatelanguagecontext 'fr','all','tout', 'Global'
 GO
@@ -1518,12 +1698,6 @@ GO
 updatelanguagecontext 'fr','module_info','Info Module :', 'Global'
 GO
 updatelanguagecontext 'fr','no_module_info','Il n''y a aucune information de disponible sur ce module.', 'Global'
-GO
-updatelanguagecontext 'fr','Membership_Serv','Services aux membres', 'Global'
-GO
-updatelanguagecontext 'fr','True','Vrai', 'Global'
-GO
-updatelanguagecontext 'fr','False','Faux', 'Global'
 GO
 updatelanguagecontext 'fr','*O','O', 'Global'
 GO
@@ -1547,18 +1721,6 @@ updatelanguagecontext 'fr','MapGoogle_location','Location', 'GoogleMap'
 GO
 updatelanguagecontext 'fr','GetGoogleAPI','Aller chercher l''API de Google', 'GoogleMap'
 GO
-updatelanguagecontext 'fr','GoogleLatLong','Lat - Long', 'GoogleMap'
-GO
-updatelanguagecontext 'fr','MapGoogle_zoom','Zoom', 'GoogleMap'
-GO
-updatelanguagecontext 'fr','GoogleGenerateLatLong','Générer une coordonnée', 'GoogleMap'
-GO
-updatelanguagecontext 'fr','GoogleGenerateScript','Générer un script', 'GoogleMap'
-GO
-updatelanguagecontext 'fr','need_LatLong_MapGoogle','Vous devez founir les coordonnée', 'GoogleMap'
-GO
-updatelanguagecontext 'fr','need_Script_MapGoogle','Vous devez fournir un script', 'GoogleMap'
-GO
 updatelanguagecontext 'fr','GoogleDisplayResize','Afficher la barre de navigation sur la carte', 'GoogleMap'
 GO
 updatelanguagecontext 'fr','GoogleDisplayType','Afficher la sélection de vue sur la carte', 'GoogleMap'
@@ -1573,17 +1735,31 @@ updatelanguagecontext 'fr','MapGoogle_size','Grandeur', 'GoogleMap'
 GO
 updatelanguagecontext 'fr','MapGoogle_small','Petite', 'GoogleMap'
 GO
+updatelanguagecontext 'fr','GoogleLatLong','Lat - Long', 'GoogleMap'
+GO
+updatelanguagecontext 'fr','MapGoogle_zoom','Zoom', 'GoogleMap'
+GO
+updatelanguagecontext 'fr','GoogleGenerateLatLong','Générer une coordonnée', 'GoogleMap'
+GO
+updatelanguagecontext 'fr','GoogleGenerateScript','Générer un script', 'GoogleMap'
+GO
+updatelanguagecontext 'fr','need_LatLong_MapGoogle','Vous devez founir les coordonnée', 'GoogleMap'
+GO
+updatelanguagecontext 'fr','need_Script_MapGoogle','Vous devez fournir un script', 'GoogleMap'
+GO
+updatelanguagecontext 'fr','HS_EnableSSLInfo','SSL sera appliqué sur certaine page', 'HostSettings'
+GO
+updatelanguagecontext 'fr','HS_EmailHost2','Courriel À:', 'HostSettings'
+GO
 updatelanguagecontext 'fr','WhiteSpace_ALL','HTML et Espace Blanc', 'HostSettings'
 GO
 updatelanguagecontext 'fr','ViewState_memory','ViewState en mémoire', 'HostSettings'
 GO
 updatelanguagecontext 'fr','WhiteSpace_Only','Espace blanc seulement', 'HostSettings'
 GO
-updatelanguagecontext 'fr','HS_EnableSSLInfo','SSL sera appliqué sur certaine page', 'HostSettings'
-GO
 updatelanguagecontext 'fr','ViewState_SQL','ViewState dans SQL', 'HostSettings'
 GO
-updatelanguagecontext 'fr','HS_EnableSSL','Forcer SSL', 'HostSettings'
+updatelanguagecontext 'fr','WhiteSpaceHTML','Reduction HTML', 'HostSettings'
 GO
 updatelanguagecontext 'fr','MailSend','le courriel a été envoyé', 'HostSettings'
 GO
@@ -1651,13 +1827,13 @@ updatelanguagecontext 'fr','HS_NoLog','Le script n''a pas été exécuté pour c
 GO
 updatelanguagecontext 'fr','HS_Need_Email','<br>vous devez fournir le nom de l''adresse courriel du serveur d''hébergement', 'HostSettings'
 GO
-updatelanguagecontext 'fr','WhiteSpaceHTML','Reduction HTML', 'HostSettings'
+updatelanguagecontext 'fr','HS_EnableSSL','Forcer SSL', 'HostSettings'
+GO
+updatelanguagecontext 'fr','HTML_ADDtxt','Ajouter du contenu...', 'HTML'
 GO
 updatelanguagecontext 'fr','html','html', 'HTML'
 GO
 updatelanguagecontext 'fr','text','texte', 'HTML'
-GO
-updatelanguagecontext 'fr','HTML_ADDtxt','Ajouter du contenu...', 'HTML'
 GO
 updatelanguagecontext 'fr','AlternateDetailSummary','Môts clées', 'HTML'
 GO
@@ -1706,6 +1882,20 @@ GO
 updatelanguagecontext 'fr','image_width','Largeur', 'Image'
 GO
 updatelanguagecontext 'fr','image_height','Hauteur', 'Image'
+GO
+updatelanguagecontext 'fr','image_Secure','Séruriser', 'Image'
+GO
+updatelanguagecontext 'fr','image_Secure_info','L''image sera généré par le serveur', 'Image'
+GO
+updatelanguagecontext 'fr','image_GoogleEarth','Google Earth', 'Image'
+GO
+updatelanguagecontext 'fr','image_GPS','GPS', 'Image'
+GO
+updatelanguagecontext 'fr','image_Link','Hyperlien', 'Image'
+GO
+updatelanguagecontext 'fr','image_Exif','Info Exif', 'Image'
+GO
+updatelanguagecontext 'fr','image_GoogleMap','Google Map', 'Image'
 GO
 updatelanguagecontext 'fr','NoFileMessage','Aucun dossier choisi', 'ImageManager'
 GO
@@ -1801,6 +1991,14 @@ updatelanguagecontext 'fr','language_del','Effacer une langue', 'Language'
 GO
 updatelanguagecontext 'fr','ScriptGenerated','Fichier script sql généré:', 'Language'
 GO
+updatelanguagecontext 'fr','LanguageSettings1','Ajouter, Effacer', 'Language'
+GO
+updatelanguagecontext 'fr','LanguageSettings2','Rubrique d''aide', 'Language'
+GO
+updatelanguagecontext 'fr','LanguageSettings3','Rubriques générales', 'Language'
+GO
+updatelanguagecontext 'fr','Language_Edit_Param','Modification rubriques', 'Language'
+GO
 updatelanguagecontext 'fr','LanguageERROR','Ce môt - {0} - n''est pas dans la table de la langue {1}', 'Language'
 GO
 updatelanguagecontext 'fr','btnLanguageEditAll','Afficher tous les rubriques', 'Language'
@@ -1820,14 +2018,6 @@ GO
 updatelanguagecontext 'fr','btnLanguageEdit','Afficher seulement les nouvelles rubriques', 'Language'
 GO
 updatelanguagecontext 'fr','LanguageSettings5','Info modules admin', 'Language'
-GO
-updatelanguagecontext 'fr','LanguageSettings1','Ajouter, Effacer', 'Language'
-GO
-updatelanguagecontext 'fr','LanguageSettings2','Rubrique d''aide', 'Language'
-GO
-updatelanguagecontext 'fr','LanguageSettings3','Rubriques générales', 'Language'
-GO
-updatelanguagecontext 'fr','Language_Edit_Param','Modification rubriques', 'Language'
 GO
 updatelanguagecontext 'fr','links_label_CSSClass','Classe CSS pour l''hyperlien', 'Links'
 GO
@@ -1909,7 +2099,21 @@ updatelanguagecontext 'fr','Button_EnterTooltip','Cliquer ici pour ouvrir la ses
 GO
 updatelanguagecontext 'fr','RegisterMessage','SVP saisissez votre code d''accès', 'Login'
 GO
+updatelanguagecontext 'fr','Valid_IP_Security3','Le code de pay est invalide', 'Login'
+GO
 updatelanguagecontext 'fr','RegisterMessage6','Il a été impossible de vous faire parvenir un courriel avec les informations demandées.', 'Login'
+GO
+updatelanguagecontext 'fr','Country','Pay', 'Login'
+GO
+updatelanguagecontext 'fr','ModuleTitle','Titre', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ModuleWrapper','Extérieur', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','ModuleOnly','Intérieur', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','TitleHeader_class','CSS class du titre', 'ModuleSettings'
+GO
+updatelanguagecontext 'fr','Title_class','CSS class du texte titre', 'ModuleSettings'
 GO
 updatelanguagecontext 'fr','MS_Script','Script d''instalation', 'ModuleSettings'
 GO
@@ -1936,16 +2140,6 @@ GO
 updatelanguagecontext 'fr','ms_select_color','Choisir une couleur', 'ModuleSettings'
 GO
 updatelanguagecontext 'fr','ms_SelectModuleSkin','Choisir un habillage', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','TitleHeader_class','CSS class du titre', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','Title_class','CSS class du texte titre', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ModuleOnly','Intérieur', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ModuleTitle','Titre', 'ModuleSettings'
-GO
-updatelanguagecontext 'fr','ModuleWrapper','Extérieur', 'ModuleSettings'
 GO
 updatelanguagecontext 'fr','ms_contener_default_info','Pour sauvegarder cette habillage comme celui par défaut pour le site, donc cette habillage sera utilisé lorsqu''il n''y aura pas d''habillage de définie pour un module.', 'ModuleSettings'
 GO
@@ -2011,18 +2205,6 @@ updatelanguagecontext 'fr','ms_contener_default','Par défaut?', 'ModuleSettings
 GO
 updatelanguagecontext 'fr','ms_contener_global_info','L''habillage de tous les modules seront effacés et l''habillage par défaut sera utilisé à la place.', 'ModuleSettings'
 GO
-updatelanguagecontext 'fr','EditAccessDenied','Restriction d''accès', 'ModuleTitle'
-GO
-updatelanguagecontext 'fr','MyBuddiesModule','Information usagers préférés', 'ModuleTitle'
-GO
-updatelanguagecontext 'fr','UserInfoModule','Information membres', 'ModuleTitle'
-GO
-updatelanguagecontext 'fr','UserListModule','Liste membres', 'ModuleTitle'
-GO
-updatelanguagecontext 'fr','Site_Help','Aide', 'ModuleTitle'
-GO
-updatelanguagecontext 'fr','HelpInfo','Aide', 'ModuleTitle'
-GO
 updatelanguagecontext 'fr','title_ShowParam','Paramètres d''affichage du module', 'ModuleTitle'
 GO
 updatelanguagecontext 'fr','title_ShowInfo','Afficher l''information sur le module', 'ModuleTitle'
@@ -2071,6 +2253,64 @@ updatelanguagecontext 'fr','title_vendor_feedback','Rétroaction fournisseur', '
 GO
 updatelanguagecontext 'fr','PrivateMessages','Messagerie', 'ModuleTitle'
 GO
+updatelanguagecontext 'fr','Site_Help','Aide', 'ModuleTitle'
+GO
+updatelanguagecontext 'fr','HelpInfo','Aide', 'ModuleTitle'
+GO
+updatelanguagecontext 'fr','EditAccessDenied','Restriction d''accès', 'ModuleTitle'
+GO
+updatelanguagecontext 'fr','MyBuddiesModule','Information usagers préférés', 'ModuleTitle'
+GO
+updatelanguagecontext 'fr','UserInfoModule','Information membres', 'ModuleTitle'
+GO
+updatelanguagecontext 'fr','UserListModule','Liste membres', 'ModuleTitle'
+GO
+updatelanguagecontext 'fr','Img_Info','Information', 'Image'
+GO
+updatelanguagecontext 'fr','Img_Link','Hyperlien', 'Image'
+GO
+updatelanguagecontext 'fr','Gal_AllowDlist','À qui?', 'Gallery'
+GO
+updatelanguagecontext 'fr','SelectFile','Choisir un fichier GPX à télécharger', 'Gallery'
+GO
+updatelanguagecontext 'fr','ClickToDownload','Cliquer pour télécharger le fichier', 'Gallery'
+GO
+updatelanguagecontext 'fr','DownloadGPX','Télécharger GPX', 'Gallery'
+GO
+updatelanguagecontext 'fr','img_ExtLink','Hyperlien externe', 'Image'
+GO
+updatelanguagecontext 'fr','img_linkinfo','Info Hyperlien', 'Image'
+GO
+updatelanguagecontext 'fr','DownloadFile','Télécharger le Fichier GPX', 'Gallery'
+GO
+updatelanguagecontext 'fr','Img_GPX','Télécharger', 'Gallery'
+GO
+updatelanguagecontext 'fr','ShowOnMap','Afficher image sur carte Google', 'Image'
+GO
+updatelanguagecontext 'fr','Img_Map','Google Map', 'Gallery'
+GO
+updatelanguagecontext 'fr','Img_Exif','Exif', 'Gallery'
+GO
+updatelanguagecontext 'fr','Gal_Stop','Arrêter le diaporama....', 'Gallery'
+GO
+updatelanguagecontext 'fr','NoBanner','nil', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail2','si vous désirez lire vos messages vous devez cliquer sur cet icône', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail3','messages', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail4','message', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail5','Vous devez cliquer sur cet icône pour avoir accès à la messagerie', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','banner_ClickProfile','Cliquer ici pour faire une recherche pour trouver un usager ou pour modifier votre profil', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail','vous avez', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail0','nouveau message', 'PortalBanner'
+GO
+updatelanguagecontext 'fr','Banner_Mail1','nouveaux messages', 'PortalBanner'
+GO
 updatelanguagecontext 'fr','banners_host','serveur', 'PortalBanner'
 GO
 updatelanguagecontext 'fr','banners_portal','portail', 'PortalBanner'
@@ -2094,22 +2334,6 @@ GO
 updatelanguagecontext 'fr','register_no','Pour le moment, vous ne pouvez pas vous inscrire à notre service', 'PortalBanner'
 GO
 updatelanguagecontext 'fr','register_more_info','Vous devez vous identifier avec votre code d''accès et votre mot de passe. Si vous êtes déjà inscrit, S.V.P. <a class="CommandButton" href="{httplogin}">Entrer</a> maintenant. Sinon, <a class="CommandButton" href="{httpregister}">inscrivez vous.</a>', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail2','si vous désirez lire vos messages vous devez cliquer sur cet icône', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail3','messages', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail4','message', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail5','Vous devez cliquer sur cet icône pour avoir accès à la messagerie', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','banner_ClickProfile','Cliquer ici pour faire une recherche pour trouver un usager ou pour modifier votre profil', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail','vous avez', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail0','nouveau message', 'PortalBanner'
-GO
-updatelanguagecontext 'fr','Banner_Mail1','nouveaux messages', 'PortalBanner'
 GO
 updatelanguagecontext 'fr','P_PortalName','Nom du portail', 'PortalInfo'
 GO
@@ -2185,6 +2409,12 @@ updatelanguagecontext 'fr','Valid_IP_Saved','Code sauvegarder', 'Register'
 GO
 updatelanguagecontext 'fr','Valid_IP_Not_Saved','Code non sauvegarder', 'Register'
 GO
+updatelanguagecontext 'fr','U_yourIP','votre IP', 'Register'
+GO
+updatelanguagecontext 'fr','U_SecurityContryHelp','Choisir un pay', 'Register'
+GO
+updatelanguagecontext 'fr','U_SecurityIPHelp','Choisir un IP', 'Register'
+GO
 updatelanguagecontext 'fr','rss_general_info','<b>*Note:</b> Pour une liste exhaustive des nouvelles disponibles aller voir chez&nbsp;<b><a href="http://w.moreover.com/categories/category_list_rss.html" target="_new">Moreover.Com</a></b>', 'RSS'
 GO
 updatelanguagecontext 'fr','rss_noconnect_error','Le lien RSS n''est pas disponible. Message d''erreur: {errormessage}', 'RSS'
@@ -2236,6 +2466,8 @@ GO
 updatelanguagecontext 'fr','Search_max_width','Largeur maximum du titre', 'Search'
 GO
 updatelanguagecontext 'fr','Search_max_width_desc','Largeur maximum de la description', 'Search'
+GO
+updatelanguagecontext 'fr','autre','autre', 'Signup'
 GO
 updatelanguagecontext 'fr','Confirm_Password','Confirm', 'Signup'
 GO
@@ -2439,15 +2671,19 @@ updatelanguagecontext 'fr','SS_Label_PortalBasicFee','Frais de base pour l''héb
 GO
 updatelanguagecontext 'fr','SS_Label_PortalExtraFee','Frais additionnel pour les modules', 'SiteSettings'
 GO
-updatelanguagecontext 'fr','SS_Site_Description','Description en', 'SiteSettings'
+updatelanguagecontext 'fr','SS_PrivateKey','reCAPTCHA "PrivateKey"', 'SiteSettings'
 GO
-updatelanguagecontext 'fr','SS_ToolTipModuleSkin','ToolTip', 'SiteSettings'
+updatelanguagecontext 'fr','SS_PublicKey','reCAPTCHA "PublicKey"', 'SiteSettings'
 GO
-updatelanguagecontext 'fr','P_ssl','ssl', 'SiteSettings'
+updatelanguagecontext 'fr','P_sub','sub', 'SiteSettings'
 GO
 updatelanguagecontext 'fr','SS_Use_SSL','Utiliser SSL', 'SiteSettings'
 GO
-updatelanguagecontext 'fr','P_sub','sub', 'SiteSettings'
+updatelanguagecontext 'fr','P_ssl','ssl', 'SiteSettings'
+GO
+updatelanguagecontext 'fr','SS_ToolTipModuleSkin','ToolTip', 'SiteSettings'
+GO
+updatelanguagecontext 'fr','SS_Site_Description','Description en', 'SiteSettings'
 GO
 updatelanguagecontext 'fr','Skin_FileErased','Le fichier à été effacé', 'SkinEdit'
 GO
@@ -2523,8 +2759,6 @@ updatelanguagecontext 'fr','cache_memory_used','Antémémoire utilisé', 'System
 GO
 updatelanguagecontext 'fr','ts_xmltemplate','Gabarit XML', 'TabSettings'
 GO
-updatelanguagecontext 'fr','Generate_XML','Créer gabarit', 'TabSettings'
-GO
 updatelanguagecontext 'fr','ts_visibleinfo','Utiliser seulement si la page n''a pas de dépendance', 'TabSettings'
 GO
 updatelanguagecontext 'fr','ts_visible','Visible?', 'TabSettings'
@@ -2562,6 +2796,20 @@ GO
 updatelanguagecontext 'fr','ts_TabAdminRole','Modifier', 'TabSettings'
 GO
 updatelanguagecontext 'fr','ts_TabViewRole','Voir', 'TabSettings'
+GO
+updatelanguagecontext 'fr','Generate_XML','Créer gabarit', 'TabSettings'
+GO
+updatelanguagecontext 'fr','SS_Tigra_Edit','Modifier tigra', 'Tigra'
+GO
+updatelanguagecontext 'fr','tigra_help1','Pour générer les paramètres nécessaire pour la création d''un menu horizontal, après la création vous pouvez modifier les informations dans la grille de paramêtres.  Pour voir le résultat sur l''écran vous devrez utiliser le bouton <b>tester</b>', 'Tigra'
+GO
+updatelanguagecontext 'fr','tigra_help2','Prendre les informations de la grille de paramètres et générer un nouveau fichier menu</b> ainsi que d''afficher à l''écran le résultat', 'Tigra'
+GO
+updatelanguagecontext 'fr','tigra_help3','Pour sauvegarder dans le fichier menu.  Assurer vous de cliquer sur tester si vous avez fait des modifications à la grille de paramètres.', 'Tigra'
+GO
+updatelanguagecontext 'fr','tigra_return','Revenir sans sauvegarder.', 'Tigra'
+GO
+updatelanguagecontext 'fr','tigra_help','Pour générer les paramètres nécessaire pour la création d''un menu vertical, après la création vous pouvez modifier les informations dans la grille de paramêtres.  Pour voir le résultat sur l''écran vous devrez utiliser le bouton <b>tester</b>', 'Tigra'
 GO
 updatelanguagecontext 'fr','tigra_vertical','Vertical', 'Tigra'
 GO
@@ -2617,18 +2865,6 @@ updatelanguagecontext 'fr','tigra_Menu1.6','Largeur d''une cellule en pixel', 'T
 GO
 updatelanguagecontext 'fr','tigra_Menu2.1','Position du sous menu relatif au menu supérieur', 'Tigra'
 GO
-updatelanguagecontext 'fr','SS_Tigra_Edit','Modifier tigra', 'Tigra'
-GO
-updatelanguagecontext 'fr','tigra_help1','Pour générer les paramètres nécessaire pour la création d''un menu horizontal, après la création vous pouvez modifier les informations dans la grille de paramêtres.  Pour voir le résultat sur l''écran vous devrez utiliser le bouton <b>tester</b>', 'Tigra'
-GO
-updatelanguagecontext 'fr','tigra_help2','Prendre les informations de la grille de paramètres et générer un nouveau fichier menu</b> ainsi que d''afficher à l''écran le résultat', 'Tigra'
-GO
-updatelanguagecontext 'fr','tigra_help3','Pour sauvegarder dans le fichier menu.  Assurer vous de cliquer sur tester si vous avez fait des modifications à la grille de paramètres.', 'Tigra'
-GO
-updatelanguagecontext 'fr','tigra_return','Revenir sans sauvegarder.', 'Tigra'
-GO
-updatelanguagecontext 'fr','tigra_help','Pour générer les paramètres nécessaire pour la création d''un menu vertical, après la création vous pouvez modifier les informations dans la grille de paramêtres.  Pour voir le résultat sur l''écran vous devrez utiliser le bouton <b>tester</b>', 'Tigra'
-GO
 updatelanguagecontext 'fr','ManageTableUDT','Administrer les tables usager', 'UDT'
 GO
 updatelanguagecontext 'fr','OrderBy','Ordre de tri', 'UDT'
@@ -2669,7 +2905,7 @@ updatelanguagecontext 'fr','U_SecurityIPFROM','IP de', 'User'
 GO
 updatelanguagecontext 'fr','U_SecurityIPTO','IP à', 'User'
 GO
-updatelanguagecontext 'fr','U_Created_Date','Date crée', 'User'
+updatelanguagecontext 'fr','U_Created_Date','Membre depuis ', 'User'
 GO
 updatelanguagecontext 'fr','U_LastLogin_Date','Dernière visite', 'User'
 GO
@@ -2678,6 +2914,24 @@ GO
 updatelanguagecontext 'fr','U_QUIT_site','Résigner', 'User'
 GO
 updatelanguagecontext 'fr','UO_RemovePU','Enlever usager préféré', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_LastPage','Dernière', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_OnlyBody','Mes préférés seulement', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_Anonymous','Visiteurs', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_Members','Membres', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_NewMessage','Nouveau message', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_OldMessage','Déjà lu', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_BadUserID','Le numéro usager est invalide', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_NoMessage','Aucun message', 'UserOnline'
+GO
+updatelanguagecontext 'fr','UO_erase','Effacer tous les messages sélectionnés', 'UserOnline'
 GO
 updatelanguagecontext 'fr','UO_no_pref','Vous n''avez aucun usager préféré', 'UserOnline'
 GO
@@ -2805,14 +3059,6 @@ updatelanguagecontext 'fr','UO_PrevPage','Précédente', 'UserOnline'
 GO
 updatelanguagecontext 'fr','UO_NextPage','Suivante', 'UserOnline'
 GO
-updatelanguagecontext 'fr','UO_LastPage','Dernière', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_OnlyBody','Mes préférés seulement', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_Anonymous','Visiteurs', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_Members','Membres', 'UserOnline'
-GO
 updatelanguagecontext 'fr','UO_OnLine_Now','En ligne présentement', 'UserOnline'
 GO
 updatelanguagecontext 'fr','UO_AllUsers','Tous les usagers', 'UserOnline'
@@ -2820,16 +3066,6 @@ GO
 updatelanguagecontext 'fr','UO_OnlineOnly','Seulement les usagers en ligne', 'UserOnline'
 GO
 updatelanguagecontext 'fr','UO_Registered','Inscription', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_NewMessage','Nouveau message', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_OldMessage','Déjà lu', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_BadUserID','Le numéro usager est invalide', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_NoMessage','Aucun message', 'UserOnline'
-GO
-updatelanguagecontext 'fr','UO_erase','Effacer tous les messages sélectionnés', 'UserOnline'
 GO
 updatelanguagecontext 'fr','Positive_Feedback','Rétroaction positive', 'Vendors'
 GO
@@ -2947,11 +3183,11 @@ updatelanguagecontext 'fr','Vendor_ThankYou','Merci de votre contribution.', 'Ve
 GO
 updatelanguagecontext 'fr','Vendor_Name','Nom du fournisseur', 'Vendors'
 GO
-updatelanguagecontext 'fr','Oriflamme','Oriflamme', 'Vendors'
-GO
 updatelanguagecontext 'fr','Vendor_Register','Inscription fournisseur', 'Vendors'
 GO
 updatelanguagecontext 'fr','vendors_date','date', 'Vendors'
+GO
+updatelanguagecontext 'fr','Oriflamme','Oriflamme', 'Vendors'
 GO
 updatelanguagecontext 'fr','w_personalise','Personaliser?', 'Weather'
 GO
@@ -3001,7 +3237,7 @@ UpdatelonglanguageSetting 'fr','Demo_Portal_Info','<div align="left" class="norm
 </span>
 <p align="left">
 Vous ne pouvez utiliser le site web {PortalName} qu''à condition de garantir que vous ne l''utiliserez pas à  des fins illicites ou interdites par ces termes, conditions d''utilisation et mentions d''avertissement.<br>
-<a href="https://{DomainName}/{language}.default.aspx?edit=control&def=Signup&guid={lblGUID}" title="Acceptation des conditions générales d''utilisation et après l''acceptation de ces termes vous pourrez créer un site d''essais">&nbsp;<b><font color="#ff0000">j''accepte</font></b></a>
+<a href="http://{DomainName}/{language}.default.aspx?edit=control&def=Signup&guid={lblGUID}" title="Acceptation des conditions générales d''utilisation et après l''acceptation de ces termes vous pourrez créer un site d''essais">&nbsp;<b><font color="#ff0000">j''accepte</font></b></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://{DomainName}/" title="Retour">&nbsp;<b><font color="#669900">je refuse</font></b></a>
 </p>
 </div>', null 
@@ -3920,7 +4156,7 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_ManageTabs','<h1 align="center">Para
     <div align="left">Icône : Pour choisir un icône pour afficher à gauche du nom dans le menu.</div>
     </li>
     <li>
-    <div align="left">Page parente : Pour déterminer la hiérachie de la page.&#160;</div>
+    <div align="left">Page parente : Pour déterminer la hiérarchie de la page.&#160;</div>
     </li>
     <li>
     <div align="left">Fichier CSS :&#160; Si vide le fichier portal.css sera utilisé, sinon le fichier désigné sera utilisé à la place.</div>
@@ -3929,7 +4165,7 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_ManageTabs','<h1 align="center">Para
     <li>Gabarit de la page : Vous pouvez utiliser la mise en page utilisé par une autre page lors de la création d''une nouvelle page seulement.</li>
     <li>Gabarit XML : Pour utiliser un gabarit XML sauvegardé lors de la création d''une nouvelle page seulement.</li>
     <li>Visible :&#160; Pour que la page soit disponible par le menu, sinon la page et l''hyperlien ne sera pas disponible dans le menu.</li>
-    <li>Hyperlien : Pour d''ésactivé l''hyperlien dans le menu.</li>
+    <li>Hyperlien : Pour désactiver l''hyperlien dans le menu.</li>
     <li>Volet gauche et droite : Chaque page à trois volet, donc pour déterminer en pixels la largeur minimal des volets gauche et droite.</li>
     <li>Modifier :&#160; Paramètres de sécurité pour désigner les comptes utilisateurs qui pourront modifier les paramètres de la page ainsi que l''ajout et la suppression de module sur la page.</li>
     <li>Voir : Paramètres de sécurité pour désigner les comptes utilisateur qui pourront consulter cette page.</li>
@@ -4150,6 +4386,42 @@ GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Privacy','<span class="Head">DÉCLARATION DE CONFIDENTIALITÉ</span>
 <p>
 La présente déclaration de confidentialité divulgue nos pratiques relatives à la protection de la vie privée. En utilisant le site web, vous consentez sans réserve à la collecte,  l''utilisation et  la divulgation de vos renseignements personnels et aux pratiques relatives à la protection de la vie privée énoncées dans la déclaration de confidentialité.  Si vous désirez plus d''information ou d''aide veuillez nous écrire.</p>', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_ReCapchat_False','<div style="text-align: center;">
+<h1>Écrire un nouveau commentaire</h1>
+</div>
+<p>&#160;</p>
+<p>Vous devez saisir un <b>Objet</b>&#160;puis commencez à rédiger votre commentaire.</p>
+<p>Choisissez le nom à être afficher et&#160;<b>Enregister</b></p>
+<p>&#160;</p>
+<ul>
+    <li>Assurez vous de la pertinence de votre commentaire.</li>
+    <li>Limitez vous à des sujets d''intérêts concernant la rubrique.</li>
+    <li>N''abusez pas de votre pouvoir. Ce n''est pas parce que l''on peut faire quelque chose que l''on a le droit de le faire et ce n''est pas parce que l''on a le droit de faire quelque chose qu''il faut le faire.</li>
+    <li>Rappelez vous qu''Internet n''est pas une zone de non droit et qu''on y est rarement complètement anonyme. Sur Internet aussi vous êtes censés respecter les lois de votre pays (droits d''auteur, informations illicites, protection de l''intégrité humaine, ...).</li>
+    <li>Vous êtes personnellement responsables de vos écrits.</li>
+    <li>Toute personne désireuse de faire supprimer un commentaire lui portant un préjudice personnel doit adresser sa plainte par&#160;courriel en expliquant le motif de sa demande. &#160;N''hésitez pas à vous adresser {PortalName} par courriel à {AdministratorEmail}.</li>
+</ul>', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_ReCapchat_True','<div style="text-align: center;">
+<h1>Écrire un nouveau commentaire</h1>
+</div>
+<p>&#160;</p>
+<p>Vous devez saisir un <b>Objet</b> puis commencez à rédiger votre commentaire.</p>
+<p>Veuillez saisir les mots indiqués dans l''image, dans le même ordre, en les séparant par un espace.</p>
+<p><em>Ces précautions permettent ainsi d''éviter que des programmes automatisés utilisent ce service de manière abusive.</em></p>
+<p>Si vous avez des difficultés à identifier les mots, indiquez ce qui vous semble le plus probable, ou cliquez sur le bouton situé à côté des mots déformés pour afficher une autre image.&#160;</p>
+<p>Les personnes malvoyantes peuvent cliquer sur le bouton "Captcha audio" afin d''entendre les mots à saisir.</p>
+<p>Cliquez sur <b>Enregister</b> pour terminer et sauvegarder votre commentaire.</p>
+<p>&#160;</p>
+<ul>
+    <li>Assurez vous de la pertinence de votre commentaire.</li>
+    <li>Limitez vous à des sujets d''intérêts concernant la rubrique.</li>
+    <li>N''abusez pas de votre pouvoir. Ce n''est pas parce que l''on peut faire quelque chose que l''on a le droit de le faire et ce n''est pas parce que l''on a le droit de faire quelque chose qu''il faut le faire.</li>
+    <li>Rappelez vous qu''Internet n''est pas une zone de non droit et qu''on y est rarement complètement anonyme. Sur Internet aussi vous êtes censés respecter les lois de votre pays (droits d''auteur, informations illicites, protection de l''intégrité humaine, ...).</li>
+    <li>Vous êtes personnellement responsables de vos écrits.</li>
+    <li>Toute personne désireuse de faire supprimer un commentaire lui portant un préjudice personnel doit adresser sa plainte par&#160;courriel en expliquant le motif de sa demande. &#160;N''hésitez pas à vous adresser {PortalName} par courriel à {AdministratorEmail}.</li>
+</ul>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Register','<h1>Inscription {PortalName}</h1>
 <p>Tous les champs avec un <b>*&#160;</b>sont obligatoires.</p>
@@ -4480,7 +4752,7 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettingsAlias','<h1>Détails de 
 <h2>Alias et nom de domaine</h2>
 <p>Un portail peut avoir plusieurs alias ou nom de domaine. Chaque non de domaine doit être unique sur le serveur web.&#160; Si vous inscrivez un non de domaine déjà utiliser par un autre portail il sera réassigné à ce portail.&#160; Chaque non de domaine peut être désigné pour utiliser le protocol sécurisé SSL.&#160; Assurez vous que cette fonction est activé sur le serveur web.&#160; Si vous activé cette option et que le serveur web n''est pas configuré en conséquence, ceci pourra rendre le portail inopérant.</p>
 <h2>Protocol SSL</h2>
-<p><span style="font-size: larger; color: rgb(255, 0, 0);">IMPORTANT : &#160;</span>Le protocol SSL doit être préalablement installé sur le serveur web. &#160;Aussi que l''option <a class="headertitle" target="_blank" title="modifier option ssl" href="fr.default.aspx?adminpage=72">forcer ssl</a> dans les paramètres d''hébergement doit être activé. &#160;Un certificat SSL ne peut utiliser qu''une adresse IP. &#160;Donc, seulement un certificat SSL ne pourra être utilisé pour une instalation de DotNetZoom. &#160; Si le certificat SSL utilisé est d''un nom de domaine différent que celui du portail, vous devrez cocher l''option sub et ssl pour ce nom de domaine. &#160;<span style="font-size: larger; color: rgb(255, 0, 0); ">Ne cocher l''option ssl que pour un nom de domaine pour lequel un certificat SSL est valide, sinon vous rendrez le portail inopérant.</span></p>', null 
+<p><span style="font-size: larger; color: rgb(255, 0, 0);">IMPORTANT : &#160;</span>Le protocol SSL doit être préalablement installé sur le serveur web. &#160;Aussi que l''option <a target="_blank" title="modifier option ssl" href="/fr.default.aspx?adminpage=72">forcer ssl</a> dans les paramètres d''hébergement doit être activé. &#160;Un certificat SSL ne peut utiliser qu''une adresse IP. &#160;Donc, seulement un certificat SSL ne pourra être utilisé pour une instalation de DotNetZoom. &#160; Si le certificat SSL utilisé est d''un nom de domaine différent que celui du portail, vous devrez cocher l''option sub et ssl pour ce nom de domaine. &#160;<span style="font-size: larger; color: rgb(255, 0, 0);">Ne cocher l''option ssl que pour un nom de domaine pour lequel un certificat SSL est valide, sinon vous rendrez le portail inopérant.</span></p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_SiteSettingsDemo','<h1>Paramètres pour portail demo</h1>
 <p>L''option démo doit être préalablement activé dans les paramètres d''hébergement. <a target="_blank" title="Modifier les options démo dans les paramètres d''hébergement" class="headertitle" href="fr.default.aspx?adminpage=72">Vous pouvez définir les options de base.</a>   Vous pouvez autoriser la création d''un de démo. Un site de démo peut utiliser un domaine enfant, c''est-à-dire dotnetzoom / votrenom ou un sous-domaine, c''est-à-dire yourname.dotnetzoom. Pour utiliser un sous-domaine Le serveur DNS doit être convigurer en conséquence, sinon le portail demo ainsi crée sera inopérable, &#160;parceque le nouveau sous-domaine ne sera pas disponible dans la table dns.</p><p><b>*Note:</b>  Une fois que qu''un nouveau portail sera créé.  L''utilisateur ainsi que le webmestre recevra un <b>courriel avec un <font color="#ff0000">hyperlien</font></b> pour activer le portail.  Donc il est important que les paramètres SMTP soit activé dans les <a target="_blank" title="Modifier les options SMTP dans les paramètres d''hébergement" class="headertitle" href="fr.default.aspx?adminpage=72">paramètres d''hébergement.</a></p>', null 
@@ -4497,7 +4769,31 @@ GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Tabs','<h1 style="text-align: center; ">Pages</h1>
 <p>Vous pouvez ajouter, modifier ou changer la hiérarchie des pages par ce menu.</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_TAGFileManagerModule','DisplayHelp_TAGFileManagerModule', null 
+UpdatelonglanguageSetting 'fr','DisplayHelp_TAGFileManagerModule','<h1 style="text-align: center; ">Gestion des fichiers</h1>
+<p>Les tâches suivantes peuvent être effectuées : <br />
+&#160;</p>
+<ul>
+    <li>Ajouter un nouveau ficher.</li>
+    <li>Ajouter un nouveau répetoire.</li>
+    <li>Télécharger un fichier.</li>
+    <li>Effacer un répertoire.</li>
+    <li>Effacer un fichier.</li>
+    <li>Renommer un répertoire.</li>
+    <li>Renommer un ficher.</li>
+</ul>
+<p>Les fichiers et répertoires peuvent être trier&#160;par ordre &#160;croissant ou décroissant, par nom, par type et taille.</p>', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_TAGFileUploadDialog','<div style="text-align: left;">
+<table><tr><td><h1>Cliquez sur : </h1></td>
+<td><ul>
+    <li><b>Choisir un fichier</b> pour ajouter des fichiers à la file d''attente.</li>
+    <li><b>Télécharger</b> pour télécharger les fichiers de la file d''attente sur le serveur.</li>
+    <li><b>Effacer</b> pour effacer la liste d''attente.</li>
+    <li><b>Retour</b> pour revenir au menu précédent</li>
+</ul>
+</td></tr></table>
+</div>
+', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_Terms','<span class="Head">CONDITIONS GÉNÉRALES</span>
 <p>Les présentes conditions générales constituent l''intégralité de l''entente pour l''utilisation du site web.  Les conditions générales d''utilisation du site web sont régies par les lois de la province du Québec et par les lois fédérales du Canada applicables et doivent être interprétées en vertu de ces lois.  Si vous désirez plus d''information ou d''aide veuillez nous écrire.</p>', null 
@@ -4581,6 +4877,8 @@ Sources des donn&eacute;es m&eacute;t&eacute;o. Conditions routi&egrave;res Vous
 <br />', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_WebUpload','Fonction d''ajout et de modification.', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_Welcome','DisplayHelp_Welcome', null 
 GO
 UpdatelonglanguageSetting 'fr','Edit Access Denied','Message pour un bris de sécurité', null 
 GO
@@ -5027,6 +5325,60 @@ UpdateCountryCodes 'fr','FI','Finland'
 GO
 UpdateCountryCodes 'fr','FR','France'
 GO
+UpdateRegionCodes 'fr','FR','42','Alsace'
+GO
+UpdateRegionCodes 'fr','FR','72','Aquitaine'
+GO
+UpdateRegionCodes 'fr','FR','83','Auvergne'
+GO
+UpdateRegionCodes 'fr','FR','25','Basse-Normandie'
+GO
+UpdateRegionCodes 'fr','FR','26','Bourgogne'
+GO
+UpdateRegionCodes 'fr','FR','53','Bretagne'
+GO
+UpdateRegionCodes 'fr','FR','24','Centre'
+GO
+UpdateRegionCodes 'fr','FR','21','Champagne-Ardenne'
+GO
+UpdateRegionCodes 'fr','FR','94','Corse'
+GO
+UpdateRegionCodes 'fr','FR','43','Franche-Comté'
+GO
+UpdateRegionCodes 'fr','FR','01','Guadeloupe'
+GO
+UpdateRegionCodes 'fr','FR','03','Guyane'
+GO
+UpdateRegionCodes 'fr','FR','23','Haute-Normandie'
+GO
+UpdateRegionCodes 'fr','FR','11','Île-de-France'
+GO
+UpdateRegionCodes 'fr','FR','04','La Réunion'
+GO
+UpdateRegionCodes 'fr','FR','91','Languedoc-Roussillon'
+GO
+UpdateRegionCodes 'fr','FR','74','Limousin'
+GO
+UpdateRegionCodes 'fr','FR','41','Lorraine'
+GO
+UpdateRegionCodes 'fr','FR','02','Martinique'
+GO
+UpdateRegionCodes 'fr','FR','05','Mayotte'
+GO
+UpdateRegionCodes 'fr','FR','73','Midi-Pyrénées'
+GO
+UpdateRegionCodes 'fr','FR','31','Nord-Pas-de-Calais'
+GO
+UpdateRegionCodes 'fr','FR','52','Pays de la Loire'
+GO
+UpdateRegionCodes 'fr','FR','22','Picardie'
+GO
+UpdateRegionCodes 'fr','FR','54','Poitou-Charentes'
+GO
+UpdateRegionCodes 'fr','FR','93','Provence-Alpes-Côte d''Azur'
+GO
+UpdateRegionCodes 'fr','FR','82','Rhône-Alpes'
+GO
 UpdateCountryCodes 'fr','GF','French Guiana'
 GO
 UpdateCountryCodes 'fr','PF','French Polynesia'
@@ -5459,7 +5811,7 @@ UpdateCountryCodes 'fr','ZM','Zambia'
 GO
 UpdateCountryCodes 'fr','ZW','Zimbabwe'
 GO
-UpdateAdminModuleDefinitions 'fr','99','Admin','Menu pour les fonctions d''administrations'
+UpdateAdminModuleDefinitions 'fr','87','Admin','Menu pour les fonctions d''administrations'
 GO
 UpdateAdminModuleDefinitions 'fr','14','Paramètres du site','Les paramètres du site représentent les options locales pour votre portail. Le module vous permet d''adapter votre portail pour répondre à vos exigences.'
 GO
@@ -5485,7 +5837,7 @@ UpdateAdminModuleDefinitions 'fr','27','Statistiques','Le module sert à voir le
 GO
 UpdateAdminModuleDefinitions 'fr','28','Courriel','Le module sert à envoyer du courriel en bloc aux utilisateurs appartenant à un profil de sécurité particulier.'
 GO
-UpdateAdminModuleDefinitions 'fr','100','Language','Section pour localisation et modification des paramètres linguistique'
+UpdateAdminModuleDefinitions 'fr','88','Language','Section pour localisation et modification des paramètres linguistique'
 GO
 UpdateCurrencies 'fr','CAD','Canadien (CAD)'
 GO

@@ -33,7 +33,7 @@ Public Sub DisplayImages()
         Dim FilesArray() As String = Nothing
  Dim NumOfImag As Integer = 1
 
- Dim strFolder As String = Request.MapPath("/images/containers/")
+        Dim strFolder As String = Request.MapPath(glbPath + "images/containers/")
 				
  If System.IO.Directory.Exists(strFolder) Then
     FilesArray = System.IO.Directory.GetDirectories(strFolder)

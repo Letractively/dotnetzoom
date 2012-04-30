@@ -30,7 +30,7 @@ Namespace DotNetZoom
         Protected WithEvents ctlUsers As TTT_UsersControl
         Protected WithEvents txtgoogleAPI As System.Web.UI.WebControls.TextBox
         Protected WithEvents lblInfo As System.Web.UI.WebControls.Label
-		Protected WithEvents lblQuota As System.Web.UI.WebControls.Label
+        Protected WithEvents lblQuota As System.Web.UI.WebControls.Label
         Protected WithEvents RootURL As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtQuota As System.Web.UI.WebControls.TextBox
         Protected WithEvents Regularexpressionvalidator9 As System.Web.UI.WebControls.RegularExpressionValidator
@@ -112,24 +112,24 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             config = GalleryConfig.GetGalleryConfig(ModuleId)
 
-			Regularexpressionvalidator9.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator8.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator10.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator5.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator6.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator1.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator2.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator3.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator4.ErrorMessage = GetLanguage("need_number")
-			Regularexpressionvalidator7.ErrorMessage = GetLanguage("need_number")
-			btnEditOwner.Text = GetLanguage("Gal_Select")
-			btnEditOwner.ToolTip = GetLanguage("Gal_SOwner")
-			btnCancel.Text = GetLanguage("annuler")
-			btnCancel.ToolTip = GetLanguage("annuler")
-			btnUpdate.Text = GetLanguage("enregistrer")
-			btnUpdate.ToolTip = GetLanguage("Gal_UpdateConf")
+            Regularexpressionvalidator9.ErrorMessage = GetLanguage("need_number")
+            Regularexpressionvalidator8.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator10.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator5.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator6.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator1.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator2.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator3.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator4.ErrorMessage = GetLanguage("need_number")
+            RegularExpressionValidator7.ErrorMessage = GetLanguage("need_number")
+            btnEditOwner.Text = GetLanguage("Gal_Select")
+            btnEditOwner.ToolTip = GetLanguage("Gal_SOwner")
+            btnCancel.Text = GetLanguage("annuler")
+            btnCancel.ToolTip = GetLanguage("annuler")
+            btnUpdate.Text = GetLanguage("enregistrer")
+            btnUpdate.ToolTip = GetLanguage("Gal_UpdateConf")
 
- 
+
             If Not Page.IsPostBack Then
                 ' Store URL Referrer to return to portal
                 If Not Request.UrlReferrer Is Nothing Then
@@ -163,7 +163,7 @@ Namespace DotNetZoom
                 Dim objAdmin As New AdminDB()
                 StrFolder = Request.MapPath(config.RootURL)
                 SpaceUsed = objAdmin.GetdirectorySpaceUsed(StrFolder)
-     
+
                 SpaceUsed = SpaceUsed / 1048576
                 If config.Quota = 0 Then
 
@@ -284,36 +284,39 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim GalleryURL As String = RootURL.Text
             Dim GalleryPath As String = Server.MapPath(GalleryURL)
-			Dim Admin as new AdminDB()
-			
-		If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) And not PortalSecurity.IsSuperUser Then
-			if InStr(1, LCase(GalleryURL), LCase(_portalSettings.UploadDirectory)) = 0 then
-			If GalleryTitle.Text = string.empty then
-			GalleryTitle.Text = "Album"
-			end if
-				RootURL.Text = _portalSettings.UploadDirectory & admin.convertstringtounicode(GalleryTitle.Text)
-				lblInfo.Text = GetLanguage("Gal_ErrorDir")
-				Return
-			end if		
-		end if
-			
-			
+            Dim Admin As New AdminDB()
+
+            If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) And Not PortalSecurity.IsSuperUser Then
+                If InStr(1, LCase(GalleryURL), LCase(_portalSettings.UploadDirectory)) = 0 Then
+                    If GalleryTitle.Text = String.Empty Then
+                        GalleryTitle.Text = "Album"
+                    End If
+                    If RootURL.Text.ToLower <> config.RootURL.ToLower Then
+                        ' only webmestre can change directory outside portal
+                        RootURL.Text = _portalSettings.UploadDirectory & Admin.convertstringtounicode(GalleryTitle.Text)
+                        lblInfo.Text = GetLanguage("Gal_ErrorDir")
+                        Return
+                    End If
+                End If
+            End If
+
+
             Try
                 If Not IO.Directory.Exists(GalleryPath) Then
-				    If PortalSecurity.IsSuperUser Then
-					' Super User can create a new gallery anywhere
-                    IO.Directory.CreateDirectory(GalleryPath)
-					else
-					If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
-					' admin of portal can only create a galley in his portal
-					if InStr(1, LCase(GalleryURL), LCase(_portalSettings.UploadDirectory)) <> 0 then
-					IO.Directory.CreateDirectory(GalleryPath)
-					else
-					lblInfo.Text = GetLanguage("Gal_ErrorDir")
-					Return
-					end if
-					end if
-					end If
+                    If PortalSecurity.IsSuperUser Then
+                        ' Super User can create a new gallery anywhere
+                        IO.Directory.CreateDirectory(GalleryPath)
+                    Else
+                        If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
+                            ' admin of portal can only create a galley in his portal
+                            If InStr(1, LCase(GalleryURL), LCase(_portalSettings.UploadDirectory)) <> 0 Then
+                                IO.Directory.CreateDirectory(GalleryPath)
+                            Else
+                                lblInfo.Text = GetLanguage("Gal_ErrorDir")
+                                Return
+                            End If
+                        End If
+                    End If
                 End If
             Catch Exc As System.Exception
                 Dim strErr As String = Exc.ToString
@@ -322,46 +325,48 @@ Namespace DotNetZoom
             End Try
 
             Admin.UpdateModuleSetting(ModuleId, "GoogleAPI", txtgoogleAPI.Text)
-            admin.UpdateModuleSetting(ModuleId, "GalleryTitle", GalleryTitle.Text)
-            admin.UpdateModuleSetting(ModuleId, "GalleryDescription", Description.Text)
-            admin.UpdateModuleSetting(ModuleId, "RootURL", RootURL.Text)
-            admin.UpdateModuleSetting(ModuleId, "StripWidth", StripWidth.Text)
-            admin.UpdateModuleSetting(ModuleId, "StripHeight", StripHeight.Text)
-			If IsNumeric(txtQuota.Text) then
-            admin.UpdateModuleSetting(ModuleId, "Quota", txtQuota.Text)
-			Else
-			admin.UpdateModuleSetting(ModuleId, "Quota", "0")
-			end if
-            admin.UpdateModuleSetting(ModuleId, "MaxFileSize", txtMaxFileSize.Text)
-            admin.UpdateModuleSetting(ModuleId, "MaxThumbWidth", MaxThumbWidth.Text)
-            admin.UpdateModuleSetting(ModuleId, "MaxThumbHeight", MaxThumbHeight.Text)
-            admin.UpdateModuleSetting(ModuleId, "FileExtensions", LCase(FileExtensions.Text))
-            admin.UpdateModuleSetting(ModuleId, "MovieExtensions", LCase(MovieExtensions.Text))
-            admin.UpdateModuleSetting(ModuleId, "CategoryValues", CategoryValues.Text)
-            admin.UpdateModuleSetting(ModuleId, "BuildCacheOnStart", BuildCacheOnStart.Checked.ToString)
+            Admin.UpdateModuleSetting(ModuleId, "GalleryTitle", GalleryTitle.Text)
+            Admin.UpdateModuleSetting(ModuleId, "GalleryDescription", Description.Text)
+
+            Admin.UpdateModuleSetting(ModuleId, "RootURL", RootURL.Text)
+
+            Admin.UpdateModuleSetting(ModuleId, "StripWidth", StripWidth.Text)
+            Admin.UpdateModuleSetting(ModuleId, "StripHeight", StripHeight.Text)
+            If IsNumeric(txtQuota.Text) Then
+                Admin.UpdateModuleSetting(ModuleId, "Quota", txtQuota.Text)
+            Else
+                Admin.UpdateModuleSetting(ModuleId, "Quota", "0")
+            End If
+            Admin.UpdateModuleSetting(ModuleId, "MaxFileSize", txtMaxFileSize.Text)
+            Admin.UpdateModuleSetting(ModuleId, "MaxThumbWidth", MaxThumbWidth.Text)
+            Admin.UpdateModuleSetting(ModuleId, "MaxThumbHeight", MaxThumbHeight.Text)
+            Admin.UpdateModuleSetting(ModuleId, "FileExtensions", LCase(FileExtensions.Text))
+            Admin.UpdateModuleSetting(ModuleId, "MovieExtensions", LCase(MovieExtensions.Text))
+            Admin.UpdateModuleSetting(ModuleId, "CategoryValues", CategoryValues.Text)
+            Admin.UpdateModuleSetting(ModuleId, "BuildCacheOnStart", BuildCacheOnStart.Checked.ToString)
 
             Admin.UpdateModuleSetting(ModuleId, "CheckboxIndex", CheckboxIndex.Checked.ToString)
             Admin.UpdateModuleSetting(ModuleId, "CheckboxGPS", CheckboxGPS.Checked.ToString)
 
 
             Admin.UpdateModuleSetting(ModuleId, "IsFixedSize", chkFixedSize.Checked.ToString)
-            admin.UpdateModuleSetting(ModuleId, "FixedWidth", FixedWidth.Text)
-            admin.UpdateModuleSetting(ModuleId, "Quality", Quality.Text)
-            admin.UpdateModuleSetting(ModuleId, "FixedHeight", FixedHeight.Text)
-            admin.UpdateModuleSetting(ModuleId, "IsKeepSource", chkKeepSource.Checked.ToString)
-            admin.UpdateModuleSetting(ModuleId, "SlideshowSpeed", SlideshowSpeed.Text)
-            admin.UpdateModuleSetting(ModuleId, "IsPrivate", chkPrivate.Checked.ToString)
-            admin.UpdateModuleSetting(ModuleId, "IsIntegrated", chkForumIntegrate.Checked.ToString)
+            Admin.UpdateModuleSetting(ModuleId, "FixedWidth", FixedWidth.Text)
+            Admin.UpdateModuleSetting(ModuleId, "Quality", Quality.Text)
+            Admin.UpdateModuleSetting(ModuleId, "FixedHeight", FixedHeight.Text)
+            Admin.UpdateModuleSetting(ModuleId, "IsKeepSource", chkKeepSource.Checked.ToString)
+            Admin.UpdateModuleSetting(ModuleId, "SlideshowSpeed", SlideshowSpeed.Text)
+            Admin.UpdateModuleSetting(ModuleId, "IsPrivate", chkPrivate.Checked.ToString)
+            Admin.UpdateModuleSetting(ModuleId, "IsIntegrated", chkForumIntegrate.Checked.ToString)
             Admin.UpdateModuleSetting(ModuleId, "SlideshowPopup", chkPopup.Checked.ToString)
             Admin.UpdateModuleSetting(ModuleId, "InfoBule", chkInfoBule.Checked.ToString)
-            admin.UpdateModuleSetting(ModuleId, "AllowDownload", chkDownload.Checked.ToString)
+            Admin.UpdateModuleSetting(ModuleId, "AllowDownload", chkDownload.Checked.ToString)
             ' admin.UpdateModuleSetting(ModuleId, "IsAvatarsGallery", chkAvatarsGallery.Checked.ToString)
-            admin.UpdateModuleSetting(ModuleId, "Owner", txtOwner.Text)
-            admin.UpdateModuleSetting(ModuleId, "OwnerID", txtOwnerID.Text)
-            admin.UpdateModuleSetting(ModuleId, "DisplayOption", ddlDisplayOption.SelectedItem.Value.ToString)
+            Admin.UpdateModuleSetting(ModuleId, "Owner", txtOwner.Text)
+            Admin.UpdateModuleSetting(ModuleId, "OwnerID", txtOwnerID.Text)
+            Admin.UpdateModuleSetting(ModuleId, "DisplayOption", ddlDisplayOption.SelectedItem.Value.ToString)
 
             If chkForumIntegrate.Checked Then
-                admin.UpdateModuleSetting(ModuleId, "IntegratedForumGroup", ddlForumGroup.SelectedItem.Value.ToString)
+                Admin.UpdateModuleSetting(ModuleId, "IntegratedForumGroup", ddlForumGroup.SelectedItem.Value.ToString)
             End If
 
 
@@ -390,9 +395,9 @@ Namespace DotNetZoom
         End Sub
 
         Private Function BindForumGroup() As Boolean
-         
-		Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-   
+
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+
             Try
                 Dim dbForum As New ForumDB
                 ddlForumGroup.DataSource = dbForum.TTTForum_GetGroups(_portalSettings.PortalId, 0)
@@ -508,7 +513,7 @@ Namespace DotNetZoom
 
             lblInfo.Text = ""
             If Me.lstIntegrate.SelectedIndex < 0 Then
-                lblInfo.Text = GetLanguage("Gal_ErrorSelectL") 
+                lblInfo.Text = GetLanguage("Gal_ErrorSelectL")
                 Return
             End If
             Dim ZforumID As Integer = Int16.Parse(lstIntegrate.SelectedItem.Value)

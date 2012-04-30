@@ -546,11 +546,11 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub Page_Error(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Error
+            Dim LastError As Exception
+            LastError = Server.GetLastError.GetBaseException()
             If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                Dim LastError As Exception
                 Dim ErrorMessage As New StringBuilder
 
-                LastError = Server.GetLastError()
 
                 If Not LastError Is Nothing Then
                     ErrorMessage.Append(LastError.Message + vbCrLf)
@@ -558,21 +558,23 @@ Namespace DotNetZoom
                     ErrorMessage.Append(LastError.Source + vbCrLf)
                 End If
 
-                ErrorMessage.Append(BuildErrorMessage(Request))
+                ' ErrorMessage.Append(BuildErrorMessage(Request))
 
                 SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", ErrorMessage.ToString, "")
-
-                If File.Exists(Server.MapPath("erreur" + GetLanguage("N") + ".htm")) Then
-                    ' read script file for version
-                    Dim objStreamReader As StreamReader
-                    objStreamReader = File.OpenText(Server.MapPath("erreur" + GetLanguage("N") + ".htm"))
-                    Dim strHTML As String = objStreamReader.ReadToEnd
-                    objStreamReader.Close()
-                    Response.Write(strHTML)
-                End If
-                Server.ClearError()
-                Response.End()
             End If
+
+            If File.Exists(Server.MapPath(glbPath + "erreur" + GetLanguage("N") + ".htm")) Then
+                ' read script file for version
+                Dim objStreamReader As StreamReader
+                objStreamReader = File.OpenText(Server.MapPath(glbPath + "erreur" + GetLanguage("N") + ".htm"))
+                Dim strHTML As String = objStreamReader.ReadToEnd
+                objStreamReader.Close()
+                Response.Write(strHTML)
+            End If
+
+            LogErrorMessage(Request, LastError)
+            Context.ClearError()
+            Response.End()
         End Sub
 
 

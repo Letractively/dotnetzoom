@@ -530,7 +530,7 @@ Namespace DotNetZoom
                     objUser.UpdateCheckUserSecurity(TempAdministratorID, tempGUID, DateTime.Now.AddHours(24), 0)
                     Dim ValidationURL As String
 
-                    ValidationURL = "http://" & strPortalAlias.ToLower() & "/default.aspx?showlogin=1&validate=" & tempGUID
+                    ValidationURL = "http://" & strPortalAlias.ToLower() & "/default.aspx?def=Login&validate=" & tempGUID
 
                     strBody = Regex.Replace(strBody, "{FullName}", txtFirstName.Text & " " & txtLastName.Text, RegexOptions.IgnoreCase)
                     strBody = Regex.Replace(strBody, "{PortalName}", _portalSettings.PortalName, RegexOptions.IgnoreCase)

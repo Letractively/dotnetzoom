@@ -203,21 +203,14 @@ Namespace DotNetZoom
 
     Module GalleryUtility
 
-		Public Function CryptoUrl(ByVal Input As String, ByVal IsPrivate as Boolean, Optional ByVal Encode As Boolean = True) as String
-			
-			If IsPrivate then
-				Dim objSecurity As New PortalSecurity()
-			 	Dim crypto As String 
-					If encode then
-             			crypto = HttpContext.Current.Server.UrlEncode(objSecurity.Encrypt(System.Web.HttpContext.Current.Application("cryptokey").ToString(), Input))
-			 		else
-             			crypto = objSecurity.Encrypt(System.Web.HttpContext.Current.Application("cryptokey").ToString(), Input)
-			 		end if
-	         	Return glbPath + "controls/img.aspx?" & crypto
-			 Else
-			  Return Input
-			 end if
-		End function
+        Public Function CryptoUrl(ByVal Input As String, ByVal IsPrivate As Boolean) As String
+            If IsPrivate Then
+                Dim objSecurity As New PortalSecurity()
+                Return objSecurity.EncryptURL(System.Web.HttpContext.Current.Application("cryptokey").ToString, Input)
+            Else
+                Return Input
+            End If
+        End Function
 	
         ' Provides more functionality than the path object static functions
         Public Function BuildPath(ByVal Input() As String, ByVal Delimiter As String, ByVal StripInitial As Boolean, ByVal StripFinal As Boolean) As String

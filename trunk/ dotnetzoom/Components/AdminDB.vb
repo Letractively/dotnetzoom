@@ -1257,8 +1257,19 @@ Namespace DotNetZoom
             myConnection.Open()
             myCommand.ExecuteNonQuery()
             myConnection.Close()
+            'update scriptfile
+            If PortalId = -1 Then
+                Dim objStream As StreamWriter
+                objStream = File.AppendText(HttpContext.Current.Request.MapPath(glbPath + "Database/Newlanguage_" & Language & ".sql"))
+                objStream.WriteLine("UpdatelonglanguageSetting '" & Language & "','" & SettingName & "','" & MakeSQLFriendly(SettingValue) & "', null ")
+                objStream.WriteLine("GO")
+                objStream.Close()
+            End If
         End Sub
 
+        Private Function MakeSQLFriendly(ByVal Item As String) As String
+            Return Item.Replace("'", "''")
+        End Function
 
 
 
@@ -1391,6 +1402,15 @@ Namespace DotNetZoom
             myConnection.Open()
             myCommand.ExecuteNonQuery()
             myConnection.Close()
+
+            'update scriptfile
+            Dim objStream As StreamWriter
+            objStream = File.AppendText(HttpContext.Current.Request.MapPath(glbPath + "/Database/Newlanguage_" & Language & ".sql"))
+            objStream.WriteLine("updatelanguageSetting '" & Language & "','" & MakeSQLFriendly(SettingName) & "','" & MakeSQLFriendly(SettingValue) & "'")
+            objStream.WriteLine("GO")
+            objStream.Close()
+
+
         End Sub
 
         Public Sub UpdatelanguageContext(ByVal Language As String, ByVal SettingName As String, ByVal SettingValue As String, ByVal Context As String)
@@ -1418,6 +1438,14 @@ Namespace DotNetZoom
             myConnection.Open()
             myCommand.ExecuteNonQuery()
             myConnection.Close()
+
+            'update scriptfile
+            Dim objStream As StreamWriter
+            objStream = File.AppendText(HttpContext.Current.Request.MapPath(glbPath + "Database/Newlanguage_" & Language & ".sql"))
+            objStream.WriteLine("updatelanguagecontext '" & Language & "','" & MakeSQLFriendly(SettingName) & "','" & MakeSQLFriendly(SettingValue) & "', '" & Context & "'")
+            objStream.WriteLine("GO")
+            objStream.Close()
+
         End Sub
 
 		
@@ -1471,10 +1499,9 @@ Namespace DotNetZoom
 			If PortalID = -1 then
 			_settings = SettingName
 			UpdatelonglanguageSetting(Language, SettingName, SettingName, PortalId)
-			
-			if portalSettings.GetHostSettings("EnableErrorReporting") <> "N" then
+                        If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
                             SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", SettingName, String.Format(GetLanguage("LanguageERROR"), SettingName, GetLanguage("N")), "")
-			End if
+                        End If
 			End if
 			
             End If
@@ -2354,6 +2381,8 @@ Namespace DotNetZoom
                     myCommand.ExecuteNonQuery()
                 Catch objSQLException As SqlException
                     strSQLExceptions += "-------------SCRIPT --------------" & vbCrLf & strSQL & vbCrLf & "--------" & GetLanguage("error") & "-------" & vbCrLf & objSQLException.ToString & vbCrLf & vbCrLf
+                    Dim ctx As HttpContext = HttpContext.Current
+                    ctx.Server.ClearError()
                 End Try
 
                 myConnection.Close()
@@ -2387,6 +2416,8 @@ Namespace DotNetZoom
                     myCommand.ExecuteNonQuery()
                 Catch objSQLException As SqlException
                     strSQLExceptions += "-------------SCRIPT --------------" & vbCrLf & strSQL & vbCrLf & "--------" & GetLanguage("error") & "-------" & vbCrLf & objSQLException.ToString & vbCrLf & vbCrLf
+                    Dim ctx As HttpContext = HttpContext.Current
+                    ctx.Server.ClearError()
                 End Try
 
                 myConnection.Close()

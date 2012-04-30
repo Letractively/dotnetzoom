@@ -45,7 +45,7 @@ Namespace DotNetZoom
         Protected WithEvents txtEditSrc As System.Web.UI.WebControls.TextBox
 		Protected WithEvents txtHelpSrc As System.Web.UI.WebControls.TextBox
         Protected WithEvents chkPremium As System.Web.UI.WebControls.CheckBox
-
+        Protected WithEvents UploadReturn As System.Web.UI.WebControls.ImageButton
         Protected WithEvents cmdUpdate As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdCancel As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdDelete As System.Web.UI.WebControls.LinkButton
@@ -107,7 +107,6 @@ Namespace DotNetZoom
 
                 cmdDelete.Attributes.Add("onClick", "javascript:return confirm('" & RTESafe(GetLanguage("request_confirm")) & "');")
 
-                cmdUpload.NavigateUrl = GetFullDocument() & "?hostpage=&tabid=" & TabId & "&def=Gestion fichiers"
 
                 If defId = -1 Then
                     Title1.DisplayHelp = "DisplayHelp_AddModuleDef"
@@ -115,7 +114,7 @@ Namespace DotNetZoom
                     tabEditModule.Visible = False
                     cmdUpdate.Text = GetLanguage("install")
                     cmdDelete.Visible = False
-
+                    SetUpUpload()
                     ' load the modules to install
                     Dim strFolder As String = Request.MapPath(glbSiteDirectory)
                     If Directory.Exists(strFolder) Then
@@ -173,6 +172,39 @@ Namespace DotNetZoom
             lnkicone.NavigateUrl = "javascript:OpenNewWindow('" + TabId.ToString + "')"
 
 
+        End Sub
+
+        Private Sub SetUpUpload()
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            UploadReturn.Visible = True
+            UploadReturn.Style.Add("display", "none")
+            cmdUpload.NavigateUrl = "#"
+            Dim strFolder As String = Request.MapPath(glbSiteDirectory)
+            SetUpModuleUpload(strFolder, "xml,zip", True, True, PortalSettings.GetHostSettings("FileExtensions") + "," + glbModuleFileTypes)
+            Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
+            Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
+            retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+            retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
+            retScript &= "--></script>"
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & "&hostpage=", UploadReturn.ClientID)
+            cmdUpload.Attributes.Add("onclick", click)
+            ' load the modules to install
+            If Directory.Exists(strFolder) Then
+                Dim fileEntries As String() = Directory.GetFiles(strFolder, "*.xml")
+                Dim strModule As String
+                Dim strFileName As String
+                For Each strFileName In fileEntries
+                    strModule = Mid(strFileName, InStrRev(strFileName, "\") + 1)
+                    strModule = Left(strModule, InStr(1, strModule, ".xml") - 1)
+                    cboModule.Items.Add(New ListItem(strModule, strFileName))
+                Next
+            End If
+        End Sub
+
+        Private Sub UploadReturn_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadReturn.Click
+            SetUpUpload()
         End Sub
 
         Private Sub cmdUpdate_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate.Click

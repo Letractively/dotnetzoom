@@ -43,6 +43,7 @@ Namespace DotNetZoom
         Protected WithEvents optFile As System.Web.UI.WebControls.RadioButton
         Protected WithEvents cboFiles As System.Web.UI.WebControls.DropDownList
         Protected WithEvents cmdUpload As System.Web.UI.WebControls.HyperLink
+        Protected WithEvents UploadReturn As System.Web.UI.WebControls.ImageButton
         Protected WithEvents txtDescription As System.Web.UI.WebControls.TextBox
         Protected WithEvents txtViewOrder As System.Web.UI.WebControls.TextBox
         Protected WithEvents chkNewWindow As System.Web.UI.WebControls.CheckBox
@@ -117,7 +118,7 @@ Namespace DotNetZoom
             End If
 
             EnableControls()
-
+            SetUpUpload(Not Page.IsPostBack)
             ' If the page is being requested the first time, determine if an
             ' link itemId value is specified, and if so populate page
             ' contents with the link details
@@ -159,11 +160,6 @@ Namespace DotNetZoom
                 cboInternal.DataSource = GetPortalTabs(PortalSettings.Getportaltabs(_portalSettings.PortalId, GetLanguage("N")), True, True)
                 cboInternal.DataBind()
 
-                ' load the list of files found in the upload directory
-                cmdUpload.NavigateUrl = GetFullDocument() & "?tabid=" & TabId & "&def=Gestion fichiers"
-                Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
-                cboFiles.DataSource = FileList
-                cboFiles.DataBind()
 
                 If itemId <> -1 Then
 
@@ -215,6 +211,7 @@ Namespace DotNetZoom
                         dr.Close()
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
+                        HttpContext.Current.Session("UploadInfo") = Nothing
                         Response.Redirect(GetFullDocument() & "?tabid=" & TabId, True)
                     End If
                 Else
@@ -227,7 +224,32 @@ Namespace DotNetZoom
 
         End Sub
 
+        Private Sub SetUpUpload(ByVal SetFile As Boolean)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            UploadReturn.Visible = True
+            UploadReturn.Style.Add("display", "none")
+            cmdUpload.NavigateUrl = "#"
+            SetUpModuleUpload(Request.MapPath(_portalSettings.UploadDirectory), glbImageFileTypes + ",zip," + glbGoogleEarthTypes, False)
+            Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
+            Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
+            retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+            retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
+            retScript &= "--></script>"
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), UploadReturn.ClientID)
+            cmdUpload.Attributes.Add("onclick", click)
+            If SetFile Then
+                ' load the list of files found in the upload directory
+                Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
+                cboFiles.DataSource = FileList
+                cboFiles.DataBind()
+            End If
+        End Sub
 
+        Private Sub UploadReturn_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles UploadReturn.Click
+            SetUpUpload(True)
+        End Sub
         '****************************************************************
         '
         ' The cmdUpdate_Click event handler on this Page is used to either
@@ -270,6 +292,7 @@ Namespace DotNetZoom
 				ClearModuleCache(ModuleId)
 
                 ' Redirect back to the portal home page
+                HttpContext.Current.Session("UploadInfo") = Nothing
                 Response.Redirect(CStr(ViewState("UrlReferrer")), True)
             End If
 
@@ -297,6 +320,7 @@ Namespace DotNetZoom
 				ClearModuleCache(ModuleId)
 
             ' Redirect back to the portal home page
+            HttpContext.Current.Session("UploadInfo") = Nothing
             Response.Redirect(CStr(ViewState("UrlReferrer")), True)
         End Sub
 
@@ -310,6 +334,7 @@ Namespace DotNetZoom
         '****************************************************************'
 
         Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
+            HttpContext.Current.Session("UploadInfo") = Nothing
             Response.Redirect(CStr(ViewState("UrlReferrer")), True)
         End Sub
 
@@ -346,10 +371,12 @@ Namespace DotNetZoom
             objAdmin.UpdateModuleSetting(ModuleId, "displayinfo", optInfo.SelectedItem.Value)
 			objAdmin.UpdateModuleSetting(ModuleId, "linkClass" , txtCSS.Text)
             ' Redirect back to the portal home page
+            HttpContext.Current.Session("UploadInfo") = Nothing
             Response.Redirect(CStr(ViewState("UrlReferrer")), True)
         End Sub
 
         Private Sub cmdCancelOptions_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancelOptions.Click
+            HttpContext.Current.Session("UploadInfo") = Nothing
             Response.Redirect(CStr(ViewState("UrlReferrer")), True)
         End Sub
 
