@@ -51,8 +51,8 @@ Namespace DotNetZoom
         Public Const AssemblyTitle As String =  "DotNetZoom"
 		Public Const AssemblyProduct AS String = "http://www.DotNetZoom.com"
         Public Const AssemblyCopyright As String = "Les codes sources du portail sont copyrights © 2002-2003 par DotNetNuke et 2004-YYYY par DotNetZoom. tous droits réservés"
-        Public Const AssemblyVersion As String = "1.0.5"
-        Public Const ApplicationVersion As Integer = 5
+        Public Const AssemblyVersion As String = "1.0.6"
+        Public Const ApplicationVersion As Integer = 6
 
 
         Public Const glbRoleAllUsers As String = "-1"
@@ -143,46 +143,44 @@ Namespace DotNetZoom
         Public Sub LogErrorMessage(ByVal Request As HttpRequest, ByVal Erreur As Exception)
             Try
                 Dim objStream As StreamWriter
-                objStream = File.AppendText(Request.MapPath(glbPath + "database/erreur.log"))
+                objStream = File.AppendText(Request.MapPath(glbPath + "database/erreur" + DateTime.Now.ToString("yyyyMMdd") + ".log"))
                 objStream.WriteLine(DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss") + " Erreur : " + Erreur.Message)
                 objStream.WriteLine(Request.HttpMethod + " : " + Request.Url.OriginalString)
-                objStream.WriteLine(Erreur.StackTrace + " <--|")
+                objStream.WriteLine(Erreur.StackTrace)
+                objStream.WriteLine(" - - - - - - - - - - - - - - - - - - - - - - - ")
                 objStream.Close()
             Catch
             End Try
         End Sub
 
-        Public Function BuildErrorMessage(ByVal Request As HttpRequest) As String
+        Public Sub cleanLogs(ByVal WhatDir As String)
 
-            Try
-                Dim ErrorMessage As New StringBuilder
-                Dim loop1, loop2 As Integer
-                Dim arr1(), arr2() As String
-                Dim coll As System.Collections.Specialized.NameValueCollection
-                ErrorMessage.Append(vbCrLf & "URL : " & Request.RawUrl & vbCrLf)
-                ErrorMessage.Append("HttpMethod : " & Request.HttpMethod & vbCrLf)
-                Dim encodedString As String = New StreamReader(Request.InputStream).ReadToEnd()
-                ErrorMessage.Append("InputStream : " & encodedString & vbCrLf)
+            Dim objStream As StreamWriter
+            objStream = File.AppendText(WhatDir + "erreur" + DateTime.Now.ToString("yyyyMMdd") + ".log")
+            Dim TempFileName As String
+            For i = 10 To 20
+                TempFileName = WhatDir + "erreur" + DateAdd(DateInterval.Day, -i, DateTime.Now).ToString("yyyyMMdd") + ".log"
+                If File.Exists(TempFileName) Then
+                    File.Delete(TempFileName)
+                    objStream.WriteLine("Deleted : " + TempFileName)
+                End If
+            Next
+            objStream.Close()
+        End Sub
 
-                ' Load ServerVariable collection into NameValueCollection object.
-                ErrorMessage.Append("ServerVariables : " & vbCrLf)
-                coll = Request.ServerVariables
-                ' Get names of all keys into a string array.
-                arr1 = coll.AllKeys
-                For loop1 = 0 To arr1.GetUpperBound(0)
-                    arr2 = coll.GetValues(loop1) ' Get all values under this key.
-                    ErrorMessage.Append("Key: " & arr1(loop1) & vbCrLf)
-                    For loop2 = 0 To arr2.GetUpperBound(0)
-                        If loop2 > 0 Then ErrorMessage.Append(" -> ")
-                        ErrorMessage.Append(arr2(loop2))
-                    Next loop2
-                    ErrorMessage.Append(vbCrLf)
-                Next loop1
-                Return ErrorMessage.ToString
-            Catch ex As Exception
-                Return ""
-            End Try
-        End Function
+        Public Sub LogMessage(ByVal Request As HttpRequest, ByVal Message As String)
+            If CType(HttpContext.Current.Application("logmessage"), Boolean) Then
+                Try
+                    Dim objStream As StreamWriter
+                    objStream = File.AppendText(Request.MapPath(glbPath + "database/erreur" + DateTime.Now.ToString("yyyyMMdd") + ".log"))
+                    objStream.WriteLine(DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss") + " : " + Message)
+                    objStream.WriteLine(Request.HttpMethod + " : " + Request.Url.ToString)
+                    objStream.WriteLine(" - - - - - - - - - - - - - - - - - - - - - - - ")
+                    objStream.Close()
+                Catch
+                End Try
+            End If
+        End Sub
 
         Public Sub RegisterBADip(ByVal BadIP As String)
             Dim TempTime As Integer = 1
@@ -207,19 +205,21 @@ Namespace DotNetZoom
                         StrBody.AppendFormat(GetLanguage("Bad_IPTXT"), BadIP, HttpContext.Current.Request.UrlReferrer.ToString(), HttpContext.Current.Request.Url.ToString(), HttpContext.Current.Request.UserAgent, UserId.ToString())
                     End If
                     SendNotification(PortalSettings.GetHostSettings("HostEmail"), _portalSettings.Email, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("Bad_IP"), StrBody.ToString)
+                    LogMessage(HttpContext.Current.Request, GetLanguage("Bad_IP") + vbCrLf + StrBody.ToString)
                 Catch objException As Exception
                     SendNotification(PortalSettings.GetHostSettings("HostEmail"), _portalSettings.Email, PortalSettings.GetHostSettings("HostEmail"), GetLanguage("Bad_IP"), BadIP)
                 End Try
                 HttpContext.Current.Response.Redirect("/", True)
             End If
-
         End Sub
 
         Public Sub EditDenied()
+            RegisterBADip(HttpContext.Current.Request.UserHostAddress)
             HttpContext.Current.Response.Redirect(GetDocument() & "&def=Edit Access Denied", True)
         End Sub
 
         Public Sub AccessDenied()
+            RegisterBADip(HttpContext.Current.Request.UserHostAddress)
             HttpContext.Current.Response.Redirect(GetDocument() & "&def=Access Denied", True)
         End Sub
 
@@ -276,7 +276,7 @@ Namespace DotNetZoom
             dependencyKey(2) = GetDBname() & "T_" & TabId.ToString
             dependencyKey(3) = GetDBname() & "M_" & ModuleId.ToString
             If context.Cache(dependencyKey(0)) Is Nothing Then
-                context.Cache.Insert(dependencyKey(0), PortalSettings.GetVersion(), Nothing)
+                context.Cache.Insert(dependencyKey(0), DateTime.Now(), Nothing)
             End If
 
             If context.Cache(dependencyKey(1)) Is Nothing Then
@@ -304,6 +304,185 @@ Namespace DotNetZoom
 
             GetAbsoluteServerPath = strServerPath
         End Function
+
+        Private Function GetPRivateKey() As String
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
+            If Tsettings.ContainsKey("PrivateKey") Then
+                Return CType(Tsettings("PrivateKey"), String)
+            End If
+            Return "z"
+        End Function
+
+        Public Function CheckCapcha(ByVal Request As HttpRequest) As Boolean
+
+            If Request.Form("recaptcha_challenge_field") <> "" And Request.Form("recaptcha_response_field") <> "" Then
+                Dim VarString As String
+                VarString = "http://www.google.com/recaptcha/api/verify" & _
+                        "?privatekey=" & GetPRivateKey() & _
+                        "&response=" & HTTPPOSTEncode(Request.Form("recaptcha_response_field")) & _
+                        "&remoteip=" & Request.ServerVariables("REMOTE_ADDR") & _
+                        "&challenge=" & Request.Form("recaptcha_challenge_field")
+                ' http://www.google.com/recaptcha/api/verify?privatekey=6LfWXMsSAAAAAKWEPH5b9Gh1-WNb0q80lNB7AeZ_&response=tions%20ablel%C3%A9&remoteip=192.168.2.11&challenge=03AHJ_VusUjhusSpxUj84bd_Tulze39qvlF7O3nIdl_EgrY3dmvyIPHTJlT-syOXMx5b_L1CwKADp4XyqeqIj1fY6Obm981ygF6Lju-QEeO9zSq-9yS5PGZxJRdd22IxE7jXdG3lEHV6BkER1rA4XaOelXf864ML9GZQ
+
+
+                Dim objWebClient As New Net.WebClient()
+                Dim objUTF8 As New System.Text.UTF8Encoding()
+                Dim ResponseString As String()
+                ResponseString = Split(objUTF8.GetString(objWebClient.DownloadData(VarString)), vbLf)
+                If ResponseString.GetUpperBound(0) > 0 Then
+                    Return CBool(ResponseString(0))
+                End If
+            End If
+            Return False
+
+        End Function
+
+
+        Public Function SetCapcha() As String
+            Dim Capcha As String = ""
+
+            Dim Key As String = ""
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
+            If Tsettings.ContainsKey("PublicKey") Then
+                If CType(Tsettings("PublicKey"), String) <> "" Then
+                    Key = CType(Tsettings("PublicKey"), String)
+                    Capcha = vbCrLf + "<script type=""text/javascript"">" + vbCrLf + "var RecaptchaOptions = {" _
+                            + vbCrLf + "theme:      'blackglass'," _
+                            + vbCrLf + "lang:       '" + GetLanguage("N") + "'," _
+                            + vbCrLf + "tabindex: 0" + vbCrLf + "};" + vbCrLf + "</script>" + vbCrLf _
+                            + vbCrLf + "<script type=""text/javascript"" src=""http://www.google.com/recaptcha/api/challenge?k=" + Key + """></script>" + vbCrLf _
+                            + vbCrLf + "<noscript>" + vbCrLf _
+                            + vbCrLf + "<iframe src=""http://www.google.com/recaptcha/api/noscript?k=" + Key + """ width=""500"" height=""300"" frameborder=""0"">" + vbCrLf _
+                            + vbCrLf + "</iframe>" + vbCrLf + "<br><textarea name=""recaptcha_challenge_field"" rows=""3"" cols=""40""></textarea>" + vbCrLf _
+                            + vbCrLf + "<input name=""recaptcha_response_field"" value=""manual_challenge"" type=""hidden"">" + vbCrLf _
+                            + vbCrLf + "</noscript>"
+                End If
+            End If
+            Return Capcha
+        End Function
+
+
+
+        Public Sub JQueryScript(ByVal Page As Page, Optional ByVal WhatMessage As String = "")
+            Dim Tempscript As New StringBuilder
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("<script type=""text/javascript"" src=""http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js""></script>")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("<script language=""JavaScript"" type=""text/javascript"">")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("!window.jQuery && document.write('<script src=""\/javascript\/jquery.min.js""><\/script>');")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("jQuery.noConflict();")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("   function setajaxloading(returnid) {")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        var p = jQuery(returnid);")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        var position = p.position();")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        var w = p.width();")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        var h = p.height();")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        jQuery('#ajaxloading').css({ top: position.top, left: position.left, width: w, height: h })")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        jQuery('#ajaxloading').removeClass('notajaxloading').addClass('ajaxloading');")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("    };")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("    function remouveajaxloading() {")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        jQuery('#ajaxloading').removeClass('ajaxloading').addClass('notajaxloading');")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("    }")
+            Tempscript.Append(vbCrLf)
+
+            Tempscript.Append("    function refreshmodule(module, returnid) {")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        setajaxloading(returnid);")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        jQuery.ajax({")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("            url: module,")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("            error: function (jqXHR, textStatus, errorThrown) { alert('erreur de mise à jour'); remouveajaxloading(); },")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("            success: function (data) {")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("                jQuery(returnid).html(data);")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("                remouveajaxloading();")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("             }")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("        });")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("    }")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("</script>")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("<script type=""text/javascript"" src=""/javascript/fancybox_2012-12-24.js""></script>")
+            Tempscript.Append(vbCrLf)
+
+
+
+
+            Tempscript.Append("<style type=""text/css"">")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append(".ajaxloading {")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("position: absolute;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("display: block;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("opacity: 0.7;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("background-color: #fff;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("z-index: 99;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("text-align: center;)")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("vertical-align:middle;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("}")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append(".notajaxloading {")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("display: none;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("}")
+            Tempscript.Append(vbCrLf)
+
+            Tempscript.Append("#loading-image")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("{")
+            Tempscript.Append(vbCrLf)
+
+            Tempscript.Append("  z-index: 100;")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("}")
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("</style>")
+            Tempscript.Append(vbCrLf)
+
+            Tempscript.Append("<div id=""ajaxloading"" class=""notajaxloading"">")
+            Tempscript.Append(vbCrLf)
+            If WhatMessage = "" Then
+                Tempscript.Append("<table style=""height : 100%; width : 100%""><tr><td valign=""middle"" align=""center"" style=""height : 100%;  width : 100%""><img id=""loading-image"" src=""/images/ajax-loader.gif"" alt=""Loading..."" /></td></tr></table>")
+
+            Else
+                Tempscript.Append("<table style=""height : 100%; width : 100%""><tr><td valign=""bottom"" align=""center"" style=""height : 50%;  width : 100%""><h1 style=""opacity:1.0;filter:alpha(opacity=100); /* For IE8 and earlier */"">" + WhatMessage + "</h1></td></tr><tr><td valign=""top"" align=""center"" style=""height : 50%;  width : 100%""><img id=""loading-image"" src=""/images/ajax-loader.gif"" alt=""Loading..."" /></td></tr></table>")
+            End If
+            Tempscript.Append(vbCrLf)
+            Tempscript.Append("</div>")
+            Tempscript.Append(vbCrLf)
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "JQuery", Tempscript.ToString)
+        End Sub
 
 
         Public Sub CheckSecureSSL(ByVal Page As Page, ByVal ToSecure As Boolean)
@@ -408,6 +587,8 @@ Namespace DotNetZoom
                 Dim objMessages As MessagesDB = New MessagesDB
                 objMessages.AddPrivateMessage(_portalSettings.SuperUserId, _portalSettings.SuperUserId, strSubject, strFrom + "<br>" + strTo + "<br>" + strBcc + "<br>" + strBody + "<br>" + objException.Message)
                 SendNotification = objException.Message
+                LogMessage(HttpContext.Current.Request, "Erreur SendNotification, " + strBody + " " + objException.Message)
+
             End Try
             'Mail LOG 
         End Function
@@ -1293,6 +1474,25 @@ Namespace DotNetZoom
             Return HttpContext.Current.Items("ConnectionString")
         End Function
 
+
+        Public Function GetServerName(ByVal ConnectionString As String) As String
+
+            Dim MyNewCollection() As String = Split(ConnectionString, ";")
+            Dim TempString As String = ""
+            For Each strName In MyNewCollection
+                If InStr(strName, GetDBname(), CompareMethod.Text) > 0 Then
+
+                Else
+                    If strName <> ";" Then
+                        TempString += strName + ";"
+                    End If
+
+                    End If
+            Next
+            Return TempString
+        End Function
+
+
         Public Function GetDBname() As String
             If HttpContext.Current.Items("DBName") Is Nothing Then
                 Dim TempName As String = GetDBConnectionString.ToLower()
@@ -1481,6 +1681,17 @@ Namespace DotNetZoom
             Return ""
         End Function
 
+
+        Function GetHelpDocument(ByVal WhatHelp As String) As String
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim TempURL As String = _portalSettings.HTTP
+            If Not TempURL.EndsWith("/") Then
+                TempURL += "/"
+            End If
+            TempURL += "admin/tabs/help.aspx?help=" + WhatHelp + "&TabId=" + _portalSettings.ActiveTab.TabId.ToString + "&L=" + GetLanguage("N")
+            Return TempURL
+        End Function
+
         Function GetDocument() As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim TempURL As String = _portalSettings.HTTP
@@ -1521,6 +1732,17 @@ Namespace DotNetZoom
         Function FormatFriendlyURL(ByVal TabName As String, ByVal SSL As Boolean, ByVal UseTabName As Boolean, ByVal TabId As String, Optional ByVal Options As String = "", Optional ByVal strLangCode As String = "", Optional ByVal amp As String = "&") As String
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim ServerPath As String
+
+            If HttpContext.Current.Application("SetContext") = "Maintenance" Then
+                If Options = "" Then
+                    Options = "Maintenance=ok"
+                Else
+                    If Not InStr(1, Options, "Maintenance=") Then
+                        Options += amp + "Maintenance=ok"
+                    End If
+                End If
+            End If
+
             If strLangCode = "" Then
                 strLangCode = GetLanguage("N")
             End If
@@ -1697,6 +1919,19 @@ Namespace DotNetZoom
             End If
         End Sub
 
+        Public Sub DeleteModuleDirectory(ByVal ModuleID As Integer)
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            Dim DestPath As String = HttpContext.Current.Request.MapPath(_portalSettings.UploadDirectory) + ModuleID.ToString + "\"
+            If IO.Directory.Exists(DestPath) Then
+                Try
+                    System.IO.Directory.Delete(DestPath, True)
+                Catch ex As Exception
+                    LogMessage(HttpContext.Current.Request, "Erreur DeleteModuleDirectory " + DestPath + " : " + ex.Message + vbCrLf + ex.StackTrace)
+                End Try
+            End If
+        End Sub
+
+
         Public Function ProcessLanguage(ByVal Item As String, Optional ByVal Page As Page = Nothing) As String
             If Item <> "" Then
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -1752,6 +1987,7 @@ Namespace DotNetZoom
                     If _language.ContainsKey("N") Then
                         Dim Admin As New AdminDB()
                         Admin.UpdatelanguageContext(_language("N"), Item, "-" + Item + "-", "New")
+                        LogMessage(HttpContext.Current.Request, "Item : """ + Item.ToString + """ not in languageTable """ + _language("N") + """")
                     End If
                     If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" And _language.ContainsKey("N") Then
                         Dim TempMessage As String
@@ -1780,35 +2016,7 @@ Namespace DotNetZoom
                     HttpContext.Current.Session("LanguageTable") = Zpagelanguage
                 End If
             Catch objException As Exception
-
             End Try
-            If Not HttpContext.Current.Application("SetContext") Is Nothing Then
-                Dim TempArray As ArrayList = CType(HttpContext.Current.Application("ArrayLanguage" + _language("N")), ArrayList)
-                If IsNothing(TempArray) Then
-                    TempArray = New ArrayList
-                End If
-
-                If Not TempArray.Contains(Item) Then
-                    TempArray.Add(Item)
-                    HttpContext.Current.Application("ArrayLanguage" + _language("N")) = TempArray
-                    Dim stackFrame As New Diagnostics.StackFrame(1)
-                    Dim TempData As String = stackFrame.GetMethod.ReflectedType.Name
-                    If InStrRev(stackFrame.GetMethod.ReflectedType.Name, "_as") = TempData.Length - 4 Then
-                        TempData = Left(TempData, InStrRev(TempData, "_as") - 1)
-                        TempData = Mid(TempData, InStrRev(TempData, "_") + 1)
-                    End If
-                    TempData = Mid(TempData, InStrRev(TempData, "_") + 1)
-                    Dim objAdmin As New AdminDB()
-                    Dim TempScript As String = "SetlanguageContext '" + _language("N") + "','" + Item + "','" + TempData.ToLower + "' "
-                    TempData = objAdmin.ExecuteSQLScript(TempScript)
-                    If TempData <> "" Then
-                        Dim objStream As StreamWriter
-                        objStream = File.AppendText(HttpContext.Current.Request.MapPath(glbPath + "database/language.log"))
-                        objStream.WriteLine(Item + " - " + TempData)
-                        objStream.Close()
-                    End If
-                End If
-            End If
             Return TempString
         End Function
 

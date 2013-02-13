@@ -117,7 +117,12 @@ Namespace DotNetZoom
                 If CType(Settings("position"), Boolean) And CType(Settings("latlong"), String) <> "" Then
                     GoogleMap.Visible = True
                     GoogleMap.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("ShowOnMap")))
-                    GoogleMapURL = """javascript:DestroyWnd;CreateWnd('" + CType(Settings("latlong"), String) + "',640,640,false)"""
+
+                    Dim objSecurity As New DotNetZoom.PortalSecurity()
+                    Dim strURL As String
+                    strURL = glbHTTP + "desktopmodules/maps/googlemap.aspx?ll=" + objSecurity.EncryptRijndael(DateTime.Now().ToString("yyyyMMdd"), CType(Settings("latlong"), String)) + "&tt=" + objSecurity.EncryptRijndael(DateTime.Now().ToString("yyyyMMdd"), CType(Settings("Title"), String))
+
+                    GoogleMapURL = """javascript:DestroyWnd;CreateWnd('" + strURL + "',640,640,false)"""
                     Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
                 End If
 

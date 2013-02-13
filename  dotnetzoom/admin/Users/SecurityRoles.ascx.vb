@@ -133,7 +133,7 @@ Namespace DotNetZoom
             End If
 
             ' bind all portal users to dropdownlist
-            cboUsers.DataSource = objUser.GetUsers(_portalSettings.PortalId)
+            cboUsers.DataSource = objUser.GetUsers(_portalSettings.PortalId, "-1")
             cboUsers.DataBind()
             cboUsers.Items.Insert(0, New ListItem("<" & GetLanguage("all") & ">", "-1"))
             If UserId <> -1 Then

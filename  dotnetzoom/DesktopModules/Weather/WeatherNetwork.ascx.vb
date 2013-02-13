@@ -116,7 +116,7 @@ Namespace DotNetZoom
 		Case "en"  
 		lblScript.Text =  "<a href='http://www.theweathernetwork.com?ref=wxbtnsearch'><img src='http://www.theweathernetwork.com/weatherbuttons/images/150X90logo.gif' width='148' height='46' border='0' alt='theweathernetwork'></a>"
 		case else
-		lblScript.Text =  "<a href='http://www.meteomedia.com/'><img src='http://www.meteomedia.com/common/images/buttons/mmbouton.gif' width='120' height='60' border='0' alt='MétéoMédia'></a>"
+                    lblScript.Text = "<script language=javascript src='http://btn.meteomedia.ca/weatherbuttons/scripts/search120x60.js'></script>"
 		end Select
 
             If CType(Settings("personalize"), Boolean) = True And Request.IsAuthenticated = True Then

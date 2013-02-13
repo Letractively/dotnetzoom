@@ -7,15 +7,13 @@
 				var m = window.open('<%= DotnetZoom.glbPath %>DesktopModules/TTTForum/icone.aspx?L=<%= DotNetZoom.GetLanguage("N") %>&tabid=' + tabid + '&parentID=' + idParent, 'icone', 'width=800,height=600,left=100,top=100');
 				m.focus();
 			}
-		function SetUrl(idParentValue, idParent)
-			{
-				eval('var txt = document.Form1.' + idParent + ';');
-				txt.value =  idParentValue;
-				eval('var xtxt = document.Form1.<%= MyHtmlImage.clientID %>;');
-				xtxt.src = idParentValue;
-				xtxt.title = idParentValue;
-				xtxt.alt = idParentValue;
-				
+		function SetUrl(idParentValue, idParent) {
+
+
+		    jQuery('#' + idParent).val(idParentValue)
+		    jQuery('#<%= MyHtmlImage.clientID %>').attr("src", idParentValue);
+		    jQuery('#<%= MyHtmlImage.clientID %>').attr("alt", idParentValue);
+		    jQuery('#<%= MyHtmlImage.clientID %>').attr("title", idParentValue); 
 			}
 
 
@@ -106,7 +104,7 @@
                         <asp:placeholder id="pnlNewPost" Runat="server">
                             <tr>
                                 <td>
-                                    <table cellspacing="1" cellpadding="3" width="100%" border="0">
+                                    <table  id="hide"  cellspacing="1" cellpadding="3" width="100%" border="0">
                                         <tbody>
                                             <tr>
                                                 <td class="TTTSubHeader" width="137">
@@ -180,7 +178,7 @@
                                                     </td>
                                                 </tr>
                                             </asp:placeholder>
-                                            <tr id="hide" class="hide" >
+                                            <tr>
                                                 <td class="TTTSubHeader" width="137"></td>
                                                 <td class="TTTAltHeader" align="left">
                                                     &nbsp; 
@@ -249,8 +247,3 @@
         </tr>
     </tbody>
 </table>
-<div id="show" class="show" align="center" style="background: silver; border: thin dotted; padding: 4px; visibility:hidden;  top: -33px; position: relative"><%= DotNetZoom.getlanguage("F_Saving") %>
-<br><br>
-<img src="/images/rotation.gif" alt="*" width="32" height="32">
-<br><br>
-</div>

@@ -993,7 +993,7 @@ Namespace DotNetZoom
 
         End Function
 
-        Public Function TTTForum_GetUsers(ByVal PortalID As Integer, ByVal Filter As String) As SqlDataReader
+        Public Function TTTForum_GetUsers(ByVal PortalID As Integer, ByVal Filter As String, Optional ByVal ReportType As Integer = 1) As SqlDataReader
 
             ' Create Instance of Connection and Command Object
             Dim myConnection As New SqlConnection(GetDBConnectionString)
@@ -1002,7 +1002,7 @@ Namespace DotNetZoom
             ' Generate Command Object based on Method
             Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
                 CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {PortalID, Filter})
+                New Object() {PortalID, Filter, ReportType})
 
             ' Execute the command
             myConnection.Open()

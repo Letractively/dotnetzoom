@@ -159,7 +159,7 @@ Namespace DotNetZoom
                 txtPath.Text = .URL
                 txtName.Text = .Name
                 Dim TGalleryUser As GalleryUser = New GalleryUser(.OwnerID)
-                txtOwner.Text = TGalleryUser.UserName
+                txtOwner.Text = TGalleryUser.FullName
                 txtOwnerID.Text = .OwnerID.ToString
                 txtTitle.Text = .Title
                 txtSortOrder.Text = .Sort
@@ -366,7 +366,7 @@ Namespace DotNetZoom
         Private Sub ctlUsers_UserSelected(ByVal sender As Object, ByVal e As System.EventArgs) Handles ctlUsers.UserSelected
             Dim myUser As ForumUser = CType(ctlUsers.SelectedUser, ForumUser)
 
-            txtOwner.Text = myUser.Name
+            txtOwner.Text = myUser.FullName
             txtOwnerID.Text = myUser.UserID.ToString
 
             pnlSelectOwner.Visible = False

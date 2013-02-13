@@ -1,4 +1,4 @@
-<%@ Control Language="vb" codebehind="EditImage.ascx.vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.EditImage" %>
+<%@ Control Language="vb" codebehind="EditImage.ascx.vb" EnableViewState="true" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.EditImage" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>

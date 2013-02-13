@@ -2,14 +2,6 @@
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx"%>
 <%@ Control language="vb" Inherits="DotNetZoom.TTT_Gallery" CodeBehind="TTT_Gallery.ascx.vb" AutoEventWireup="false" %>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script language="JavaScript" type="text/javascript">
-
-    !window.jQuery && document.write('<script src="javascript\/jquery-1.4.3.min.js"><\/script>');
- 
-</script>
-<script type="text/javascript" src="/javascript/fancybox_2012-02-01.js"></script>
-
 <style type="text/css">
 #fancybox-buttons {
 	position: fixed;
@@ -104,8 +96,6 @@
 
 <script language="JavaScript" type="text/javascript">
 
-    jQuery.noConflict();
-
     function SetFancyBoxDirection(whatdir) {
     if (FancyBoxDirectionD == whatdir)
     {
@@ -169,13 +159,10 @@
                                                                     
                                    };
 
-    var FancyBoxFitToScreen = false;
-    var FancyBoxDirectionD = 0; 
-    var FancyBoxDirection = function(){};
         jQuery(document).ready(function () {
         /* Apply fancybox to multiple items */
         
-        jQuery("a[rel=flash]").fancybox({
+        jQuery("a[rel=flash<%= config.ModuleID.ToString %>]").fancybox({
                 'padding':10,
         		'width'	  : <%= config.Fixedwidth %>,
 		        'height'  : <%= config.FixedHeight + 24 %>,
@@ -193,7 +180,7 @@
 			                      }
         });
 
-        jQuery("a[rel=movie]").fancybox({
+        jQuery("a[rel=movie<%= config.ModuleID.ToString %>]").fancybox({
                 'autoScale' : true,
 		        'width'	  : <%= config.Fixedwidth + 20 %>,
 		        'height'  : <%= config.FixedHeight + 35 %>,
@@ -212,7 +199,7 @@
 
 
 
-        jQuery("a[rel=image]").fancybox({
+        jQuery("a[rel=image<%= config.ModuleID.ToString %>]").fancybox({
             'autoScale'     : false,
             'margin' : 10,
             'type'	: 'image',
@@ -251,7 +238,6 @@
 </script>
 
 
-<script language="javascript" type="text/javascript" src="<%= dotnetzoom.glbPath + "javascript/popup.js"%>"></script>
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:PlaceHolder ID="pnlModuleContent" Runat="server" EnableViewState="false" >
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>

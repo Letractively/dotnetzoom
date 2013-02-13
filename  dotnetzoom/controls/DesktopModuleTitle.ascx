@@ -30,7 +30,7 @@
 </table>
 </asp:PlaceHolder>
 <asp:PlaceHolder ID="pnlModuleTitle" Runat="server" Visible="False" EnableViewState="false">
-<div class="nav">
+<div id="divModuleTitle" runat="server" class="nav">
 <table width="100%" class='<asp:literal id="TableTitle" runat="server" />'>
 	<tr>
 	<td>
@@ -38,8 +38,8 @@
 	</td>
 	<td id="rowadmin1" runat="server" EnableViewState="false" visible="false" align="left" valign="middle" style="white-space: nowrap;">
 	<ul>
-	<li class="folder" style="z-index: 2"><a title="<%= DotNetZoom.GetLanguage("modifier")%>" href="javascript:toggleBox('nav',1)" ><img  src="/images/action.gif" alt="" style="border-width:0px;"></a>
-	<ul>
+	<li class="folder" style="z-index: 1"><a title="<%= DotNetZoom.GetLanguage("modifier")%>" href="javascript:toggleBox('nav',1)" ><img  src="/images/action.gif" alt="" style="border-width:0px;"></a>
+	<ul id="MC" runat="server" EnableViewState="false" visible="true">
 	<li id="modifier" runat="server" EnableViewState="false" visible="false" class="items"><asp:Hyperlink id="cmdEditModule" runat="server" EnableViewState="false" Visible="False"><img  src="/images/icon_sitesettings_16px.gif" alt="" style="border-width:0px;" /> </asp:Hyperlink></li>
 	<li id="modifierC" runat="server" EnableViewState="false" visible="false" class="items"><asp:Hyperlink ID="cmdEditContent" Runat="server" EnableViewState="false"><img  src="/images/edit.gif" alt="*" style="border-width:0px;" /> </asp:Hyperlink></li>
 	<li id="param" runat="server" EnableViewState="false" visible="false" class="items"><asp:Hyperlink ID="cmdEditOptions" Visible=False Runat="server" EnableViewState="false"><img  src="/images/view.gif" alt="*" style="border-width:0px;"> </asp:Hyperlink></li>
@@ -76,4 +76,5 @@
 	</table>
 </div>
 </asp:PlaceHolder>
+<asp:Literal ID="contextmenu" runat="server" Visible="false" EnableViewState="false"></asp:Literal>
 <asp:literal id="Titleafter" runat="server" visible="false" EnableViewState="false"></asp:literal>

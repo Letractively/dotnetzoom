@@ -188,7 +188,7 @@ Namespace DotNetZoom
             retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
             retScript &= "--></script>"
             Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
-            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & "&hostpage=", UploadReturn.ClientID)
+            Dim click As String = String.Format("openDialog('{0}', 700, 700, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & "&hostpage=", UploadReturn.ClientID)
             cmdUpload.Attributes.Add("onclick", click)
             ' load the modules to install
             If Directory.Exists(strFolder) Then
@@ -221,6 +221,7 @@ Namespace DotNetZoom
                 If defId <> -1 Then
                     Dim strEditModuleIcon As String = txticone.Text
                     objAdmin.UpdateModuleDefinition(defId, GetLanguage("N"), txtFriendlyName.Text, txtDesktopSrc.Text, txtHelpSrc.Text, "", txtEditSrc.Text, True, txtDescription.Text, strEditModuleIcon, chkPremium.Checked)
+                    Response.Redirect(Request.RawUrl, True)
                 Else ' installing a new module
 
                     Dim strInstaller As String = cboModule.SelectedItem.Value
@@ -346,14 +347,9 @@ Namespace DotNetZoom
                             objAdmin.DeleteFile(cboModule.SelectedItem.Text & ".xml")
                         End If
                     End If
+                    Response.Redirect(Request.RawUrl & "&defId=" & defId.ToString, True)
 
                 End If
-
-                Response.Redirect(Request.RawUrl & "&defId=" & defId.ToString, True)
-
-
-
-
             End If
 
         End Sub

@@ -33,10 +33,35 @@ Namespace DotNetZoom
         Protected WithEvents Contact2Field As System.Web.UI.WebControls.TextBox
         Protected WithEvents cmdUpdate As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdCancel As System.Web.UI.WebControls.LinkButton
+        Protected WithEvents cmdUpdate1 As System.Web.UI.WebControls.LinkButton
+        Protected WithEvents cmdCancel1 As System.Web.UI.WebControls.LinkButton
+
+
         Protected WithEvents cmdDelete As System.Web.UI.WebControls.LinkButton
         Protected WithEvents pnlAudit As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents CreatedBy As System.Web.UI.WebControls.Label
         Protected WithEvents CreatedDate As System.Web.UI.WebControls.Label
+        Protected WithEvents AdminPanel As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents MainPanel As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents chkCapcha As System.Web.UI.WebControls.RadioButtonList
+        Protected WithEvents chkname As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents chkrole As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents chkemail As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents chkphone1 As System.Web.UI.WebControls.CheckBox
+        Protected WithEvents chkphone2 As System.Web.UI.WebControls.CheckBox
+
+        Protected WithEvents txtname As System.Web.UI.WebControls.TextBox
+        Protected WithEvents txtrole As System.Web.UI.WebControls.TextBox
+        Protected WithEvents txtemail As System.Web.UI.WebControls.TextBox
+        Protected WithEvents txtphone1 As System.Web.UI.WebControls.TextBox
+        Protected WithEvents txtphone2 As System.Web.UI.WebControls.TextBox
+
+
+        Protected WithEvents tr0 As System.Web.UI.HtmlControls.HtmlTableRow
+        Protected WithEvents tr1 As System.Web.UI.HtmlControls.HtmlTableRow
+        Protected WithEvents tr2 As System.Web.UI.HtmlControls.HtmlTableRow
+        Protected WithEvents tr3 As System.Web.UI.HtmlControls.HtmlTableRow
+
 
         Private itemId As Integer = -1
 
@@ -66,14 +91,123 @@ Namespace DotNetZoom
         '****************************************************************
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+            Dim settings As Hashtable = PortalSettings.GetModuleSettings(ModuleId)
 
-            Title1.DisplayHelp = "DisplayHelp_EditContacts"
-			' Obtain PortalSettings from Current Context
+            If Request.Params("options") <> "" Then
+                Title1.DisplayHelp = "DisplayHelp_AdminContacts"
+                AdminPanel.Visible = True
+                MainPanel.Visible = False
+                chkCapcha.ToolTip = GetLanguage("Contact_CapchaTip")
+                If Page.IsPostBack = False Then
+
+                    Dim Capcha As String = "1"
+                    If settings.ContainsKey("DisplayEmail") Then
+                        Capcha = settings("DisplayEmail").ToString.ToLower
+                    End If
+
+
+
+                    Dim item1 As New ListItem()
+                    item1.Text = GetLanguage("Contact_Capcha1")
+                    item1.Value = "1"
+
+                    If item1.Value = Capcha Then
+                        item1.Selected = True
+                    End If
+
+                    chkCapcha.Items.Add(item1)
+
+                    Dim item2 As New ListItem()
+                    item2.Text = GetLanguage("Contact_Capcha2")
+                    item2.Value = "2"
+
+                    If item2.Value = Capcha Then
+                        item2.Selected = True
+                    End If
+
+                    chkCapcha.Items.Add(item2)
+
+                    If settings.ContainsKey("Name") Then
+                        txtname.Text = settings("Name").ToString
+                    Else
+                        txtname.Text = GetLanguage("Name")
+                    End If
+                    If settings.ContainsKey("contact_title") Then
+                        txtrole.Text = settings("contact_title").ToString
+                    Else
+                        txtrole.Text = GetLanguage("contact_title")
+                    End If
+                    If settings.ContainsKey("title_visible") Then
+                        chkrole.Checked = CType(settings("title_visible").ToString, Boolean)
+                    Else
+                        chkrole.Checked = True
+                    End If
+
+                    If settings.ContainsKey("contact_email") Then
+                        txtemail.Text = settings("contact_email").ToString
+                    Else
+                        txtemail.Text = GetLanguage("contact_email")
+                    End If
+                    If settings.ContainsKey("Email_visible") Then
+                        chkemail.Checked = CType(settings("Email_visible").ToString, Boolean)
+                    Else
+                        chkemail.Checked = True
+                    End If
+
+                    If settings.ContainsKey("contact_telephone1") Then
+                        txtphone1.Text = settings("contact_telephone1").ToString
+                    Else
+                        txtphone1.Text = GetLanguage("contact_telephone")
+                    End If
+                    If settings.ContainsKey("tel1_visible") Then
+                        chkphone1.Checked = CType(settings("tel1_visible").ToString, Boolean)
+                    Else
+                        chkphone1.Checked = True
+                    End If
+
+                    If settings.ContainsKey("contact_telephone2") Then
+                        txtphone2.Text = settings("contact_telephone2").ToString
+                    Else
+                        txtphone2.Text = GetLanguage("contact_telephone")
+                    End If
+                    If settings.ContainsKey("tel2_visible") Then
+                        chkphone2.Checked = CType(settings("tel2_visible").ToString, Boolean)
+                    Else
+                        chkphone2.Checked = True
+                    End If
+                End If
+            Else
+                Title1.DisplayHelp = "DisplayHelp_EditContacts"
+                AdminPanel.Visible = False
+                MainPanel.Visible = True
+                If settings.ContainsKey("title_visible") Then
+                    tr0.Visible = CType(settings("title_visible").ToString, Boolean)
+                End If
+
+                If settings.ContainsKey("Email_visible") Then
+                    tr1.Visible = CType(settings("Email_visible").ToString, Boolean)
+                End If
+
+                If settings.ContainsKey("tel1_visible") Then
+                    tr2.Visible = CType(settings("tel1_visible").ToString, Boolean)
+                End If
+
+                If settings.ContainsKey("tel2_visible") Then
+                    tr3.Visible = CType(settings("tel2_visible").ToString, Boolean)
+                End If
+
+            End If
+
+
+            ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-			Requiredfieldvalidator1.ErrorMessage =  "<br>" + GetLanguage("need_a_valide_name")
-			cmdUpdate.Text = GetLanguage("enregistrer")
-			cmdCancel.Text = GetLanguage("annuler")
-			cmdDelete.Text = GetLanguage("delete")		
+            Requiredfieldvalidator1.ErrorMessage = "<br>" + GetLanguage("need_a_valide_name")
+            cmdUpdate.Text = GetLanguage("enregistrer")
+            cmdCancel.Text = GetLanguage("annuler")
+            cmdUpdate1.Text = GetLanguage("enregistrer")
+            cmdCancel1.Text = GetLanguage("annuler")
+
+            cmdDelete.Text = GetLanguage("delete")
             ' Determine ItemId of Contacts to Update
             If IsNumeric(Request.Params("ItemID")) Then
                 itemId = Int32.Parse(Request.Params("ItemID"))
@@ -122,6 +256,17 @@ Namespace DotNetZoom
         End Sub
 
 
+        Public Function GetName(ByVal Setting As String) As String
+            Dim settings As Hashtable = PortalSettings.GetModuleSettings(ModuleId)
+            If settings.ContainsKey(Setting) Then
+                Return settings(Setting).ToString
+            Else
+                Return GetLanguage(Setting)
+            End If
+        End Function
+
+
+
         '****************************************************************
         '
         ' The cmdUpdate_Click event handler on this Page is used to either
@@ -146,9 +291,9 @@ Namespace DotNetZoom
                     ' Update the contact within the contacts table
                     contacts.UpdateContact(itemId, Context.User.Identity.Name, NameField.Text, RoleField.Text, EmailField.Text, Contact1Field.Text, Contact2Field.Text)
                 End If
-				' Reset data cashe
-				
-				ClearModuleCache(ModuleId)
+                ' Reset data cashe
+
+                ClearModuleCache(ModuleId)
 
                 ' Redirect back to the portal home page
                 Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
@@ -157,6 +302,29 @@ Namespace DotNetZoom
 
         End Sub
 
+        Private Sub cmdUpdate1_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUpdate1.Click
+            Dim ObjAdmin As New AdminDB
+            ObjAdmin.UpdateModuleSetting(ModuleId, "DisplayEmail", chkCapcha.SelectedValue)
+
+            ObjAdmin.UpdateModuleSetting(ModuleId, "Name", txtname.Text)
+            ObjAdmin.UpdateModuleSetting(ModuleId, "contact_title", txtrole.Text)
+            ObjAdmin.UpdateModuleSetting(ModuleId, "title_visible", chkrole.Checked.ToString)
+
+            ObjAdmin.UpdateModuleSetting(ModuleId, "contact_email", txtemail.Text)
+            ObjAdmin.UpdateModuleSetting(ModuleId, "Email_visible", chkemail.Checked.ToString)
+
+            ObjAdmin.UpdateModuleSetting(ModuleId, "contact_telephone1", txtphone1.Text)
+            ObjAdmin.UpdateModuleSetting(ModuleId, "tel1_visible", chkphone1.Checked.ToString)
+
+            ObjAdmin.UpdateModuleSetting(ModuleId, "contact_telephone2", txtphone2.Text)
+            ObjAdmin.UpdateModuleSetting(ModuleId, "tel2_visible", chkphone2.Checked.ToString)
+
+
+            ClearModuleCache(ModuleId)
+            ' Redirect back to the portal home page
+            Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
+
+        End Sub
 
         '****************************************************************
         '
@@ -172,10 +340,10 @@ Namespace DotNetZoom
 
                 Dim contacts As New ContactsDB()
                 contacts.DeleteContact(itemId)
-				' Reset data cashe
-				
-				ClearModuleCache(ModuleId)
-				
+                ' Reset data cashe
+
+                ClearModuleCache(ModuleId)
+
             End If
 
             ' Redirect back to the portal home page
@@ -192,7 +360,7 @@ Namespace DotNetZoom
         '
         '****************************************************************
 
-        Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click
+        Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click, cmdCancel1.Click
             Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
         End Sub
 

@@ -192,7 +192,9 @@ Namespace DotNetZoom
             Me.Language = Language
             GetPortalSettings(tabId, PortalAlias, Language)
 
-            Me.UploadDirectory = IIf(ApplicationPath = "/", "", ApplicationPath) & "/Portals/" & Me.GUID.ToString & "/"
+            'Me.UploadDirectory = IIf(ApplicationPath = "/", "", ApplicationPath) & "/Portals/" & Me.GUID.ToString & "/"
+
+            Me.UploadDirectory = IIf(ApplicationPath = "/", "", ApplicationPath) & "/Portals/" & Me.PortalId.ToString & "/"
             GetBreadCrumbsRecursively(Me.ActiveTab.TabId)
             Me.Version = AssemblyVersion
 
@@ -635,53 +637,49 @@ Namespace DotNetZoom
 
         End Sub
 
-        Public Shared Function GetVersion() As Integer
-
-            Dim TempKey As String = GetDBname()
-
-            Dim context As HttpContext = HttpContext.Current
-
-            If context.Cache(TempKey) Is Nothing Then
-
-                ' Create Instance of Connection and Command Object
-                Dim myConnection As New SqlConnection(GetDBConnectionString)
-
-                ' check if database exists
-                Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                    CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                    New Object() {}, CommandType.Text, "select * from dbo.sysobjects where id = object_id(N'[dbo].[version]')")
-
-                Try
-                    myConnection.Open()
-                    myCommand.ExecuteNonQuery()
-                    myConnection.Close()
-                Catch
-                    Return -2
-                End Try
-
-                ' Generate Command Object based on Method
-                myCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                    CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                    New Object() {}, CommandType.Text, "select 'Build' = max(Build) from Version")
-
-                Try
-                    ' Execute the command
-                    myConnection.Open()
-                    Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
-                    If result.Read Then
-                        If Not IsDBNull(result("Build")) Then
-                            GetVersion = result("Build")
-                        End If
-                    End If
-                    result.Close()
-                Catch
-                    ' table does not exist - GetVersion = -1
-                    Return -1
-                End Try
-                context.Cache.Insert(TempKey, GetVersion, Nothing)
-            Else
-                GetVersion = context.Cache(TempKey)
+        Public Shared Function GetVersion(Optional ByVal ConnectionString As String = "") As Integer
+            GetVersion = -1
+            ' Create Instance of Connection and Command Object
+            If ConnectionString = "" Then
+                ConnectionString = GetDBConnectionString()
             End If
+
+
+            Dim myConnection As New SqlConnection(ConnectionString)
+
+            ' check if database exists
+            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {}, CommandType.Text, "select * from dbo.sysobjects where id = object_id(N'[dbo].[version]')")
+
+            Try
+                myConnection.Open()
+                myCommand.ExecuteNonQuery()
+                myConnection.Close()
+            Catch 
+                Return -2
+            End Try
+
+            ' Generate Command Object based on Method
+            myCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
+                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
+                New Object() {}, CommandType.Text, "select 'Build' = max(Build) from Version")
+
+            Try
+                ' Execute the command
+                myConnection.Open()
+                Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
+                If result.Read Then
+                    If Not IsDBNull(result("Build")) Then
+                        GetVersion = result("Build")
+                    End If
+                End If
+                result.Close()
+            Catch
+                ' table does not exist - GetVersion = -1
+                Return -1
+            End Try
+
 
         End Function
 

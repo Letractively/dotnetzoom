@@ -1,8 +1,8 @@
-<%@ Control Language="vb" EnableViewState=False autoeventwireup="false" Explicit="True" codebehind="Feedback.ascx.vb" Inherits="DotNetZoom.Feedback" %>
+<%@ Control Language="vb" EnableViewState=True autoeventwireup="false" Explicit="True" codebehind="Feedback.ascx.vb" Inherits="DotNetZoom.Feedback" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 <portal:title id="Title1" NAME="Title1" runat="server"></portal:title>
 <asp:PlaceHolder id="pnlModuleContent" Runat="server">
-<asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
+<asp:literal id="before" runat="server" EnableViewState="true" ></asp:literal>
 <table cellspacing="0" cellpadding="4" border="0"><tbody><tr id="rowSendTo" valign="top" runat="server">
 <td class="SubHead">
 <label for="<%=txtSendTo.ClientID%>"><%= DotNetZoom.GetLanguage("to")%>:</label>
@@ -41,11 +41,15 @@
 <asp:TextBox id="txtBody" runat="server" columns="25" Width="350px" CssClass="NormalTextBox" Rows="16" TextMode="Multiline"></asp:TextBox>
 </td>
 </tr>
+<tr id="pnlCaptCha" runat=server visible=false ><td></td><td>
+     <%= DotNetZoom.SetCapcha()%>
+     <asp:Label ID="erreur" visible="false" runat="server" ForeColor="Red" CssClass="Normal"></asp:Label>
+     <br />
+</td></tr>
 <tr valign="top">
-<td>&nbsp;</td>
 <td valign="middle" style="white-space: nowrap;">
 <asp:LinkButton id="cmdSend" runat="server" CssClass="CommandButton" CausesValidation="True">Envoyer</asp:LinkButton>&nbsp;&nbsp;
 <asp:LinkButton id="cmdCancel" runat="server" CssClass="CommandButton" CausesValidation="False">Annuler</asp:LinkButton>&nbsp;&nbsp;
 <asp:LinkButton id="cmdUpdate" runat="server" CssClass="CommandButton" CausesValidation="False">Actualiser</asp:LinkButton></td></tr><tr valign="top"><td valign="middle" colspan="2"><asp:Label id="lblMessage" runat="server" cssclass="NormalRed"></asp:Label></td></tr></tbody></table>
-<asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>
+<asp:literal id="after" runat="server" EnableViewState="true" ></asp:literal>
 </asp:PlaceHolder>

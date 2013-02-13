@@ -55,7 +55,7 @@ Namespace DotNetZoom
             Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
 
 			imgDelete.Attributes.Add("onClick", "JavaScript:return confirm('" & rtesafe(GetLanguage("request_confirm")) & "');")
-            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), imgRefresh.ClientID)
+            Dim click As String = String.Format("openDialog('{0}', 700, 700, retVal);return false", ResolveUrl("TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), imgRefresh.ClientID)
 			imgUpload.Attributes.Add("onclick", click)
 			If Session("message") <> "" then
 				lblerror.text = Session("message")

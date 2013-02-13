@@ -351,7 +351,9 @@ Namespace DotNetZoom
                         Try
                             ddlTimeZone.SelectedValue = dr("TimeZone")
                         Catch ex As Exception
-                            ddlTimeZone.SelectedValue = 0
+                        ddlTimeZone.SelectedValue = 0
+                        LogMessage(Request, "Erreur SiteSettings, TimeZone " + ex.Message)
+
                         End Try
 
                         lblTimeZone.Text = DateTime.Now().AddMinutes(GetTimeDiff(_portalSettings.TimeZone)).ToString()

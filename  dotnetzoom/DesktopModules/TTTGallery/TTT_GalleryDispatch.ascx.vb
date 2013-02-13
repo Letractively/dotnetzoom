@@ -52,9 +52,6 @@ Namespace DotNetZoom
             If config.CheckboxGPS Then
                 _DefaultPage = glbPath & "DeskTopModules/TTTGallery/GPS_Map.ascx"
             End If
-            'If config.IsValidPath Then
-            'Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
-            'End If
 
             If IsNumeric(Request.Params("mid")) Then
                 If Request.Params("mid") = ModuleId.ToString Then

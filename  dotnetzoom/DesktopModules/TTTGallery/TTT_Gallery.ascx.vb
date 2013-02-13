@@ -88,7 +88,7 @@ Namespace DotNetZoom
             UploadImage.ToolTip = GetLanguage("Gal_AddFileTip")
 			lnkAdmin.Text =  getlanguage("Gal_SetUp")
 
-
+            JQueryScript(Me.Page)
 
 			lnkManager.Text =  getlanguage("Gal_SetUp1")
 
@@ -132,14 +132,6 @@ Namespace DotNetZoom
                 ' Reset if needto
                 If Not Session("reset") Is Nothing Then
                     If Zrequest.Path = CStr(Session("reset")) Then
-                        Dim sb As New StringBuilder()
-                        sb.Append(GetRootURL)
-                        sb.Append("&path=")
-                        sb.Append(Zrequest.Path)
-                        sb.Append("&currentstrip=")
-                        sb.Append(Zrequest.CurrentStrip.ToString)
-
-
                         GalleryConfig.ResetGalleryConfig(ModuleId)
                         Zrequest.Folder.Reset()
                         ClearModuleCache(ModuleId)
@@ -153,7 +145,6 @@ Namespace DotNetZoom
                         lblInfo.Text += "--></script>"
                         lblInfo.Visible = True
                         Return
-                        'Response.Redirect(sb.ToString)
                     End If
                 End If
 
@@ -196,22 +187,22 @@ Namespace DotNetZoom
                     If Zrequest.Folder.IsBrowsable() AndAlso Zrequest.Folder.List.Count > 0 Then
 
                         For i = 1 To Zrequest.Folder.List.Count
-
+                            ' " + Moduleid.ToString + "
                             Dim item As IGalleryObjectInfo = Zrequest.Folder.List.Item(i - 1)
                             tempstring = ""
                             Select Case item.Type
                                 Case IGalleryObjectInfo.ItemType.Image
-                                    tempstring = "<a rel=""image"" rev=""" + GetItemInfo(item) + """ href=""" + CryptoUrl(item.URL, config.IsPrivate) + """></a>"
+                                    tempstring = "<a rel=""image" + ModuleId.ToString + """ rev=""" + GetItemInfo(item) + """ href=""" + CryptoUrl(item.URL, config.CryptoURL) + """></a>"
                                 Case IGalleryObjectInfo.ItemType.Flash
-                                    tempstring = "<a rel=""flash"" rev=""" + GetItemInfo(item) + """ href=""" + item.URL + """></a>"
+                                    tempstring = "<a rel=""flash" + ModuleId.ToString + """ rev=""" + GetItemInfo(item) + """ href=""" + item.URL + """></a>"
                                 Case IGalleryObjectInfo.ItemType.Movie
                                     Dim StrExtension As String
                                     StrExtension = Mid(item.Name, InStrRev(item.Name, ".")).ToLower
                                     Select Case StrExtension.ToLower()
                                         Case ".flv", ".mp4"
-                                            tempstring = "<a rel=""flash"" rev=""" + GetItemInfo(item) + """ href=""" + "/javascript/player.swf?file=" + item.URL + "&autostart=true" + """></a>"
+                                            tempstring = "<a rel=""flash" + ModuleId.ToString + """ rev=""" + GetItemInfo(item) + """ href=""" + "/javascript/player.swf?file=" + item.URL + "&autostart=true" + """></a>"
                                         Case Else
-                                            tempstring = "<a rel=""movie"" rev=""" + GetItemInfo(item) + """ href=""" + glbPath & "DesktopModules/TTTGallery/TTT_MediaPlayer.aspx?L=" & GetLanguage("N") & "&path=" & item.URL & "&tabid=" & TabId.ToString & "&mid=" & ModuleId.ToString & "&media=" & item.Name + """></a>"
+                                            tempstring = "<a rel=""movie" + ModuleId.ToString + """ rev=""" + GetItemInfo(item) + """ href=""" + glbPath & "DesktopModules/TTTGallery/TTT_MediaPlayer.aspx?L=" & GetLanguage("N") & "&path=" & item.URL & "&tabid=" & TabId.ToString & "&mid=" & ModuleId.ToString & "&media=" & item.Name + """></a>"
                                     End Select
                             End Select
                             If i < Zrequest.StartItem Then
@@ -259,14 +250,16 @@ Namespace DotNetZoom
                 If Not config.IsPrivate AndAlso (PortalSecurity.IsInRoles(CType(PortalSettings.GetEditModuleSettings(ModuleId), ModuleSettings).AuthorizedEditRoles.ToString) = True) Then
                     mGalleryEdit = True
                 End If
+                If config.IsValidPath Then
+                    Try
+                        If Zrequest.Folder.OwnerID = ZuserID Then
+                            mGalleryEdit = True
+                        End If
+                    Catch ex As Exception
+                        LogMessage(HttpContext.Current.Request, "Erreur Gallery.ascx OwnerID, " + ex.Message)
 
-                Try
-                    If Zrequest.Folder.OwnerID = ZuserID Then
-                        mGalleryEdit = True
-                    End If
-                Catch ex As Exception
-
-                End Try
+                    End Try
+                End If
             End If
 
 
@@ -338,7 +331,12 @@ Namespace DotNetZoom
             If Not TempO.IsFolder And TempO.Latitude <> "0" Then
                 Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
                 'Return "javascript:DestroyWnd;CreateWnd('http://maps.google.com/maps/api/staticmap?center=" + TempO.Latitude + "," + TempO.Longitude + "&markers=color:blue|label:X|" + TempO.Latitude + "," + TempO.Longitude + "&zoom=10&size=640x640&maptype=terrain&sensor=true',640,640,false)"
-                Return "javascript:DestroyWnd;CreateWnd('http://maps.google.com/maps?q=" + TempO.Latitude + "," + TempO.Longitude + "&t=p&z=12&output=embed',640,640,false)"
+
+                'txtLatLong.Text = "http://maps.google.com/maps?q=" + Exif.Latitude(3) + "," + Exif.Longitude(3) + "&t=p&z=12&output=embed"
+                Dim objSecurity As New DotNetZoom.PortalSecurity()
+                Dim strMAP As String
+                strMAP = glbHTTP + "desktopmodules/maps/googlemap.aspx?ll=" + objSecurity.EncryptRijndael(DateTime.Now().ToString("yyyyMMdd"), TempO.Latitude + "," + TempO.Longitude) + "&tt=" + objSecurity.EncryptRijndael(DateTime.Now().ToString("yyyyMMdd"), TempO.Title)
+                Return "javascript:DestroyWnd;CreateWnd('" + strMAP + "',640,640,false)"
             Else
                 Return ""
             End If
@@ -422,12 +420,12 @@ Namespace DotNetZoom
             Dim incScript As String = String.Format("<script Language=""javascript"" SRC=""{0}""></script>", ResolveUrl("/admin/advFileManager/dialog.js"))
             Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManager", incScript)
             Dim retScript As String = "<script language=""javascript"">" & vbCrLf & "<!--" & vbCrLf
-            retScript &= "function retVal()" & vbCrLf & "{" & vbCrLf
+            retScript &= "function retVal" + ModuleId.ToString + "()" & vbCrLf & "{" & vbCrLf
             retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
             retScript &= "--></script>"
-            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh" + ModuleId.ToString, retScript)
 
-            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)), UploadImage.ClientID)
+            Dim click As String = String.Format("openDialog('{0}', 700, 700, retVal" + ModuleId.ToString + ");return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId) & "&mid=" + ModuleId.ToString), UploadImage.ClientID)
             UploadImage.Attributes.Add("onclick", click)
 
 
@@ -447,8 +445,8 @@ Namespace DotNetZoom
             _UploadInfo.Type = Nothing
             _UploadInfo.Unzip = True
             _UploadInfo.CUnzip = False
-            Session("UploadInfo") = _UploadInfo
-            Session("RelativeDir") = Zrequest.Folder.GalleryHierarchy
+            Session("UploadInfo_" + ModuleId.ToString) = _UploadInfo
+            Session("RelativeDir_" + ModuleId.ToString) = Zrequest.Folder.GalleryHierarchy
 
 
         End Sub
@@ -583,7 +581,7 @@ Namespace DotNetZoom
         Protected Function GetThumbnailURL(ByVal DataItem As Object) As String
             Dim Item As IGalleryObjectInfo = CType(DataItem, IGalleryObjectInfo)
             'Return Item.Thumbnail
-            Return CryptoUrl(Item.Thumbnail, config.IsPrivate)
+            Return CryptoUrl(Item.Thumbnail, config.CryptoUrl)
         End Function
 
 
@@ -595,21 +593,21 @@ Namespace DotNetZoom
 
                 Select Case item.Type
                     Case IGalleryObjectInfo.ItemType.Image
-                        Return "image"
+                        Return "image" + ModuleId.ToString
                     Case IGalleryObjectInfo.ItemType.Flash
-                        Return "flash"
+                        Return "flash" + ModuleId.ToString
                     Case IGalleryObjectInfo.ItemType.Movie
                         Dim StrExtension As String
                         StrExtension = Mid(item.Name, InStrRev(item.Name, ".")).ToLower
                         Select Case StrExtension.ToLower()
                             Case ".flv", ".mp4"
-                                Return "flash"
+                                Return "flash" + ModuleId.ToString
                             Case Else
-                                Return "movie"
+                                Return "movie" + ModuleId.ToString
                         End Select
                 End Select
             End If
-            Return "other"
+            Return "other" + ModuleId.ToString
         End Function
 
         Protected Function GetImageURL(ByVal DataItem As Object) As String
@@ -620,7 +618,7 @@ Namespace DotNetZoom
 
                 Select Case item.Type
                     Case IGalleryObjectInfo.ItemType.Image
-                        Return CryptoUrl(Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url, config.IsPrivate)
+                        Return CryptoUrl(Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url, config.CryptoUrl)
                     Case IGalleryObjectInfo.ItemType.Flash
                         Return Zrequest.Folder.List.Item(CType(DataItem, IGalleryObjectInfo).Index).url
                     Case IGalleryObjectInfo.ItemType.Movie
@@ -639,8 +637,7 @@ Namespace DotNetZoom
         End Function
 
         Private Function GetRootURL() As String
-            Return GetFullDocument() & "?" & "tabid=" & _portalSettings.ActiveTab.TabId
-
+            Return GetFullDocument() & "?" & "tabid=" & _portalSettings.ActiveTab.TabId.ToString + "&mid=" + ModuleId.ToString
         End Function
 
         Public Function GetFolderURL(ByVal DataItem As Object) As String
@@ -671,8 +668,8 @@ Namespace DotNetZoom
             Dim sb As New StringBuilder()
             sb.Append(GetFullDocument() & "?edit=control&editpage=")
             sb.Append(TTT_EditGallery.GalleryEditType.GalleryAdmin)
-            sb.Append("&mid=")
-            sb.Append(ModuleId.ToString)
+            'sb.Append("&mid=")
+            'sb.Append(ModuleId.ToString)
             sb.Append("&tabid=")
             sb.Append(TabId.ToString)
 
@@ -681,6 +678,7 @@ Namespace DotNetZoom
         End Function
 
         Protected Function GetFolderViewerURL(ByVal DataItem As Object) As String
+            Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "POPUPScript", "<script language=""javascript"" type=""text/javascript"" src=""" + DotNetZoom.glbPath + "javascript/popup.js""></script>")
             Return "javascript:DestroyWnd;CreateWnd('" & glbPath & "DesktopModules/TTTGallery/TTT_Viewer.aspx?L=" & GetLanguage("N") & "&path=" & Zrequest.Folder.GalleryHierarchy & "&tabid=" & TabId.ToString & "&mid=" & ModuleId.ToString & "'," & CStr(config.FixedWidth + 40) & "," & CStr(config.FixedHeight + 120) & ",true);"
         End Function
 

@@ -204,7 +204,7 @@ Namespace DotNetZoom
                 End If
 
                 If Not Page.IsPostBack Then
-                Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, Zrequest.GalleryConfig.IsPrivate)
+                Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, Zrequest.GalleryConfig.CryptoUrl)
                 img.Height = CStr(Zrequest.GalleryConfig.FixedHeight + 4)
                 img.Width = CStr(Zrequest.GalleryConfig.FixedWidth + 4)
                 'Image.ImageUrl = Zrequest.CurrentItem.URL
@@ -444,8 +444,8 @@ Namespace DotNetZoom
                             What.Longitude = "0"
                         End If
                         Dim TGalleryUser As GalleryUser = New GalleryUser(Zrequest.CurrentItem.OwnerID)
-                        If Exif.UserComment <> txtWaterMark.Text Or Exif.Artist <> TGalleryUser.UserName Or Exif.Title <> txtTitle.Text Or Exif.Copyright <> GetDomainName(Request) Or Exif.Description <> txtDescription.Text Then
-                            Exif.Artist = TGalleryUser.UserName
+                        If Exif.UserComment <> txtWaterMark.Text Or Exif.Artist <> TGalleryUser.FullName Or Exif.Title <> txtTitle.Text Or Exif.Copyright <> GetDomainName(Request) Or Exif.Description <> txtDescription.Text Then
+                            Exif.Artist = TGalleryUser.FullName
                             Exif.Copyright = GetDomainName(Request)
                             Exif.Description = txtDescription.Text
                             Exif.Title = txtTitle.Text
@@ -472,6 +472,7 @@ Namespace DotNetZoom
 
 
                     Catch ex As Exception
+                        LogMessage(HttpContext.Current.Request, "Erreur Viewer.ascx ImageLoadExif, " + ex.Message)
 
                     End Try
 

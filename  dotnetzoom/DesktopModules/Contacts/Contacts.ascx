@@ -16,7 +16,7 @@
 <asp:BoundColumn DataField="Role" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold" />
 <asp:TemplateColumn ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold">
 <ItemTemplate>
-<asp:Label id="lblEmail" runat="server" text='<%# DisplayEmail(DataBinder.Eval(Container.DataItem, "Email")) %>'></asp:Label>
+<asp:Label id="lblEmail" runat="server" text='<%# DisplayEmail(DataBinder.Eval(Container.DataItem, "Email"), DataBinder.Eval(Container.DataItem, "Name")) %>'></asp:Label>
 </ItemTemplate>
 </asp:TemplateColumn>
 <asp:BoundColumn DataField="Contact1" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold" />

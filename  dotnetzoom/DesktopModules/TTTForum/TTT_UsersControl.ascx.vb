@@ -34,6 +34,7 @@ Namespace DotNetZoom
         Private _IsForumModerator As Boolean
         Private _SelectedUser As Object
 
+        Protected ZReportType As Integer = 1
         Protected ZShowUserName As Boolean = False
         Protected ZShowUserNameLink As Boolean = False
         Protected ZShowAddress As Boolean = False
@@ -93,7 +94,7 @@ Namespace DotNetZoom
             Dim ds As DataSet
  
             Dim dbForumUser As New ForumUserDB()
-            ds = ConvertDataReaderToDataSet(dbForumUser.TTTForum_GetUsers(_portalSettings.PortalId, ZstrFilter))
+            ds = ConvertDataReaderToDataSet(dbForumUser.TTTForum_GetUsers(_portalSettings.PortalId, ZstrFilter, ZReportType))
 			grdUsers.DataSource = ds
             grdUsers.PageSize = ds.Tables(0).Rows.Count + 1
 			With grdUsers
@@ -259,7 +260,16 @@ Namespace DotNetZoom
             DisplayEmail = FormatEmail(Email, page)
         End Function
 
-        
+
+        Public Property ReportType() As Integer
+            Get
+                Return ZReportType
+            End Get
+            Set(ByVal Value As Integer)
+                ZReportType = Value
+            End Set
+        End Property
+
         Public Property ShowUserName() As Boolean
             Get
                 Return ZShowUserName

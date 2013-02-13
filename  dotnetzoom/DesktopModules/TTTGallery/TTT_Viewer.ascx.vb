@@ -104,7 +104,7 @@ Namespace DotNetZoom
 
 
             Try
-                Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, config.IsPrivate)
+                Image.ImageUrl = CryptoUrl(Zrequest.CurrentItem.URL, config.CryptoUrl)
                 img.Height = CStr(Zrequest.GalleryConfig.FixedHeight + 4)
                 img.Width = CStr(Zrequest.GalleryConfig.FixedWidth + 4)
                 'Image.ImageUrl = Zrequest.CurrentItem.URL
@@ -113,6 +113,7 @@ Namespace DotNetZoom
                 End If
 
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur Viewer.ascx ImageLoad, " + ex.Message)
                 ClearModuleCache(ModuleId)
                 Response.Clear()
                 Response.End()

@@ -3,6 +3,15 @@
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 <div class="main" id="main">
+<script language="JavaScript" type="text/javascript">
+
+    function validatepage() {
+        Page_ClientValidate();
+        if (Page_IsValid) {
+            setajaxloading('#main');
+        }     }
+
+</script>
 <table cellspacing="0" cellpadding="4" width="750"  border="0">
     <tbody>
         <tr>
@@ -207,12 +216,4 @@
      runat="server"
      Font-Size="12"/>
 </div>
-<div class="attendre" id="attendre" align="center" style="background: silver; border: thin dotted; padding: 4px; visibility:hidden;  top: -400px; position: relative">
-<span class="Head"><input class="button" onclick="toggleBox('attendre',0);toggleBox('main',1);" type="button" value="<%= DotNetZoom.GetLanguage("S_F_Wait") %>"></span><br><br>
-<img src="/images/rotation.gif" alt="*" width="32" height="32">
-<br><br>
-<span class="SubHead">
-<%= DotNetZoom.GetLanguage("S_F_Wait_Info") %></span>
-</div>
-
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>

@@ -97,15 +97,16 @@ Namespace DotNetZoom
         '*******************************************************
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-			Title1.DisplayHelp = "DisplayHelp_Signup"
+            JQueryScript(Me.Page)
+            Title1.DisplayHelp = "DisplayHelp_Signup"
             Dim strFolder As String
             Dim strFileName As String
-			Dim Admin As New AdminDB()
+            Dim Admin As New AdminDB()
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
             ' ensure portal signup is allowed
-            If (not PortalSecurity.IsSuperUser) And portalSettings.GetHostSettings("DemoSignup") <> "Y" Then
+            If (Not PortalSecurity.IsSuperUser) And PortalSettings.GetHostSettings("DemoSignup") <> "Y" Then
                 AccessDenied()
             End If
             lblPortalDef.Text = Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "PortalCreationInfo")
@@ -151,7 +152,7 @@ Namespace DotNetZoom
                     cboTemplate.Items.Insert(0, GetLanguage("list_none"))
                     cboTemplate.SelectedIndex = 0
                 End If
-                cmdUpdate.Attributes.Add("onclick", "Page_ClientValidate(); toggleBox('attendre',Page_IsValid);toggleBox('main',!Page_IsValid);")
+                cmdUpdate.Attributes.Add("onclick", "validatepage();")
                 If Not (Request.Params("hostpage") Is Nothing) Then
                     If cboTemplate.Items.FindByText(GetLanguage("list_none")) Is Nothing Then
                         cboTemplate.Items.Insert(0, GetLanguage("list_none"))
@@ -177,7 +178,7 @@ Namespace DotNetZoom
                 SetTemplateImage()
 
             End If
-			
+
         End Sub
 
 		Private Sub SetTemplateImage()
@@ -394,6 +395,7 @@ Namespace DotNetZoom
                                 PortalSettings.GetHostSettings("HostFee") = Replace(PortalSettings.GetHostSettings("HostFee"), ",", ".")
                             End If
                             dblHostFee = Double.Parse(PortalSettings.GetHostSettings("HostFee"))
+                            LogMessage(Request, "Erreur Signup, HostFee " + objException.Message)
                         End Try
                     End If
 
@@ -438,10 +440,10 @@ Namespace DotNetZoom
 
                         ' create the upload directory for the new portal
                         ' need to copy all file in the template dir glbTemplatesDirectory to the portal dir
-                        System.IO.Directory.CreateDirectory(strServerPath & "Portals\" & dr("GUID").ToString)
+                        System.IO.Directory.CreateDirectory(strServerPath & "Portals\" & intPortalId.ToString)
                         Dim TempPortalDir As String
-                        tempGUID = dr("GUID").ToString
-                        TempPortalDir = strServerPath & "Portals\" & dr("GUID").ToString & "\"
+                        tempGUID = intPortalId.ToString
+                        TempPortalDir = strServerPath & "Portals\" & intPortalId.ToString & "\"
                         Dim TempFileName As String
                         Dim ShortFileName As String
                         ' copy all in the template dir to the new portal except template.txt and template.jpg

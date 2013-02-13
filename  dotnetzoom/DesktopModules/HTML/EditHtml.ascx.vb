@@ -289,7 +289,8 @@ Namespace DotNetZoom
 			TempInt = Convert.ToInt32(Hex.Substring(3, 2), 16)
 			TempInt = Convert.ToInt32(Hex.Substring(5, 2), 16)
             Catch objException As Exception
-			Return False 
+                LogMessage(HttpContext.Current.Request, "Erreur EditHtml IsHex, " + Hex + " " + objException.Message)
+                Return False
  			end Try
 			Return True
 		End Function

@@ -1,6 +1,9 @@
-<%@ Control Language="vb" Inherits="DotNetZoom.Signin" codebehind="Signin.ascx.vb" autoeventwireup="false" Explicit="True" %>
+<%@ Control EnableViewState="true" Language="vb" Inherits="DotNetZoom.Signin" codebehind="Signin.ascx.vb" autoeventwireup="false" Explicit="True" %>
 <%@ Register TagPrefix="Portal" TagName="Title" Src="~/controls/DesktopModuleTitle.ascx" %>
 
+
+<table width="100%"  cellspacing="0" cellpadding="3" border="0"><tr><td align="center" valign="middle">
+<table width="500" style="border:2px solid #a1a1a1;padding:10px 10px;border-radius:25px;-moz-border-radius:25px;box-shadow: 10px 10px 5px #888888;"><tr><td align="left">
 <asp:literal id="SignInTitlebefore" Visible="False" runat="server" EnableViewState="false" ></asp:literal>
 <table class='<asp:literal id="TableTitle" runat="server" />' width="100%" cellspacing="0" cellpadding="3" border="0">
     <tbody>
@@ -77,3 +80,5 @@
     </tbody>
 </table>
 <asp:literal id="SignInafter" Visible="False" runat="server" EnableViewState="false" ></asp:literal>
+</td></tr></table>
+</td></tr></table>

@@ -6,9 +6,13 @@
 <portal:title id="Title1" runat="server"></portal:title>
 <asp:literal id="before" runat="server" EnableViewState="false" ></asp:literal>
 
-
+<asp:PlaceHolder ID="paneledit" runat="server">
 <table cellspacing="0" cellpadding="0" width="750">
     <tbody>
+            <tr valign="top">
+            <td colspan="2">
+                &nbsp;</td>
+        </tr>
         <tr valign="top">
             <td class="SubHead">
                 <label for="<%=txtTitle.ClientID%>"><%= DotNetZoom.GetLanguage("label_title") %>:</label></td>
@@ -34,36 +38,7 @@
                 <asp:checkbox id="chkComment"  AutoPostBack="true" CssClass="NormalTextBox" Runat="server"></asp:checkbox>
             </td>
         </tr>
-        <tr>
-            <td class="SubHead">
-                <label for="<%=chkAnonymous.ClientID%>"><%= DotNetZoom.GetLanguage("BB_AllowAnonyme")%>:</label></td>
-            <td>
-                <asp:checkbox id="chkAnonymous"  AutoPostBack="true" CssClass="NormalTextBox" Runat="server"></asp:checkbox>
-            </td>
-        </tr>
-        <tr>
-            <td class="SubHead">
-                <label for="<%=txtPager.ClientID%>"><%= DotNetZoom.GetLanguage("BB_NumItems")%>:</label></td>
-            <td>
-                <asp:textbox id="txtPager"  AutoPostBack="true" runat="server"  MaxLength="3" width="20" CssClass="NormalTextBox" TextMode="SingleLine"></asp:textbox>
-            </td>
-        </tr>
-        <tr>
-            <td class="SubHead" valign="top" width="300">
-            <%= DotNetZoom.GetLanguage("ms_contener")%>:
-			</td>
-            <td>
-                <table cellspacing="0" cellpadding="4" border="0" width="400">
-                    <tbody>
-					<tr>
-					<td colspan="3">
-					<portal:ItemEdit id="ContainerEdit" runat="server"></portal:ItemEdit>
-					</td>
-					</tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
+
         <tr valign="top">
             <td colspan="2">
                 &nbsp;</td>
@@ -171,4 +146,62 @@
         <asp:BoundColumn  DataField="FullName" ItemStyle-CssClass="Normal" HeaderStyle-Cssclass="NormalBold" />
     </Columns>
 </asp:datagrid>
+
+
+
+</asp:PlaceHolder>
+<asp:PlaceHolder ID="paneloption" runat="server">
+<table cellspacing="0" cellpadding="0" width="750">
+    <tbody>
+            <tr valign="top">
+            <td colspan="2">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td class="SubHead">
+                <label for="<%=chkAnonymous.ClientID%>"><%= DotNetZoom.GetLanguage("BB_AllowAnonyme")%>:</label></td>
+            <td>
+                <asp:checkbox id="chkAnonymous"  AutoPostBack="true" CssClass="NormalTextBox" Runat="server"></asp:checkbox>
+            </td>
+        </tr>
+        <tr>
+            <td class="SubHead">
+                <label for="<%=txtPager.ClientID%>"><%= DotNetZoom.GetLanguage("BB_NumItems")%>:</label></td>
+            <td>
+                <asp:textbox id="txtPager"  AutoPostBack="true" runat="server"  MaxLength="3" width="20" CssClass="NormalTextBox" TextMode="SingleLine"></asp:textbox>
+            </td>
+        </tr>
+                    <tr valign="top">
+            <td colspan="2">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td class="SubHead" valign="top" width="300">
+            <%= DotNetZoom.GetLanguage("ms_contener")%>:
+			</td>
+            <td>
+                <table cellspacing="0" cellpadding="4" border="0" width="400">
+                    <tbody>
+					<tr>
+					<td colspan="3">
+					<portal:ItemEdit id="ContainerEdit" runat="server"></portal:ItemEdit>
+					</td>
+					</tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+                    <tr valign="top">
+            <td colspan="2">
+                &nbsp;</td>
+        </tr>
+
+</tbody>
+</table>
+
+<p align="left">
+    <asp:hyperlink id="retour" runat="server" CssClass="CommandButton" ></asp:hyperlink>
+</p>
+</asp:PlaceHolder>
+
 <asp:literal id="after" runat="server" EnableViewState="false" ></asp:literal>

@@ -21,28 +21,30 @@
 '
 Imports System.Text
 Imports Solpart
+
 Namespace DotNetZoom
 
     Public MustInherit Class DesktopModuleTitle
         Inherits System.Web.UI.UserControl
-		Protected WithEvents Titlebefore As System.Web.UI.WebControls.Literal
-		Protected WithEvents Titleafter As System.Web.UI.WebControls.Literal
+        Protected WithEvents ContextMenu As System.Web.UI.WebControls.Literal
+        Protected WithEvents Titlebefore As System.Web.UI.WebControls.Literal
+        Protected WithEvents Titleafter As System.Web.UI.WebControls.Literal
         Protected WithEvents pnlModuleTitle As System.Web.UI.WebControls.PlaceHolder
-		Protected WithEvents pnlAdminTitle As System.Web.UI.WebControls.PlaceHolder
-		Protected WithEvents pnlHelp As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents pnlAdminTitle As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents pnlHelp As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents cmdEditModule As System.Web.UI.WebControls.HyperLink
         Protected WithEvents cmdEditModuleImage As System.Web.UI.WebControls.Image
-		Protected WithEvents cmdEditModuleImage1 As System.Web.UI.WebControls.Image
+        Protected WithEvents cmdEditModuleImage1 As System.Web.UI.WebControls.Image
         Protected WithEvents cmdModuleUp As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdModuleDown As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdModuleTop As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmddelete As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdModuleBottom As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdModuleLeft As System.Web.UI.WebControls.LinkButton
-		Protected WithEvents cmdModuleRefresh As System.Web.UI.WebControls.LinkButton
+        Protected WithEvents cmdModuleRefresh As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdModuleRight As System.Web.UI.WebControls.LinkButton
         Protected WithEvents lblModuleTitle As System.Web.UI.WebControls.Label
-		Protected WithEvents lblEditModuleTitle As System.Web.UI.WebControls.Label
+        Protected WithEvents lblEditModuleTitle As System.Web.UI.WebControls.Label
         Protected WithEvents cmdEditContent As System.Web.UI.WebControls.HyperLink
         Protected WithEvents cmdEditOptions As System.Web.UI.WebControls.HyperLink
         Protected WithEvents cmdEditContent1 As System.Web.UI.WebControls.HyperLink
@@ -52,40 +54,42 @@ Namespace DotNetZoom
 
         Protected WithEvents cmdDisplayModule As System.Web.UI.WebControls.LinkButton
         Protected WithEvents CellEdit As System.Web.UI.HtmlControls.HtmlTableCell
-		Protected WithEvents cellhelp As System.Web.UI.HtmlControls.HtmlTableCell
-		Protected WithEvents help1 As System.Web.UI.WebControls.HyperLink
-		
-		Protected WithEvents TableTitle As System.Web.UI.WebControls.Literal
-		Protected WithEvents TableTitle1 As System.Web.UI.WebControls.Literal
-		
+        Protected WithEvents cellhelp As System.Web.UI.HtmlControls.HtmlTableCell
+        Protected WithEvents help1 As System.Web.UI.WebControls.HyperLink
+
+        Protected WithEvents TableTitle As System.Web.UI.WebControls.Literal
+        Protected WithEvents TableTitle1 As System.Web.UI.WebControls.Literal
+
         Protected WithEvents CellOptions As System.Web.UI.HtmlControls.HtmlTableCell
         Protected WithEvents CellOptions2 As System.Web.UI.HtmlControls.HtmlTableCell
         Protected WithEvents cAdmin As System.Web.UI.HtmlControls.HtmlTableCell
         Protected WithEvents cmdAdmin As System.Web.UI.WebControls.Literal
         Protected WithEvents rowAdmin1 As System.Web.UI.HtmlControls.HtmlTableCell
-		Protected WithEvents rowDisplay As System.Web.UI.HtmlControls.HtmlTableCell
+        Protected WithEvents rowDisplay As System.Web.UI.HtmlControls.HtmlTableCell
         Protected WithEvents lblModuleContent As System.Web.UI.WebControls.Label
-		Protected WithEvents modifier As System.Web.UI.HtmlControls.HtmlGenericControl
-		Protected WithEvents modifierC As System.Web.UI.HtmlControls.HtmlGenericControl
-		Protected WithEvents param As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents modifier As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents modifierC As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents param As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents param2 As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents haut As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents delete As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents top As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents bottom As System.Web.UI.HtmlControls.HtmlGenericControl
-		Protected WithEvents bas As System.Web.UI.HtmlControls.HtmlGenericControl
-		Protected WithEvents gauche As System.Web.UI.HtmlControls.HtmlGenericControl
-		Protected WithEvents droite As System.Web.UI.HtmlControls.HtmlGenericControl
-		Protected WithEvents purger As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents bas As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents gauche As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents droite As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents purger As System.Web.UI.HtmlControls.HtmlGenericControl
         Protected WithEvents help As System.Web.UI.WebControls.HyperLink
+        Protected WithEvents MC As System.Web.UI.HtmlControls.HtmlGenericControl
+        Protected WithEvents divModuleTitle As System.Web.UI.HtmlControls.HtmlGenericControl
 
 
-		
-	   Protected WithEvents ctlMenu As SolpartWebControls.Solpartmenu
-		
+
+        Protected WithEvents ctlMenu As SolpartWebControls.SolpartMenu
+
 
         Public DisplayTitle As [String] = Nothing
-		Public DisplayHelp As [String] = Nothing
+        Public DisplayHelp As [String] = Nothing
         Public EditText As [String] = Nothing
         Public EditURL As [String] = Nothing
         Public OptionsURL As [String] = Nothing
@@ -121,19 +125,19 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             ctlMenu.Visible = False
-			
-			
+
+
             tabId = _portalSettings.ActiveTab.TabId
-			
+
             ' Obtain reference to parent portal module
             Dim portalModule As PortalModuleControl = CType(Me.Parent, PortalModuleControl)
-			Dim _Setting as Hashtable
-			
+            Dim _Setting As Hashtable
 
-			lblModuleTitle.Text = ""
 
-       ' Display the Module and Content Edit button
-       If Not IsNothing(portalModule.ModuleConfiguration) Then
+            lblModuleTitle.Text = ""
+
+            ' Display the Module and Content Edit button
+            If Not IsNothing(portalModule.ModuleConfiguration) Then
 
                 If Not IsAdminTab() And (Request.Params("edit") Is Nothing) And (Request.Params("def") Is Nothing) And portalModule.ModuleId > 0 Then
                     'Normal Module
@@ -262,9 +266,18 @@ Namespace DotNetZoom
                     End If
 
                     If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
-                        If blnPreview = False Then
-                            pnlModuleTitle.Visible = True
-                            rowAdmin1.Visible = True
+
+                        If blnPreview = True And pnlModuleTitle.Visible = False Then
+                            divModuleTitle.Style.Add("visibility", "hidden")
+                            divModuleTitle.Style.Add("display", "none")
+                        ElseIf blnPreview = True And pnlModuleTitle.Visible = True Then
+                            rowAdmin1.Style.Add("visibility", "hidden")
+                            rowAdmin1.Style.Add("display", "none")
+                        End If
+                        pnlModuleTitle.Visible = True
+                        rowAdmin1.Visible = True
+
+                        If rowAdmin1.Visible = True Then
                             cmdEditModule.NavigateUrl = GetFullDocument() & "?tabid=" & tabId & "&mid=" & portalModule.ModuleId.ToString() & "&def=Module"
                             cmdEditModule.ToolTip = GetLanguage("title_ParamModif")
                             cmdEditModule.Visible = True
@@ -619,6 +632,21 @@ Namespace DotNetZoom
             If Not TitleVisible Then
                 pnlModuleTitle.Visible = False
                 pnlAdminTitle.Visible = False
+            Else
+                If rowAdmin1.Visible Then
+                    Dim StringScript As String
+                    StringScript = "<script type=""text/javascript"" language=""Javascript"">" + vbCrLf
+                    StringScript += "// ContextMenu for id=" + MC.ClientID.ToString + vbCrLf
+                    Dim TempID As String = Me.Parent.ClientID.ToString
+                    If InStr(TempID, "_") > 0 Then
+                        TempID = Left(TempID, InStr(TempID, "_") - 1).ToLower
+                    End If
+                    StringScript += "var " + MC.ClientID.ToString + " = '<ul>' + document.getElementById('" + MC.ClientID.ToString + "').innerHTML + '</ul>';" + vbCrLf
+                    StringScript += "init(" + MC.ClientID.ToString + ", 200, """ + TempID + """);" + vbCrLf
+                    StringScript += "</script>" + vbCrLf
+                    ContextMenu.Text = StringScript
+                    ContextMenu.Visible = True
+                End If
             End If
 
 
@@ -696,6 +724,7 @@ Namespace DotNetZoom
             Dim portalModule As PortalModuleControl = CType(Me.Parent, PortalModuleControl)
             objAdmin.DeleteModule(portalModule.ModuleConfiguration.ModuleId)
             objAdmin.UpdateTabModuleOrder(tabId)
+            DeleteModuleDirectory(portalModule.ModuleConfiguration.ModuleId)
             ClearTabCache(tabId)
             ' Redirect to the same page to pick up changes
             Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, ""), True)
@@ -978,6 +1007,6 @@ Namespace DotNetZoom
     End Class
 
 
-	
-	
+
+
 End Namespace

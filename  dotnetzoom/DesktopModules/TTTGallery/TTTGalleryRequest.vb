@@ -168,8 +168,24 @@ Namespace DotNetZoom
 
             Try
                 ' Logic to determine paging
-                _currentStrip = CInt(_req("CurrentStrip"))
+                Dim TempModuleID As Integer = 0
+                If IsNumeric(_req.Params("mid")) Then
+                    TempModuleID = CInt(_req.Params("mid"))
+                End If
+
+
+                If TempModuleID = ModuleID Then
+                    _currentStrip = CInt(_req.Params("CurrentStrip"))
+                    If _currentStrip > 0 Then
+                        SetUpViewCookie(CStr(_req("CurrentStrip")))
+                    End If
+                Else
+                    'get currentstrip from cookie if from different moduleid
+                    _currentStrip = GetViewfromCookie()
+                End If
+
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryRequest _currentStrip, " + ex.Message + ex.StackTrace)
                 _currentStrip = 1
             End Try
 
@@ -179,6 +195,7 @@ Namespace DotNetZoom
                 _stripCount = CInt(System.Math.Ceiling(MyBase.Folder.List.Count / MyBase.GalleryConfig.ItemsPerStrip))
 
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryRequest _stripCount, " + ex.Message)
                 _stripCount = 1
             End Try
 
@@ -241,6 +258,42 @@ Namespace DotNetZoom
 
         End Sub
 
+        Private Function GetViewfromCookie() As Integer
+            If Not _req.Cookies("GALLinfo") Is Nothing Then
+                If Not _req.Cookies("GALLinfo")("S" + ModuleID.ToString) Is Nothing Then
+                    If IsNumeric(_req.Cookies("GALLinfo")("S" + ModuleID.ToString)) Then
+                        Return CType(_req.Cookies("GALLinfo")("S" + ModuleID.ToString), Integer)
+                    Else : Return 1
+                    End If
+                Else : Return 1
+                End If
+            Else : Return 1
+            End If
+
+        End Function
+
+        Private Sub SetUpViewCookie(ByVal WhatPage As String)
+
+            Dim aCookie As HttpCookie
+            If _req.Cookies("GALLinfo") Is Nothing Then
+                aCookie = New HttpCookie("GALLinfo")
+                aCookie.Values("S" + ModuleID.ToString) = WhatPage
+                aCookie.Expires = DateTime.Now.AddMinutes(60)
+                aCookie.HttpOnly = True
+                HttpContext.Current.Response.Cookies.Add(aCookie)
+            Else
+                If WhatPage <> _req.Cookies("GALLinfo")("S" + ModuleID.ToString) Then
+                    aCookie = _req.Cookies("GALLinfo")
+                    aCookie.Values.Remove("S" + ModuleID.ToString)
+                    aCookie.Values.Add("S" + ModuleID.ToString, WhatPage)
+                    aCookie.Expires = DateTime.Now.AddMinutes(60)
+                    HttpContext.Current.Response.SetCookie(aCookie)
+                End If
+            End If
+
+
+        End Sub
+
 #End Region
 
     End Class
@@ -268,14 +321,17 @@ Namespace DotNetZoom
 
         Public ReadOnly Property CurrentItem() As GalleryFile
             Get
-                Dim File As GalleryFile
-                Try
-                    File = CType(MyBase.Folder.List.Item(_currentItemIndex), GalleryFile)
-                Catch ex As Exception
-                    Dim Request As System.Web.HttpRequest
-                    Request = HttpContext.Current.Request
-                    SendHttpException("404", "Not Found", Request)
-                End Try
+                Dim File As GalleryFile = Nothing
+                If Not MyBase.Folder.List.Item(_currentItemIndex) Is Nothing Then
+                    Try
+                        File = CType(MyBase.Folder.List.Item(_currentItemIndex), GalleryFile)
+                    Catch ex As Exception
+                        Dim Request As System.Web.HttpRequest
+                        Request = HttpContext.Current.Request
+                        LogMessage(HttpContext.Current.Request, "Erreur GalleryRequest CurrentItem, " + _currentItemIndex.ToString + " " + ex.Message)
+                        SendHttpException("404", "Not Found", Request)
+                    End Try
+                End If
                 Return File
             End Get
         End Property
@@ -330,6 +386,7 @@ Namespace DotNetZoom
                 Try
                     _currentItem = CInt(_req("currentitem"))
                 Catch ex As Exception
+                    LogMessage(HttpContext.Current.Request, "Erreur GalleryRequest currentItem, " + ex.Message)
                     _currentItem = 0
                 End Try
 
@@ -442,7 +499,28 @@ Namespace DotNetZoom
             _req = HttpContext.Current.Request
 
             ' Get the path
-            _path = HttpUtility.UrlDecode(_req("path"))
+
+
+
+            Dim TempModuleID As Integer = 0
+            If IsNumeric(_req.Params("mid")) Then
+                TempModuleID = CInt(_req.Params("mid"))
+            End If
+
+
+            If TempModuleID = ModuleID Then
+                _path = HttpUtility.UrlDecode(_req("path"))
+                If Not _path Is Nothing Then
+                    SetUpPathCookie(_path)
+                End If
+            Else
+                'get Path from cookie if from different moduleid
+                _path = GetPathfromCookie()
+            End If
+
+
+
+
 
             ' Init the root folder            
             Zfolder = ZgalleryConfig.RootFolder
@@ -466,31 +544,69 @@ Namespace DotNetZoom
                     ' Navigate the path structure
                     For pathCounter = 0 To paths.GetUpperBound(0)
                         ' Get it from memory or populate
-                        Zfolder = CType(Zfolder.List.Item(paths(pathCounter)), GalleryFolder)
+                        If Not Zfolder.List.Item(paths(pathCounter)) Is Nothing Then
 
-                        ' Gotta do it differently for the first path
-                        If pathCounter = 0 Then
-                            intermediatePaths(pathCounter) = paths(pathCounter)
-                        Else
-                            intermediatePaths(pathCounter) = intermediatePaths(pathCounter - 1) & "/" & paths(pathCounter)
-                        End If
 
-                        ' Create the folder details for this folder
-                        newFolderDetail = New FolderDetail()
-                        newFolderDetail.Name = Zfolder.Title
-                        newFolderDetail.URL = intermediatePaths(pathCounter)
-                        ZfolderPaths.Add(newFolderDetail)
+                            Zfolder = CType(Zfolder.List.Item(paths(pathCounter)), GalleryFolder)
 
-                        ' Stop here because we've got to populate the folder first
-                        If Not Zfolder.IsPopulated Then
-                            Zfolder.Populate()
-                            ' Exit For
+                            ' Gotta do it differently for the first path
+                            If pathCounter = 0 Then
+                                intermediatePaths(pathCounter) = paths(pathCounter)
+                            Else
+                                intermediatePaths(pathCounter) = intermediatePaths(pathCounter - 1) & "/" & paths(pathCounter)
+                            End If
+
+                            ' Create the folder details for this folder
+                            newFolderDetail = New FolderDetail()
+                            newFolderDetail.Name = Zfolder.Title
+                            newFolderDetail.URL = intermediatePaths(pathCounter)
+                            ZfolderPaths.Add(newFolderDetail)
+
+                            ' Stop here because we've got to populate the folder first
+                            If Not Zfolder.IsPopulated Then
+                                Zfolder.Populate()
+                                ' Exit For
+                            End If
                         End If
                     Next
                 Catch ex As Exception ' an incorrect folder structure probably returned
+                    LogMessage(HttpContext.Current.Request, "Erreur GalleryRequest incorrect folder structure, " + _path + " " + ex.Message)
+
                     ' Keep the last known good folder
                 End Try
-				
+
+            End If
+
+        End Sub
+
+        Private Function GetPathfromCookie() As String
+            If Not _req.Cookies("GALLinfo") Is Nothing Then
+                If Not _req.Cookies("GALLinfo")("P" + ModuleID.ToString) Is Nothing Then
+                    Return CType(_req.Cookies("GALLinfo")("P" + ModuleID.ToString), String)
+                Else : Return ""
+                End If
+            Else : Return ""
+            End If
+        End Function
+
+        Private Sub SetUpPathCookie(ByVal WhatPath As String)
+            Dim aCookie As HttpCookie
+
+            If _req.Cookies("GALLinfo") Is Nothing Then
+                aCookie = New HttpCookie("GALLinfo")
+                aCookie.Values("P" + ModuleID.ToString) = WhatPath
+                aCookie.Values("S" + ModuleID.ToString) = CStr(_req("CurrentStrip"))
+                aCookie.Expires = DateTime.Now.AddMinutes(60)
+                aCookie.HttpOnly = True
+                HttpContext.Current.Response.Cookies.Add(aCookie)
+            Else
+                aCookie = _req.Cookies("GALLinfo")
+                aCookie.Values.Remove("P" + ModuleID.ToString)
+                aCookie.Values.Remove("S" + ModuleID.ToString)
+                aCookie.Values.Add("P" + ModuleID.ToString, WhatPath)
+                aCookie.Values.Add("S" + ModuleID.ToString, CStr(_req("CurrentStrip")))
+                aCookie.Expires = DateTime.Now.AddMinutes(60)
+                HttpContext.Current.Response.SetCookie(aCookie)
             End If
 
         End Sub
