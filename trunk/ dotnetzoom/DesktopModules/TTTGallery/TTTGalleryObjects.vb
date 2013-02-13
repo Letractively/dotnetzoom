@@ -84,7 +84,7 @@ Namespace DotNetZoom
                 index = MyBase.List.Add(value)
                 keyIndexLookup.Add(key, index)
             Catch ex As Exception
-
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryObjects KeyIndex Add, " + key + " " + ex.Message)
             End Try
 
         End Sub
@@ -96,6 +96,8 @@ Namespace DotNetZoom
                 obj = MyBase.List.Item(index)
                 Return obj
             Catch Exc As System.Exception
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryObjects Item Index, " + index.ToString + " " + Exc.Message)
+                Return Nothing
             End Try
         End Function
 
@@ -105,7 +107,8 @@ Namespace DotNetZoom
 
             ' Do validation first
             If keyIndexLookup.Item(key) Is Nothing Then
-                Throw New ArgumentException("Impossible de trouver l'item demandé.")
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryObjects Item is nothing " + key.ToString)
+                Return Nothing
             End If
 
             index = CInt(keyIndexLookup.Item(key))
@@ -1422,10 +1425,23 @@ Namespace DotNetZoom
                     System.IO.Directory.CreateDirectory(Me.ThumbFolderPath)
                 End If
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryObjects CreateDirectory, " + Me.ThumbFolderPath + " " + ex.Message)
+                Throw ex
+            End Try
+
+            ' Check existence of Source folder
+            Try
+                If Not System.IO.Directory.Exists(SourceFolderPath) Then
+                    ' and create it if required
+                    System.IO.Directory.CreateDirectory(Me.SourceFolderPath)
+                End If
+            Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryObjects CreateDirectory, " + Me.SourceFolderPath + " " + ex.Message)
                 Throw ex
             End Try
 
             ' Check source folder and create new image is not there
+
             Try
 
                 items = System.IO.Directory.GetFiles(SourceFolderPath)
@@ -1444,6 +1460,7 @@ Namespace DotNetZoom
 
 
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryObjects Repopulate, " + SourceFolderPath + " " + ex.Message)
 
             End Try
 
@@ -1552,6 +1569,7 @@ Namespace DotNetZoom
                                 ResizeImage(item, BuildPath(New String(2) {Me.Path, _galleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "\", False, False), MaxWidth, MaxHeight, IO.Path.GetExtension(item), _galleryConfig.Quality)
                                 thumbNail = BuildPath(New String(2) {_url, _galleryConfig.ThumbFolder, IO.Path.GetFileName(item)}, "/", False, False)
                             Catch ex As Exception
+                                LogMessage(HttpContext.Current.Request, "Erreur GalleryObjects ResizeImage, " + thumbNail + " " + ex.Message)
                                 Throw ex
                             End Try
                         End If

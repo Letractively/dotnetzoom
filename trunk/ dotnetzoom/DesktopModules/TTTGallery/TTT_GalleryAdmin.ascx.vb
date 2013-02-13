@@ -239,8 +239,10 @@ Namespace DotNetZoom
 
 
                 chkAvatarsGallery.Checked = config.IsAvatarsGallery
+
+
                 Dim TGalleryUser As GalleryUser = New GalleryUser(config.OwnerID)
-                txtOwner.Text = TGalleryUser.UserName
+                txtOwner.Text = TGalleryUser.FullName
                 txtOwnerID.Text = config.OwnerID.ToString
 
                 pnlFixedSize.Visible = chkFixedSize.Checked
@@ -279,6 +281,7 @@ Namespace DotNetZoom
 
         Private Sub btnUpdate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpdate.Click
 
+            Dim NeedToRepopulate As Boolean = False
             lblInfo.Text = ""
 
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
@@ -306,11 +309,13 @@ Namespace DotNetZoom
                     If PortalSecurity.IsSuperUser Then
                         ' Super User can create a new gallery anywhere
                         IO.Directory.CreateDirectory(GalleryPath)
+                        NeedToRepopulate = True
                     Else
                         If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) Then
                             ' admin of portal can only create a galley in his portal
                             If InStr(1, LCase(GalleryURL), LCase(_portalSettings.UploadDirectory)) <> 0 Then
                                 IO.Directory.CreateDirectory(GalleryPath)
+                                NeedToRepopulate = True
                             Else
                                 lblInfo.Text = GetLanguage("Gal_ErrorDir")
                                 Return
@@ -384,8 +389,7 @@ Namespace DotNetZoom
 
 
             Dim Zrequest As GalleryRequest = New GalleryRequest(ModuleId)
-
-            ' Zrequest.Folder.REPopulate()
+            If NeedToRepopulate Then Zrequest.Folder.REPopulate()
             GalleryConfig.ResetGalleryConfig(ModuleId)
             Zrequest.Folder.Reset()
             ClearModuleCache(ModuleId)
@@ -547,7 +551,7 @@ Namespace DotNetZoom
         Private Sub ctlUsers_UserSelected(ByVal sender As Object, ByVal e As System.EventArgs) Handles ctlUsers.UserSelected
             Dim myUser As ForumUser = CType(ctlUsers.SelectedUser, ForumUser)
 
-            txtOwner.Text = myUser.Name
+            txtOwner.Text = myUser.FullName
             txtOwnerID.Text = myUser.UserID.ToString
 
             pnlSelectOwner.Visible = False

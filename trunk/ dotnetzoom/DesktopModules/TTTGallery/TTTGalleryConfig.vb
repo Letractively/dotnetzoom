@@ -78,6 +78,7 @@ Namespace DotNetZoom
         Private mKeepSource As Boolean = False
         Private mSlideshowSpeed As Integer = DefaultSlideshowSpeed
         Private mIsPrivate As Boolean = False
+        Private mCryptoUrl As Boolean = False
         Private mIsIntegrated As Boolean = False
         Private mIntegratedForumGroup As Integer = 0
         Private mSlideshowPopup As Boolean = False
@@ -571,6 +572,12 @@ Namespace DotNetZoom
             End Get
         End Property
 
+        Public ReadOnly Property CryptoURL() As Boolean
+            Get
+                Return mCryptoUrl
+            End Get
+        End Property
+
         Public ReadOnly Property IsIntegrated() As Boolean
             Get
                 Return mIsIntegrated
@@ -661,6 +668,8 @@ Namespace DotNetZoom
                     mIsValidPath = True
                 End If
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur GalleryConfig PathNotExists, " + Path + " " + ex.Message)
+
             End Try
 
             mGalleryDescription = GetValue(settings("GalleryDescription"), mGalleryDescription)
@@ -685,6 +694,7 @@ Namespace DotNetZoom
             mSlideshowSpeed = CInt(GetValue(settings("SlideshowSpeed"), CStr(mSlideshowSpeed)))
             mIsIntegrated = CBool(GetValue(settings("IsIntegrated"), CStr(mIsIntegrated)))
             mIsPrivate = CBool(GetValue(settings("IsPrivate"), CStr(mIsPrivate)))
+            mCryptoUrl = CBool(GetValue(settings("CryptoURL"), CStr(mCryptoUrl)))
             mIntegratedForumGroup = CInt(GetValue(settings("IntegratedForumGroup"), CStr(mIntegratedForumGroup)))
             mSlideshowPopup = CBool(GetValue(settings("SlideshowPopup"), CStr(mSlideshowPopup)))
             mInfoBule = CBool(GetValue(settings("InfoBule"), CStr(mInfoBule)))

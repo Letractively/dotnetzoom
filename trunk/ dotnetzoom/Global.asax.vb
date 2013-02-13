@@ -41,623 +41,347 @@ Namespace DotNetZoom
         Inherits System.Web.HttpApplication
 
 
-        Private Sub UpdateTheVersion()
-            ' Reset the application and start over
-            Dim strWebConfig As String
-            Dim objStreamReader As StreamReader
-            objStreamReader = File.OpenText(Server.MapPath("~/web.config"))
-            strWebConfig = objStreamReader.ReadToEnd
-            objStreamReader.Close()
-            Try
-                Dim objStream As StreamWriter
-                objStream = File.CreateText(Server.MapPath("~/web.config"))
-                objStream.WriteLine(strWebConfig)
-                objStream.Close()
-            Catch
-                SendHttpException("403", "Forbidden", Request, Server.MapPath("~/web.config"))
-            End Try
-        End Sub
-
-        Private Sub SendStartupOk()
-            Application("GUID") = Nothing
-            Application("dostartup") = Nothing
-            Dim strHTML As String = GetXMLmessage("startupok", Request)
-            Response.Write(strHTML)
-            UpdateTheVersion()
-            Response.End()
-        End Sub
-
-
-
-        Private Sub SendStartup(ByVal ServerName As String, ByVal Database As String, ByVal ConnectionType As String, ByVal UserName As String, ByVal Password As String, ByVal tempGUID As String, ByVal Message As String)
-            Dim strHTML As String = GetXMLmessage("startup", Request)
-            strHTML = Replace(strHTML, "[Message]", Message)
-            strHTML = Replace(strHTML, "[ServerName]", ServerName)
-            strHTML = Replace(strHTML, "[Database]", Database)
-            strHTML = Replace(strHTML, "[UserName]", UserName)
-            strHTML = Replace(strHTML, "[Password]", Password)
-            If ConnectionType = "Windows" Then
-                strHTML = Replace(strHTML, "[Windows]", "checked")
-                strHTML = Replace(strHTML, "[Sql]", "")
-            Else
-                strHTML = Replace(strHTML, "[Windows]", "")
-                strHTML = Replace(strHTML, "[Sql]", "checked")
-            End If
-            If tempGUID <> "" Then
-                strHTML = Replace(strHTML, "[GUID]", tempGUID)
-            Else
-                tempGUID = Guid.NewGuid().ToString()
-                strHTML = Replace(strHTML, "[GUID]", tempGUID)
-                Application("GUID") = tempGUID
-            End If
-            Response.Write(strHTML)
-            Response.End()
-        End Sub
-
-        Sub dostartup()
-
-            Dim objAdmin As New DotNetZoom.AdminDB()
-            ' automatic upgrade
-            Dim intBuild As Integer = DotNetZoom.PortalSettings.GetVersion
-            Dim TempKey As String = GetDBname()
-            Dim context As HttpContext = HttpContext.Current
-
-            ' for each build version up to the current version, perform the necessary upgrades
-            If intBuild > -2 Then
-                'update database
-                While intBuild < ApplicationVersion
-                    intBuild += 1
-                    ' verify script has not already been run
-                    context.Cache.Remove(TempKey)
-
-                    If Not DotNetZoom.PortalSettings.FindVersion(intBuild) Then
-                        ' database upgrade
-                        If File.Exists(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql")) Then
-                            ' read script file for version
-                            Dim objStreamReader As StreamReader
-                            objStreamReader = File.OpenText(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql"))
-                            Dim strScript As String = objStreamReader.ReadToEnd
-                            objStreamReader.Close()
-
-                            ' execute SQL installation script
-                            Dim strSQLExceptions As String = objAdmin.ExecuteSQLScript(strScript)
-
-                            ' delete script file once executed
-                            Try
-
-                                File.Delete(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql"))
-
-                            Catch
-                                ' could not delete the script file
-                                Application("error403") += "<br>" & Server.MapPath("~/Database/1.0." & intBuild.ToString & ".sql")
-                            End Try
-
-                            ' log the results
-                            Try
-                                Dim objStream As StreamWriter
-                                objStream = File.CreateText(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log"))
-                                objStream.WriteLine(strSQLExceptions)
-                                objStream.Close()
-                            Catch
-                                ' does not have permission to create the log file
-                                ' Response.Redirect("403-3.htm", True)
-                                Application("error403") += "<br>" & Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log")
-
-                            End Try
-                        Else
-                            ' script file does not exist for version ( this is mandatory for every version )
-                            Try
-                                Dim objStream As StreamWriter
-                                objStream = File.CreateText(Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log"))
-                                objStream.WriteLine("Upgrade Error. Could Not Locate " & Server.MapPath(glbPath + "Database/1.0." & intBuild.ToString & ".sql") & " Database Upgrade Script.")
-                                objStream.Close()
-                            Catch
-                                ' does not have permission to create the log file
-                                Application("error403") += "<br>" & Server.MapPath("~/Database/1.0." & intBuild.ToString & ".log")
-                            End Try
-                            Exit Sub
-                        End If
-                        DotNetZoom.PortalSettings.UpdateVersion(intBuild)
-                    End If
-
-                End While
-                'update Language file
-                Dim items() As String
-                Dim item As String
-                items = System.IO.Directory.GetFiles(Server.MapPath("~/Database/"), "language_??.sql")
-                For Each item In items
-
-                    Dim objStreamReader As StreamReader
-                    objStreamReader = File.OpenText(item)
-                    Dim strScript As String = objStreamReader.ReadToEnd
-                    objStreamReader.Close()
-
-                    ' execute SQL installation script
-                    Dim strSQLExceptions As String = objAdmin.ExecuteSQLScript(strScript)
-
-                    ' delete script file once executed
-                    Try
-
-                        File.Delete(item)
-
-                    Catch
-                        ' could not delete the script file
-                        Application("error403") += "<br>" & item
-                    End Try
-
-                    ' log the results
-                    Try
-                        Dim objStream As StreamWriter
-                        objStream = File.CreateText(item.Replace(".sql", ".log"))
-                        objStream.WriteLine(strSQLExceptions)
-                        objStream.Close()
-                    Catch
-                        ' does not have permission to create the log file
-                        ' Response.Redirect("403-3.htm", True)
-                        Application("error403") += "<br>" & item.Replace(".sql", ".log")
-
-                    End Try
-                Next
-
-
-            End If
-            Application("DoValidation") = "ok"
-        End Sub
 
         Sub Application_BeginRequest(ByVal sender As Object, ByVal e As EventArgs)
 
-            If Not Application("error403") Is Nothing Then
-                Dim TempError As String = Application("error403")
-                Application("error403") = Nothing
-                SendHttpException("403", "Forbidden", Request, TempError)
-            End If
-            If Application("DoValidation") = "Startup" Then
-                dostartup()
+            If Application("SetContext") = "Maintenance" And Request.Params("Maintenance") Is Nothing Then
+                HttpContext.Current.RewritePath(glbPath() + "admin/Portal/update.aspx", String.Empty, HttpContext.Current.Request.QueryString.ToString())
+            Else
+
+
+
                 If Not Application("error403") Is Nothing Then
-                    Application("dostartup") = Nothing
-                    Application("GUID") = Nothing
-                    Application("DoValidation") = Nothing
                     Dim TempError As String = Application("error403")
                     Application("error403") = Nothing
-            	    SendHttpException("403", "Forbidden", Request, TempError)
-                End If
-            End If
-
-
-
-            If Not Application(Request.UserHostAddress) Is Nothing Then
-                If CType(Application(Request.UserHostAddress), DateTime) > DateTime.Now() Then
-				  Response.StatusCode = "403"
-                  Response.StatusDescription = "Forbidden"
-                  Response.Write("<html><head><title>Forbidden</title></head><body bgcolor=white text=black>Forbidden : " & Request.UserHostAddress & " IP address rejected</body></html>")
-                  Response.End()
-                Else
-                    Application(Request.UserHostAddress) = Nothing
-                End If
-             End If
-
-
-            Dim context As HttpContext = HttpContext.Current
-            Dim StrExtension As String = ""
-
-            Dim filePath As String = context.Request.FilePath
-            If InStrRev(filePath, "/controls/crypto.ashx") > 0 Then
-                Dim CryptoText As String = Left(filePath, InStrRev(filePath, "/controls/crypto.ashx") - 1)
-                CryptoText = Right(CryptoText, CryptoText.Length - glbPath.Length)
-                Dim objSecurity As New DotNetZoom.PortalSecurity()
-                Dim dnPath As String
-                dnPath = objSecurity.DecryptRijndael(context.Application("cryptokey"), CryptoText)
-                Try
-                    Dim dnFile As System.IO.FileInfo = New System.IO.FileInfo(context.Request.MapPath(dnPath))
-                    'Get If-Modified-Since header from request.
-                    Dim sIfModifiedSince As String = context.Request.Headers("If-Modified-Since")
-                    Dim IfModifiedSince As Date = DateTime.Now()
-                    'Convert the header To date.
-                    If sIfModifiedSince <> String.Empty Then
-                        IfModifiedSince = DateTime.Parse(sIfModifiedSince)
-                    End If
-
-                    'Get a time when the file was last modified.
-                    Dim LastModified As Date = dnFile.LastWriteTime
-
-                    'round the date To seconds.
-                    LastModified = New Date(LastModified.Year, LastModified.Month, LastModified.Day, _
-                    LastModified.Hour, LastModified.Minute, LastModified.Second)
-                    If LastModified <> IfModifiedSince Then '200 OK - file was modified.
-                        StrExtension = Replace(System.IO.Path.GetExtension(dnFile.Name), ".", "")
-                        ' Only send a file if proper extension
-                        If InStr(1, "," & DotNetZoom.PortalSettings.GetHostSettings("FileExtensions").ToString.ToUpper, "," & StrExtension.ToUpper) <> 0 Then
-                            context.Response.AddHeader("Content-Length", dnFile.Length.ToString)
-                            Dim strContentType As String = "application/octet-stream"
-                            Select Case StrExtension.ToLower()
-                                Case "txt" : strContentType = "text/plain"
-                                Case "htm", "html" : strContentType = "text/html"
-                                Case "rtf" : strContentType = "text/richtext"
-                                Case "jpg", "jpeg" : strContentType = "image/jpeg"
-                                Case "gif" : strContentType = "image/gif"
-                                Case "bmp" : strContentType = "image/bmp"
-                                Case "png" : strContentType = "image/png"
-                                Case "mpg", "mpeg" : strContentType = "video/mpeg"
-                                Case "avi" : strContentType = "video/avi"
-                                Case "wmv" : strContentType = "video/x-ms-wmv"
-                                Case "pdf" : strContentType = "application/pdf"
-                                Case "doc", "dot" : strContentType = "application/msword"
-                                Case "csv", "xls", "xlt" : strContentType = "application/x-msexcel"
-                                Case "flv" : strContentType = "video/x-flv"
-                            End Select
-                            context.Response.ContentType = strContentType
-                            context.Response.Cache.SetLastModified(dnFile.LastWriteTimeUtc)
-                            context.Response.Cache.SetExpires(DateTime.Now.AddDays(365))
-                            context.Response.WriteFile(dnPath)
-                            context.Response.StatusCode = 200
-                            context.Response.End()
-                        Else
-                            context.Response.StatusCode = "404"
-                            context.Response.StatusDescription = "Not Found"
-                            context.Response.End()
-                        End If
-                    Else '304 - file is Not modified.
-                        context.Response.StatusCode = "304"
-                        context.Response.StatusDescription = "Not Modified"
-                        context.Response.End()
-                    End If
-                Catch
-
-                End Try
-
-            End If
-
-
-
-            If Not Application("throttle") Is Nothing Then
-                Dim Trootle As Integer = CType(context.Cache(Request.UserHostAddress), Integer)
-                Dim TSpan As Integer = CType(Application("throttle"), Integer)
-                If Trootle = Nothing Then
-                    context.Cache.Insert(Request.UserHostAddress, 1, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(TSpan), Caching.CacheItemPriority.Low, Nothing)
-                Else
-                    Trootle = Trootle + 1
-                    context.Cache.Insert(Request.UserHostAddress, Trootle, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(TSpan), Caching.CacheItemPriority.Low, Nothing)
-                    If Trootle > 10 Then
-				        Response.StatusCode = "503"
-                		Response.StatusDescription = "Service Unavailable"
-                		Response.Write("<html><head><title>Service Unavailable</title></head><body bgcolor=white text=black>Wait</body></html>")
-                		Response.End()
-                    End If
-                End If
-            End If  'End Throttle
-
-
-            If (Request.Path.IndexOf(Chr(92)) >= 0 Or _
-                  System.IO.Path.GetFullPath(Request.PhysicalPath) <> Request.PhysicalPath) Then
-	                 SendHttpException("404", "Not Found", Request)
-            End If
-
-
-           Dim StrPhysicalPath As String = context.Request.PhysicalPath
-            If InStr(1, StrPhysicalPath, ".") Then
-                StrExtension = Mid(StrPhysicalPath, InStrRev(StrPhysicalPath, ".")).ToLower
-            End If
-
-           If StrExtension <> ".axd" Then
-
-                If Application("dostartup") = "ok" Then
-                    ' Site was not set up yet send Startup
-                    If Not Application("GUID") Is Nothing Then
-                        ' DataBase not set up
-
-                        If Application("GUID") = Request.Form("GUID") Then
-                            ' Build Connection String
-                            Dim ConnectionString As String = "SERVER=" + Request.Form("ServerName") + ";Database=" + Request.Form("DataBase") + ";"
-                            Dim ServerConnectionString As String = "SERVER=" + Request.Form("ServerName") + ";"
-                            If Request.Form("Connection") = "Windows" Then
-                                ConnectionString += "Trusted_Connection=True;"
-                                ServerConnectionString += "Trusted_Connection=True;"
-                            Else
-                                ConnectionString += "User ID=" + Request.Form("UserName") + ";Password=" + Request.Form("Password") + ";Trusted_Connection=False;"
-                                ServerConnectionString += "User ID=" + Request.Form("UserName") + ";Password=" + Request.Form("Password") + ";Trusted_Connection=False;"
-                            End If
-                            If CanConnecttoSql(ServerConnectionString) And Not CanConnectDataBase(ConnectionString, Request.Form("DataBase")) Then
-                                If CreateDataBase(ServerConnectionString, Request.Form("DataBase")) Then
-                                    WriteSetting("web", "connectionString", ConnectionString)
-                                    SendStartupOk()
-                                    Exit Sub
-                                End If
-                            End If
-                            If CanConnectDataBase(ConnectionString, Request.Form("DataBase")) Then
-                                WriteSetting("web", "connectionString", ConnectionString)
-                                SendStartupOk()
-                                Exit Sub
-                            Else
-                                Dim Message As String
-                                If CanConnecttoSql(ServerConnectionString) Then
-                                    Message = "Message3"
-                                Else
-                                    Message = "Message2"
-                                End If
-                                SendStartup(Request.Form("ServerName"), Request.Form("DataBase"), Request.Form("Connection"), Request.Form("UserName"), Request.Form("Password"), Request.Form("GUID"), Message)
-                                Exit Sub
-                            End If
-                        End If
-                    Else
-                        'data base not setup yet
-                        SendStartup(System.Environment.MachineName & "\sqlexpress", "dotnetzoom", "Windows", "", "", "", "Message1")
-                    End If
+                    SendHttpException("403", "Forbidden", Request, TempError)
                 End If
 
 
-                HttpContext.Current.Items("DBName") = Nothing
-                HttpContext.Current.Items("ConnectionString") = Nothing
-
-                Dim tabId As Integer = 0
-                Dim DomainName As String = Nothing
-                Dim PortalAlias As String = Nothing
-                Dim PortalNumber As Integer = -1
-
-                ' check once to see if the upgrade worked
-                If Application("DoValidation") = "ok" Then
-                    Dim DatabaseVersion As Integer = PortalSettings.GetVersion
-                    
-					   
-                    If DatabaseVersion <> ApplicationVersion Then
-                        ' the database version is not synchronized with the assembly version
-                        Dim TempKey As String = GetDBname()
-                        context.Cache.Remove(TempKey)
-
-                        Dim strMessage As String = ""
-                        Dim strSql As String = ""
-                        If DatabaseVersion = -2 Then
-                            ' error1 [DBname]
-                            strMessage = Replace(GetXMLmessage("error1", Request), "[DBname]", GetDBname())
-                        Else
-                            Dim intVersion As Integer
-                            For intVersion = (DatabaseVersion + 1) To ApplicationVersion
-                                If Not File.Exists(Server.MapPath("~/Database/1.0." & intVersion.ToString & ".sql")) Then
-                                    strMessage += "<br>1.0." & intVersion.ToString & ".sql"
-                                Else
-                                    strSql += "<br>1.0." & intVersion.ToString & ".sql"
-                                End If
-                            Next
-                            If strSql <> "" Then
-                                'error 2 
-                                strSql = GetXMLmessage("error2", Request) + strSql + "<br><br>"
-                            End If
-                            If strMessage <> "" Then
-                                strMessage = GetXMLmessage("error3", Request) + strMessage + "<br><br>"
-                            End If
-
-                        End If
-
-
-                        Dim strHTML As String = GetXMLmessage("500", Request)
-                        strHTML = Replace(strHTML, "[ASSEMBLYVERSION]", "1.0." & ApplicationVersion.ToString)
-                        strHTML = Replace(strHTML, "[DATABASEVERSION]", "1.0." & DatabaseVersion.ToString)
-                        strHTML = Replace(strHTML, "[MESSAGE]", strSql & strMessage)
-                        Response.Write(strHTML)
-                        If strMessage = "" Then
-                            UpdateTheVersion()
-                        End If
+                If Not Application(Request.UserHostAddress) Is Nothing Then
+                    If CType(Application(Request.UserHostAddress), DateTime) > DateTime.Now() Then
+                        Response.StatusCode = "403"
+                        Response.StatusDescription = "Forbidden"
+                        Response.Write("<html><head><title>Forbidden</title></head><body bgcolor=white text=black>Forbidden : " & Request.UserHostAddress & " IP address rejected</body></html>")
                         Response.End()
-
                     Else
-                        Application("DoValidation") = Nothing
+                        Application(Request.UserHostAddress) = Nothing
                     End If
                 End If
 
-                If Not (Request.Params("crypto") Is Nothing) Then
-                    ' check if crypto
+
+                Dim context As HttpContext = HttpContext.Current
+                Dim StrExtension As String = ""
+
+                Dim filePath As String = context.Request.FilePath
+                If InStrRev(filePath, "/controls/crypto.ashx") > 0 Then
+                    Dim CryptoText As String = Left(filePath, InStrRev(filePath, "/controls/crypto.ashx") - 1)
+                    CryptoText = Right(CryptoText, CryptoText.Length - glbPath.Length)
                     Dim objSecurity As New DotNetZoom.PortalSecurity()
-                    Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("crypto"))
-                    HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
-                Else
-                    If Not (Request.Params("linkclick") Is Nothing) Then
-                        Dim objSecurity As New DotNetZoom.PortalSecurity()
-                        Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("linkclick"))
-                        context.Items.Add("linkclick", Request.Params("linkclick"))
-                        HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
-                    End If
+                    Dim dnPath As String
+                    dnPath = objSecurity.DecryptRijndael(context.Application("cryptokey"), CryptoText)
+                    Try
+                        Dim dnFile As System.IO.FileInfo = New System.IO.FileInfo(context.Request.MapPath(dnPath))
+                        'Get If-Modified-Since header from request.
+                        Dim sIfModifiedSince As String = context.Request.Headers("If-Modified-Since")
+                        Dim IfModifiedSince As Date = DateTime.Now()
+                        'Convert the header To date.
+                        If sIfModifiedSince <> String.Empty Then
+                            IfModifiedSince = DateTime.Parse(sIfModifiedSince)
+                        End If
+
+                        'Get a time when the file was last modified.
+                        Dim LastModified As Date = dnFile.LastWriteTime
+
+                        'round the date To seconds.
+                        LastModified = New Date(LastModified.Year, LastModified.Month, LastModified.Day, _
+                        LastModified.Hour, LastModified.Minute, LastModified.Second)
+                        If LastModified <> IfModifiedSince Then '200 OK - file was modified.
+                            StrExtension = Replace(System.IO.Path.GetExtension(dnFile.Name), ".", "")
+                            ' Only send a file if proper extension
+                            If InStr(1, "," & DotNetZoom.PortalSettings.GetHostSettings("FileExtensions").ToString.ToUpper, "," & StrExtension.ToUpper) <> 0 Then
+                                context.Response.AddHeader("Content-Length", dnFile.Length.ToString)
+                                Dim strContentType As String = "application/octet-stream"
+                                Select Case StrExtension.ToLower()
+                                    Case "txt" : strContentType = "text/plain"
+                                    Case "htm", "html" : strContentType = "text/html"
+                                    Case "rtf" : strContentType = "text/richtext"
+                                    Case "jpg", "jpeg" : strContentType = "image/jpeg"
+                                    Case "gif" : strContentType = "image/gif"
+                                    Case "bmp" : strContentType = "image/bmp"
+                                    Case "png" : strContentType = "image/png"
+                                    Case "mpg", "mpeg" : strContentType = "video/mpeg"
+                                    Case "avi" : strContentType = "video/avi"
+                                    Case "wmv" : strContentType = "video/x-ms-wmv"
+                                    Case "pdf" : strContentType = "application/pdf"
+                                    Case "doc", "dot" : strContentType = "application/msword"
+                                    Case "csv", "xls", "xlt" : strContentType = "application/x-msexcel"
+                                    Case "flv" : strContentType = "video/x-flv"
+                                End Select
+                                context.Response.ContentType = strContentType
+                                context.Response.Cache.SetLastModified(dnFile.LastWriteTimeUtc)
+                                context.Response.Cache.SetExpires(DateTime.Now.AddDays(365))
+                                context.Response.WriteFile(dnPath)
+                                context.Response.StatusCode = 200
+                                context.Response.End()
+                            Else
+                                context.Response.StatusCode = "404"
+                                context.Response.StatusDescription = "Not Found"
+                                context.Response.End()
+                            End If
+                        Else '304 - file is Not modified.
+                            context.Response.StatusCode = "304"
+                            context.Response.StatusDescription = "Not Modified"
+                            context.Response.End()
+                        End If
+                    Catch
+
+                    End Try
+
                 End If
 
-                ' get tabId from querystring
-                If Not (Request.Params("tabid") Is Nothing) Then
-                    If Request.Params("tabid") <> "" Then
-                        If IsNumeric(Request.Params("tabid")) Then
-                            tabId = Int32.Parse(Request.Params("tabid"))
-                        Else
+
+
+                If Not Application("throttle") Is Nothing Then
+                    Dim Trootle As Integer = CType(context.Cache(Request.UserHostAddress), Integer)
+                    Dim TSpan As Integer = CType(Application("throttle"), Integer)
+                    If Trootle = Nothing Then
+                        context.Cache.Insert(Request.UserHostAddress, 1, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(TSpan), Caching.CacheItemPriority.Low, Nothing)
+                    Else
+                        Trootle = Trootle + 1
+                        context.Cache.Insert(Request.UserHostAddress, Trootle, Nothing, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(TSpan), Caching.CacheItemPriority.Low, Nothing)
+                        If Trootle > 10 Then
+                            Response.StatusCode = "503"
+                            Response.StatusDescription = "Service Unavailable"
+                            Response.Write("<html><head><title>Service Unavailable</title></head><body bgcolor=white text=black>Wait</body></html>")
                             Response.End()
                         End If
                     End If
+                End If  'End Throttle
+
+
+                If (Request.Path.IndexOf(Chr(92)) >= 0 Or _
+                      System.IO.Path.GetFullPath(Request.PhysicalPath) <> Request.PhysicalPath) Then
+                    SendHttpException("404", "Not Found", Request)
                 End If
 
-                ' check params
-                If Not Request.Params("mid") Is Nothing Then
-                    If Not IsNumeric(Request.Params("mid")) Then
-                        Response.End()
-                    End If
+
+                Dim StrPhysicalPath As String = context.Request.PhysicalPath
+                If InStr(1, StrPhysicalPath, ".") Then
+                    StrExtension = Mid(StrPhysicalPath, InStrRev(StrPhysicalPath, ".")).ToLower
                 End If
 
+                If StrExtension <> ".axd" Then
 
-                If Not Request.Params("p") Is Nothing Then
-                    DomainName = Request.Params("p")
-                Else
-                    ' parse the Request URL into a Domain Name token
-                    DomainName = GetDomainName(Request)
-                End If
+                    HttpContext.Current.Items("DBName") = Nothing
+                    HttpContext.Current.Items("ConnectionString") = Nothing
 
-                ' alias parameter can be used to switch portals
-                If Not (Request.Params("alias") Is Nothing) Then
-                    If PortalSettings.GetPortalByAlias(Request.Params("alias")) <> -1 Then
-                        If InStr(1, Request.Params("alias"), DomainName, CompareMethod.Text) = 0 Then
-                            Response.Redirect(GetPortalDomainName(Request.Params("alias"), Request), True)
-                        Else
-                            PortalAlias = Request.Params("alias")
-                        End If
-                    End If
-                End If
+                    Dim tabId As Integer = 0
+                    Dim DomainName As String = Nothing
+                    Dim PortalAlias As String = Nothing
+                    Dim PortalNumber As Integer = -1
 
-                ' tabId uniquely identifies a Portal
-                If PortalAlias Is Nothing Then
-                    If tabId <> 0 Then
-                        PortalAlias = PortalSettings.GetPortalByTab(tabId, DomainName)
-                    End If
-                End If
-
-                ' else use the domainname
-                If PortalAlias Is Nothing Then
-                    PortalAlias = DomainName
-                    tabId = 0 ' load the default tab
-                End If
-
-                ' validate the alias
-                PortalNumber = PortalSettings.GetPortalByAlias(PortalAlias)
-
-                If PortalNumber <> -1 Then
-                    ' see if file name is not a tab
-                    Dim StringFileName As String = Mid(Request.Path, InStrRev(Request.Path, "/") + 1).ToLower
-
-
-                    Dim TempLanguageCode As String
-                    TempLanguageCode = Replace(StringFileName, ".aspx", "")
-                    If InStr(1, TempLanguageCode, ".") <> 0 Then
-                        TempLanguageCode = Left(TempLanguageCode, InStrRev(TempLanguageCode, ".") - 1)
+                    If Not (Request.Params("crypto") Is Nothing) Then
+                        ' check if crypto
+                        Dim objSecurity As New DotNetZoom.PortalSecurity()
+                        Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("crypto"))
+                        HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
                     Else
-                        If Not Request.Params("L") Is Nothing Then
-                            TempLanguageCode = Request.Params("L")
-                        Else
-                            TempLanguageCode = ""
+                        If Not (Request.Params("linkclick") Is Nothing) Then
+                            Dim objSecurity As New DotNetZoom.PortalSecurity()
+                            Dim cryptoout As String = objSecurity.Decrypt(Application("cryptokey"), Request.Params("linkclick"))
+                            context.Items.Add("linkclick", Request.Params("linkclick"))
+                            HttpContext.Current.RewritePath(Request.Path.ToString(), String.Empty, cryptoout)
                         End If
                     End If
 
-
-
-                    ' see if there is not a language in the file name
-                    ' Get Default Language for Portal
-                    Dim objAdmin As New AdminDB()
-                    Dim LanguageHash As New Hashtable
-                    Dim TempLanguage As String
-
-                    Dim tsettings As Hashtable = PortalSettings.GetSiteSettings(PortalNumber)
-
-                    Dim TempAuthLanguage As String = ""
-                    If tsettings.ContainsKey("languageauth") Then
-                        TempAuthLanguage = tsettings("languageauth")
-                    End If
-
-
-                    If tsettings("language") <> Nothing Then
-                        ' use portal default language
-                        TempLanguage = FindUserLanguage(tsettings("language"), TempLanguageCode, TempAuthLanguage)
-                    Else
-                        ' use default language
-                        TempLanguage = FindUserLanguage("fr", TempLanguageCode, TempAuthLanguage)
-                    End If
-                    LanguageHash = objAdmin.GetlanguageSettings(TempLanguage)
-                    If Not LanguageHash.ContainsKey("N") Then
-                        LanguageHash.Add("N", TempLanguage)
-                    End If
-                    Response.AddHeader("Content-Language", TempLanguage)
-
-                    ' Put in fckeditor language
-
-                    If Not LanguageHash.ContainsKey("fckeditor_language") Then
-                        If InStr(1, "ar;bg;bs;ca;cs;da;de;el;en;en-au;en-uk;eo;es;et;eu;fa;fi;fo;fr;gl;he;hi;hr;hu;it;ja;ko;lt;lv;mn;ms;nl;no;pl;pt;pt-br;ro;ru;sk;sl;sr;sr-latn;sv;th;tr;uk;vi;zh;zh-cn;", TempLanguage & ";") Then
-                            LanguageHash.Add("fckeditor_language", TempLanguage)
-                        Else
-                            LanguageHash.Add("fckeditor_language", "auto")
-                        End If
-                    End If
-
-
-                    ' put language setting in memory
-
-                    context.Items.Add("Language", LanguageHash)
-
-                    ' put url in memory
-                    context.Items.Add("RequestURL", Request.Url.ToString())
-                    context.Items.Add("RequestDocument", Request.Path.ToString())
-                    ' end language				
-
-                    If TempLanguageCode = TempLanguage Then
-                        StringFileName = Replace(StringFileName, TempLanguageCode & ".", "")
-                    End If
-
-                    If StringFileName <> "default.aspx" Then
-                        StringFileName = Replace(StringFileName, ".aspx", "")
-
-
-                        If StringFileName <> "" Then
-                            Dim result As Integer = objAdmin.GetTabByFriendLyName(StringFileName, PortalNumber)
-                            If result > -1 Then
-                                tabId = result
-                                Dim TempQuerystring As String = context.Request.QueryString.ToString()
-                                If Request.Params("tabid") Is Nothing Then
-                                    If TempQuerystring = "" Then
-                                        TempQuerystring = "tabid=" & tabId.ToString
-                                    Else
-                                        TempQuerystring = "tabid=" & tabId.ToString & "&" & TempQuerystring
-                                    End If
-                                End If
-                                HttpContext.Current.RewritePath(glbPath() + "default.aspx", String.Empty, TempQuerystring)
+                    ' get tabId from querystring
+                    If Not (Request.Params("tabid") Is Nothing) Then
+                        If Request.Params("tabid") <> "" Then
+                            If IsNumeric(Request.Params("tabid")) Then
+                                tabId = Int32.Parse(Request.Params("tabid"))
+                                ' LogMessage(context.Request, "tabid : " + tabId.ToString)
                             Else
-                                'not a tab in data base
-                                'see if file exist otherwise send 404
-                                If Not IO.File.Exists(Server.MapPath(Request.Path)) Then
-                                    SendHttpException("404", "Not Found", Request)
-                                End If
-
+                                Response.End()
                             End If
                         End If
-                    Else
-                        HttpContext.Current.RewritePath(glbPath() + "default.aspx", String.Empty, HttpContext.Current.Request.QueryString.ToString())
-
                     End If
-                    ' Cashe Portal Setting 
 
-                    Dim TempKey As String = GetDBname() & "Portal" & PortalNumber & DomainName & "_Tab" & tabId & "_ " & TempLanguage
+                    ' check params
+                    If Not Request.Params("mid") Is Nothing Then
+                        If Not IsNumeric(Request.Params("mid")) Then
+                            Response.End()
+                        End If
+                    End If
 
 
-                    Dim _settings As PortalSettings = CType(context.Cache(TempKey), PortalSettings)
+                    If Not Request.Params("p") Is Nothing Then
+                        DomainName = Request.Params("p")
 
-                    If _settings Is Nothing Then
-                        ' If this object has not been instantiated yet, we need to grab it
-                        _settings = New PortalSettings(tabId, PortalAlias, Request.ApplicationPath, TempLanguage)
-                        context.Cache.Insert(TempKey, _settings, CDp(PortalNumber, tabId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Normal, Nothing)
-                        ' See if the Portal Directory Exist  if not create it
-                        If Not System.IO.Directory.Exists(Request.MapPath(_settings.UploadDirectory)) Then
-                            'Create the new directory and put in files
-                            Try
-                                System.IO.Directory.CreateDirectory(Request.MapPath(_settings.UploadDirectory))
-                                Dim fileEntries As String() = System.IO.Directory.GetFiles(GetAbsoluteServerPath(Request) + "templates\base\")
-                                Dim TempFileName As String
-                                Dim strFileName As String
-                                For Each strFileName In fileEntries
-                                    If InStr(1, strFileName.ToLower, "template.") = 0 Then
-                                        TempFileName = strFileName.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory))
-                                        System.IO.File.Copy(strFileName, TempFileName)
-                                    End If
-                                Next strFileName
-                                Dim StrFolder As String
-                                For Each StrFolder In System.IO.Directory.GetDirectories(GetAbsoluteServerPath(Request) + "templates\base\")
-                                    CopyFileRecursively(StrFolder, StrFolder.Replace(GetAbsoluteServerPath(Request) + "templates\base\", Request.MapPath(_settings.UploadDirectory)))
-                                Next
-                            Catch
-                                ClearHostCache()
-                                SendHttpException("403", "Forbidden", Request, Request.MapPath(_settings.UploadDirectory))
-                            End Try
+                    Else
+                        ' parse the Request URL into a Domain Name token
+                        DomainName = GetDomainName(Request)
+                    End If
+
+
+                    ' alias parameter can be used to switch portals
+                    If Not (Request.Params("alias") Is Nothing) Then
+                        If PortalSettings.GetPortalByAlias(Request.Params("alias")) <> -1 Then
+                            If InStr(1, Request.Params("alias"), DomainName, CompareMethod.Text) = 0 Then
+                                Response.Redirect(GetPortalDomainName(Request.Params("alias"), Request), True)
+                            Else
+                                PortalAlias = Request.Params("alias")
+                            End If
+                        End If
+                    End If
+
+                    ' tabId uniquely identifies a Portal
+                    If PortalAlias Is Nothing Then
+                        If tabId <> 0 Then
+                            PortalAlias = PortalSettings.GetPortalByTab(tabId, DomainName)
+                        End If
+                    End If
+
+                    ' else use the domainname
+                    If PortalAlias Is Nothing Then
+                        PortalAlias = DomainName
+                        tabId = 0 ' load the default tab
+                    End If
+
+                    ' LogMessage(context.Request, "PortalAlias : " + PortalAlias)
+                    ' validate the alias
+                    PortalNumber = PortalSettings.GetPortalByAlias(PortalAlias)
+
+                    ' LogMessage(context.Request, "PortalNumber : " + PortalNumber.ToString)
+
+                    If PortalNumber <> -1 Then
+                        ' see if file name is not a tab
+                        Dim StringFileName As String = Mid(Request.Path, InStrRev(Request.Path, "/") + 1).ToLower
+
+
+                        Dim TempLanguageCode As String
+                        TempLanguageCode = Replace(StringFileName, ".aspx", "")
+                        If InStr(1, TempLanguageCode, ".") <> 0 Then
+                            TempLanguageCode = Left(TempLanguageCode, InStrRev(TempLanguageCode, ".") - 1)
+                        Else
+                            If Not Request.Params("L") Is Nothing Then
+                                TempLanguageCode = Request.Params("L")
+                            Else
+                                TempLanguageCode = ""
+                            End If
                         End If
 
-                    End If
-                    context.Items.Add("PortalSettings", _settings)
-                Else
-                    ' alias does not exist in database
-                    SendHttpException("404", "Not Found", Request)
 
-                End If ' End PortalNumber <> -1 
+
+                        ' see if there is not a language in the file name
+                        ' Get Default Language for Portal
+                        Dim objAdmin As New AdminDB()
+                        Dim LanguageHash As New Hashtable
+                        Dim TempLanguage As String
+
+                        Dim tsettings As Hashtable = PortalSettings.GetSiteSettings(PortalNumber)
+
+                        Dim TempAuthLanguage As String = ""
+                        If tsettings.ContainsKey("languageauth") Then
+                            TempAuthLanguage = tsettings("languageauth")
+                        End If
+
+
+                        If tsettings("language") <> Nothing Then
+                            ' use portal default language
+                            TempLanguage = FindUserLanguage(tsettings("language"), TempLanguageCode, TempAuthLanguage)
+                        Else
+                            ' use default language
+                            TempLanguage = FindUserLanguage("fr", TempLanguageCode, TempAuthLanguage)
+                        End If
+                        LanguageHash = objAdmin.GetlanguageSettings(TempLanguage)
+                        If Not LanguageHash.ContainsKey("N") Then
+                            LanguageHash.Add("N", TempLanguage)
+                        End If
+                        Response.AddHeader("Content-Language", TempLanguage)
+
+                        ' Put in fckeditor language
+
+                        If Not LanguageHash.ContainsKey("fckeditor_language") Then
+                            If InStr(1, "ar;bg;bs;ca;cs;da;de;el;en;en-au;en-uk;eo;es;et;eu;fa;fi;fo;fr;gl;he;hi;hr;hu;it;ja;ko;lt;lv;mn;ms;nl;no;pl;pt;pt-br;ro;ru;sk;sl;sr;sr-latn;sv;th;tr;uk;vi;zh;zh-cn;", TempLanguage & ";") Then
+                                LanguageHash.Add("fckeditor_language", TempLanguage)
+                            Else
+                                LanguageHash.Add("fckeditor_language", "auto")
+                            End If
+                        End If
+
+
+                        ' put language setting in memory
+
+                        context.Items.Add("Language", LanguageHash)
+
+                        ' put url in memory
+                        context.Items.Add("RequestURL", Request.Url.ToString())
+                        context.Items.Add("RequestDocument", Request.Path.ToString())
+                        ' end language				
+
+                        If TempLanguageCode = TempLanguage Then
+                            StringFileName = Replace(StringFileName, TempLanguageCode & ".", "")
+                        End If
+
+                        If StringFileName <> "default.aspx" Then
+                            StringFileName = Replace(StringFileName, ".aspx", "")
+
+
+                            If StringFileName <> "" Then
+                                Dim result As Integer = objAdmin.GetTabByFriendLyName(StringFileName, PortalNumber)
+                                If result > -1 Then
+                                    tabId = result
+                                    Dim TempQuerystring As String = context.Request.QueryString.ToString()
+                                    If Request.Params("tabid") Is Nothing Then
+                                        If TempQuerystring = "" Then
+                                            TempQuerystring = "tabid=" & tabId.ToString
+                                        Else
+                                            TempQuerystring = "tabid=" & tabId.ToString & "&" & TempQuerystring
+                                        End If
+                                    End If
+                                    HttpContext.Current.RewritePath(glbPath() + "default.aspx", String.Empty, TempQuerystring)
+                                Else
+                                    'not a tab in data base
+                                    'see if file exist otherwise send 404
+                                    If Not IO.File.Exists(Server.MapPath(Request.Path)) Then
+                                        SendHttpException("404", "Not Found", Request)
+                                    End If
+
+                                End If
+                            End If
+                        Else
+                            HttpContext.Current.RewritePath(glbPath() + "default.aspx", String.Empty, HttpContext.Current.Request.QueryString.ToString())
+
+                        End If
+                        ' Cashe Portal Setting 
+
+                        Dim TempKey As String = GetDBname() & "Portal" & PortalNumber & DomainName & "_Tab" & tabId & "_ " & TempLanguage
+
+
+                        Dim _settings As PortalSettings = CType(context.Cache(TempKey), PortalSettings)
+
+                        If _settings Is Nothing Then
+                            ' If this object has not been instantiated yet, we need to grab it
+                            _settings = New PortalSettings(tabId, PortalAlias, Request.ApplicationPath, TempLanguage)
+                            context.Cache.Insert(TempKey, _settings, CDp(PortalNumber, tabId), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(1), Caching.CacheItemPriority.Normal, Nothing)
+                        End If
+                        context.Items.Add("PortalSettings", _settings)
+                    Else
+                        ' alias does not exist in database
+                        SendHttpException("404", "Not Found", Request)
+
+                    End If ' End PortalNumber <> -1 
+                End If
             End If
         End Sub
 
 
 
         Sub Application_AuthenticateRequest(ByVal sender As Object, ByVal e As EventArgs)
+
+            If Application("SetContext") = "Maintenance" And Request.Params("Maintenance") Is Nothing Then
+                Exit Sub
+            End If
 
 
             Dim StrPhysicalPath As String = Context.Request.PhysicalPath
@@ -667,7 +391,7 @@ Namespace DotNetZoom
             End If
 
             If StrExtension <> ".axd" Then
-            ' Obtain PortalSettings from Current Context
+                ' Obtain PortalSettings from Current Context
                 Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
                 If Request.IsAuthenticated = True Then
@@ -692,12 +416,13 @@ Namespace DotNetZoom
                             If Not dr.Read Then
                                 ' log user out
                                 FormsAuthentication.SignOut()
+                                DotNetZoom.LogMessage(Context.Request, "SignOut : check if user is valid for new portal")
                                 ' Redirect browser back to home page
                                 Response.Redirect(Request.RawUrl, True)
                                 Exit Sub
                             End If
 
-                            dr.close()
+                            dr.Close()
 
                         End If
                     End If
@@ -714,6 +439,19 @@ Namespace DotNetZoom
                         Case "Forms"
                             If IsNumeric(Context.User.Identity.Name) Then
                                 intUserId = Int32.Parse(Context.User.Identity.Name)
+
+                                Dim id As FormsIdentity = CType(User.Identity, FormsIdentity)
+                                Dim ticket As FormsAuthenticationTicket = id.Ticket
+                                'DotNetZoom.LogMessage(Context.Request, "Cookie : " _
+                                '                     + "Path : " + ticket.CookiePath + vbCrLf _
+                                '                    + "Expiration : " + ticket.Expiration.ToString() + vbCrLf _
+                                '                   + "Expired : " + ticket.Expired.ToString() + vbCrLf _
+                                '                  + "Persistent : " + ticket.IsPersistent.ToString() + vbCrLf _
+                                '                 + "IssueDate : " + ticket.IssueDate.ToString() + vbCrLf _
+                                '                + "UserData : " + ticket.UserData + vbCrLf _
+                                '               + "User : " + ticket.Name + vbCrLf _
+                                '              + "version : " + ticket.Version.ToString())
+
                             End If
                         Case "Windows"
                             Dim dr As SqlDataReader = objUser.GetSingleUserByUsername(_portalSettings.PortalId, Context.User.Identity.Name)
@@ -727,6 +465,8 @@ Namespace DotNetZoom
                     If Not objUser.UpdateUserLogin(intUserId, _portalSettings.PortalId) Then
                         ' Log User Off from Cookie Authentication System
                         LogOffUser()
+                        DotNetZoom.LogMessage(Context.Request, "SignOut : Fail UpdateUserLogin")
+
                     Else ' valid Auth cookie
 
                         ' create cookies if they do not exist yet for this session.
@@ -774,44 +514,38 @@ Namespace DotNetZoom
                         ' add our own custom principal to the request containing the roles in the auth ticket
                         Dim objGenericIdentity As Principal.GenericIdentity = New Principal.GenericIdentity(intUserId.ToString)
                         Context.User = New GenericPrincipal(objGenericIdentity, arrPortalRoles)
-
+                        Dim strUserRoles As String = Join(arrPortalRoles, New Char() {";"c})
+                        Context.Items.Add("portalRole", strUserRoles)
 
                     End If
                 End If
 
             End If
+
         End Sub
 
         Sub Application_End(ByVal Sender As Object, ByVal E As EventArgs)
+            cleanLogs(Server.MapPath("~/database/"))
         End Sub
 
         Sub Application_Start(ByVal Sender As Object, ByVal E As EventArgs)
-            Application("SetContext") = WebConfigurationManager.AppSettings("SetContext")
+            Application("logmessage") = CType(WebConfigurationManager.AppSettings("logmessage"), Boolean)
             Application("throttle") = WebConfigurationManager.AppSettings("throttle")
             Application("cryptokey") = WebConfigurationManager.AppSettings("cryptokey")
+            Application("SetContext") = WebConfigurationManager.AppSettings("SetContext")
             If Application("cryptokey") Is Nothing Then
                 Application("cryptokey") = Membership.GeneratePassword(16, 7)
                 WriteSetting("web", "cryptokey", Application("cryptokey"))
             End If
             If WebConfigurationManager.AppSettings("ConnectionString") = "SERVER=sqlexpress;Database=dotnetzoom;User ID=sa;Password=password;Trusted_Connection=False;" Then
                 ' Site was not set up yet send Startup
-                ' Check if can write to disk
-                Application("dostartup") = "ok"
-                Application("DoValidation") = "ok"
-
-                Try
-                    Dim objStream As StreamWriter
-                    objStream = File.AppendText(Server.MapPath("~/Startup.log"))
-                    objStream.WriteLine("Application Init : " + DateTime.Now.ToString("yyyy\-MM\-dd HH\:mm\:ss"))
-                    objStream.Close()
-                Catch
-                    ' does not have permission to create file on root
-                    Application("error403") = Server.MapPath("~/") & "<br>"
-                End Try
-
-
+                ' Set up Maintenance 
+                Application("SetContext") = "Maintenance"
             Else
-                Application("DoValidation") = "Startup"
+                ' Set up Maintenance if the Version need to update database
+                If DotNetZoom.PortalSettings.GetVersion(WebConfigurationManager.AppSettings("connectionString")) < ApplicationVersion Then
+                    Application("SetContext") = "Maintenance"
+                End If
             End If
             'Clear all Cache on StartUp just in Case
             For Each de As DictionaryEntry In HttpContext.Current.Cache
@@ -857,58 +591,6 @@ Namespace DotNetZoom
             Return System.Web.HttpContext.Current.Server.MapPath(InFile & ".config")
         End Function
 
-        Private Function CreateDataBase(ByVal ConnectionString As String, ByVal DataBase As String) As Boolean
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(ConnectionString)
-            ' check if Can Connect to database
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {}, CommandType.Text, "USE MASTER CREATE DATABASE " & DataBase)
-            Try
-                myConnection.Open()
-                myCommand.ExecuteNonQuery()
-                myConnection.Close()
-            Catch
-                Return False
-            End Try
-            Return True
-        End Function
-
-        Private Function CanConnecttoSql(ByVal ConnectionString As String) As Boolean
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(ConnectionString)
-            ' check if Can Connect to database
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-                New Object() {}, CommandType.Text, "select * from sys.databases")
-            Try
-                myConnection.Open()
-                myCommand.ExecuteNonQuery()
-                myConnection.Close()
-            Catch
-                Return False
-            End Try
-            Return True
-        End Function
-
-        Private Function CanConnectDataBase(ByVal ConnectionString As String, ByVal DataBase As String) As Boolean
-            Dim Success As Boolean = False
-            ' Create Instance of Connection and Command Object
-            Dim myConnection As New SqlConnection(ConnectionString)
-            ' check if Can Connect to database
-            Dim myCommand As SqlCommand = SqlCommandGenerator.GenerateCommand(myConnection, _
-                CType(MethodBase.GetCurrentMethod(), MethodInfo), _
-            New Object() {}, CommandType.Text, "select name from sys.databases where name = N'" & DataBase & "'")
-            Try
-                myConnection.Open()
-                Dim result As SqlDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
-                If result.Read() Then Success = True
-                result.Close()
-            Catch
-                Return False
-            End Try
-            Return Success
-        End Function
 
         Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
         End Sub
@@ -919,31 +601,30 @@ Namespace DotNetZoom
         Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
             Dim LastError As Exception
             LastError = Server.GetLastError.GetBaseException()
+            If PortalSettings.GetVersion > -1 Then
+                If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
+                    Dim ErrorMessage As String = String.Empty
 
-            If PortalSettings.GetHostSettings("EnableErrorReporting") <> "N" Then
-                Dim ErrorMessage As String = String.Empty
 
+                    If Not LastError Is Nothing Then
+                        ErrorMessage += (LastError.Message + vbCrLf)
+                        ErrorMessage += (LastError.StackTrace + vbCrLf)
+                        ErrorMessage += (LastError.Source + vbCrLf)
+                    End If
 
-                If Not LastError Is Nothing Then
-                    ErrorMessage += (LastError.Message + vbCrLf)
-                    ErrorMessage += (LastError.StackTrace + vbCrLf)
-                    ErrorMessage += (LastError.Source + vbCrLf)
+                    SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", ErrorMessage.ToString, "")
                 End If
 
-                ' ErrorMessage += BuildErrorMessage(Request)
-
-                SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", ErrorMessage.ToString, "")
+                If File.Exists(Server.MapPath("/erreur" + GetLanguage("N") + ".htm")) Then
+                    ' read script file for version
+                    Dim objStreamReader As StreamReader
+                    objStreamReader = File.OpenText(Server.MapPath("/erreur" + GetLanguage("N") + ".htm"))
+                    Dim strHTML As String = objStreamReader.ReadToEnd
+                    objStreamReader.Close()
+                    Response.Write(strHTML)
+                End If
+                LogErrorMessage(Request, LastError)
             End If
-
-            If File.Exists(Server.MapPath("/erreur" + GetLanguage("N") + ".htm")) Then
-                ' read script file for version
-                Dim objStreamReader As StreamReader
-                objStreamReader = File.OpenText(Server.MapPath("/erreur" + GetLanguage("N") + ".htm"))
-                Dim strHTML As String = objStreamReader.ReadToEnd
-                objStreamReader.Close()
-                Response.Write(strHTML)
-            End If
-            LogErrorMessage(Request, LastError)
             Server.ClearError()
             Response.End()
         End Sub

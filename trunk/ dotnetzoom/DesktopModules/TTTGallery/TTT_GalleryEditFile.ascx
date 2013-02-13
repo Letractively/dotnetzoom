@@ -58,7 +58,7 @@
 							<tr>
     						<td class=TTTSubHeader width=120>&nbsp;<%= DotNetZoom.getlanguage("Gal_SelectProp") %>:</td>
     						<td>
-							<TTT:USERSCONTROL id=ctlUsers runat="server" ShowEditButton="True" ShowEmail="True" ShowFullName="True" ShowUserName="True" Type="2"></TTT:USERSCONTROL></td></tr>
+							<TTT:USERSCONTROL id=ctlUsers runat="server" ShowEditButton="True" ShowEmail="True" ShowFullName="True" ShowUserName="True" ReportType="2" Type="2"></TTT:USERSCONTROL></td></tr>
 							</asp:placeholder>
 							<!--End select owner-->
 

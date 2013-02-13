@@ -56,7 +56,7 @@
 							<td class="TTTSubHeader" width="120">&nbsp;<%= DotNetZoom.getlanguage("Gal_Prop") %>:</td>
 							<td class="TTTRow" align="left">
 								<asp:TextBox id="txtOwner" runat="server" Width="50%" cssclass="NormalTextBox" Enabled="False"></asp:TextBox>
-								<asp:TextBox id="txtOwnerID" runat="server" Width="5%" cssclass="NormalTextBox" Enabled="False" Visible="True"></asp:TextBox>
+								<asp:TextBox id="txtOwnerID" runat="server" Width="10%" cssclass="NormalTextBox" Enabled="False" Visible="True"></asp:TextBox>
 								<asp:Button id=btnEditOwner cssclass="button" runat="server" Visible="False" CommandName="edit"></asp:Button>
 							</td>
                         </tr>
@@ -65,7 +65,7 @@
 						<tr>
     						<td class=TTTSubHeader width=200>&nbsp;<%= DotNetZoom.getlanguage("Gal_SelectProp") %>:</td>
     						<td>
-							<TTT:USERSCONTROL id=ctlUsers runat="server" ShowEditButton="True" ShowEmail="True" ShowFullName="True" ShowUserName="True" Type="2"></TTT:USERSCONTROL>
+							<TTT:USERSCONTROL id=ctlUsers runat="server" ShowEditButton="True" ShowEmail="True" ShowFullName="True" ReportType="2" ShowUserName="True" Type="2"></TTT:USERSCONTROL>
                             </td>
                         </tr>
 						</asp:placeholder>
@@ -731,7 +731,7 @@
 				</tr>
 			</asp:placeholder>
 			<asp:placeholder id="pnlAddFile" Runat="server" Visible="False">
-				<tr>
+            	<tr>
 					<td >
 						<table id="tbAddFile" cellSpacing="1" cellPadding="1" width="100%" border="0">
 							<tr>
@@ -829,9 +829,6 @@
 								<td class="TTTAltHeader"  valign="middle" align="left">&nbsp;
 									<asp:button id="btnFileClose" cssclass="button" runat="server" CommandName="close" ></asp:button>&nbsp;
 									<asp:button id="btnFileUpload" cssclass="button" runat="server" CommandName="upload"></asp:button>
-									<img id="rotation1" src="/images/rotation.gif" style="visibility:hidden; left: -50px; position: relative" alt="*" width="32" height="32">
-									&nbsp;
-									
 								</td>
 							</tr>
 						</table>
@@ -862,7 +859,7 @@
 									<HeaderStyle Height="28px" Width="100px" CssClass="TTTAltHeader"></HeaderStyle>
 									<ItemStyle Height="22px" CssClass="TTTRow" Width="100px"></ItemStyle>
 									<ItemTemplate>
-										<asp:Label id="lblProp" runat="server" Text='<%# New GalleryUser(Ctype(Container.DataItem, IGalleryObjectInfo).OwnerID).UserName %>'>
+										<asp:Label id="lblProp" runat="server" Text='<%# New GalleryUser(Ctype(Container.DataItem, IGalleryObjectInfo).OwnerID).FullName  + " (" + Ctype(Container.DataItem, IGalleryObjectInfo).OwnerID.ToString + ")" %>'>
 										</asp:Label>
 									</ItemTemplate>
 								</asp:TemplateColumn>
@@ -943,7 +940,7 @@
 									<HeaderStyle Height="28px" Width="100px" CssClass="TTTAltHeader"></HeaderStyle>
 									<ItemStyle Height="22px" CssClass="TTTRow" Width="100px"></ItemStyle>
 									<ItemTemplate>
-										<asp:Label id="lblProp2" runat="server" Text='<%# New GalleryUser(Ctype(Container.DataItem, IGalleryObjectInfo).OwnerID).UserName %>'>
+										<asp:Label id="lblProp2" runat="server" Text='<%# New GalleryUser(Ctype(Container.DataItem, IGalleryObjectInfo).OwnerID).FullName + " (" + Ctype(Container.DataItem, IGalleryObjectInfo).OwnerID.ToString + ")" %>'>
 										</asp:Label>
 									</ItemTemplate>
 								</asp:TemplateColumn>

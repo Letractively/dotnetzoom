@@ -48,7 +48,6 @@ Namespace DotNetZoom
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 			Title1.DisplayHelp = "DisplayHelp_EditAccessDenied"
 			Title1.DisplayTitle = getlanguage("EditAccessDenied")
-            RegisterBADip(Request.UserHostAddress)
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim Admin as New AdminDB()
 			lblTerms.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "EditAccessDeniedInfo"), page)

@@ -237,10 +237,8 @@ Namespace DotNetZoom
 			end if
 			ParentID = Server.HtmlEncode(TxtIcone.ClientID)
             lnkicone.NavigateUrl = "javascript:OpeniconeWindow('" + tabID.ToString + "','" + ParentID + "')"
-
-		btnSubmit.Attributes.Add("onclick", "toggleBox('hide',0);toggleBox('show',1);")
-
-		
+            btnSubmit.Attributes.Add("onclick", "setajaxloading('#hide');")
+            JQueryScript(Me.Page)
         End Sub
 
         Private Sub PopulateGallery()

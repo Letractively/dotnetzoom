@@ -198,6 +198,7 @@ Namespace DotNetZoom
             Catch e As Exception
                 lblErr.Text = e.Message
                 lblErr.Visible = True
+                LogMessage(Request, "Erreur FileExplorer, DeleteSelected " + e.Message)
             End Try
             'Refresh Grid
             ' update the directory size
@@ -226,6 +227,7 @@ Namespace DotNetZoom
             Catch e As Exception
                 lblErr.Text = e.Message
                 lblErr.Visible = True
+                LogMessage(Request, "Erreur FileExplorer, DownloadFile " + e.Message)
             End Try
         End Sub
 
@@ -253,6 +255,7 @@ Namespace DotNetZoom
             Catch e As Exception
                 lblErr.Text = e.Message
                 lblErr.Visible = True
+                LogMessage(Request, "Erreur FileExplorer, EditFileFolderName " + e.Message)
             End Try
         End Sub
 
@@ -275,6 +278,7 @@ Namespace DotNetZoom
             Catch e As Exception
                 lblErr.Text = e.Message
                 lblErr.Visible = True
+                LogMessage(Request, "Erreur FileExplorer, CreateNewFolder " + e.Message)
             End Try
         End Sub
 #End Region
@@ -455,6 +459,7 @@ Namespace DotNetZoom
                 Catch e As Exception
                     lblErr.Text() = e.Message
                     lblErr.Visible = True
+                    LogMessage(Request, "Erreur FileExplorer, XFillData " + e.Message)
                 End Try
             End If
             'return a DataView to the DataTable
@@ -553,6 +558,7 @@ Namespace DotNetZoom
             Catch e As Exception
                 lblErr.Text = e.Message
                 lblErr.Visible = True
+                LogMessage(Request, "Erreur FileExplorer, RenameFileFolder " + e.Message)
             End Try
         End Sub
 

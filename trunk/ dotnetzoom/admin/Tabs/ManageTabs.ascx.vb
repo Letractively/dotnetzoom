@@ -497,7 +497,13 @@ Namespace DotNetZoom
             Dim _portalSettings As PortalSettings = CType(Context.Items("PortalSettings"), PortalSettings)
 
             Dim objAdmin As New AdminDB()
+            ' DeleteModuleDirectory for Modules on Tab
+            Dim tempPortalSettings As PortalSettings = New PortalSettings(TabId, _portalSettings.PortalAlias, Request.ApplicationPath, GetLanguage("N"))
+            For Each _ModuleSettings In tempPortalSettings.ActiveTab.Modules
+                DeleteModuleDirectory(_ModuleSettings.ModuleId)
+            Next
 
+            ' DeleteModuleDirectory()
             objAdmin.DeleteTab(TabId)
             Dim dr As SqlDataReader = objAdmin.GetTabById(TabId, GetLanguage("N"))
             If Not dr.Read Then

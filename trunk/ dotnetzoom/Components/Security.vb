@@ -197,6 +197,26 @@ Namespace DotNetZoom
             Return decryptedData.ToString
         End Function
 
+
+        Public Function EncryptUrlToken(ByVal strKey As String, ByVal strData As String) As String
+            Dim sym As New Symmetric(Symmetric.Provider.Rijndael)
+            Dim key As New CryptoData(strKey)
+            Dim encryptedData As CryptoData
+            encryptedData = sym.Encrypt(New CryptoData(strData), key)
+            Return encryptedData.UrlToken
+        End Function
+        Public Function DecryptUrlToken(ByVal strKey As String, ByVal strData As String) As String
+            Dim sym As New Symmetric(Symmetric.Provider.Rijndael)
+            Dim key As New CryptoData(strKey)
+            Dim encryptedData As New CryptoData
+            encryptedData.UrlToken = strData
+            Dim decryptedData As CryptoData
+            decryptedData = sym.Decrypt(encryptedData, key)
+            Return decryptedData.ToString
+        End Function
+
+
+
         Public Function Encrypt(ByVal strKey As String, ByVal strData As String) As String
 
             Dim strValue As String = ""
@@ -226,9 +246,11 @@ Namespace DotNetZoom
 
                 ' convert to string and Base64 encode
                 strValue = Convert.ToBase64String(objMemoryStream.ToArray())
+
             Else
                 strValue = strData
             End If
+
 
             Return strValue
 
@@ -256,7 +278,8 @@ Namespace DotNetZoom
                 Try
                     byteData = Convert.FromBase64String(strData)
                 Catch ' invalid length
-                    strValue = strData + " invalid length"
+                    strValue = ""
+                    ' strValue = strData + " invalid length"
                 End Try
 
                 If strValue = "" Then
@@ -700,6 +723,7 @@ Namespace DotNetZoom
             Try
                 cs.Read(b, 0, encryptedData.Bytes.Length - 1)
             Catch ex As CryptographicException
+                LogMessage(HttpContext.Current.Request, "Erreur CryptographicException, " + ex.Message)
                 ' Throw New CryptographicException("Unable to decrypt data. The provided key may be invalid.", ex)
             Finally
                 cs.Close()
@@ -906,6 +930,20 @@ Namespace DotNetZoom
         End Property
 
         ''' <summary>
+        ''' Sets or returns Hex string representation of this data
+        ''' </summary>
+        Public Property UrlToken() As String
+            Get
+                Return Utils.ToUrlToken(_b)
+            End Get
+            Set(ByVal Value As String)
+                _b = Utils.FromUrlToken(Value)
+            End Set
+        End Property
+
+
+
+        ''' <summary>
         ''' Sets or returns Base64 string representation of this data
         ''' </summary>
         Public Property Base64() As String
@@ -972,11 +1010,39 @@ Namespace DotNetZoom
                 Next
                 Return b
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur converts from a string Hex representation to an array of bytes, " + ex.Message)
+
                 Return Nothing
                 'Throw New System.FormatException("The provided string does not appear to be Hex encoded:" & _
                 '  Environment.NewLine & hexEncoded & Environment.NewLine, ex)
             End Try
         End Function
+
+        ''' <summary>
+        ''' converts an array of bytes to a UrlTokenEncode representation
+        ''' </summary>
+        Friend Shared Function ToUrlToken(ByVal ba() As Byte) As String
+            If ba Is Nothing OrElse ba.Length = 0 Then
+                Return ""
+            End If
+            Return HttpServerUtility.UrlTokenEncode(ba)
+        End Function
+
+        ''' <summary>
+        ''' converts from a string UrlTokenEncode representation to an array of bytes
+        ''' </summary>
+        Friend Shared Function FromUrlToken(ByVal hexEncoded As String) As Byte()
+            If hexEncoded Is Nothing OrElse hexEncoded.Length = 0 Then
+                Return Nothing
+            End If
+            Try
+                Return HttpServerUtility.UrlTokenDecode(hexEncoded)
+            Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur converts from a URLTokenEncoded string representation to an array of bytes, " + ex.Message)
+                Return Nothing
+            End Try
+        End Function
+
 
         ''' <summary>
         ''' converts from a string Base64 representation to an array of bytes
@@ -988,6 +1054,8 @@ Namespace DotNetZoom
             Try
                 Return Convert.FromBase64String(base64Encoded)
             Catch ex As System.FormatException
+                LogMessage(HttpContext.Current.Request, "Erreur converts from a string Base64 representation to an array of bytes, " + ex.Message)
+
                 Return Nothing
                 'Throw New System.FormatException("The provided string does not appear to be Base64 encoded:" & _
                 '     Environment.NewLine & base64Encoded & Environment.NewLine, ex)

@@ -33,6 +33,7 @@ Namespace DotNetZoom
         Protected WithEvents before As System.Web.UI.WebControls.Literal
         Protected WithEvents after As System.Web.UI.WebControls.Literal
         Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
+        Protected WithEvents ajax As System.Web.UI.HtmlControls.HtmlGenericControl
 
 
 #Region " Web Form Designer Generated Code "
@@ -52,10 +53,13 @@ Namespace DotNetZoom
 
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+            JQueryScript(Me.Page)
             AnnData.ModuleID = ModuleId
             AnnData.TabId = TabId
             AnnData.ModuleTitle = ModuleConfiguration.ModuleTitle
             AnnData.IsEditable = IsEditable
+            AnnData.AjaxID = ajax.ClientID
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
             If Tsettings.ContainsKey("PrivateKey") Then

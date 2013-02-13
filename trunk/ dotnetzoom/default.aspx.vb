@@ -26,6 +26,13 @@ Namespace DotNetZoom
 			
             InitializeComponent()
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            'Try
+            'try to catch error
+            'Dim o As [Object] = Request.QueryString
+            'Dim parameters As System.Collections.Specialized.NameValueCollection = Request.Params
+            'Catch ex As Exception
+            'LogMessage(Request, "Erreur in NameValueCollection, page_Init default.aspx")
+            'End Try
 
             If Request.IsAuthenticated = False And Request.QueryString("showlogin") = "1" Then
                 'Send back to Login Page
@@ -44,6 +51,7 @@ Namespace DotNetZoom
             Dim strPageHTML As String
             Dim SkinFileName As String
             Dim TempKey As String
+
             ' if portal page not in memory get it
             If IsAdminTab() Or Not (Request.Params("edit") Is Nothing) Or Not (Request.Params("def") Is Nothing) Then
                 TempKey = GetDBname() & "PAGESKINEDIT_" & CStr(_portalSettings.PortalId) & GetLanguage("N")
@@ -426,8 +434,9 @@ Namespace DotNetZoom
                         If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
                             Throw objException
                         Else
+                            LogMessage(HttpContext.Current.Request, "Erreur LoadModule, " + _moduleSettings.EditSrc + " " + objException.Message)
                             ContentPane.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.EditSrc & "</span>"))
-                            End If
+                        End If
                     End Try
                 End If
                 ' End Edit page
@@ -545,6 +554,7 @@ Namespace DotNetZoom
                                         If InStr(1, Request.Url.ToString.ToLower, "localhost") Then
                                             Throw objException
                                         Else
+                                            LogMessage(HttpContext.Current.Request, "Erreur LoadModule, " + _moduleSettings.DesktopSrc + " " + objException.Message)
                                             If PortalSecurity.IsInRoles(_portalSettings.AdministratorRoleId.ToString) = True Or PortalSecurity.IsInRoles(_portalSettings.ActiveTab.AdministratorRoles.ToString) = True Then
                                                 parent.Controls.Add(New LiteralControl("<span class=""NormalRed"">Error Loading " & _moduleSettings.DesktopSrc & "</span>"))
                                             End If
@@ -699,6 +709,7 @@ Namespace DotNetZoom
             strContainer = Replace(strContainer, "[ALIGN]", IIf(strAlignment <> "", " align=""" & strAlignment & """", ""))
             strContainer = Replace(strContainer, "[COLOR]", IIf(strColor <> "", " bgcolor=""" & strColor & """", ""))
             strContainer = Replace(strContainer, "[BORDER]", IIf(strBorder <> "", " border=""" & strBorder & """", ""))
+            strContainer = "<div id=""" & objModule.ID.ToString & """>" & strContainer & "</div>"
             arrContainer = Split(strContainer, "[MODULE]")
             objPane.Controls.Add(New LiteralControl(arrContainer(0)))
             objPane.Controls.Add(objModule)

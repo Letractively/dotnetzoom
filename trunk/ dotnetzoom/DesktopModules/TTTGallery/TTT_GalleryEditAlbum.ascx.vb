@@ -238,12 +238,8 @@ Namespace DotNetZoom
 			grdUpload.Columns(2).HeaderText = GetLanguage("Gal_TitleI")
 			grdUpload.Columns(3).HeaderText = GetLanguage("Gal_Desc")
             grdUpload.Columns(4).HeaderText = GetLanguage("Gal_Cat")
-            grdUpload.Columns(5).HeaderText = "<input type=""image"" name=""UploadImages" + grdUpload.ClientID + """ id=""UploadImages" + grdUpload.ClientID + """ title=""" + GetLanguage("upload") + """ src=""/images/save.gif"" onclick=""" + Page.ClientScript.GetPostBackEventReference(btnFileUpload, String.Empty) & ";toggleBox('UploadImages" + grdUpload.ClientID + "',0);toggleBox('rotation1',1);"" style=""height:20px;width:20px;border-width:0px"">"
-            grdUpload.Columns(6).HeaderText = "<img id=""rotation1"" src=""/images/rotation.gif"" style=""visibility:hidden; left: -27px; position: relative"" alt=""*"" width=""20"" height=""20"">"
-            'btnAdd.Attributes.Add("onclick", "toggleBox('" + btnAdd.ClientID + "',0);toggleBox('rotation',1)")
-            '<img id="rotation" src="/images/rotation.gif" style="visibility:hidden; left: -20px; position: relative" alt="*" width="32" height="32">
-            'btnAdd.ToolTip = GetLanguage("Gal_btnAddTip")
-            'btnAdd.AlternateText = GetLanguage("Gal_btnAddAlt")
+            grdUpload.Columns(5).HeaderText = "<input type=""image"" name=""UploadImages" + grdUpload.ClientID + """ id=""UploadImages" + grdUpload.ClientID + """ title=""" + GetLanguage("upload") + """ src=""/images/save.gif"" onclick=""" + "setajaxloading('#tbAddFile');" + Page.ClientScript.GetPostBackEventReference(btnFileUpload, String.Empty) & ";"" style=""height:20px;width:20px;border-width:0px"">"
+            grdUpload.Columns(6).HeaderText = ""
 
 
             grdDir.Columns(1).HeaderText = GetLanguage("Gal_Album")
@@ -266,11 +262,6 @@ Namespace DotNetZoom
             If IsNumeric(Request.Params("mid")) Then
                 ZmoduleID = Int32.Parse(Request.Params("mid"))
             End If
-
-            ' Dim _path As String = ""
-            ' If Not Request.Params("path") Is Nothing Then
-            '     _path = Request.Params("path")
-            ' End If
 
 
             Zconfig = GalleryConfig.GetGalleryConfig(ZmoduleID)
@@ -401,7 +392,7 @@ Namespace DotNetZoom
                     retScript &= "--></script>"
                     Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
 
-                    Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)), UploadImage2.ClientID)
+                    Dim click As String = String.Format("openDialog('{0}', 700, 700, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)), UploadImage2.ClientID)
                     UploadImage2.Attributes.Add("onclick", click)
 
 
@@ -472,7 +463,7 @@ Namespace DotNetZoom
                 txtPath.Text = Zfolder.URL
                 txtName.Text = .Name
                 Dim TGalleryUser As GalleryUser = New GalleryUser(.OwnerID)
-                txtOwner.Text = TGalleryUser.UserName
+                txtOwner.Text = TGalleryUser.FullName
                 txtOwnerID.Text = .OwnerID.ToString
                 txtTitle.Text = .Title
 				txtSortOrder.Text = .Sort
@@ -495,6 +486,8 @@ Namespace DotNetZoom
             Try
                 ddlTimeZone.SelectedValue = _portalSettings.TimeZone.ToString
             Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur EditAlbum.ascx TimeZone, " + ex.Message)
+
                 ddlTimeZone.SelectedValue = "0"
             End Try
 
@@ -904,19 +897,11 @@ Namespace DotNetZoom
                                     If TempLatLong.Latitude <> "" Then
                                         Dim directory As String = Zrequest.Folder.Path
                                         ' Put Sort in the XML
-                                        
-
                                         selItem.Latitude = TempLatLong.Latitude
                                         selItem.Longitude = TempLatLong.Longitude
                                         selItem.Sort = TempDate.ToString("yyyy\-MM\-dd HH\:mm\:ss")
                                         GalleryXML.SaveGalleryData(directory, selItem)
-
-                                        'GalleryXML.SaveMetaData(TempDate.ToString, directory, name, metaData.Title(name), metaData.Description(name), metaData.Categories(name), metaData.OwnerID(name), metaData.Width(name), metaData.height(name), TempLatLong.Latitude, TempLatLong.Longitude, metaData.gpsicon(name), metaData.gpsiconsize(name), metaData.Link(name))
                                         SaveExif = True
-                                        'GalleryConfig.ResetGalleryConfig(ZmoduleID)
-                                        'Zrequest = New GalleryRequest(ZmoduleID)
-                                        'Zrequest.Folder.Reset()
-                                        'ClearModuleCache(ZmoduleID)
                                     End If
                                 End If
 
@@ -1061,6 +1046,8 @@ Namespace DotNetZoom
                     MakeTrackFromGPX(strScript)
 
                 Catch ex As Exception
+                    LogMessage(HttpContext.Current.Request, "Erreur EditAlbum.ascx MakeTrackGPX, " + ex.Message)
+
                 End Try
 
             End If
@@ -1103,7 +1090,6 @@ Namespace DotNetZoom
 
                 GalleryXML.SaveGalleryData(directory, What)
 
-                'GalleryXML.SaveMetaData(txtSortOrder.Text, directory, name, txtTitle.Text, txtDescription.Text, categories, ownerID, "0", "0", Latitude.Text, Longitude.Text, imgFileIcon.ImageUrl, metaData.gpsiconsize(name), "")
                 Zrequest.Folder.Parent.Reset()
             End If
 
@@ -1170,7 +1156,10 @@ Namespace DotNetZoom
 
             Session("UrlReferrer") = Nothing
             Dim TempUrl As String
-            TempUrl = GetFullDocument() & "?" & "tabid=" & _portalSettings.ActiveTab.TabId.ToString + "&path=" + Zfolder.GalleryHierarchy
+            TempUrl = GetFullDocument() & "?" & "tabid=" & _portalSettings.ActiveTab.TabId.ToString
+            If Zfolder.GalleryHierarchy <> "" Then
+                TempUrl += "&path=" + Zfolder.GalleryHierarchy
+            End If
             Response.Redirect(TempUrl)
 
         End Sub
@@ -1241,9 +1230,10 @@ Namespace DotNetZoom
                     ClearCache.Visible = False
                     SubAlbum.Visible = False
                     pnlAddFile.Visible = True
+                    JQueryScript(Me.Page)
                     pnlAdd1.Visible = False
                     btnFileUpload.Visible = True
-                    btnFileUpload.Attributes.Add("onclick", "toggleBox('" + btnFileUpload.ClientID + "',0);toggleBox('rotation1',1)")
+                    btnFileUpload.Attributes.Add("onclick", "setajaxloading('#tbAddFile');")
                     pnlAddFolder.Visible = False
                     pnlAlbumDetails.Visible = False
                     pnlMapOption.Visible = False
@@ -1259,11 +1249,19 @@ Namespace DotNetZoom
         End Sub
 
 
+        Private Sub grdUpload_ItemCreate(ByVal source As Object, ByVal e As System.Web.UI.WebControls.DataGridItemEventArgs) Handles grdUpload.ItemCreated
 
-   
+            Dim cmdSave As ImageButton = CType(e.Item.FindControl("btnFileSave"), ImageButton)
+            If Not cmdSave Is Nothing Then
+                cmdSave.Attributes.Add("onclick", "setajaxloading('#tbAddFile');")
+            End If
+
+        End Sub
+
 
         Private Sub grdUpload_ItemCommand(ByVal source As Object, ByVal e As System.Web.UI.WebControls.DataGridCommandEventArgs) Handles grdUpload.ItemCommand
             SaveInfoinCollection()
+            JQueryScript(Me.Page)
             Dim itemIndex As Integer = e.Item.ItemIndex
             ZuploadCollection = GalleryUploadCollection.GetList(Zfolder, ZmoduleID)
             Dim uploadFile As GalleryUploadFile
@@ -1273,12 +1271,12 @@ Namespace DotNetZoom
                     uploadFile = CType(ZuploadCollection.Item(itemIndex), GalleryUploadFile)
                     Dim uploadPath As String
                     If uploadFile.Type = IGalleryObjectInfo.ItemType.Zip Then
-                        UploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, ZRequest.GalleryConfig.TempFolder}, "\", False, False)
+                        uploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, Zrequest.GalleryConfig.TempFolder}, "\", False, False)
                     Else
-                        If Not ZRequest.GalleryConfig.IsFixedSize Or uploadFile.Type = IGalleryObjectInfo.ItemType.Flash Or uploadFile.Type = IGalleryObjectInfo.ItemType.Movie Then
+                        If Not Zrequest.GalleryConfig.IsFixedSize Or uploadFile.Type = IGalleryObjectInfo.ItemType.Flash Or uploadFile.Type = IGalleryObjectInfo.ItemType.Movie Then
                             uploadPath = Zrequest.Folder.Path
                         Else
-                            UploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, ZRequest.GalleryConfig.SourceFolder}, "\", False, False)
+                            uploadPath = BuildPath(New String(1) {Zrequest.Folder.Path, Zrequest.GalleryConfig.SourceFolder}, "\", False, False)
                         End If
                     End If
                     Try
@@ -1300,6 +1298,11 @@ Namespace DotNetZoom
                         lblFileInfo.Text = ZuploadCollection.ErrMessage
                     Else
                         If ZuploadCollection.Count = 0 Then
+                            Zrequest.Folder.Reset()
+                            If Not Zfolder.Parent Is Nothing Then
+                                Zrequest.Folder.Parent.Reset()
+                            End If
+                            GalleryConfig.ResetGalleryConfig(ZmoduleID)
                             ClearModuleCache(ZmoduleID)
                             Session("UrlReferrer") = Nothing
                             Response.Redirect(CType(ViewState("UrlReferrer"), String))
@@ -1336,9 +1339,6 @@ Namespace DotNetZoom
                     If uploadFile.Title = String.Empty Then
                         uploadFile.Title = txtFileTitle.Text
                     End If
-                    'ZuploadCollection.Item(I - 1) = uploadFile
-                    'ZuploadCollection.RemoveAt(I - 1)
-                    'ZuploadCollection.Add(uploadFile)
                 Next
             End If
         End Sub
@@ -1357,11 +1357,14 @@ Namespace DotNetZoom
 
             ' Update Directory Size
             UpdateFolderSize(Zrequest.GalleryConfig, ZuploadCollection.Upload(""))
-			If Len(ZuploadCollection.ErrMessage) > 0 Then
+            If Len(ZuploadCollection.ErrMessage) > 0 Then
                 lblFileInfo.Text = ZuploadCollection.ErrMessage
             Else
                 GalleryUploadCollection.ResetList(Zfolder, ZmoduleID)
                 Zrequest = New GalleryRequest(ZmoduleID)
+                If Not Zfolder.Parent Is Nothing Then
+                    Zrequest.Folder.Parent.Reset()
+                End If
                 Zrequest.Folder.Reset()
                 GalleryConfig.ResetGalleryConfig(ZmoduleID)
                 ClearModuleCache(ZmoduleID)
@@ -1401,7 +1404,7 @@ Namespace DotNetZoom
             sb.Append(ZmoduleID.ToString)
             sb.Append("&tabid=")
             sb.Append(TabId.ToString)
-            Return Sb.ToString()
+            Return sb.ToString()
 
         End Function
 
@@ -1428,6 +1431,7 @@ Namespace DotNetZoom
                 ClearCache.Visible = False
                 SubAlbum.Visible = False
                 pnlAddFile.Visible = True
+                JQueryScript(Me.Page)
                 pnlAdd1.Visible = False
                 btnFileUpload.Visible = False
                 pnlAddFolder.Visible = False
@@ -1466,6 +1470,7 @@ Namespace DotNetZoom
 
                     If CheckQuota() Then
                         pnlAddFile.Visible = True
+                        JQueryScript(Me.Page)
                     Else
                         lblInfo.Text = lblFileInfo.Text
                     End If
@@ -1502,7 +1507,7 @@ Namespace DotNetZoom
 
         End Sub
 
- 
+
 
         Private Sub btnFileClose_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnFileClose.Click
             If Not Request.Params("action") Is Nothing Then
@@ -1590,8 +1595,8 @@ Namespace DotNetZoom
             Dim ext As String = FileName.Substring(FileName.LastIndexOf(".") + 1, FileName.Length - FileName.LastIndexOf(".") - 1)
             Dim I As Integer
             Dim AcceptedFileTypes As String = "jpg gif"
-            i = AcceptedFileTypes.lastIndexOf(ext)
-            If i > -1 Then
+            I = AcceptedFileTypes.LastIndexOf(ext)
+            If I > -1 Then
                 Return True
             Else
                 Return False
@@ -1659,6 +1664,8 @@ Namespace DotNetZoom
                                 Response.Redirect(Request.RawUrl)
 
                             Catch ex As Exception
+                                LogMessage(HttpContext.Current.Request, "Erreur EditAlbum.ascx UploadImageClick, " + ex.Message)
+
                             End Try
 
 
@@ -1677,9 +1684,13 @@ Namespace DotNetZoom
         End Sub
 
         Private Sub ClearCache_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ClearCache.Click
+            If Not Zfolder.Parent Is Nothing Then
+                Zrequest.Folder.Parent.Reset()
+                Zrequest.Folder.Parent.REPopulate(Zconfig.CheckboxGPS)
+            End If
             Zrequest.Folder.Reset()
             Zrequest.Folder.REPopulate(Zconfig.CheckboxGPS)
-            ClearModuleCache(ModuleId)
+            ClearModuleCache(ZmoduleID)
             Session("UrlReferrer") = ViewState("UrlReferrer").ToString
             Response.Redirect(Request.UrlReferrer.ToString)
         End Sub
@@ -1706,7 +1717,7 @@ Namespace DotNetZoom
                             strExtension = Mid(name, InStrRev(name, ".") + 1)
                         End If
 
-                        Select strExtension.ToLower()
+                        Select Case strExtension.ToLower()
                             Case "jpg", "jpeg", "tif", "png"
                                 Dim objStreamReader As StreamReader
                                 Dim strScript As String = ""
@@ -1778,7 +1789,7 @@ Namespace DotNetZoom
         Private Sub ctlUsers_UserSelected(ByVal sender As Object, ByVal e As System.EventArgs) Handles ctlUsers.UserSelected
             Dim myUser As ForumUser = CType(ctlUsers.SelectedUser, ForumUser)
 
-            txtOwner.Text = myUser.Name
+            txtOwner.Text = myUser.FullName
             txtOwnerID.Text = myUser.UserID.ToString
 
             pnlSelectOwner.Visible = False
@@ -1795,7 +1806,7 @@ Namespace DotNetZoom
                 options_width.Text = metaData.Map_Width  ' width of the map, in pixels
                 options_height.Text = metaData.Map_Height  ' height of the map, in pixels"
                 options_full_screen.Checked = CBool(metaData.Map_FullScreen)  ' true|false: should the map fill the entire page (or frame)?"
-                options_center.Text = metaData.map_center ' "[46.493553, -73.6715815]"  ' [latitude,longitude] - be sure to keep the square brackets"
+                options_center.Text = metaData.Map_center ' "[46.493553, -73.6715815]"  ' [latitude,longitude] - be sure to keep the square brackets"
 
                 options_zoom.SelectedItem.Selected = False
                 options_zoom.Items.FindByValue(metaData.Map_Zoom).Selected = True
@@ -1810,8 +1821,8 @@ Namespace DotNetZoom
                 options_map_type.Items.FindByValue(metaData.Map_Type).Selected = True
 
                 options_doubleclick_zoom.Checked = CBool(metaData.Map_ZoomClick)  ' true|false: zoom in when mouse is double-clicked?"
-                options_mousewheel_zoom.Checked = CBool(metaData.map_zoommouse) ' true|false; or 'reverse' for down=in and up=out"
-                options_centering_options.Text = metaData.map_centering '"{ 'open_info_window': true, 'partial_match': true, 'center_key': 'center', 'default_zoom': null}" ' URL-based centering (e.g., ?center=name_of_marker&zoom=14)"
+                options_mousewheel_zoom.Checked = CBool(metaData.Map_ZoomMouse) ' true|false; or 'reverse' for down=in and up=out"
+                options_centering_options.Text = metaData.Map_Centering '"{ 'open_info_window': true, 'partial_match': true, 'center_key': 'center', 'default_zoom': null}" ' URL-based centering (e.g., ?center=name_of_marker&zoom=14)"
 
                 ' widgets on the map:
                 options_zoom_control.SelectedItem.Selected = False
@@ -1819,51 +1830,51 @@ Namespace DotNetZoom
 
 
                 options_scale_control.Checked = CBool(metaData.Map_ScaleControl) ' true|false"
-                options_center_coordinates.Checked = CBool(metaData.map_centercoord)  ' true|false: show a "center coordinates" box and crosshair?
-                options_crosshair_hidden.Checked = CBool(metaData.map_crosshair)  ' true|false: hide the crosshair initially?"
-                options_map_opacity_control.Checked = CBool(metaData.map_opacityctrl)  ' true|false"
+                options_center_coordinates.Checked = CBool(metaData.Map_CenterCoord)  ' true|false: show a "center coordinates" box and crosshair?
+                options_crosshair_hidden.Checked = CBool(metaData.Map_Crosshair)  ' true|false: hide the crosshair initially?"
+                options_map_opacity_control.Checked = CBool(metaData.Map_OpacityCtrl)  ' true|false"
 
                 ' widget to change the background map"
                 options_map_type_control_style.SelectedItem.Selected = False
-                options_map_type_control_style.Items.FindByValue(metaData.map_typectrl).Selected = True
+                options_map_type_control_style.Items.FindByValue(metaData.Map_TypeCtrl).Selected = True
 
                 ' options_map_type_control_style.Text = "'none'"  ' 'menu'|'list'|'none'|'google'"
-                options_map_type_control_filter.Checked = CBool(metaData.map_typefltr)  ' true|false: when map loads, are irrelevant maps ignored?"
+                options_map_type_control_filter.Checked = CBool(metaData.Map_TypeFltr)  ' true|false: when map loads, are irrelevant maps ignored?"
 
                 BindMapControl_Excluded(metaData.Map_TypeExcl)
 
 
                 ' options for a floating legend box (id="legend"), which can contain anything
-                options_legend_options_legend.Checked = CBool(metaData.map_legendon)  ' true|false: enable or disable the legend altogether"
-                options_legend_options_position.Text = metaData.map_legendpos '"['G_ANCHOR_TOP_LEFT', 70, 6]"  ' [Google anchor name, relative x, relative y]"
-                options_legend_options_draggable.Checked = CBool(metaData.map_legenddrag)  ' true|false: can it be moved around the screen?"
-                options_legend_options_collapsible.Checked = CBool(metaData.map_legendcoll)  ' true|false: can it be collapsed by double-clicking its top bar?"
-                options_measurement_tools.Text = metaData.map_tools '"{ visible: false, distance_color: '', area_color: '', position: [] }"
+                options_legend_options_legend.Checked = CBool(metaData.Map_LegendOn)  ' true|false: enable or disable the legend altogether"
+                options_legend_options_position.Text = metaData.Map_LegendPos '"['G_ANCHOR_TOP_LEFT', 70, 6]"  ' [Google anchor name, relative x, relative y]"
+                options_legend_options_draggable.Checked = CBool(metaData.Map_LegendDrag)  ' true|false: can it be moved around the screen?"
+                options_legend_options_collapsible.Checked = CBool(metaData.Map_LegendColl)  ' true|false: can it be collapsed by double-clicking its top bar?"
+                options_measurement_tools.Text = metaData.Map_Tools '"{ visible: false, distance_color: '', area_color: '', position: [] }"
 
                 ' track-related options:
                 ' options for a floating list of the tracks visible on the map"
-                options_tracklist_options_tracklist.Checked = CBool(metaData.map_trackliston)  ' true|false: enable or disable the tracklist altogether"
-                options_tracklist_options_position.Text = metaData.map_tracklistpos '"['G_ANCHOR_TOP_RIGHT', 6, 32]"  ' [Google anchor name, relative x, relative y]"
-                options_tracklist_options_max_width.Text = metaData.map_tracklistmwidth '"180" ' maximum width of the tracklist, in pixels"
-                options_tracklist_options_max_height.Text = metaData.map_tracklistmheight ' "610" ' maximum height of the tracklist, in pixels; if the list is longer, scrollbars will appear"
-                options_tracklist_options_desc.Checked = CBool(metaData.map_tracklistdesc)  ' true|false: should tracks' descriptions be shown in the list"
-                options_tracklist_options_zoom_links.Checked = CBool(metaData.map_tracklistzoom)  ' true|false: should each item include a small icon that will zoom to that track?"
-                options_tracklist_options_tooltips.Checked = CBool(metaData.map_tracklisttool)  ' true|false: should the name of the track appear on the map when you mouse over the name in the list?"
-                options_tracklist_options_draggable.Checked = CBool(metaData.map_tracklistdrag)  ' true|false: can it be moved around the screen?"
-                options_tracklist_options_collapsible.Checked = CBool(metaData.map_tracklistcoll)  ' true|false: can it be collapsed by double-clicking its top bar?"
+                options_tracklist_options_tracklist.Checked = CBool(metaData.Map_TracklistOn)  ' true|false: enable or disable the tracklist altogether"
+                options_tracklist_options_position.Text = metaData.Map_TracklistPos '"['G_ANCHOR_TOP_RIGHT', 6, 32]"  ' [Google anchor name, relative x, relative y]"
+                options_tracklist_options_max_width.Text = metaData.Map_TracklistMwidth '"180" ' maximum width of the tracklist, in pixels"
+                options_tracklist_options_max_height.Text = metaData.Map_TracklistMheight ' "610" ' maximum height of the tracklist, in pixels; if the list is longer, scrollbars will appear"
+                options_tracklist_options_desc.Checked = CBool(metaData.Map_TracklistDesc)  ' true|false: should tracks' descriptions be shown in the list"
+                options_tracklist_options_zoom_links.Checked = CBool(metaData.Map_TracklistZoom)  ' true|false: should each item include a small icon that will zoom to that track?"
+                options_tracklist_options_tooltips.Checked = CBool(metaData.Map_TracklistTool)  ' true|false: should the name of the track appear on the map when you mouse over the name in the list?"
+                options_tracklist_options_draggable.Checked = CBool(metaData.Map_TracklistDrag)  ' true|false: can it be moved around the screen?"
+                options_tracklist_options_collapsible.Checked = CBool(metaData.Map_TracklistColl)  ' true|false: can it be collapsed by double-clicking its top bar?"
 
                 ' marker-related options:
-                options_default_marker.Text = metaData.map_marker '  "{ color: 'red', icon: 'googlemini' }" ' icon can be a URL, but be sure to also include size:[w,h] and optionally anchor:[x,y]"
-                options_shadows.Checked = CBool(metaData.map_shadows) ' true|false: do the standard markers have "shadows" behind them?
-                options_marker_link_target.Text = metaData.map_linktgt '"'_blank'" ' the name of the window or frame into which markers' URLs will load"
-                options_info_window_width.Text = metaData.map_infowidth ' "0"  ' in pixels, the width of the markers' pop-up info "bubbles" (can be overridden by 'window_width' in individual markers)
-                options_thumbnail_width.Text = metaData.map_thumbnailwidth ' "0"  ' in pixels, the width of the markers' thumbnails (can be overridden by 'thumbnail_width' in individual markers)"
-                options_photo_size.Text = metaData.map_photosize '"[0, 0]"  ' in pixels, the size of the photos in info windows (can be overridden by 'photo_width' or 'photo_size' in individual markers)"
-                options_hide_labels.Checked = CBool(metaData.map_labelshide)  ' true|false: hide labels when map first loads?"
-                options_label_offset.Text = metaData.map_labeloff '"[0, 0]"  ' [x,y]: shift all markers' labels (positive numbers are right and down)"
-                options_label_centered.Checked = CBool(metaData.map_labelcenter)  ' true|false: center labels with respect to their markers?  (label_left is also a valid option.)"
-                options_driving_directions.Checked = CBool(metaData.map_dd)  ' put a small "driving directions" form in each marker's pop-up window? (override with dd:true or dd:false in a marker's options)
-                options_garmin_icon_set.Text = metaData.map_iconset ' "'gpsmap'" ' 'gpsmap' are the small 16x16 icons; change it to '24x24' for larger icons"
+                options_default_marker.Text = metaData.Map_Marker '  "{ color: 'red', icon: 'googlemini' }" ' icon can be a URL, but be sure to also include size:[w,h] and optionally anchor:[x,y]"
+                options_shadows.Checked = CBool(metaData.Map_Shadows) ' true|false: do the standard markers have "shadows" behind them?
+                options_marker_link_target.Text = metaData.Map_LinkTgt '"'_blank'" ' the name of the window or frame into which markers' URLs will load"
+                options_info_window_width.Text = metaData.Map_InfoWidth ' "0"  ' in pixels, the width of the markers' pop-up info "bubbles" (can be overridden by 'window_width' in individual markers)
+                options_thumbnail_width.Text = metaData.Map_thumbnailwidth ' "0"  ' in pixels, the width of the markers' thumbnails (can be overridden by 'thumbnail_width' in individual markers)"
+                options_photo_size.Text = metaData.Map_PhotoSize '"[0, 0]"  ' in pixels, the size of the photos in info windows (can be overridden by 'photo_width' or 'photo_size' in individual markers)"
+                options_hide_labels.Checked = CBool(metaData.Map_LabelsHide)  ' true|false: hide labels when map first loads?"
+                options_label_offset.Text = metaData.Map_LabelOff '"[0, 0]"  ' [x,y]: shift all markers' labels (positive numbers are right and down)"
+                options_label_centered.Checked = CBool(metaData.Map_LabelCenter)  ' true|false: center labels with respect to their markers?  (label_left is also a valid option.)"
+                options_driving_directions.Checked = CBool(metaData.Map_DD)  ' put a small "driving directions" form in each marker's pop-up window? (override with dd:true or dd:false in a marker's options)
+                options_garmin_icon_set.Text = metaData.Map_IconSet ' "'gpsmap'" ' 'gpsmap' are the small 16x16 icons; change it to '24x24' for larger icons"
 
                 trk_info.Text = metaData.Map_TrackList("1")
                 Draw_Marker.Text = metaData.Map_Markers("1")
@@ -1875,16 +1886,16 @@ Namespace DotNetZoom
 
         Private Sub MakeTrackFromGPX(ByVal xmlData As String)
             Dim XmlDoc As New XmlDocument()
-            xmlDoc.Load(New StringReader(xmlData))
+            XmlDoc.Load(New StringReader(xmlData))
 
             'Instantiate an XmlDocument object. 
             Dim GPSInfoNode As System.Xml.XmlNode
 
             'Instantiate an XmlNamespaceManager object. 
-            Dim xmlnsManager As New System.Xml.XmlNamespaceManager(xmldoc.NameTable)
+            Dim xmlnsManager As New System.Xml.XmlNamespaceManager(XmlDoc.NameTable)
 
             'Add the namespaces used in the XmlNamespaceManager. 
-            Dim root As XmlNode = xmlDoc.DocumentElement
+            Dim root As XmlNode = XmlDoc.DocumentElement
             xmlnsManager.AddNamespace("nsgpx", root.Attributes("xmlns").InnerText())
             Dim GPSInfo As System.Xml.XmlNodeList
 
@@ -1893,7 +1904,7 @@ Namespace DotNetZoom
             'The matching nodes will be returned as an XmlNodeList. 
             'Use an XmlNode object to iterate through the returned XmlNodeList. 
 
-            GPSInfo = xmlDoc.SelectNodes("//nsgpx:gpx/nsgpx:trk/nsgpx:trkseg/nsgpx:trkpt", xmlnsManager)
+            GPSInfo = XmlDoc.SelectNodes("//nsgpx:gpx/nsgpx:trk/nsgpx:trkseg/nsgpx:trkpt", xmlnsManager)
             Dim I As Integer
             ' Choisir couleur pour la track
             Dim Color As String
@@ -1963,7 +1974,7 @@ Namespace DotNetZoom
             End If
 
 
-            GPSInfo = xmlDoc.SelectNodes("//nsgpx:gpx/nsgpx:wpt", xmlnsManager)
+            GPSInfo = XmlDoc.SelectNodes("//nsgpx:gpx/nsgpx:wpt", xmlnsManager)
 
             '  GV_Draw_Marker({lat:46.4024017897516,lon:-73.6854231087874, name: 'dsc00455.jpg', desc: '', shortdesc: 'dsc00455.jpg', icon: '/images/gps/24camera.png', url: '.jpg', thumbnail: '/Portals/afb8348f-f401-4ecb-b128-5d3d6502402b/Album12/_thumbs/dsc00455.jpg', thumbnail_width: 100, photo: '/Portals/afb8348f-f401-4ecb-b128-5d3d6502402b/Album12/dsc00455.jpg', photo_size: [500,375], window_width: 520, folder: 'dsc00455.jpg', scale: 1.5, opacity: 0.7, dd: false});
             ' GV_Draw_Marker({lat:46.521654,lon:46.521654, name:018,, icon:CrossingCrossing});

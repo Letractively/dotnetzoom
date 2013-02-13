@@ -28,8 +28,7 @@ Namespace DotNetZoom
 		Protected WithEvents before As System.Web.UI.WebControls.Literal
 		Protected WithEvents after As System.Web.UI.WebControls.Literal
 
-Protected WithEvents pnlModuleContent As System.Web.UI.WebControls.PlaceHolder
-
+        Protected WithEvents pnlModuleContent As System.Web.UI.WebControls.PlaceHolder
         Protected WithEvents grdContacts As System.Web.UI.WebControls.DataGrid
 		Protected WithEvents Title1 As DotNetZoom.DesktopModuleTitle
 
@@ -64,7 +63,7 @@ Protected WithEvents pnlModuleContent As System.Web.UI.WebControls.PlaceHolder
 
             Title1.EditText = GetLanguage("add")
             Title1.EditIMG = "<img  src=""" & glbPath & "images/add.gif"" alt=""*"" style=""border-width:0px;"">"
-			
+            Title1.DisplayOptions = True
 
 			
 			
@@ -78,20 +77,74 @@ Protected WithEvents pnlModuleContent As System.Web.UI.WebControls.PlaceHolder
 			Dim objAdmin As New AdminDB()
 			content = AdminDB.ConvertDataReaderToDataTable(objContacts.GetContacts(ModuleId))
             Context.Cache.Insert(TempKey, content, CDp(_PortalSettings.PortalID, _PortalSettings.ActiveTab.Tabid, ModuleID), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(2), Caching.CacheItemPriority.normal, nothing)
-  			End If
-			grdContacts.Columns(1).HeaderText = GetLanguage("Name")
-			grdContacts.Columns(2).HeaderText = GetLanguage("contact_title")
-			grdContacts.Columns(3).HeaderText = GetLanguage("contact_email")
-			grdContacts.Columns(4).HeaderText = GetLanguage("contact_telephone")
-			grdContacts.Columns(5).HeaderText = GetLanguage("contact_telephone")
+            End If
+
+            Dim settings As Hashtable = PortalSettings.GetModuleSettings(ModuleId)
+            If settings.ContainsKey("Name") Then
+                grdContacts.Columns(1).HeaderText = settings("Name").ToString
+            Else
+                grdContacts.Columns(1).HeaderText = GetLanguage("Name")
+            End If
+            If settings.ContainsKey("contact_title") Then
+                grdContacts.Columns(2).HeaderText = settings("contact_title").ToString
+            Else
+                grdContacts.Columns(2).HeaderText = GetLanguage("contact_title")
+            End If
+            If settings.ContainsKey("title_visible") Then
+                grdContacts.Columns(2).Visible = CType(settings("title_visible").ToString, Boolean)
+            End If
+
+            If settings.ContainsKey("contact_email") Then
+                grdContacts.Columns(3).HeaderText = settings("contact_email").ToString
+            Else
+                grdContacts.Columns(3).HeaderText = GetLanguage("contact_email")
+            End If
+            If settings.ContainsKey("Email_visible") Then
+                grdContacts.Columns(3).Visible = CType(settings("Email_visible").ToString, Boolean)
+            End If
+
+            If settings.ContainsKey("contact_telephone1") Then
+                grdContacts.Columns(4).HeaderText = settings("contact_telephone1").ToString
+            Else
+                grdContacts.Columns(4).HeaderText = GetLanguage("contact_telephone")
+            End If
+            If settings.ContainsKey("tel1_visible") Then
+                grdContacts.Columns(4).Visible = CType(settings("tel1_visible").ToString, Boolean)
+            End If
+
+            If settings.ContainsKey("contact_telephone2") Then
+                grdContacts.Columns(5).HeaderText = settings("contact_telephone2").ToString
+            Else
+                grdContacts.Columns(5).HeaderText = GetLanguage("contact_telephone")
+            End If
+            If settings.ContainsKey("tel2_visible") Then
+                grdContacts.Columns(5).Visible = CType(settings("tel2_visible").ToString, Boolean)
+            End If
+
 			grdContacts.DataSource = content
 			grdContacts.DataBind()
 			
 			
         End Sub
 
-        Public Function DisplayEmail(ByVal Email As Object)  As String
-            DisplayEmail = FormatEmail(Email, page)
+        Public Function DisplayEmail(ByVal Email As Object, ByVal Name As Object) As String
+            Dim settings As Hashtable = PortalSettings.GetModuleSettings(ModuleId)
+
+            If settings.ContainsKey("DisplayEmail") Then
+                Select Case settings("DisplayEmail").ToString.ToLower
+                    Case "1"
+                        Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                        Dim objSecurity As New PortalSecurity()
+                        Dim crypto As String = Server.UrlEncode(objSecurity.Encrypt(Application("cryptokey"), Email))
+                        'option 1 send e-mail with feedback module
+                        DisplayEmail = "<a class=""Head"" title=""" + Replace(GetLanguage("clicktosend"), "{name}", Name) + """ href=""" + FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=feedback&sendto=" + crypto) + """>Courriel</a>"
+                    Case Else
+                        DisplayEmail = FormatEmail(Email, Page)
+                End Select
+            Else
+                DisplayEmail = FormatEmail(Email, Page)
+            End If
+
         End Function
 
         Public Sub grdContacts_ItemCreated(sender As Object, e As DataGridItemEventArgs) handles grdContacts.ItemCreated 

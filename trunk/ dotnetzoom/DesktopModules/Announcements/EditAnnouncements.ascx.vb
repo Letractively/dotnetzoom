@@ -62,6 +62,11 @@ Namespace DotNetZoom
         Protected WithEvents cmdCalendar As System.Web.UI.WebControls.HyperLink
         Protected WithEvents valViewOrder As System.Web.UI.WebControls.CompareValidator
         Protected WithEvents ContainerEdit As DotNetZoom.ItemEdit
+
+        Protected WithEvents paneledit As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents paneloption As System.Web.UI.WebControls.PlaceHolder
+        Protected WithEvents retour As System.Web.UI.WebControls.HyperLink
+
         Private itemId As Integer = -1
 
 #Region " Web Form Designer Generated Code "
@@ -91,7 +96,7 @@ Namespace DotNetZoom
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-            Title1.DisplayHelp = "DisplayHelp_EditAnnoncement"
+
 			' Obtain PortalSettings from Current Context
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
@@ -103,6 +108,15 @@ Namespace DotNetZoom
             If optExternal.Checked = False And optInternal.Checked = False And optFile.Checked = False Then
                 optFile.Checked = True
             End If
+
+            paneloption.Visible = (Not Request.Params("options") Is Nothing)
+            paneledit.Visible = Not paneloption.Visible
+            If paneloption.Visible Then
+                Title1.DisplayHelp = "DisplayHelp_OptionsAnnoncement"
+            Else
+                Title1.DisplayHelp = "DisplayHelp_EditAnnoncement"
+            End If
+
 
             EnableControls()
 
@@ -116,6 +130,8 @@ Namespace DotNetZoom
                 cmdUpdate.Text = GetLanguage("enregistrer")
                 cmdCancel.Text = GetLanguage("annuler")
                 cmdDelete.Text = GetLanguage("delete")
+                retour.Text = GetLanguage("return")
+                retour.NavigateUrl = ViewState("UrlReferrer")
                 cmdSyndicate.Text = GetLanguage("syndicate")
                 valTitle.ErrorMessage = GetLanguage("need_title")
                 valViewOrder.ErrorMessage = GetLanguage("need_number")
@@ -179,16 +195,7 @@ Namespace DotNetZoom
 
                         ' Close the datareader
                         dr.Close()
-                        Dim settings As Hashtable
 
-                        Settings = PortalSettings.GetModuleSettings(ModuleId)
-                        chkComment.Checked = CType(settings(itemId.ToString), Boolean)
-                        chkAnonymous.Checked = CType(settings("Anonymous"), Boolean)
-                        If settings.ContainsKey("Paging") Then
-                            txtPager.Text = CType(settings("Paging"), String)
-                        Else
-                            txtPager.Text = "10"
-                        End If
                     Else ' security violation attempt to access item not related to this Module
                         dr.Close()
                         HttpContext.Current.Session("UploadInfo") = Nothing
@@ -203,7 +210,21 @@ Namespace DotNetZoom
                 ContainerEdit.ItemTitle = txtTitle.Text
                 ContainerEdit.ItemBody = txtDescription.Text
                 ContainerEdit.TabID = TabId
+
+                Dim settings As Hashtable
+
+                settings = PortalSettings.GetModuleSettings(ModuleId)
+                chkComment.Checked = CType(settings(itemId.ToString), Boolean)
+                chkAnonymous.Checked = CType(settings("Anonymous"), Boolean)
+                If settings.ContainsKey("Paging") Then
+                    txtPager.Text = CType(settings("Paging"), String)
+                Else
+                    txtPager.Text = "10"
+                End If
+
             End If
+
+
             If Not chkAnonymous.Checked Then
                 Dim Tsettings As Hashtable = PortalSettings.GetSiteSettings(_portalSettings.PortalId)
                 If Tsettings.ContainsKey("PrivateKey") Then
@@ -232,7 +253,7 @@ Namespace DotNetZoom
             retScript &= vbTab & Page.ClientScript.GetPostBackEventReference(UploadReturn, String.Empty) & ";" & vbCrLf & "}" & vbCrLf
             retScript &= "--></script>"
             Page.ClientScript.RegisterClientScriptBlock(Page.GetType(), "FileManagerRefresh", retScript)
-            Dim click As String = String.Format("openDialog('{0}', 700, 600, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), UploadReturn.ClientID)
+            Dim click As String = String.Format("openDialog('{0}', 700, 700, retVal);return false", ResolveUrl("/Admin/AdvFileManager/TAGFileUploadDialog.aspx?L=" & GetLanguage("N") & "&tabid=" & CStr(_portalSettings.ActiveTab.TabId)) & IIf(Not (Request.Params("hostpage") Is Nothing), "&hostpage=", ""), UploadReturn.ClientID)
             cmdUpload.Attributes.Add("onclick", click)
             Dim FileList As ArrayList = GetFileList(_portalSettings.PortalId)
             cboFile.DataSource = FileList
@@ -394,6 +415,7 @@ Namespace DotNetZoom
 
         Private Sub cmdSyndicate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdSyndicate.Click
             Syndicate()
+            ClearModuleCache(ModuleId)
         End Sub
 
         Private Sub chkLog_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkLog.CheckedChanged

@@ -103,8 +103,7 @@ Namespace DotNetZoom
 
 
             chkCookie.Text = GetLanguage("Login_Keep")
-            chkCookie.Checked = True
-			cmdLogin.Text = getlanguage("Button_Enter")
+            cmdLogin.Text = GetLanguage("Button_Enter")
 			cmdLogin.Tooltip = getlanguage("Button_EnterTooltip")
 			cmdRegister.Text = getlanguage("Button_Register")
 			cmdRegister.Tooltip = getlanguage("Button_RegisterTooltip")
@@ -118,6 +117,7 @@ Namespace DotNetZoom
 
             If Page.IsPostBack = False Then
                 ' Store URL Referrer to return to portal
+                chkCookie.Checked = True
                 If Not Request.UrlReferrer Is Nothing Then
                     ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
                 Else
@@ -253,7 +253,34 @@ Namespace DotNetZoom
                             If TempUserCode = "" Or InStr(1, TempUserCode.ToLower, DisplayCountrycode(Request.UserHostAddress).ToLower) Then
                                 ' Use security system to set the UserID within a client-side Cookie
                                 objUser.UpdateUserIP(userId, Request.UserHostAddress, "")
+
+
+                                ' Dim userData As String = "ApplicationSpecific data for this user."
+
+                                ' Dim ticket As FormsAuthenticationTicket = New FormsAuthenticationTicket(1, _
+                                ' userId.ToString(), _
+                                ' DateTime.Now, _
+                                ' DateTime.Now.AddMinutes(30), _
+                                ' chkCookie.Checked, _
+                                ' userData, _
+                                ' FormsAuthentication.FormsCookiePath)
+
+                                ' Encrypt the ticket.
+                                ' Dim encTicket As String = FormsAuthentication.Encrypt(ticket)
+
+                                ' Create the cookie.
+                                ' Dim AuthCookie As HttpCookie
+                                ' AuthCookie = New HttpCookie(FormsAuthentication.FormsCookieName, encTicket)
+
+
                                 FormsAuthentication.SetAuthCookie(userId.ToString(), chkCookie.Checked)
+                                Dim AuthCookie As HttpCookie = FormsAuthentication.GetAuthCookie(userId.ToString(), chkCookie.Checked)
+                                If (chkCookie.Checked) Then
+                                    AuthCookie.Expires = DateTime.Now.AddYears(1)
+                                    AuthCookie.HttpOnly = True
+                                End If
+                                Response.AppendCookie(AuthCookie)
+
 
                                 objUser.UpdateCheckUserSecurity(userId, "", DateTime.Now.AddYears(-30), 0)
                                 ' Reset Session variable

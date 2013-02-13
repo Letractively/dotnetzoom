@@ -72,115 +72,6 @@ end if
 End Sub 
 
 
-        Public Sub ResizeImage(ByVal Source As String, ByVal Destination As String, ByVal MaxWidth As Integer, ByVal MaxHeight As Integer, ByVal Extension As String, ByVal Quality As Integer)
-            Dim lWidth As Integer
-            Dim lHeight As Integer
-            Dim newWidth As Integer
-            Dim newHeight As Integer
-            Dim sRatio As Double
-            Dim mImage As System.Drawing.Image 
-            Dim iFormat As Imaging.ImageFormat = ImageFormat.Bmp
-			Dim myEncoders() As ImageCodecInfo
-			myEncoders = ImageCodecInfo.GetImageEncoders()
-			Dim numEncoders As Integer = myEncoders.GetLength(0)
-			Dim strNumEncoders As String = numEncoders.ToString()
-			Dim i As Integer = 0
-			Dim z as Integer = -1
-
-			If Quality < 20 then 
-			Quality = 20
-			else
-			If quality > 80 then
-			Quality = 80
-			end if
-			end if
-			
-            Select Case LCase(Replace(Extension, ".", ""))
-                Case "bmp"
-                    iFormat = ImageFormat.Bmp
-                Case "jpg"
-                    iFormat = ImageFormat.Jpeg
-					If numEncoders > 0 Then
-					For i = 0 To numEncoders - 1
-					if MyEncoders(i).MimeType = "image/jpeg" then
-					z = i
-					End if
-					Next i
-					End If
-                Case "gif"
-                    iFormat = ImageFormat.Gif
-                Case "tif"
-                    iFormat = ImageFormat.Tiff
-                Case "png"
-                    iFormat = ImageFormat.Png
-            End Select
-
-            Try
-                mImage = System.Drawing.Image.FromFile(Source)
-                lWidth = mImage.Width
-                lHeight = mImage.Height
-
-                If Not (lWidth <= MaxWidth AndAlso lHeight <= MaxHeight) Then
-                    sRatio = (lHeight / lWidth)
-                    If sRatio > (MaxHeight / MaxWidth) Then ' Bounded by height
-					    newWidth = CShort(MaxHeight / sRatio)
-                        newHeight = MaxHeight
-                    Else 'Bounded by width
-                        newWidth = MaxWidth
-                        newHeight = CShort(MaxWidth * sRatio)
-                    End If
- 				  	Dim newImage as new System.Drawing.Bitmap(newWidth,newHeight)
-					Dim g As Graphics = Graphics.FromImage(newImage)
- 					g.InterpolationMode = InterpolationMode.HighQualityBicubic
-   					g.CompositingQuality = Drawing2D.CompositingQuality.HighQuality
-   					g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-   					Dim rect As New Rectangle(0, 0, newWidth,newHeight)
-   					g.DrawImage(mImage, rect, 0, 0, mImage.width, mImage.height, GraphicsUnit.Pixel)
-
-					
-					Dim PropItm As PropertyItem
-					For Each PropItm In mImage.PropertyItems
-   						newImage.SetPropertyItem(PropItm)
-					Next
-		if z <> - 1 then
-		Dim encoderInstance As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
-		Dim encoderParametersInstance As EncoderParameters = New EncoderParameters (2)
-		Dim encoderParameterInstance As EncoderParameter = New EncoderParameter (encoderInstance, Quality)
-		encoderParametersInstance.Param(0) = encoderParameterInstance
-		encoderInstance = System.Drawing.Imaging.Encoder.ColorDepth
-		encoderParameterInstance = New EncoderParameter (encoderInstance, 24)
-		encoderParametersInstance.Param(1) = encoderParameterInstance
-		newImage.Save(Destination, MyEncoders(z), encoderParametersInstance)
-		else
-		newImage.Save(Destination, iFormat)
-		end if
-                newImage.Dispose()
-                Else
-		if z <> - 1 then
-		Dim encoderInstance As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
-		Dim encoderParametersInstance As EncoderParameters = New EncoderParameters (2)
-		Dim encoderParameterInstance As EncoderParameter = New EncoderParameter (encoderInstance, Quality)
-		encoderParametersInstance.Param(0) = encoderParameterInstance
-		encoderInstance = System.Drawing.Imaging.Encoder.ColorDepth
-		encoderParameterInstance = New EncoderParameter (encoderInstance, 24)
-		encoderParametersInstance.Param(1) = encoderParameterInstance
-		mImage.Save(Destination, MyEncoders(z), encoderParametersInstance)
-		else
-		mImage.Save(Destination, iFormat)
-		end if
-        End If
-        mImage.Dispose()
-
-            Catch ex As Exception
-			ResultsMessage.text = GetLanguage("ErrorGDI")
-                Throw ex
-            End Try
-
-        End Sub
-
-
-
-
 Public Sub UploadImage_OnClick(ByVal sender As Object, ByVal e As EventArgs) 
         Page.Validate()
 
@@ -209,8 +100,10 @@ Dim objAdmin As New AdminDB()
 			ResizeImage(ImagesFolder + "temp" + Ext, ImagesFolder + UploadFileName, TxtSizeL.text, TxtSizeH.text, Ext, TxtQuality.Text)
 			System.IO.File.Delete(ImagesFolder + "temp" + Ext)
 
-           Catch ex As Exception
-           End Try 
+                            Catch ex As Exception
+                                LogMessage(HttpContext.Current.Request, "Erreur fckimage.aspx delete, " + ImagesFolder + " " + ex.Message)
+
+                            End Try
          Else 
            ResultsMessage.Text = InvalidFileTypeMessage 
          End If 
@@ -292,8 +185,10 @@ Public Sub DisplayImages()
  If Not (ImagesFolder = "") Then 
    Try 
    FilesArray  = System.IO.Directory.GetFiles(ImagesFolder, "*") 
-   Catch e As Exception
-   ResultsMessage.Text = NoImagesMessage 
+            Catch e As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur fckimage.aspx FilesArray, " + ImagesFolder + " " + e.Message)
+
+                ResultsMessage.Text = NoImagesMessage
    End Try 
  End If 
 
@@ -355,8 +250,9 @@ Public Sub DisplayImages()
 	   GalleryPlaceHolder.Controls.Add(New LiteralControl("</td>"))
        myImage.Dispose() 
 	  
-     Catch e As Exception
-     GalleryPlaceHolder.Controls.Add(New LiteralControl("<br>" +  ImageFileName + "</td>"))
+                    Catch e As Exception
+                        LogMessage(HttpContext.Current.Request, "Erreur fckimage.aspx , " + ImageFileName + " " + e.Message)
+                        GalleryPlaceHolder.Controls.Add(New LiteralControl("<br>" + ImageFileName + "</td>"))
       End Try 
 	  End If
    Next 
@@ -374,8 +270,10 @@ If Not (FileToDelete.Value = "") AndAlso Not (FileToDelete.Value = "undefined") 
      System.IO.File.Delete(ImagesFolder + FileToDelete.Value)
 	 ResultsMessage.Text = GetLanguage("ImageDeleted")
 	 ResultsMessage.Text = Replace(ResultsMessage.Text, "{imagename}", FileToDelete.Value)
-   Catch ex As Exception 
-     ResultsMessage.Text = GetLanguage("ImageDeleteError")
+            Catch ex As Exception
+                LogMessage(HttpContext.Current.Request, "Erreur fckimage.aspx delete, " + ImagesFolder + FileToDelete.Value + " " + ex.Message)
+
+                ResultsMessage.Text = GetLanguage("ImageDeleteError")
    End Try 
  Else 
    ResultsMessage.Text = NoFileToDeleteMessage 

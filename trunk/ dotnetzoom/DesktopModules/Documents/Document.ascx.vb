@@ -102,7 +102,7 @@ Namespace DotNetZoom
                         contenttype = ""
                 End Select
             Catch ex As Exception
-
+                LogMessage(HttpContext.Current.Request, "Erreur Document FormatURL, " + ex.Message)
             End Try
 
 

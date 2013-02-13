@@ -41,7 +41,7 @@ Namespace DotNetZoom
         Private ZgalleryConfig As GalleryConfig
         Private _uploadPath As String
         Private _errMessage As String
-		Private _SpaceUsed As Double
+        Private _SpaceUsed As Double
 
         Public Sub New()
             MyBase.New()
@@ -105,43 +105,26 @@ Namespace DotNetZoom
             End Get
         End Property
 
-        Public Function FileExists(ByVal FileName As String) As Boolean
 
-            Dim filePath As String = Path.Combine(_album.Path, FileName)
-            ' search in file system
-            If IO.File.Exists(filePath) Then
-                Return True
-            End If
-
-            ' search in this collection
-            Dim i As Integer
-            For i = 1 To Me.Count
-                If CType(Me.Item(i - 1), GalleryUploadFile).Name = FileName Then
-                    Return True
-                End If
-            Next
-
-        End Function
-
-        Public Function Upload(ByVal StrFolder As String) as Double
+        Public Function Upload(ByVal StrFolder As String) As Double
             Dim uploadFile As GalleryUploadFile
             Dim uploadPath As String
-			Dim ZipKeepSource As String = BuildPath(New String(1) {_album.Path, ZgalleryConfig.SourceFolder}, "\", False, False)
-			Dim ZipKeepSourcePath As String
+            Dim ZipKeepSource As String = BuildPath(New String(1) {_album.Path, ZgalleryConfig.SourceFolder}, "\", False, False)
+            Dim ZipKeepSourcePath As String
             Dim UploadFilePath As String = ""
             Dim albumFilePath As String
             Dim ThumbFilePath As String
             Dim SourceFilePath As String
             Dim IStobeResized As Boolean
             Dim i As Integer
-			Dim NumberOfFile As Integer = 0
-			
-			Dim lWidth As Integer = 0
+            Dim NumberOfFile As Integer = 0
+
+            Dim lWidth As Integer = 0
             Dim lHeight As Integer = 0
             Dim mImage As System.Drawing.Image
             Dim MaxWidth As Integer = ZgalleryConfig.MaximumThumbHeight
             Dim MaxHeight As Integer = ZgalleryConfig.MaximumThumbHeight
-			
+
             _errMessage = ""
             _SpaceUsed = 0
 
@@ -152,16 +135,16 @@ Namespace DotNetZoom
             End If
 
 
-            Dim selItem As IGalleryObjectInfo = CType(_Album.List.Item(CType(_Album.Size, integer)-1), IGalleryObjectInfo)
-            If (Not selItem Is Nothing) AndAlso (Not selItem.IsFolder) AndAlso IsNumeric(SelItem.Sort) Then
-                 NumberOfFile = Cint(selItem.sort)
+            Dim selItem As IGalleryObjectInfo = CType(_album.List.Item(CType(_album.Size, Integer) - 1), IGalleryObjectInfo)
+            If (Not selItem Is Nothing) AndAlso (Not selItem.IsFolder) AndAlso IsNumeric(selItem.Sort) Then
+                NumberOfFile = CInt(selItem.Sort)
             End If
-			
-			
-			
-			
+
+
+
+
             Dim objAdmin As New AdminDB()
- 
+
             For i = Count To 1 Step -1 ' Go backward to make sure correct item will be remove after uploading
 
                 uploadFile = CType(Item(i - 1), GalleryUploadFile)
@@ -187,6 +170,7 @@ Namespace DotNetZoom
 
                         Catch Exc As System.Exception
                             _errMessage += "<br>" + Exc.Message
+                            LogMessage(HttpContext.Current.Request, "GallUpload : " + Exc.Message + vbCrLf + Exc.StackTrace)
                         End Try
 
                         ' Do Resize
@@ -207,6 +191,7 @@ Namespace DotNetZoom
 
                             Catch Exc As System.Exception
                                 _errMessage += "<br>" + Exc.Message
+                                LogMessage(HttpContext.Current.Request, "GallUpload : 1 " + Exc.Message + vbCrLf + Exc.StackTrace)
                             End Try
                         Else
                             System.IO.File.Move(uploadFile.uploadFilePath, albumFilePath)
@@ -227,6 +212,7 @@ Namespace DotNetZoom
                                     _SpaceUsed += New FileInfo(ThumbFilePath).Length
                                 Catch Exc As System.Exception
                                     _errMessage += "<br>" + Exc.Message + "<br>" + albumFilePath + "<br>" + ThumbFilePath + "<br>"
+                                    LogMessage(HttpContext.Current.Request, "GallUpload : 3 " + Exc.Message + vbCrLf + Exc.StackTrace)
                                 End Try
 
                             Else
@@ -258,19 +244,19 @@ Namespace DotNetZoom
                                     End If
 
                                     Dim TGalleryUser As GalleryUser = New GalleryUser(uploadFile.OwnerID)
-                                    Exif.Artist = TGalleryUser.UserName
+                                    Exif.Artist = TGalleryUser.FullName
                                     Exif.Copyright = GetDomainName(HttpContext.Current.Request)
                                     Exif.Description = uploadFile.Description
                                     Exif.Title = uploadFile.Title
 
                                     Exif.UserComment = uploadFile.WaterMark
-                                   
-                        Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
-                        BMP.Save(albumFilePath & ".tmp")
-                        BMP.Dispose()
-                        Exif.Dispose()
-                        System.IO.File.Delete(albumFilePath)
-                        System.IO.File.Move(albumFilePath & ".tmp", albumFilePath)
+
+                                    Dim BMP As System.Drawing.Bitmap = Exif.GetBitmap()
+                                    BMP.Save(albumFilePath & ".tmp")
+                                    BMP.Dispose()
+                                    Exif.Dispose()
+                                    System.IO.File.Delete(albumFilePath)
+                                    System.IO.File.Move(albumFilePath & ".tmp", albumFilePath)
 
                             End Select
 
@@ -290,8 +276,8 @@ Namespace DotNetZoom
                             What.Sort = TempSort
                             What.Latitude = Latitude
                             What.Longitude = Longitude
-                            What.Gpsicon = "/images/gps/24camera.png"
-                            What.Gpsiconsize = "[24,24]"
+                            What.GPSIcon = "/images/gps/24camera.png"
+                            What.GPSIconsize = "[24,24]"
                             What.Link = ""
                             What.IsFolder = False
                             What.Size = uploadFile.ContentLength
@@ -312,6 +298,7 @@ Namespace DotNetZoom
                                 End If
                             Catch Exc As System.Exception
                                 _errMessage += "<br>" + Exc.Message
+                                LogMessage(HttpContext.Current.Request, "GallUpload : 4 " + Exc.Message + vbCrLf + Exc.StackTrace)
                             End Try
 
                             While Not objZipEntry Is Nothing
@@ -359,6 +346,7 @@ Namespace DotNetZoom
                                             _SpaceUsed += New FileInfo(ThumbFilePath).Length
                                         Catch Exc As System.Exception
                                             _errMessage += "<br>" + Exc.Message + "<br>" + albumFilePath + "<br>" + ThumbFilePath + "<br>"
+                                            LogMessage(HttpContext.Current.Request, "GallUpload : 5 " + Exc.Message + vbCrLf + Exc.StackTrace)
                                         End Try
                                     Else
                                         lWidth = 0
@@ -390,7 +378,7 @@ Namespace DotNetZoom
 
 
                                             Dim TGalleryUser As GalleryUser = New GalleryUser(uploadFile.OwnerID)
-                                            Exif.Artist = TGalleryUser.UserName
+                                            Exif.Artist = TGalleryUser.FullName
                                             Exif.Copyright = GetDomainName(HttpContext.Current.Request)
                                             Exif.Description = uploadFile.Description
                                             Exif.Title = uploadFile.Title
@@ -433,6 +421,7 @@ Namespace DotNetZoom
 
                                 Catch Exc As System.Exception
                                     _errMessage += "<br>" + Exc.Message
+                                    LogMessage(HttpContext.Current.Request, "GallUpload : 6 " + Exc.Message + vbCrLf + Exc.StackTrace)
                                 End Try
 
                                 objZipEntry = objZipInputStream.GetNextEntry
@@ -466,7 +455,7 @@ Namespace DotNetZoom
                     strFileNamePath = Path.Combine(TempDir, strFileName)
 
                     If File.Exists(strFileNamePath) Then
-					    _SpaceUsed -= New FileInfo(strFileNamePath).Length
+                        _SpaceUsed -= New FileInfo(strFileNamePath).Length
                         File.Delete(strFileNamePath)
                     End If
 
@@ -481,13 +470,14 @@ Namespace DotNetZoom
                     End While
 
                     objFileStream.Close()
-					_SpaceUsed += New FileInfo(strFileNamePath).Length
+                    _SpaceUsed += New FileInfo(strFileNamePath).Length
                     Return strFileName
 
                 End If
 
             Catch Exc As System.Exception
                 _errMessage += "<br>" + Exc.Message
+                LogMessage(HttpContext.Current.Request, "GallUpload : 6 " + Exc.Message + vbCrLf + Exc.StackTrace)
             End Try
 
         End Function
@@ -497,7 +487,7 @@ Namespace DotNetZoom
     Public Class GalleryUploadFile
 
         Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-        
+
         Private ZmoduleID As Integer
         Private _title As String
         Private _description As String
@@ -506,8 +496,8 @@ Namespace DotNetZoom
         Private _type As IGalleryObjectInfo.ItemType
         Private _icon As String
         Private _extension As String
-		Private _Name As String
-		Private _FileName As String
+        Private _Name As String
+        Private _FileName As String
         Private _ContentType As String
         Private _uploadFilePath As String
         Private _ContentLength As Integer
@@ -526,7 +516,7 @@ Namespace DotNetZoom
             Get
                 Return _Name
             End Get
-			Set(ByVal Value As String)
+            Set(ByVal Value As String)
                 _Name = Value
             End Set
         End Property
@@ -535,7 +525,7 @@ Namespace DotNetZoom
             Get
                 Return _FileName
             End Get
-			Set(ByVal Value As String)
+            Set(ByVal Value As String)
                 _FileName = Value
             End Set
         End Property
@@ -555,7 +545,7 @@ Namespace DotNetZoom
             Get
                 Return _ContentType
             End Get
-			Set(ByVal Value As String)
+            Set(ByVal Value As String)
                 _ContentType = Value
             End Set
         End Property
@@ -564,7 +554,7 @@ Namespace DotNetZoom
             Get
                 Return _ContentLength
             End Get
-			Set(ByVal Value As Integer)
+            Set(ByVal Value As Integer)
                 _ContentLength = Value
             End Set
         End Property
@@ -638,17 +628,17 @@ Namespace DotNetZoom
         Public Function ValidationInfo(ByVal ModuleID As Integer) As String
             Dim strReturn As String = ""
             Dim ZgalleryConfig As GalleryConfig = GalleryConfig.GetGalleryConfig(ModuleID)
-			
+
             If _ContentLength = 0 Then
                 Return GetLanguage("Gal_Invalid_FileType")
             End If
 
             Dim size As Double = (_ContentLength / 1024)
             If Not (size < ZgalleryConfig.MaxFileSize) Then
-			strReturn = Replace(GetLanguage("Gal_MaxFileKB"), "{MaxFileSize}", ZgalleryConfig.MaxFileSize.ToString("#,##0.0"))
-			strReturn = Replace(strReturn, "{FileSize}", (_ContentLength / 1024).tostring("#,##0.0"))
-			strReturn = Replace(strReturn, "{FileName}", _FileName)
-			Return strReturn
+                strReturn = Replace(GetLanguage("Gal_MaxFileKB"), "{MaxFileSize}", ZgalleryConfig.MaxFileSize.ToString("#,##0.0"))
+                strReturn = Replace(strReturn, "{FileSize}", (_ContentLength / 1024).ToString("#,##0.0"))
+                strReturn = Replace(strReturn, "{FileName}", _FileName)
+                Return strReturn
             End If
 
             _extension = Path.GetExtension(_FileName)

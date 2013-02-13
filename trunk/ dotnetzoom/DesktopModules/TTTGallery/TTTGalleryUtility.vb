@@ -28,11 +28,7 @@ Imports System.IO
 Namespace DotNetZoom
 
     ' Utility routines for various repeated functions.
-
-    Module GalleryGraphics
-
-
-        'added by Tam - to avoid images have low-resolution after resize using CreatThumb 
+    Public Module GalleryGraphics
         Public Sub ResizeImage(ByVal Source As String, ByVal Destination As String, ByVal MaxWidth As Integer, ByVal MaxHeight As Integer, ByVal Extension As String, ByVal Quality As Integer, Optional ByVal strwatermark As String = "")
             Dim lWidth As Integer
             Dim lHeight As Integer
@@ -103,10 +99,16 @@ Namespace DotNetZoom
                         newImage = watermrk(newImage, strwatermark)
                     End If
 
-                    Dim PropItm As PropertyItem
-                    For Each PropItm In mImage.PropertyItems
-                        newImage.SetPropertyItem(PropItm)
-                    Next
+                    Select Case LCase(Replace(Extension, ".", ""))
+                        Case "jpg", "png"
+                            Dim PropItm As PropertyItem
+                            For Each PropItm In mImage.PropertyItems
+                                newImage.SetPropertyItem(PropItm)
+                            Next
+                    End Select
+
+
+
                     If z <> -1 Then
                         Dim encoderInstance As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
                         Dim encoderParametersInstance As EncoderParameters = New EncoderParameters(2)
@@ -128,10 +130,14 @@ Namespace DotNetZoom
                         newImage = watermrk(newImage, strwatermark)
                     End If
 
-                    Dim PropItm As PropertyItem
-                    For Each PropItm In mImage.PropertyItems
-                        newImage.SetPropertyItem(PropItm)
-                    Next
+                    Select Case LCase(Replace(Extension, ".", ""))
+                        Case "jpg", "png"
+                            Dim PropItm As PropertyItem
+                            For Each PropItm In mImage.PropertyItems
+                                newImage.SetPropertyItem(PropItm)
+                            Next
+                    End Select
+
 
                     If z <> -1 Then
                         Dim encoderInstance As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
@@ -150,6 +156,9 @@ Namespace DotNetZoom
                 mImage.Dispose()
 
             Catch ex As Exception
+                Dim TempError As New StringBuilder
+                TempError.Append("Source : " + Source + " Destination : " + Destination + " MaxWidth : " + MaxWidth.ToString + " MaxHeight : " + MaxHeight.ToString + " Extension : " + Extension + " Quality : " + Quality.ToString + "strwatermark : " + strwatermark + vbCrLf)
+                LogMessage(HttpContext.Current.Request, "ResizeImage " + TempError.ToString + ex.Message + vbCrLf + ex.StackTrace)
                 Throw ex
             End Try
 
@@ -198,20 +207,17 @@ Namespace DotNetZoom
     End Module
 
 
+    Public Module GalleryUtility
 
-
-
-    Module GalleryUtility
-
-        Public Function CryptoUrl(ByVal Input As String, ByVal IsPrivate As Boolean) As String
-            If IsPrivate Then
+        Public Function CryptoUrl(ByVal Input As String, ByVal IsCryptoUrl As Boolean) As String
+            If IsCryptoUrl Then
                 Dim objSecurity As New PortalSecurity()
                 Return objSecurity.EncryptURL(System.Web.HttpContext.Current.Application("cryptokey").ToString, Input)
             Else
                 Return Input
             End If
         End Function
-	
+
         ' Provides more functionality than the path object static functions
         Public Function BuildPath(ByVal Input() As String, ByVal Delimiter As String, ByVal StripInitial As Boolean, ByVal StripFinal As Boolean) As String
             Dim output As StringBuilder = New StringBuilder()
@@ -250,18 +256,18 @@ Namespace DotNetZoom
                 rootFolder.Populate()
             End If
 
-             For Each folder In rootFolder.List
+            For Each folder In rootFolder.List
                 If TypeOf folder Is GalleryFolder AndAlso Not CType(folder, GalleryFolder).IsPopulated Then
                     CType(folder, GalleryFolder).Populate()
                     PopulateAllFolders(CType(folder, GalleryFolder))
                 End If
-             Next
+            Next
 
         End Sub
 
         Public Sub UpdateFolderSize(ByVal Config As GalleryConfig, Optional ByVal FileSize As Double = 0)
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
-		
+
             If _portalSettings.HostSpace <> 0 Or Config.Quota <> 0 Then
                 Dim StrFolder As String
                 Dim objAdmin As New AdminDB()
@@ -276,16 +282,16 @@ Namespace DotNetZoom
                 Else
                     If _portalSettings.HostSpace <> 0 Then
                         StrFolder = HttpContext.Current.Request.MapPath(_portalSettings.UploadDirectory)
-	                    objAdmin.AddDirectory(StrFolder, (objAdmin.GetdirectorySpaceUsed(StrFolder) + FileSize).ToString())
+                        objAdmin.AddDirectory(StrFolder, (objAdmin.GetdirectorySpaceUsed(StrFolder) + FileSize).ToString())
                     End If
                     StrFolder = HttpContext.Current.Request.MapPath(Config.RootURL)
-                     objAdmin.AddDirectory(StrFolder, (objAdmin.GetdirectorySpaceUsed(StrFolder) + FileSize).ToString())
-                    End If
+                    objAdmin.AddDirectory(StrFolder, (objAdmin.GetdirectorySpaceUsed(StrFolder) + FileSize).ToString())
+                End If
             End If
         End Sub
-		
-		
-		
+
+
+
     End Module
 
 End Namespace

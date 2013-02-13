@@ -48,7 +48,6 @@ Namespace DotNetZoom
             ' Obtain PortalSettings from Current Context
 			Title1.DisplayTitle = getlanguage("title_denied")
 			Title1.DisplayHelp = "DisplayHelp_AccessDenied"
-            RegisterBADip(Request.UserHostAddress)
             Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim Admin As New AdminDB()
             lblTerms.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "AccessDeniedInfo"), Page)

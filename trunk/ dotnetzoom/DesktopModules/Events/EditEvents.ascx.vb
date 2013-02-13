@@ -179,7 +179,7 @@ Namespace DotNetZoom
                             cboPeriod.Items(0).Selected = True
                         End If
                         txtStartDate.Text = Format(CDate(dr("DateTime")), "yyyy-MM-dd")
-                        txtTime.Text = Format(CDate(dr("DateTime")), "hh:mm")
+                        txtTime.Text = Format(CDate(dr("DateTime")), "HH:mm")
                         If txtTime.Text = "12:00" Then
                             txtTime.Text = ""
                         End If

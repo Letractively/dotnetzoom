@@ -26,6 +26,7 @@ Namespace DotNetZoom
 
         Private Zrequest As GalleryRequest
         Private obj As New UploadInfo()
+        Private strid As String = "UploadInfo"
 
 #Region " Web Form Designer Generated Code "
 
@@ -38,18 +39,33 @@ Namespace DotNetZoom
 			'CODEGEN: This method call is required by the Web Form Designer
 			'Do not modify it using the code editor.
 			InitializeComponent()
+            ' Obtain PortalSettings from Current Context
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
 
-            ' SendToLog("StartIni", Context)
-            If Not IsNothing(Session("UploadInfo")) And Request.IsAuthenticated Then
-                obj = Session("UploadInfo")
+            Dim IsinRole As Boolean = Request.IsAuthenticated
+
+            If Not (Request.Params("mid") Is Nothing) Then
+                If IsNumeric(Request.Params("mid")) Then
+                    Dim ModuleID As Integer = CType(Request.Params("mid"), Integer)
+                    strid = "UploadInfo_" + Request.Params("mid")
+                    For Each _ModuleSettings In _portalSettings.ActiveTab.Modules
+                        If _ModuleSettings.ModuleId = ModuleID Then
+                            If PortalSecurity.IsInRoles(CStr(IIf(_ModuleSettings.AuthorizedEditRoles <> "", _ModuleSettings.AuthorizedEditRoles, _portalSettings.ActiveTab.AdministratorRoles))) Then
+                                IsinRole = True
+                            End If
+                        End If
+                    Next
+                End If
+            End If
+
+            If Not IsNothing(Session(strid)) And IsinRole Then
+                obj = Session(strid)
             Else
                 HttpContext.Current.Response.StatusCode = 403
                 HttpContext.Current.Response.StatusDescription = "Forbidden"
                 HttpContext.Current.Response.End()
             End If
 
-            ' Obtain PortalSettings from Current Context
-            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
             Dim SpaceUsed As Double
 
             If Not PortalSecurity.IsSuperUser And obj.IsHost Then
@@ -206,6 +222,12 @@ Namespace DotNetZoom
             Return MaxSize.ToString
         End Function
 
+        Public Function GetTabID() As String
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            GetTabID = "?tabid=" + _portalSettings.ActiveTab.TabId.ToString
+        End Function
+
+
         Public Function GetPathCrypTo() As String
             'SendToLog("GetPathCrypto", Context)
             ' chkUnzip.AutoPostBack = obj.CUnzip
@@ -266,7 +288,7 @@ Namespace DotNetZoom
             If obj.CUnzip Then
                 obj.Unzip = chkUnzip.Checked
             End If
-            Session("UploadInfo") = obj
+            Session(strid) = obj
         End Sub
 
 

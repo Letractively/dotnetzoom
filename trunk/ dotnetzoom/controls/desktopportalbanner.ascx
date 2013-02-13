@@ -1,6 +1,7 @@
 <%@ Control codebehind="DesktopPortalBanner.ascx.vb" Language="vb" autoeventwireup="false" Explicit="True" Inherits="DotNetZoom.DesktopPortalBanner" %>
 <%@ import Namespace="DotNetZoom" %>
 <%@ Register TagPrefix="mail" TagName="check" Src="~/controls/mailcheck.ascx" %>
+<div id="TopContextMenu">
 <div id="banner">
 <asp:hyperlink id="hypBanner" runat="server" EnableViewState="false">
 <asp:Image ID="hypBannerImage" BorderWidth="0" runat="server" EnableViewState="false"></asp:Image>
@@ -87,7 +88,7 @@
 </asp:placeholder>
 <asp:PlaceHolder EnableViewState="false" id="pnlmodulehelp" Runat="Server" Visible="False">
 <div class="admin" id="admin" style="z-index: 4">
-<table align="center">
+<table class="headertitle" width="100%" cellspacing="0" cellpadding="3" border="0" align="center">
 <tr>
 <td align="right" width="350px">
 <a title="<%= DotNetZoom.GetLanguage("admin_hide_info")%>" href="javascript:toggleBox('admin',0)" >
@@ -102,3 +103,5 @@
 </table>
 </div>
 </asp:placeholder>
+</div>
+<asp:Literal ID="contextmenu" runat="server" Visible="false" EnableViewState="false"></asp:Literal>

@@ -371,7 +371,8 @@ Namespace DotNetZoom
         Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
 
             Dim objAdmin As New AdminDB()
-			objAdmin.DeleteModule(ModuleId)
+            objAdmin.DeleteModule(ModuleId)
+            DeleteModuleDirectory(ModuleId)
             objAdmin.UpdateTabModuleOrder(TabId)
 			ClearTabCache(TabId)
 

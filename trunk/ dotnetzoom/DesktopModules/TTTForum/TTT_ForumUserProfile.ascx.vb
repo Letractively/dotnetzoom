@@ -226,6 +226,7 @@ Namespace DotNetZoom
                     Try
                         ddlTimeZone.SelectedValue = Zuser.TimeZone
                     Catch ex As Exception
+                        LogMessage(HttpContext.Current.Request, "Erreur ForumUserProfile TimeZone, " + ex.Message)
                         ddlTimeZone.SelectedValue = 0
                     End Try
                     Try

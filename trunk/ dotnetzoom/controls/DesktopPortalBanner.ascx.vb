@@ -32,7 +32,8 @@ Namespace DotNetZoom
     Public MustInherit Class DesktopPortalBanner
         Inherits System.Web.UI.UserControl
 
-		Protected WithEvents grdDefinitions As System.Web.UI.WebControls.DataGrid		
+        Protected WithEvents ContextMenu As System.Web.UI.WebControls.Literal
+        Protected WithEvents grdDefinitions As System.Web.UI.WebControls.DataGrid
         Protected WithEvents cmdPreview As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdAddModule As System.Web.UI.WebControls.LinkButton
         Protected WithEvents cmdDelete As System.Web.UI.WebControls.LinkButton
@@ -231,6 +232,7 @@ Namespace DotNetZoom
                             hypBannerImage.Height = Unit.Pixel(Tdr("Height"))
                         End If
                     Catch ex As Exception
+                        LogMessage(HttpContext.Current.Request, "Erreur DesktopPortalBanner Image Width Height, " + ex.Message)
                     End Try
 
                     Tdr.Close()
@@ -335,6 +337,9 @@ Namespace DotNetZoom
                         cmdPreview.Text = "<img  src=""" & glbPath & "images/minus3.gif"" alt=""-"" style=""border-width:0px;""> " + GetLanguage("admin_option_hide")
                         cmdPreview.Attributes.Add("onmouseover", ReturnToolTip(GetLanguage("admin_hide_option")))
                     End If
+
+
+
                 End If
 
                 cmdPreview.Visible = True
@@ -421,6 +426,16 @@ Namespace DotNetZoom
             hypUser.ID = ""
 
             lblSeparator.ID = ""
+            If editpanel.Visible Then
+                Dim StringScript As String
+                StringScript = "<script type=""text/javascript"" language=""Javascript"">" + vbCrLf
+                StringScript += "// ContextMenu for id=""adminmenu""" + vbCrLf
+                StringScript += "var adminmenu = '<ul>' + document.getElementById('adminmenu').innerHTML + '</ul>';" + vbCrLf
+                StringScript += "init(adminmenu, 200, 'TopContextMenu');" + vbCrLf
+                StringScript += "</script>" + vbCrLf
+                ContextMenu.Text = StringScript
+                ContextMenu.Visible = True
+            End If
 
 
 
@@ -524,6 +539,10 @@ Namespace DotNetZoom
 
             Dim objAdmin As New AdminDB()
 
+            'Delete Modules Directory
+            For Each _ModuleSettings In _portalSettings.ActiveTab.Modules
+                DeleteModuleDirectory(_ModuleSettings.ModuleId)
+            Next
             objAdmin.DeleteTab(_portalSettings.ActiveTab.TabId)
             Dim dr As SqlDataReader = objAdmin.GetTabById(_portalSettings.ActiveTab.TabId, GetLanguage("N"))
             If Not dr.Read Then

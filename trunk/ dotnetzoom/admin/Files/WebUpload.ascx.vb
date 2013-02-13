@@ -299,7 +299,11 @@ Namespace DotNetZoom
         End Function
 
  
- 
+        Public Function GetTabID() As String
+            Dim _portalSettings As PortalSettings = CType(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+            GetTabID = "?tabid=" + _portalSettings.ActiveTab.TabId.ToString
+        End Function
+
 
         Public Function GetPathCrypTo() As String
             'SendToLog("GetPathCrypto", Context)

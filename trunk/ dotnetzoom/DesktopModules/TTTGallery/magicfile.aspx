@@ -87,113 +87,6 @@
     End Sub
 
 
-    Public Sub ResizeImage(ByVal Source As String, ByVal Destination As String, ByVal MaxWidth As Integer, ByVal MaxHeight As Integer, ByVal Extension As String, ByVal Quality As Integer)
-        Dim lWidth As Integer
-        Dim lHeight As Integer
-        Dim newWidth As Integer
-        Dim newHeight As Integer
-        Dim sRatio As Double
-        Dim mImage As System.Drawing.Image
-        Dim iFormat As Imaging.ImageFormat = ImageFormat.Bmp
-        Dim myEncoders() As ImageCodecInfo
-        myEncoders = ImageCodecInfo.GetImageEncoders()
-        Dim numEncoders As Integer = myEncoders.GetLength(0)
-        Dim strNumEncoders As String = numEncoders.ToString()
-        Dim i As Integer = 0
-        Dim z As Integer = -1
-
-        If Quality < 20 Then
-            Quality = 20
-        Else
-            If Quality > 80 Then
-                Quality = 80
-            End If
-        End If
-			
-        Select Case LCase(Replace(Extension, ".", ""))
-            Case "bmp"
-                iFormat = ImageFormat.Bmp
-            Case "jpg"
-                iFormat = ImageFormat.Jpeg
-                If numEncoders > 0 Then
-                    For i = 0 To numEncoders - 1
-                        If myEncoders(i).MimeType = "image/jpeg" Then
-                            z = i
-                        End If
-                    Next i
-                End If
-            Case "gif"
-                iFormat = ImageFormat.Gif
-            Case "tif"
-                iFormat = ImageFormat.Tiff
-            Case "png"
-                iFormat = ImageFormat.Png
-        End Select
-
-        Try
-            mImage = System.Drawing.Image.FromFile(Source)
-            lWidth = mImage.Width
-            lHeight = mImage.Height
-
-            If Not (lWidth <= MaxWidth AndAlso lHeight <= MaxHeight) Then
-                sRatio = (lHeight / lWidth)
-                If sRatio > (MaxHeight / MaxWidth) Then ' Bounded by height
-                    newWidth = CShort(MaxHeight / sRatio)
-                    newHeight = MaxHeight
-                Else 'Bounded by width
-                    newWidth = MaxWidth
-                    newHeight = CShort(MaxWidth * sRatio)
-                End If
-                Dim newImage As New System.Drawing.Bitmap(newWidth, newHeight)
-                Dim g As Graphics = Graphics.FromImage(newImage)
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                g.CompositingQuality = Drawing2D.CompositingQuality.HighQuality
-                g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-                Dim rect As New Rectangle(0, 0, newWidth, newHeight)
-                g.DrawImage(mImage, rect, 0, 0, mImage.Width, mImage.Height, GraphicsUnit.Pixel)
-
-					
-                Dim PropItm As PropertyItem
-                For Each PropItm In mImage.PropertyItems
-                    newImage.SetPropertyItem(PropItm)
-                Next
-                If z <> -1 Then
-                    Dim encoderInstance As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
-                    Dim encoderParametersInstance As EncoderParameters = New EncoderParameters(2)
-                    Dim encoderParameterInstance As EncoderParameter = New EncoderParameter(encoderInstance, Quality)
-                    encoderParametersInstance.Param(0) = encoderParameterInstance
-                    encoderInstance = System.Drawing.Imaging.Encoder.ColorDepth
-                    encoderParameterInstance = New EncoderParameter(encoderInstance, 24)
-                    encoderParametersInstance.Param(1) = encoderParameterInstance
-                    newImage.Save(Destination, myEncoders(z), encoderParametersInstance)
-                Else
-                    newImage.Save(Destination, iFormat)
-                End If
-                newImage.Dispose()
-            Else
-                If z <> -1 Then
-                    Dim encoderInstance As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
-                    Dim encoderParametersInstance As EncoderParameters = New EncoderParameters(2)
-                    Dim encoderParameterInstance As EncoderParameter = New EncoderParameter(encoderInstance, 50)
-                    encoderParametersInstance.Param(0) = encoderParameterInstance
-                    encoderInstance = System.Drawing.Imaging.Encoder.ColorDepth
-                    encoderParameterInstance = New EncoderParameter(encoderInstance, 24)
-                    encoderParametersInstance.Param(1) = encoderParameterInstance
-                    mImage.Save(Destination, myEncoders(z), encoderParametersInstance)
-                Else
-                    mImage.Save(Destination, iFormat)
-                End If
-            End If
-            mImage.Dispose()
-
-        Catch ex As Exception
-            ResultsMessage.Text = GetLanguage("ErrorGDI")
-            Throw ex
-        End Try
-
-    End Sub
-
-
     Public Sub UploadImage_OnClick(ByVal sender As Object, ByVal e As EventArgs)
         Page.Validate()
 
@@ -253,6 +146,8 @@
                                 objAdmin.AddDirectory(StrFolder, objAdmin.GetFolderSizeRecursive(StrFolder))
            
                             Catch ex As Exception
+                                LogMessage(HttpContext.Current.Request, "Erreur magicfile.aspx uploadfile, " + CurrentImagesFolder + " " + ex.Message)
+
                             End Try
                             
                             ' Return to album

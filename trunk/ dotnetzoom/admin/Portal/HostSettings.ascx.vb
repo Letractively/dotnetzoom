@@ -140,6 +140,7 @@ Namespace DotNetZoom
                 txtHostEmail2.Text = PortalSettings.GetHostSettings("HostEmail2").ToString
             Catch ex As Exception
                 txtHostEmail2.Text = txtHostEmail.Text
+                LogMessage(Request, "Erreur HostSettings BindData, txtHostEmail.Text " + ex.Message)
             End Try
 
             cboProcessor.DataSource = objAdmin.GetProcessorCodes
@@ -151,6 +152,7 @@ Namespace DotNetZoom
                 ddlTimeZone.SelectedValue = PortalSettings.GetHostSettings("TimeZone")
             Catch ex As Exception
                 ddlTimeZone.SelectedValue = 0
+                LogMessage(Request, "Erreur HostSettings BindData, ddlTimeZone " + ex.Message)
             End Try
 
 

@@ -1907,7 +1907,7 @@ Namespace DotNetZoom
                     ' Function SendNotification(ByVal strFrom As String, ByVal strTo As String, ByVal strBcc As String, ByVal strSubject As String, ByVal strBody As String, Optional ByVal strAttachment As String = "", Optional ByVal strBodyType As String = "")
                     SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Convert.ToInt32(SpaceUsedDir)", strRoot + " " + SpaceUsedDir + ControlChars.CrLf + ControlChars.CrLf + ex.ToString)
                 End If
-
+                LogMessage(HttpContext.Current.Request, "Erreur AddDirectory, " + strRoot + " " + ex.Message)
                 Return
             End Try
 

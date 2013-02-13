@@ -9,9 +9,9 @@
         <%= Session("RelativeDir") %></title>
     <asp:Literal ID="StyleSheet" runat="server"></asp:Literal>
     <link href="/admin/files/uploadify.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
     <script language="JavaScript" type="text/javascript">
-        !window.jQuery && document.write('<script src="javascript\/jquery-1.4.3.min.js"><\/script>');
+        !window.jQuery && document.write('<script src="\/javascript\/jquery.min.js"><\/script>');
     </script>
     <script type="text/javascript" src="/javascript/swfobject.js"></script>
     <script type="text/javascript" src="/javascript/jquery.uploadify.v2.1.4.js"></script>
@@ -93,8 +93,8 @@
     $(document).ready(function () {
         $("#<%=FileUpload1.ClientID%>").uploadify({
             'uploader': '/javascript/uploadify.swf',
-            'script': '/admin/files/UploadVB.ashx',
-            'checkScript' : '/admin/files/CheckVB.ashx',
+            'script': '/admin/files/UploadVB.ashx<%= GetTabId %>',
+            'checkScript' : '/admin/files/CheckVB.ashx<%= GetTabId %>',
             'cancelImg': '/images/cancel.gif',
             'folder': '<%=GetPathCrypTo%>',
             'queueSizeLimit': <%=GetQueueLimit%>,

@@ -29,6 +29,7 @@ Namespace DotNetZoom
 
         Private _userID As Integer
         Private _userName As String
+        Private _FullName As String
 
 
 
@@ -45,6 +46,7 @@ Namespace DotNetZoom
 
             If dr.Read Then
                 _userName = ConvertString(dr("UserName"))
+                _FullName = ConvertString(dr("FullName"))
             End If
             dr.Close()
 
@@ -91,6 +93,14 @@ Namespace DotNetZoom
             End Set
         End Property
 
+        Public Property FullName() As String
+            Get
+                Return _FullName
+            End Get
+            Set(ByVal Value As String)
+                _FullName = Value
+            End Set
+        End Property
 
 #End Region
 

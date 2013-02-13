@@ -5,6 +5,10 @@
 <table cellspacing="0" cellpadding="0" width="750" border="0">
     <tbody>
         <tr valign="top">
+            <td colspan="2">
+                &nbsp;</td>
+        </tr>
+           <tr valign="top">
             <td class="SubHead">
                 <label for="<%=txtName.ClientID%>"><%= DotNetZoom.GetLanguage("header_title")%>:</label> 
             </td>

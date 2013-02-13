@@ -291,8 +291,8 @@ Namespace DotNetZoom
                         myCommand.Dispose()
                     End Try
                 Catch ex As Exception
+                    LogMessage(HttpContext.Current.Request, "Erreur LoadViewState, " + ex.Message)
                     Response.Redirect(Request.RawUrl, True)
-                    Throw ex
                 End Try
             Finally
                 myConnection.Dispose()
@@ -408,7 +408,7 @@ Namespace DotNetZoom
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             If HttpContext.Current.Request.Browser.EcmaScriptVersion.Major > 0 Then
-                ClientScript.RegisterClientScriptBlock(Me.GetType(), "dnzscript", "<script type=""text/javascript"" src=""" & glbPath & "javascript/dnzscript.js""></script>")
+                ClientScript.RegisterClientScriptBlock(Me.GetType(), "dnzscript", "<script type=""text/javascript"" src=""" & glbPath & "javascript/dnzscript1.js""></script>")
                 If Not Request.Form("scrollLeft") Is Nothing Then
                     ClientScript.RegisterHiddenField("scrollLeft", Request.Form("scrollLeft"))
                     ClientScript.RegisterHiddenField("scrollTop", Request.Form("scrollTop"))
@@ -557,8 +557,6 @@ Namespace DotNetZoom
                     ErrorMessage.Append(LastError.StackTrace + vbCrLf)
                     ErrorMessage.Append(LastError.Source + vbCrLf)
                 End If
-
-                ' ErrorMessage.Append(BuildErrorMessage(Request))
 
                 SendNotification(PortalSettings.GetHostSettings("HostEmail"), PortalSettings.GetHostSettings("HostEmail2"), "", "Page_Error", ErrorMessage.ToString, "")
             End If
