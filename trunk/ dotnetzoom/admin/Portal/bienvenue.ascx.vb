@@ -51,7 +51,6 @@ Namespace DotNetZoom
               End Select
 			  StrMessage = ProcessLanguage(StrMessage, page)
               lblbienvenue.Text = Replace(lblbienvenue.Text, "{BienvenuePortail}", StrMessage)
-            
         End Sub
 
 		Private Sub cmdCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdCancel.Click

@@ -1298,6 +1298,32 @@ updatelanguagecontext 'en','ClickToDownload','Click to download the file', 'Gall
 GO
 updatelanguagecontext 'en','MapOptions','Geocode Settings', 'Gallery'
 GO
+updatelanguagecontext 'en','DownloadFile','Download GPX File', 'Gallery'	 	 
+GO
+updatelanguagecontext 'en','DownloadGPX','Download GPX', 'Gallery'	 	 
+GO
+updatelanguagecontext 'en','Img_Exif','Exif', 'Gallery'	 	 
+GO
+updatelanguagecontext 'en','img_ExtLink','Link external', 'Image'	 	 
+GO
+updatelanguagecontext 'en','Img_GPX','Upload', 'Gallery'	 	 
+GO
+updatelanguagecontext 'en','Img_Info','Information', 'Image'	 	 
+GO
+updatelanguagecontext 'en','Img_Link','Link', 'Image'	 	 
+GO
+updatelanguagecontext 'en','img_linkinfo','Link Info', 'Image'	 	 
+GO
+updatelanguagecontext 'en','Img_Map','Google Map', 'Gallery'	 	 
+GO
+updatelanguagecontext 'en','MapGoogle_show_map','See map', 'GoogleMap'	 	 
+GO
+updatelanguagecontext 'en','MapGoogle_show_tooltip','Show the map', 'GoogleMap'	 	 
+GO
+updatelanguagecontext 'en','SelectFile','Select a GPX file to download', 'Gallery'	 	 
+GO
+updatelanguagecontext 'en','ShowOnMap','Show image on Google Map','Image'
+GO
 updatelanguagecontext 'en','Map_Div','Name', 'Gallery'
 GO
 updatelanguagecontext 'en','Map_Width','Width', 'Gallery'
@@ -2107,25 +2133,11 @@ updatelanguagecontext 'en','RegisterMessage5','The code is not good', 'Login'
 GO
 updatelanguagecontext 'en','RegisterMessage6','It was not possible to send the requested information.', 'Login'
 GO
-updatelanguagecontext 'en','mapquest_big','Large', 'MapQuest'
+DELETE FROM [dbo].[languageSettings]
+      WHERE Context = 'MapQuest'
 GO
-updatelanguagecontext 'en','mapquest_directions','Directions', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_directions_tooltip','Go to Map Quest.', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_location','Location', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_show_map','See map', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_show_map_edit','Show the map?', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_show_tooltip','Click here to show the map!', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_size','Size', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_small','Small', 'MapQuest'
-GO
-updatelanguagecontext 'en','mapquest_zoom','Zoom', 'MapQuest'
+DELETE FROM [dbo].[languageSettings]
+      WHERE SettingName = 'need_location_mapquest'
 GO
 updatelanguagecontext 'en','MS_Directives','*Directives', 'ModuleSetting'
 GO
@@ -3318,8 +3330,6 @@ UpdatelonglanguageSetting 'en','DisplayHelp_BulkEmail','<h1 style="text-align: c
 <br />
 Bulk mail can be either plain text or HTML format. Attachment from your File Manager can be added to the email.</p>', null 
 GO
-UpdatelonglanguageSetting 'en','DisplayHelp_Demo','As a condition of your use of the {PortalName} Web Site, you warrant to {PortalName} that you will not use the {PortalName} Web Site for any purpose that is unlawful or prohibited by these terms, conditions, and notices. You may not use the {PortalName} Web Site in any manner which could damage, disable, overburden, or impair the {PortalName} Web Site or interfere with any other party''s use and enjoyment of the {PortalName} Web Site.', null 
-GO
 UpdatelonglanguageSetting 'en','DisplayHelp_DiscussDetails','The Discussions module renders a group of message threads on a specific topic. Discussion includes a Read/Reply Message page, which allows authorized users to reply to existing messages, add new messages or delete existing messages.<br><br>
 
 The following details are automatically recorded and displayed for each discussion:<br><br>
@@ -4509,6 +4519,18 @@ UpdatelonglanguageSetting 'en','DisplayHelp_TAGFileManagerModule','<h1>File expl
 <p>Files and directories can be sorted in ascending or descending by name, type and size.</p>', null 
 GO
 UpdatelonglanguageSetting 'en','DisplayHelp_TAGFileUploadDialog','<div style="text-align: left;">
+<table><tr><td><h1>Click : </h1></td>
+<td><ul>
+    <li><b>Select</b> to add a file to the upload queue.</li>
+    <li><b>Upload</b> to uload the file in the queue to the server.</li>
+    <li><b>Erase</b> to erase the queue.</li>
+    <li><b>Return</b> to return to the previous menu</li>
+</ul>
+</td></tr></table>
+</div>
+', null 
+GO
+UpdatelonglanguageSetting 'en','DisplayHelp_WebUpload','<div style="text-align: left;">
 <table><tr><td><h1>Click : </h1></td>
 <td><ul>
     <li><b>Select</b> to add a file to the upload queue.</li>

@@ -3372,14 +3372,6 @@ GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_BulkEmail','<h1 style="text-align: center; ">Envoi de Courriel</h1><p>&#160;</p>
 <p>Les administrateurs peuvent faire parvenir un courriel aux utilisateurs appartenant à un rôle de sécurité ou à une adresse de courriel en particulier. Le courriel est envoyé à chaque utilisateur séparément, sans indiquer les autres utilisateurs dans l''adresse du courriel.  Les envois peuvent être, soit en format texte ou HTML. Vous pouvez ajouter une pièce jointe au courriel à partir de votre gestionnaire de fichiers.</p><p>&#160;</p>', null 
 GO
-UpdatelonglanguageSetting 'fr','DisplayHelp_Demo','<table width="80%" border="0" align="center">
-    <tbody>
-        <tr>
-            <td> <span style="" class="ItemTitle"> Conditions g&eacute;n&eacute;rales d''utilisation entre vous et {PortalName}</span>  <br /> <br /> <span class="ItemTitle"> COMPTE D''UTILISATEUR, MOT DE PASSE ET S&Eacute;CURIT&Eacute;</span>  <br /> <br /> Si vous ouvrez un compte sur le site web {PortalName}, vous devez compl&eacute;ter le formulaire d''inscription avec des informations actuelles, compl&egrave;tes et exactes, comme le formulaire d''inscription en question vous y invite. Vous choisirez ensuite un mot de passe et un nom d''utilisateur. Vous &ecirc;tes enti&egrave;rement responsable du maintien de la confidentialit&eacute; de votre mot de passe et de votre nom d''utilisateur. Vous &ecirc;tes en outre enti&egrave;rement responsable de toute activit&eacute; ayant lieu sous votre compte. Vous vous engagez &agrave;&nbsp; avertir imm&eacute;diatement {PortalName} de toute utilisation non autoris&eacute;e de votre compte, ou de toute autre atteinte &agrave;&nbsp; la s&eacute;curit&eacute;. {PortalName} ne pourra en aucun cas &ecirc;tre tenue pour responsable d''un quelconque dommage que vous subiriez du fait de l''utilisation par autrui de votre mot de passe ou de votre compte, que vous ayez eu connaissance ou non de cette utilisation. N&eacute;anmoins, votre responsabilit&eacute; pourrait &ecirc;tre engag&eacute;e si {PortalName} ou un tiers subissait des dommages dus &agrave;&nbsp;l''utilisation par autrui de votre compte ou de votre mot de passe. Il ne vous est jamais permis d''utiliser le compte d''autrui sans l''autorisation du titulaire du compte.  <br /> <br /> <span class="ItemTitle"> MODIFICATION DES PR&Eacute;SENTES CONDITIONS D''UTILISATION</span>  <br /> <br /> {PortalName} se r&eacute;serve le droit de modifier les termes, conditions et mentions d''avertissement applicables au site et Services qui vous sont propos&eacute;s. Il vous incombe de consulter r&eacute;guli&egrave;rement ces termes et conditions d''utilisation. Votre utilisation renouvel&eacute;e du site web {PortalName} constitue l''acceptation de votre part de tous ces termes, conditions d''utilisation et mentions d''avertissement.  <br /> <br /> <span class="ItemTitle"> UTILISATION LIMIT&Eacute;E &Agrave; DES FINS PERSONNELLES ET NON COMMERCIALES</span>  <br /> <br /> Sauf indication contraire, le site web {PortalName} est destin&eacute; &agrave;&nbsp; &ecirc;tre utilis&eacute;s &agrave;&nbsp; des fins personnelles et non commerciales. Vous n''&ecirc;tes pas autoris&eacute; &agrave;&nbsp; modifier, copier, distribuer, transmettre, diffuser, repr&eacute;senter, reproduire, publier, conc&eacute;der sous licence, cr&eacute;er des oeuvres d&eacute;riv&eacute;es, transf&eacute;rer ou vendre tout information, logiciel, produit ou service obtenu &agrave;&nbsp; partir de ce site web. Vous ne pouvez pas utiliser le site web {PortalName} &agrave;&nbsp; des fins commerciales, sans l''autorisation expresse, &eacute;crite et pr&eacute;alable, de {PortalName}.  <br /> <br /> <span class="ItemTitle"> LIENS VERS DES SITES TIERS </span>  <br /> <br /> Le site web {PortalName} peut contenir des images de, et des liens vers des sites Web g&eacute;r&eacute;s par des tiers. {PortalName} n''exerce aucun contr&ocirc;le sur ces sites et n''assume aucune responsabilit&eacute; quant &agrave;&nbsp;leur contenu, ni notamment quant au contenu des liens pr&eacute;sent&eacute;s dans ces sites, ou encore aux modifications ou mises &agrave; jour apport&eacute;es &agrave;&nbsp; ces sites.  <br /> <br /> <span class="ItemTitle"> UTILISATION ILLICITE OU INTERDITE</span>  <br /> <br /> Vous ne pouvez utiliser le site web {PortalName} qu''&agrave;&nbsp; condition de garantir que vous ne l''utiliserez pas &agrave;&nbsp; des fins illicites ou interdites par ces termes, conditions d''utilisation et mentions d''avertissement.  <br /> <br /> <span class="ItemTitle">QUESTIONS</span> <br /> <br /> Si vous avez des questions ou des commentaires au sujet des conditions d''utilisation, n''h&eacute;sitez pas &agrave; vous adresser {PortalName} par courriel &agrave; {AdministratorEmail}. <br /> <br /> </td>
-        </tr>
-    </tbody>
-</table>', null 
-GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_DiscussDetails','<div style="text-align: center;">
 <h1>&Eacute;crire un nouveau message</h1>
 </div>
@@ -4784,6 +4776,18 @@ UpdatelonglanguageSetting 'fr','DisplayHelp_TAGFileManagerModule','<h1 style="te
 <p>Les fichiers et répertoires peuvent être trier&#160;par ordre &#160;croissant ou décroissant, par nom, par type et taille.</p>', null 
 GO
 UpdatelonglanguageSetting 'fr','DisplayHelp_TAGFileUploadDialog','<div style="text-align: left;">
+<table><tr><td><h1>Cliquez sur : </h1></td>
+<td><ul>
+    <li><b>Choisir un fichier</b> pour ajouter des fichiers à la file d''attente.</li>
+    <li><b>Télécharger</b> pour télécharger les fichiers de la file d''attente sur le serveur.</li>
+    <li><b>Effacer</b> pour effacer la liste d''attente.</li>
+    <li><b>Retour</b> pour revenir au menu précédent</li>
+</ul>
+</td></tr></table>
+</div>
+', null 
+GO
+UpdatelonglanguageSetting 'fr','DisplayHelp_WebUpload','<div style="text-align: left;">
 <table><tr><td><h1>Cliquez sur : </h1></td>
 <td><ul>
     <li><b>Choisir un fichier</b> pour ajouter des fichiers à la file d''attente.</li>

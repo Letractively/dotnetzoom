@@ -119,7 +119,7 @@ Namespace DotNetZoom
                 ' Store URL Referrer to return to portal
                 chkCookie.Checked = True
                 If Not Request.UrlReferrer Is Nothing Then
-                    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+                    ViewState("UrlReferrer") = Replace(Request.UrlReferrer.ToString(), "&def=Login", "")
                 Else
                     ViewState("UrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
                 End If
@@ -255,24 +255,6 @@ Namespace DotNetZoom
                                 objUser.UpdateUserIP(userId, Request.UserHostAddress, "")
 
 
-                                ' Dim userData As String = "ApplicationSpecific data for this user."
-
-                                ' Dim ticket As FormsAuthenticationTicket = New FormsAuthenticationTicket(1, _
-                                ' userId.ToString(), _
-                                ' DateTime.Now, _
-                                ' DateTime.Now.AddMinutes(30), _
-                                ' chkCookie.Checked, _
-                                ' userData, _
-                                ' FormsAuthentication.FormsCookiePath)
-
-                                ' Encrypt the ticket.
-                                ' Dim encTicket As String = FormsAuthentication.Encrypt(ticket)
-
-                                ' Create the cookie.
-                                ' Dim AuthCookie As HttpCookie
-                                ' AuthCookie = New HttpCookie(FormsAuthentication.FormsCookieName, encTicket)
-
-
                                 FormsAuthentication.SetAuthCookie(userId.ToString(), chkCookie.Checked)
                                 Dim AuthCookie As HttpCookie = FormsAuthentication.GetAuthCookie(userId.ToString(), chkCookie.Checked)
                                 If (chkCookie.Checked) Then
@@ -283,6 +265,16 @@ Namespace DotNetZoom
 
 
                                 objUser.UpdateCheckUserSecurity(userId, "", DateTime.Now.AddYears(-30), 0)
+
+                                If Not Session("URLTOAD") Is Nothing Then
+                                    lblMessage.Text = CType(Session("URLTOAD"), String)
+                                    ' Reset Session variable
+                                    Session.Contents.RemoveAll()
+                                    Session("LastLoginDate") = LastLoginDate
+                                    Session("ClassifiedUrlReferrer") = FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.ActiveTab.ssl, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString)
+                                    Response.Redirect(lblMessage.Text, True)
+                                End If
+
                                 ' Reset Session variable
                                 Session.Contents.RemoveAll()
                                 Session("LastLoginDate") = LastLoginDate
@@ -294,6 +286,7 @@ Namespace DotNetZoom
                                     Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Register"), True)
                                 Else
                                     Dim TempQuerystring As String = Context.Request.QueryString.ToString()
+
                                     If Not Request.Params("showlogin") Is Nothing Then
                                         TempQuerystring = TempQuerystring.Replace("&showlogin=1", "")
                                         TempQuerystring = TempQuerystring.Replace("showlogin=1&", "")
@@ -302,11 +295,12 @@ Namespace DotNetZoom
                                     Else
                                         Response.Redirect(CType(ViewState("UrlReferrer"), String), True)
                                     End If
+
                                 End If
-                            Else
-                                lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
-                                lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
-                            End If
+                        Else
+                            lblMessage.Text = ProcessLanguage(Admin.GetSinglelonglanguageSettings(GetLanguage("N"), "Security_Enter_PortalIP"), Page)
+                            lblMessage.Text = Replace(lblMessage.Text, "{IP}", " -> " & DisplayCountryName(Request.UserHostAddress) & " " & Request.UserHostAddress)
+                        End If
                         End If
                         dr.Close()
                     Else

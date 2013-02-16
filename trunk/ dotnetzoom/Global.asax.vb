@@ -439,19 +439,6 @@ Namespace DotNetZoom
                         Case "Forms"
                             If IsNumeric(Context.User.Identity.Name) Then
                                 intUserId = Int32.Parse(Context.User.Identity.Name)
-
-                                Dim id As FormsIdentity = CType(User.Identity, FormsIdentity)
-                                Dim ticket As FormsAuthenticationTicket = id.Ticket
-                                'DotNetZoom.LogMessage(Context.Request, "Cookie : " _
-                                '                     + "Path : " + ticket.CookiePath + vbCrLf _
-                                '                    + "Expiration : " + ticket.Expiration.ToString() + vbCrLf _
-                                '                   + "Expired : " + ticket.Expired.ToString() + vbCrLf _
-                                '                  + "Persistent : " + ticket.IsPersistent.ToString() + vbCrLf _
-                                '                 + "IssueDate : " + ticket.IssueDate.ToString() + vbCrLf _
-                                '                + "UserData : " + ticket.UserData + vbCrLf _
-                                '               + "User : " + ticket.Name + vbCrLf _
-                                '              + "version : " + ticket.Version.ToString())
-
                             End If
                         Case "Windows"
                             Dim dr As SqlDataReader = objUser.GetSingleUserByUsername(_portalSettings.PortalId, Context.User.Identity.Name)
@@ -529,10 +516,29 @@ Namespace DotNetZoom
         End Sub
 
         Sub Application_Start(ByVal Sender As Object, ByVal E As EventArgs)
-            Application("logmessage") = CType(WebConfigurationManager.AppSettings("logmessage"), Boolean)
-            Application("throttle") = WebConfigurationManager.AppSettings("throttle")
-            Application("cryptokey") = WebConfigurationManager.AppSettings("cryptokey")
-            Application("SetContext") = WebConfigurationManager.AppSettings("SetContext")
+            ' Get the appSettings key,value pairs collection. 
+            Dim appSettings As NameValueCollection = _
+            WebConfigurationManager.AppSettings
+
+            ' Get the collection enumerator. 
+            Dim appSettingsEnum As IEnumerator = _
+            appSettings.GetEnumerator()
+
+            ' Loop through the collection and  
+
+            Dim i As Integer = 0
+            Application("logmessage") = False
+            While appSettingsEnum.MoveNext()
+                Dim key As String = appSettings.AllKeys(i)
+                Select Case key
+                    Case "logmessage" : Application("logmessage") = CType(appSettings("logmessage"), Boolean)
+                    Case "throttle" : Application("throttle") = appSettings("throttle")
+                    Case "cryptokey" : Application("cryptokey") = appSettings("cryptokey")
+                    Case "SetContext" : Application("SetContext") = appSettings("SetContext")
+                End Select
+                i += 1
+            End While
+
             If Application("cryptokey") Is Nothing Then
                 Application("cryptokey") = Membership.GeneratePassword(16, 7)
                 WriteSetting("web", "cryptokey", Application("cryptokey"))
