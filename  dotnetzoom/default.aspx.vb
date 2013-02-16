@@ -561,6 +561,17 @@ Namespace DotNetZoom
                                         End If
                                     End Try
                                 End If
+                            Else
+                                ' does not have view role check to see if Classified 
+                                If _moduleSettings.FriendlyName.ToLowerInvariant = "classified" Then
+                                    If Not (Request.Params("cp") Is Nothing) And Not (Request.Params("cpxy") Is Nothing) And Not (Request.Params("ttzp") Is Nothing) Then
+                                        If Request.Params("cp") = "3" Then
+                                            ' Link from Classified E-Mail So sendhim the login link
+                                            Session("URLTOAD") = Request.RawUrl
+                                            Response.Redirect(FormatFriendlyURL(_portalSettings.ActiveTab.FriendlyTabName, _portalSettings.SSL, _portalSettings.ActiveTab.ShowFriendly, _portalSettings.ActiveTab.TabId.ToString, "def=Login"), True)
+                                        End If
+                                    End If
+                                End If
                             End If
 
                         Next _moduleSettings
